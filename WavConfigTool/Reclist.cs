@@ -37,6 +37,15 @@ namespace WavConfigTool
 
         public Phoneme(string l) { Alias = l; }
 
+        public static Phoneme Copy(Phoneme phoneme)
+        {
+            if (phoneme.IsRest) return new Rest(phoneme.Alias);
+            if (phoneme.IsVowel) return new Vowel(phoneme.Alias);
+            if (phoneme.IsOcclusive) return new Occlusive(phoneme.Alias);
+            if (phoneme.IsFricative) return new Frivative(phoneme.Alias);
+            else throw new Exception("Unknown phoneme type");
+        }
+
         // Override to build Alias
         public virtual string GetAlias() { return Alias; }
         public virtual string GetAlias(Phoneme prev) { return $"{prev.Alias}{Alias}"; }
@@ -206,7 +215,8 @@ namespace WavConfigTool
             Phonemes = new List<Phoneme>();
             foreach (string ph in phonemes.Split(' '))
             {
-                Phonemes.Add(Reclist.Phonemes.Find(n => n.Alias == ph).Copy());
+                Phoneme phoneme = Reclist.Phonemes.Find(n => n.Alias == ph);
+                Phonemes.Add(Phoneme.Copy(phoneme));
             }
         }
 
