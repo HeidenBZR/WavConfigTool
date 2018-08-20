@@ -1,0 +1,50 @@
+﻿<UserControl
+    x:Class="WavConfigTool.WavMarker"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:WavConfigTool"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Width="30"
+    d:DesignHeight="100"
+    d:DesignWidth="30"
+    Loaded="UserControl_Loaded"
+    SnapsToDevicePixels="True"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="VBorderBrush" Color="#802080" />
+        <SolidColorBrush x:Key="VBackBrush" Color="#FB20FB" />
+        <SolidColorBrush x:Key="CaBorderBrush" Color="#208080" />
+        <SolidColorBrush x:Key="CaBackBrush" Color="#20FBFB" />
+        <SolidColorBrush x:Key="CfBorderBrush" Color="#808020" />
+        <SolidColorBrush x:Key="CfBackBrush" Color="#FBFB20" />
+        <SolidColorBrush x:Key="DBorderBrush" Color="#802020" />
+        <SolidColorBrush x:Key="DBackBrush" Color="#FB2020" />
+        <SolidColorBrush x:Key="BorderBrush" Color="Red" />
+        <SolidColorBrush x:Key="BackBrush" />
+        <SolidColorBrush x:Key="ForeBrush" Color="#BBBBFF" />
+    </UserControl.Resources>
+    <Grid>
+        <Rectangle
+            Name="Line"
+            Width="2"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Stretch"
+            Stroke="{DynamicResource BorderBrush}" />
+        <Thumb
+            Name="MarkerController"
+            Width="15"
+            Height="15"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="{DynamicResource BackBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="2"
+            Style="{DynamicResource WavMarkerControllerStyle}" />
+        <Label
+            Name="TypeLabel"
+            Padding="0"
+            Content="X"
+            Foreground="{DynamicResource ForeBrush}" />
+    </Grid>
+</UserControl>
