@@ -39,7 +39,7 @@ namespace WavConfigTool
         public static int SampleRate = 44100;
         public static double ScaleY = 100f;
         public static int PointSkip = 5;
-        public static double MostLeft = 999999;
+        public static double MostLeft = 9999;
 
         public static int VFade = 100;
         public static int CFade = 30;
@@ -97,16 +97,17 @@ namespace WavConfigTool
                 {
                     line.Points.Add(new Point(i * ScaleX / SampleRate * 1000, 50));
                 }
-                if (data[i] >= max * 0.1)
+                if (data[i] >= max * 0.05)
                 {
                     if (Ds.Count == 0)
                     {
                         Ds.Add((double)i / SampleRate * 1000);
-                        if (Ds[0] * ScaleX < MostLeft) MostLeft = Ds[0] * ScaleX;
                     }
-                        
                     else
+                    {
+                        if (Ds[0] * ScaleX < MostLeft) MostLeft = Ds[0] * ScaleX;
                         lastpoint = i;
+                    }
                 }
             }
             if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate * 1000);

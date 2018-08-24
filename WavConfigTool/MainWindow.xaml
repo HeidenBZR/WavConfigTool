@@ -22,12 +22,15 @@
                 <MenuItem
                     Name="MenuNew"
                     Click="MenuNew_Click"
-                    Header="New/Open WavConfig" />
+                    Header="New/Open WavConfig..." />
                 <MenuItem
                     Name="MenuSave"
                     Click="MenuSave_Click"
                     Header="Save WavConfig" />
-                <MenuItem Name="MenuLocate" Header="Locate Voicebank Folder" />
+                <MenuItem
+                    Name="MenuSaveAs"
+                    Click="MenuSaveAs_Click"
+                    Header="Save WavConfig As New..." />
             </MenuItem>
             <MenuItem Name="MenuOptions" Header="Options" />
             <MenuItem

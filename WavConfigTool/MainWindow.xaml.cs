@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace WavConfigTool
         Reclist Reclist;
         string WavSettings;
         string Path;
+        string TempPath = "temp.wconfig";
         List<WavControl> WavControls;
 
         int PageCurrent = 0;
@@ -33,27 +35,20 @@ namespace WavConfigTool
         public MainWindow()
         {
             InitializeComponent();
-            CheckLast();
+            if (CheckSettings() && CheckLast()) { DrawPage(); }
+            else OpenProjectWindow();
         }
 
-        void CheckLast()
+        bool CheckSettings()
         {
-            if (File.Exists("last"))
-            {
-                var lines = File.ReadAllLines("last", Encoding.UTF8);
-                if (File.Exists(lines[0]))
-                {
-                    ReadSettings(lines[0]);
-                    if (File.Exists(lines[1]))
-                    {
-                        ReadProject(lines[1]);
-                        DrawPage();
-                        return;
-                    }
-                }
-            }
-            if (WavSettings != null) New(wavsettings: WavSettings);
-            else New();
+            if (File.Exists("settings")) ReadSettings(File.ReadAllText("settings", Encoding.UTF8));
+            return File.Exists("settings");
+        }
+
+        bool CheckLast()
+        {
+            if (File.Exists("last")) ReadProject(File.ReadAllText("last", Encoding.UTF8));
+            return File.Exists("last");
         }
 
         void DrawPage()
@@ -71,7 +66,7 @@ namespace WavConfigTool
             LabelItemsOnPage.Text = ItemsOnPage.ToString();
             LabelPage.Text = PageCurrent.ToString();
             LabelPageTotal.Content = PageTotal.ToString();
-            ScrollViewer.ScrollToHorizontalOffset(WavControl.MostLeft - 0.2 * WavControl.ScaleX);
+            ScrollViewer.ScrollToHorizontalOffset(WavControl.MostLeft - 200 * WavControl.ScaleX);
         }
 
         /// <summary>
@@ -105,10 +100,58 @@ namespace WavConfigTool
             WavControls.Add(control);
         }
 
-        void New(string voicebank = "", string wavsettings = "")
+        void OpenProjectWindow(string voicebank = "", string wavsettings = "", string path = "")
         {
-            Project project = new Project(voicebank, wavsettings);
-            project.ShowDialog();
+            Project project = new Project(voicebank, wavsettings, path);
+            while (true)
+            { 
+                project.ShowDialog();
+                if (project.Result == Result.Close) { Close(); return; }
+                else if (project.Result == Result.Open)
+                    if (Open(project.Settings, project.Path))
+                        return;
+                    else { }
+                else
+                {
+                    NewProject(project.Settings, project.Voicebank);
+                    return;
+                }
+            }
+        }
+
+        void NewProject(string settings, string voicebank)
+        {
+            ReadSettings(settings);
+            Reclist.VoicebankPath = voicebank;
+            Path = TempPath;
+            DrawPage();
+            Title = $"WavConfig - {System.IO.Path.GetFileName(Path)} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
+        }
+
+        bool Open(string settings, string project)
+        {
+            ReadSettings(settings);
+            if (File.Exists(project))
+            {
+                ReadProject(project);
+                DrawPage();
+                return true;
+            }
+            else MessageBox.Show("Ошибка при открытии файла проекта", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
+
+        void SaveAs()
+        {
+            string lastpath = Path;
+            SaveFileDialog openFileDialog = new SaveFileDialog();
+            openFileDialog.Filter = "WavConfig Project (*.wconfig)|*.wconfig";
+            openFileDialog.RestoreDirectory = true;
+            openFileDialog.ShowDialog();
+            Path = openFileDialog.FileName;
+            Save();
+            Title = $"WavConfig - {System.IO.Path.GetFileName(Path)} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
+            File.Delete(lastpath);
         }
 
         void Save()
@@ -124,7 +167,6 @@ namespace WavConfigTool
                 text += $"{String.Join(" ", control.Cs.Select(n => n.ToString("f0")))}\r\n";
             }
             File.WriteAllText(Path, text, Encoding.UTF8);
-            File.WriteAllLines("last", new[] { WavSettings, Path }, Encoding.UTF8);
         }
 
         void ReadSettings(string settings)
@@ -141,6 +183,7 @@ namespace WavConfigTool
                 AddFile(items[0], items[1], items[2]);
             }
             WavSettings = settings;
+            File.WriteAllText("settings", WavSettings, Encoding.UTF8);
         }
 
         void ReadProject(string project)
@@ -162,7 +205,8 @@ namespace WavConfigTool
                     if (pcs.Length > 0) control.Cs = pcs.Split(' ').Select(n => double.Parse(n)).ToList();
                 }
             }
-
+            File.WriteAllText("last", Path, Encoding.UTF8);
+            Title = $"WavConfig - {System.IO.Path.GetFileName(Path)} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
         }
 
         void Generate()
@@ -178,7 +222,10 @@ namespace WavConfigTool
 
         private void MenuSave_Click(object sender, RoutedEventArgs e)
         {
-            Save();
+            if (Path == TempPath)
+                SaveAs();
+            else
+                Save();
         }
 
         private void MenuGenerate_Click(object sender, RoutedEventArgs e)
@@ -188,8 +235,8 @@ namespace WavConfigTool
 
         private void MenuNew_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Начать новый проект? Несохраненные данные будут потеряны", "New project", MessageBoxButton.YesNo, MessageBoxImage.Exclamation, MessageBoxResult.No);
-            if (result == MessageBoxResult.Yes) New();
+            MessageBoxResult result = MessageBox.Show("Открыть окно проекта? Несохраненные данные будут потеряны", "OpenProjectWindow project", MessageBoxButton.YesNo, MessageBoxImage.Exclamation, MessageBoxResult.No);
+            if (result == MessageBoxResult.Yes) OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path);
         }
 
         private void NextPage(object sender, RoutedEventArgs e)
@@ -233,6 +280,11 @@ namespace WavConfigTool
             if (!IsLoaded) return;
             foreach (WavControl control in WavControls)
                 control.LabelName.Margin = new Thickness(e.HorizontalOffset,0,0,0);
+        }
+
+        private void MenuSaveAs_Click(object sender, RoutedEventArgs e)
+        {
+            SaveAs();
         }
     }
 }
