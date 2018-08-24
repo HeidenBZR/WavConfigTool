@@ -73,6 +73,17 @@ namespace WavConfigTool
             ScrollViewer.ScrollToHorizontalOffset(WavControl.MostLeft - 0.2 * WavControl.ScaleX);
         }
 
+        /// <summary>
+        /// Надо асинхронно
+        /// </summary>
+        void DrawAsync()
+        {
+            foreach (WavControl control in WavControls)
+            {
+                control.Draw();
+            }
+        }
+
         void AddFile(string filename, string phonemes)
         {
             Recline recline = new Recline(filename, phonemes);
