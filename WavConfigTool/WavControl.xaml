@@ -9,7 +9,10 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid>
-        <Label Name="LabelName" Foreground="#BBBBFF" />
+        <Label
+            Name="LabelName"
+            Margin="0,0,0,0"
+            Foreground="#BBBBFF" />
         <Canvas
             Name="WavCanvas"
             HorizontalAlignment="Stretch"

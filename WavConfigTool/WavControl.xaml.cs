@@ -21,8 +21,7 @@ namespace WavConfigTool
     {
         D,
         V,
-        Cf,
-        Co
+        C
     }
     /// <summary>
     /// Логика взаимодействия для WavControl.xaml
@@ -30,8 +29,7 @@ namespace WavConfigTool
     public partial class WavControl : UserControl
     {
         public Recline Recline;
-        public List<double> Cos;
-        public List<double> Cfs;
+        public List<double> Cs;
         public List<double> Vs;
         public List<double> Ds;
 
@@ -45,19 +43,19 @@ namespace WavConfigTool
 
         SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(90, 200, 100, 100));
         SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 50, 200));
-        SolidColorBrush CfZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 200, 50));
+        SolidColorBrush CZoneBrush = new SolidColorBrush(Color.FromArgb(200, 250, 250, 50));
         SolidColorBrush WavZoneBrush = new SolidColorBrush(Color.FromArgb(250, 100, 200, 100));
+
+        ImageSource Source;
 
         public WavControl(Recline recline)
         {
             Recline = recline;
             InitializeComponent();
-            Cos = new List<double>();
-            Cfs = new List<double>();
+            Cs = new List<double>();
             Vs = new List<double>();
             Ds = new List<double>();
-            LabelName.Content = recline.Description;
-            Draw();
+            LabelName.Content = $"{recline.Description} [{String.Join(" ", recline.Phonemes.Select(n => n.Alias))}]";
         }
 
 
@@ -66,17 +64,20 @@ namespace WavConfigTool
             double x = e.GetPosition(this).X;
             if (Keyboard.IsKeyDown(Key.V))
                 Draw(WavConfigPoint.V, x);
-            else if (Keyboard.IsKeyDown(Key.C) || Keyboard.IsKeyDown(Key.O))
-                Draw(WavConfigPoint.Co, x);
-            else if (Keyboard.IsKeyDown(Key.F))
-                Draw(WavConfigPoint.Cf, x);
+            else if (Keyboard.IsKeyDown(Key.C))
+                Draw(WavConfigPoint.C, x);
             else if (Keyboard.IsKeyDown(Key.D))
                 Draw(WavConfigPoint.D, x);
         }
 
         public void Draw()
         {
-            AudioFileReader reader = new AudioFileReader(Recline.Filename);
+            if (Source != null)
+            {
+                DrawConfig();
+                return;
+            }
+            AudioFileReader reader = new AudioFileReader(Recline.Path);
             SampleRate = reader.WaveFormat.SampleRate;
             var l = reader.Length;
             float[] data = new float[l];
@@ -104,12 +105,16 @@ namespace WavConfigTool
                         lastpoint = i;
                 }
             }
-            Ds.Add((double)lastpoint / SampleRate);
+            if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate);
             line.SnapsToDevicePixels = true;
             line.Stroke = WavZoneBrush;
-            WavCanvas.Children.Add(line);
             Height = 100;
             Width = line.Points.Last().X;
+            reader.Close();
+            Source = ToImageSource(line, Width, Height);
+            line.Points.Clear();
+            Image image = new Image() { Source = Source };
+            WavCanvas.Children.Add(image);
             Background = new SolidColorBrush(Color.FromArgb(20, 90, 200, 200));
             Margin = new Thickness(0, 10, 0, 10);
             HorizontalAlignment = HorizontalAlignment.Left;
@@ -121,11 +126,8 @@ namespace WavConfigTool
         {
             switch (point)
             {
-                case WavConfigPoint.Co:
-                    Cos.Add(x / ScaleX);
-                    break;
-                case WavConfigPoint.Cf:
-                    Cfs.Add(x / ScaleX);
+                case WavConfigPoint.C:
+                    Cs.Add(x / ScaleX);
                     break;
                 case WavConfigPoint.V:
                     Vs.Add(x / ScaleX);
@@ -148,14 +150,16 @@ namespace WavConfigTool
         {
             Ds.Sort();
             Vs.Sort();
-            Cos.Sort();
-            Cfs.Sort();
+            Cs.Sort();
             AreasCanvas.Children.Clear();
             MarkerCanvas.Children.Clear();
             DrawD();
             DrawV();
-            DrawCo();
-            DrawCf();
+            DrawC();
+
+            DrawVZone();
+            DrawCZone();
+            DrawDZone();
         }
 
         void DrawV()
@@ -167,6 +171,7 @@ namespace WavConfigTool
                 if (i / 2 < Recline.Vowels.Count)
                     line = new WavMarker((Vowel)Recline.Vowels[i / 2], pos, i % 2);
                 else line = new WavMarker(new Vowel("{V}"), pos, i % 2);
+                line.Margin = new Thickness(pos * ScaleX, 0, 0, 0);
                 MarkerCanvas.Children.Add(line);
                 line.MouseRightButtonUp += delegate
                 {
@@ -175,6 +180,46 @@ namespace WavConfigTool
                     DrawConfig();
                 };
             }
+        }
+        void DrawD()
+        {
+            for (int i = 0; i < Ds.Count; i++)
+            {
+                double pos = Ds[i];
+                WavMarker line = new WavMarker(pos, i);
+                Data[i] = line;
+                line.Margin = new Thickness(pos * ScaleX, 0, 0, 0);
+                MarkerCanvas.Children.Add(line);
+                line.MouseRightButtonUp += delegate
+                {
+                    MarkerCanvas.Children.Remove(line);
+                    Ds.Remove(pos);
+                    DrawConfig();
+                };
+            }
+        }
+        void DrawC()
+        {
+            for (int i = 0; i < Cs.Count; i++)
+            {
+                double pos = Cs[i];
+                WavMarker line;
+                if (i / 2 < Recline.Consonants.Count)
+                    line = new WavMarker((Consonant)Recline.Consonants[i / 2], pos, i % 2);
+                else line = new WavMarker(new Consonant("{Cf}"), pos, i % 2);
+                line.Margin = new Thickness(pos * ScaleX, 0, 0, 0);
+                MarkerCanvas.Children.Add(line);
+                line.MouseRightButtonUp += delegate
+                {
+                    MarkerCanvas.Children.Remove(line);
+                    Cs.Remove(pos);
+                    DrawConfig();
+                };
+            }
+        }
+
+        void DrawVZone()
+        {
             for (int i = 0; i + 1 < Vs.Count; i += 2)
             {
                 Polygon Zone = new Polygon()
@@ -193,21 +238,8 @@ namespace WavConfigTool
                 AreasCanvas.Children.Add(Zone);
             }
         }
-        void DrawD()
+        void DrawDZone()
         {
-            for (int i = 0; i < Ds.Count; i++)
-            {
-                double pos = Ds[i];
-                WavMarker line = new WavMarker(pos);
-                Data[i] = line;
-                MarkerCanvas.Children.Add(line);
-                line.MouseRightButtonUp += delegate
-                {
-                    MarkerCanvas.Children.Remove(line);
-                    Ds.Remove(pos);
-                    DrawConfig();
-                };
-            }
             if (Ds.Count == 0) return;
             var x = Ds[0] * ScaleX;
             Polygon ZoneIn = new Polygon()
@@ -241,54 +273,22 @@ namespace WavConfigTool
             };
             AreasCanvas.Children.Add(ZoneOut);
         }
-        void DrawCo()
+        void DrawCZone()
         {
-            for (int i = 0; i < Cos.Count; i++)
-            {
-                double pos = Cos[i];
-                WavMarker line;
-                if (i / 2 < Recline.Occlusives.Count)
-                    line = new WavMarker((Occlusive)Recline.Occlusives[i / 2], pos);
-                else line = new WavMarker(new Occlusive("{Co}"), pos);
-                MarkerCanvas.Children.Add(line);
-                line.MouseRightButtonUp += delegate
-                {
-                    MarkerCanvas.Children.Remove(line);
-                    Cos.Remove(pos);
-                    DrawConfig();
-                };
-            }
-        }
-        void DrawCf()
-        {
-            for (int i = 0; i < Cfs.Count; i++)
-            {
-                double pos = Cfs[i];
-                WavMarker line;
-                if (i / 2 < Recline.Fricatives.Count)
-                    line = new WavMarker((Frivative)Recline.Fricatives[i / 2], pos, i % 2);
-                else line = new WavMarker(new Frivative("{Cf}"), pos, i % 2);
-                MarkerCanvas.Children.Add(line);
-                line.MouseRightButtonUp += delegate
-                {
-                    MarkerCanvas.Children.Remove(line);
-                    Cfs.Remove(pos);
-                    DrawConfig();
-                };
-            }
-            for (int i = 0; i + 1 < Cfs.Count; i += 2)
+
+            for (int i = 0; i + 1 < Cs.Count; i += 2)
             {
                 Polygon Zone = new Polygon()
                 {
-                    Stroke = CfZoneBrush,
+                    Stroke = CZoneBrush,
                     Points = new PointCollection
                     {
-                        new Point((Cfs[i]) * ScaleX, 50),
-                        new Point((Cfs[i] + 0.01) * ScaleX, 40),
-                        new Point((Cfs[i + 1] - 0.01) * ScaleX, 40),
-                        new Point((Cfs[i + 1]) * ScaleX, 50),
-                        new Point((Cfs[i + 1] - 0.01) * ScaleX, 60),
-                        new Point((Cfs[i] + 0.01) * ScaleX, 60)
+                        new Point((Cs[i]) * ScaleX, 50),
+                        new Point((Cs[i] + 0.01) * ScaleX, 40),
+                        new Point((Cs[i + 1] - 0.01) * ScaleX, 40),
+                        new Point((Cs[i + 1]) * ScaleX, 50),
+                        new Point((Cs[i + 1] - 0.01) * ScaleX, 60),
+                        new Point((Cs[i] + 0.01) * ScaleX, 60)
                     }
                 };
                 AreasCanvas.Children.Add(Zone);
@@ -302,11 +302,18 @@ namespace WavConfigTool
             markers.OrderBy(n => n.Position);
             string text = "";
             var phonemes = Recline.Phonemes;
-            Phoneme In = new Rest("-") { Marker = Data[0] };
-            Phoneme Out = new Rest("-") { Marker = Data[1] };
+            Phoneme In = new Rest("-");
+            Phoneme Out = new Rest("-");
+            In.Zone.In = Data[0];
+            In.Zone.Out = Data[0];
+            In.Recline = Recline;
+            Out.Zone.In = Data[1];
+            Out.Zone.Out = Data[1];
+            Out.Recline = Recline;
             text += phonemes[0].GetMonophone(Recline.Filename);
             if (phonemes.Count > 1) text += phonemes[0].GetDiphone(Recline.Filename, In);
-            if (phonemes.Count > 2) text += phonemes[0].GetTriphone(Recline.Filename, phonemes[0], In);
+            if (phonemes.Count > 1) text += phonemes[1].GetDiphone(Recline.Filename, phonemes[0]);
+            if (phonemes.Count > 2) text += phonemes[1].GetTriphone(Recline.Filename, phonemes[0], In);
             int i;
             for (i = 2; i < Recline.Phonemes.Count; i++)
             {
@@ -320,16 +327,42 @@ namespace WavConfigTool
             return text;
         }
 
+        /// <summary>
+        /// Не реализовано!
+        /// </summary>
         void Normalize()
         {
-            if (Cfs.Count > 0)
-            {
+            // Check that all Vowels ans Consonants are inside Data; and Vowels & Consonants doesn't intersect
+            if (Cs.Count > 0) { }
+        }
 
-            }
-            if (Cos.Count > 0)
-            {
+        public ImageSource ToImageSource(FrameworkElement obj, double w, double h)
+        {
+            // Save current canvas transform
+            Transform transform = obj.LayoutTransform;
+            obj.LayoutTransform = null;
 
-            }
+            // fix margin offset as well
+            Thickness margin = obj.Margin;
+            obj.Margin = new Thickness(0, 0,
+                 margin.Right - margin.Left, margin.Bottom - margin.Top);
+
+            // Get the size of canvas
+            Size size = new Size(w, h);
+
+            // force control to Update
+            obj.Measure(size);
+            obj.Arrange(new Rect(size));
+
+            RenderTargetBitmap bmp = new RenderTargetBitmap(
+                (int)w, (int)h, 96, 96, PixelFormats.Pbgra32);
+
+            bmp.Render(obj);
+
+            // return values as they were before
+            obj.LayoutTransform = transform;
+            obj.Margin = margin;
+            return bmp;
         }
     }
 }

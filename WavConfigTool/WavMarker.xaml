@@ -14,10 +14,8 @@
     <UserControl.Resources>
         <SolidColorBrush x:Key="VBorderBrush" Color="#802080" />
         <SolidColorBrush x:Key="VBackBrush" Color="#FB20FB" />
-        <SolidColorBrush x:Key="CaBorderBrush" Color="#208080" />
-        <SolidColorBrush x:Key="CaBackBrush" Color="#20FBFB" />
-        <SolidColorBrush x:Key="CfBorderBrush" Color="#808020" />
-        <SolidColorBrush x:Key="CfBackBrush" Color="#FBFB20" />
+        <SolidColorBrush x:Key="CBorderBrush" Color="#208080" />
+        <SolidColorBrush x:Key="CBackBrush" Color="#20FBFB" />
         <SolidColorBrush x:Key="DBorderBrush" Color="#802020" />
         <SolidColorBrush x:Key="DBackBrush" Color="#FB2020" />
         <SolidColorBrush x:Key="BorderBrush" Color="Red" />

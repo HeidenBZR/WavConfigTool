@@ -25,76 +25,49 @@ namespace WavConfigTool
         public double Position;
         public double Msec { get { return Position * 1000; } }
 
-        public WavMarker() { InitializeComponent(); }
+        public WavMarker(Phoneme phoneme, double x, int i)
+        {
+            InitializeComponent();
+            Position = x;
+            Phoneme = phoneme;
+            if (i == 0) phoneme.Zone.In = this;
+            else phoneme.Zone.Out = this;
+            TypeLabel.Content = Phoneme.Alias;
+        }
 
-        public WavMarker(Vowel vowel, double x, int i) : this()
+        public WavMarker(Vowel phoneme, double x, int i) : this(phoneme as Phoneme, x, i)
         {
             Resources["BackBrush"] = Resources["VBackBrush"];
             Resources["BorderBrush"] = Resources["VBorderBrush"];
-            Position = x;
             Height = 100;
             Type = WavConfigPoint.V;
-            Phoneme = vowel;
-            if (i == 0) vowel.Marker = this;
-            else vowel.MarkerOut = this;
+            MarkerController.Margin = new Thickness(0, 20, 0, 0);
+            Line.Margin = new Thickness(0, 20, 0, 0);
+            TypeLabel.Margin = new Thickness(17, 20, 0, 0);
         }
-        public WavMarker(Occlusive occlusive, double x) : this()
+        public WavMarker(Consonant phoneme, double x, int i) : this(phoneme as Phoneme, x, i)
         {
-            Resources["BackBrush"] = Resources["CaBackBrush"];
-            Resources["BorderBrush"] = Resources["CaBorderBrush"];
-            Position = x;
+            Resources["BackBrush"] = Resources["CBackBrush"];
+            Resources["BorderBrush"] = Resources["CBorderBrush"];
+            MarkerController.Margin = new Thickness(0, 75, 0, 0);
+            TypeLabel.Margin = new Thickness(17, 75, 0, 0);
             Height = 90;
-            Phoneme = occlusive;
-            Type = WavConfigPoint.Co;
-            occlusive.Marker = this;
+            Type = WavConfigPoint.C;
         }
-        public WavMarker(Frivative frivative, double x, int i) : this()
-        {
-            Resources["BackBrush"] = Resources["CfBackBrush"];
-            Resources["BorderBrush"] = Resources["CfBorderBrush"];
-            Position = x;
-            Height = 90;
-            Phoneme = frivative;
-            Type = WavConfigPoint.Cf;
-            if (i == 0) frivative.Marker = this;
-            else frivative.MarkerOut = this;
-        }
-        public WavMarker(double x) : this()
+        public WavMarker(double x, int i) : this(new Rest("-"), x, i)
         {
             Resources["BackBrush"] = Resources["DBackBrush"];
             Resources["BorderBrush"] = Resources["DBorderBrush"];
-            Position = x;
             Height = 15;
             Type = WavConfigPoint.D;
+            MarkerController.Margin = new Thickness(0, 0, 0, 0);
+            TypeLabel.Margin = new Thickness(17, 0, 0, 0);
+            TypeLabel.Content = "D";
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            Margin = new Thickness(Position * WavControl.ScaleX, 0, 0, 0);
-            switch (Type)
-            {
-                case WavConfigPoint.V:
-                    MarkerController.Margin = new Thickness(0, 20, 0, 0);
-                    Line.Margin = new Thickness(0, 20, 0, 0);
-                    TypeLabel.Margin = new Thickness(17, 20, 0, 0);
-                    TypeLabel.Content = Phoneme.Alias;
-                    break;
-                case WavConfigPoint.Co:
-                    MarkerController.Margin = new Thickness(0, 75, 0, 0);
-                    TypeLabel.Margin = new Thickness(0, 75, 0, 0);
-                    TypeLabel.Content = Phoneme.Alias;
-                    break;
-                case WavConfigPoint.Cf:
-                    MarkerController.Margin = new Thickness(0, 75, 0, 0);
-                    TypeLabel.Margin = new Thickness(17, 75, 0, 0);
-                    TypeLabel.Content = Phoneme.Alias;
-                    break;
-                case WavConfigPoint.D:
-                    MarkerController.Margin = new Thickness(0, 0, 0, 0);
-                    TypeLabel.Margin = new Thickness(17, 0, 0, 0);
-                    TypeLabel.Content = "D";
-                    break;
-            }
+
         }
     }
 }
