@@ -23,7 +23,6 @@ namespace WavConfigTool
         public Phoneme Phoneme;
         public WavConfigPoint Type;
         public double Position;
-        public double Msec { get { return Position * 1000; } }
 
         public WavMarker(Phoneme phoneme, double x, int i)
         {

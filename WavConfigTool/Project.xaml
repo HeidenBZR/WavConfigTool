@@ -39,8 +39,8 @@
                 Orientation="Horizontal">
                 <Button
                     Width="100"
-                    Click="ButtonOpen"
                     Margin="0,0,50,0"
+                    Click="ButtonOpen"
                     Content="Open Project" />
                 <Button
                     Width="100"

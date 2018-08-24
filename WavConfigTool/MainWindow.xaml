@@ -195,8 +195,8 @@
             Grid.Row="2"
             Margin="5"
             HorizontalScrollBarVisibility="Auto"
-            VerticalScrollBarVisibility="Auto"
-            ScrollChanged="ScrollViewer_ScrollChanged">
+            ScrollChanged="ScrollViewer_ScrollChanged"
+            VerticalScrollBarVisibility="Auto">
             <StackPanel Name="WaveControlStackPanel" />
         </ScrollViewer>
 

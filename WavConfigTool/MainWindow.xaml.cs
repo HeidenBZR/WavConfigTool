@@ -23,6 +23,7 @@ namespace WavConfigTool
     {
         Reclist Reclist;
         string WavSettings;
+        string Path;
         List<WavControl> WavControls;
 
         int PageCurrent = 0;
@@ -118,13 +119,12 @@ namespace WavConfigTool
             foreach (WavControl control in WavControls)
             {
                 text += $"{control.Recline.Filename}\r\n";
-                text += $"{String.Join(" ", control.Recline.Phonemes.Select(n => n.Alias))}\r\n";
-                text += $"{control.Ds[0].ToString("f3")} {control.Ds[1].ToString("f3")}\r\n";
-                text += $"{ String.Join(" ", control.Vs.Select(n => n.ToString("f3"))) }\r\n";
-                text += $"{String.Join(" ", control.Cs.Select(n => n.ToString("f3")))}\r\n";
+                text += $"{String.Join(" ", control.Ds.Select(n => n.ToString("f0")))}\r\n";
+                text += $"{ String.Join(" ", control.Vs.Select(n => n.ToString("f0"))) }\r\n";
+                text += $"{String.Join(" ", control.Cs.Select(n => n.ToString("f0")))}\r\n";
             }
-            File.WriteAllText("voice.wconfig", text, Encoding.UTF8);
-            File.WriteAllLines("last", new[] { Reclist.VoicebankPath, WavSettings }, Encoding.UTF8);
+            File.WriteAllText(Path, text, Encoding.UTF8);
+            File.WriteAllLines("last", new[] { WavSettings, Path }, Encoding.UTF8);
         }
 
         void ReadSettings(string settings)
@@ -145,6 +145,7 @@ namespace WavConfigTool
 
         void ReadProject(string project)
         {
+            Path = project;
             string[] lines = File.ReadAllLines(project);
             Reclist.VoicebankPath = lines[0];
             for (int i = 1; i + 3 < lines.Length;  i += 4)
@@ -156,9 +157,9 @@ namespace WavConfigTool
                 WavControl control = WavControls.Find(n => n.Recline.Filename == filename);
                 if (control != null)
                 {
-                    control.Ds = pds.Split(' ').Select(n => double.Parse(n)).ToList();
-                    control.Vs = pvs.Split(' ').Select(n => double.Parse(n)).ToList();
-                    control.Cs = pcs.Split(' ').Select(n => double.Parse(n)).ToList();
+                    if (pds.Length > 0) control.Ds = pds.Split(' ').Select(n => double.Parse(n)).ToList();
+                    if (pvs.Length > 0) control.Vs = pvs.Split(' ').Select(n => double.Parse(n)).ToList();
+                    if (pcs.Length > 0) control.Cs = pcs.Split(' ').Select(n => double.Parse(n)).ToList();
                 }
             }
 
@@ -229,6 +230,7 @@ namespace WavConfigTool
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
+            if (!IsLoaded) return;
             foreach (WavControl control in WavControls)
                 control.LabelName.Margin = new Thickness(e.HorizontalOffset,0,0,0);
         }

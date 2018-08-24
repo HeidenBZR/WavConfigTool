@@ -31,7 +31,7 @@ namespace WavConfigTool
     {
         public double Preutterance = 60;
         public double Overlap = 30;
-        public double Length { get { return (Zone.Out).Msec - (Zone.In).Msec; } }
+        public double Length { get { return (Zone.Out).Position - (Zone.In).Position; } }
         public double FadeIn = 10;
         public double FadeOut = 0;
 
@@ -74,7 +74,7 @@ namespace WavConfigTool
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double of = Zone.In.Msec + FadeIn;
+            double of = Zone.In.Position + FadeIn;
             double con = FadeIn;
             double cut = -Length + FadeOut + FadeIn;
             double pre = Preutterance;
@@ -98,13 +98,13 @@ namespace WavConfigTool
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double prevp = prev.Zone.Out.Msec - prev.FadeOut;
-            double dist = Zone.In.Msec - prevp;
+            double prevp = prev.Zone.Out.Position - prev.FadeOut;
+            double dist = Zone.In.Position - prevp;
 
             double of = prevp - prev.Overlap;
             double con = prev.Overlap + dist + FadeIn;
-            double cut = -(Zone.Out.Msec - of - FadeOut);
-            double pre = IsConsonant && prev.IsVowel ? prevp - of + prev.FadeOut : Zone.In.Msec - of;
+            double cut = -(Zone.Out.Position - of - FadeOut);
+            double pre = IsConsonant && prev.IsVowel ? prevp - of + prev.FadeOut : Zone.In.Position - of;
             double ov = prev.Overlap;
             if (IsRest) cut -= 50;
             string oto = Oto(of, con, cut, pre, ov);
@@ -117,13 +117,13 @@ namespace WavConfigTool
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double prevp = prev.Zone.Out.Msec - prev.FadeOut;
-            double dist = Zone.In.Msec - prevp;
+            double prevp = prev.Zone.Out.Position - prev.FadeOut;
+            double dist = Zone.In.Position - prevp;
 
             double of = prevp - prev.Overlap;
-            double con = Zone.Out.Msec - of + FadeIn;
-            double cut = -(Zone.Out.Msec - of - FadeOut);
-            double pre = Zone.Out.Msec - of;
+            double con = Zone.Out.Position - of + FadeIn;
+            double cut = -(Zone.Out.Position - of - FadeOut);
+            double pre = Zone.Out.Position - of;
             double ov = prev.Overlap;
             cut -= 50;
             string oto = Oto(of, con, cut, pre, ov);
@@ -136,13 +136,13 @@ namespace WavConfigTool
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double prevp = prev.Zone.Out.Msec - prev.FadeOut;
-            double dist = Zone.In.Msec - prevp;
+            double prevp = prev.Zone.Out.Position - prev.FadeOut;
+            double dist = Zone.In.Position - prevp;
 
             double of = prevp - prev.Overlap;
-            double con = Zone.Out.Msec - of + FadeIn;
-            double cut = -(Zone.Out.Msec - of - FadeOut);
-            double pre = prev.Zone.Out.Msec - of + Overlap;
+            double con = Zone.Out.Position - of + FadeIn;
+            double cut = -(Zone.Out.Position - of - FadeOut);
+            double pre = prev.Zone.Out.Position - of + Overlap;
             double ov = prev.Overlap;
             cut -= 50;
             string oto = Oto(of, con, cut, pre, ov);
@@ -156,15 +156,15 @@ namespace WavConfigTool
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double prevp = preprev.Zone.Out.Msec;
+            double prevp = preprev.Zone.Out.Position;
             double preprevoffset = prevp;
-            double prevoffset = prev.Zone.In.Msec;
-            double offset = Zone.In.Msec;
+            double prevoffset = prev.Zone.In.Position;
+            double offset = Zone.In.Position;
             double dist = offset - preprevoffset;
 
             double of = preprevoffset - Preutterance;
             double con = Preutterance + dist + FadeIn;
-            double cut = -(Zone.Out.Msec - of - FadeOut);
+            double cut = -(Zone.Out.Position - of - FadeOut);
             double pre = dist + Preutterance;
             double ov = Overlap;
             if (IsRest) pre = of + Preutterance;

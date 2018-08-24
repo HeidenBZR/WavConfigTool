@@ -35,11 +35,15 @@ namespace WavConfigTool
 
         public WavMarker[] Data = new WavMarker[2]; 
 
-        public static double ScaleX = 700f;
+        public static double ScaleX = 0.7f;
         public static int SampleRate = 44100;
         public static double ScaleY = 100f;
         public static int PointSkip = 5;
         public static double MostLeft = 999999;
+
+        public static int VFade = 100;
+        public static int CFade = 30;
+        public static int DFade = 200;
 
         SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(90, 200, 100, 100));
         SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 50, 200));
@@ -88,16 +92,16 @@ namespace WavConfigTool
             for (long i = 0; i < l; i += PointSkip)
             {
                 if (Math.Abs(data[i]) > 0.001)
-                    line.Points.Add(new Point(i * ScaleX / SampleRate, data[i] * ScaleY + 50));
+                    line.Points.Add(new Point(i * ScaleX / SampleRate * 1000, data[i] * ScaleY + 50));
                 else
                 {
-                    line.Points.Add(new Point(i * ScaleX / SampleRate, 50));
+                    line.Points.Add(new Point(i * ScaleX / SampleRate * 1000, 50));
                 }
                 if (data[i] >= max * 0.1)
                 {
                     if (Ds.Count == 0)
                     {
-                        Ds.Add((double)i / SampleRate);
+                        Ds.Add((double)i / SampleRate * 1000);
                         if (Ds[0] * ScaleX < MostLeft) MostLeft = Ds[0] * ScaleX;
                     }
                         
@@ -105,7 +109,7 @@ namespace WavConfigTool
                         lastpoint = i;
                 }
             }
-            if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate);
+            if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate * 1000);
             line.SnapsToDevicePixels = true;
             line.Stroke = WavZoneBrush;
             Height = 100;
@@ -228,11 +232,11 @@ namespace WavConfigTool
                     Points = new PointCollection
                     {
                         new Point((Vs[i]) * ScaleX, 50),
-                        new Point((Vs[i] + 0.1) * ScaleX, 30),
-                        new Point((Vs[i + 1] - 0.1) * ScaleX, 30),
+                        new Point((Vs[i] + VFade) * ScaleX, 30),
+                        new Point((Vs[i + 1] - VFade) * ScaleX, 30),
                         new Point((Vs[i + 1]) * ScaleX, 50),
-                        new Point((Vs[i + 1] - 0.1) * ScaleX, 70),
-                        new Point((Vs[i] + 0.1) * ScaleX, 70)
+                        new Point((Vs[i + 1] - VFade) * ScaleX, 70),
+                        new Point((Vs[i] + VFade) * ScaleX, 70)
                     }
                 };
                 AreasCanvas.Children.Add(Zone);
@@ -250,10 +254,11 @@ namespace WavConfigTool
                     new Point(0,0),
                     new Point(x,0),
                     new Point(x,0),
-                    new Point(x - 0.1 * ScaleX,50),
+                    new Point(x - DFade * ScaleX,50),
                     new Point(x,100),
                     new Point(0,100)
-                }
+                },
+                Opacity = 0.5
             };
             AreasCanvas.Children.Add(ZoneIn);
             if (Ds.Count == 1) return;
@@ -266,10 +271,11 @@ namespace WavConfigTool
                     new Point(Width,0),
                     new Point(x,0),
                     new Point(x,0),
-                    new Point(x + 0.1 * ScaleX,50),
+                    new Point(x + DFade * ScaleX,50),
                     new Point(x,100),
                     new Point(Width,100)
-                }
+                },
+                Opacity = 0.5
             };
             AreasCanvas.Children.Add(ZoneOut);
         }
@@ -284,11 +290,11 @@ namespace WavConfigTool
                     Points = new PointCollection
                     {
                         new Point((Cs[i]) * ScaleX, 50),
-                        new Point((Cs[i] + 0.01) * ScaleX, 40),
-                        new Point((Cs[i + 1] - 0.01) * ScaleX, 40),
+                        new Point((Cs[i] + CFade) * ScaleX, 40),
+                        new Point((Cs[i + 1] - CFade) * ScaleX, 40),
                         new Point((Cs[i + 1]) * ScaleX, 50),
-                        new Point((Cs[i + 1] - 0.01) * ScaleX, 60),
-                        new Point((Cs[i] + 0.01) * ScaleX, 60)
+                        new Point((Cs[i + 1] - CFade) * ScaleX, 60),
+                        new Point((Cs[i] + CFade) * ScaleX, 60)
                     }
                 };
                 AreasCanvas.Children.Add(Zone);
