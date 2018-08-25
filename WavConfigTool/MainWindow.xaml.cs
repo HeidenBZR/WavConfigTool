@@ -27,6 +27,7 @@ namespace WavConfigTool
         string Path;
         string TempPath = "temp.wconfig";
         List<WavControl> WavControls;
+        public static WavConfigPoint Mode = WavConfigPoint.V;
 
         int PageCurrent = 0;
         int PageTotal = 0;
@@ -41,14 +42,30 @@ namespace WavConfigTool
 
         bool CheckSettings()
         {
-            if (File.Exists("settings")) ReadSettings(File.ReadAllText("settings", Encoding.UTF8));
-            return File.Exists("settings");
+            if (File.Exists("settings"))
+            {
+                string filename = File.ReadAllText("settings", Encoding.UTF8);
+                if (File.Exists(filename))
+                {
+                    ReadSettings(filename);
+                    return true;
+                }
+            }
+            return false;
         }
 
         bool CheckLast()
         {
-            if (File.Exists("last")) ReadProject(File.ReadAllText("last", Encoding.UTF8));
-            return File.Exists("last");
+            if (File.Exists("last"))
+            {
+                string filename = File.ReadAllText("last", Encoding.UTF8);
+                if (File.Exists(filename))
+                {
+                    ReadProject(filename);
+                    return true;
+                }
+            }
+            return false;
         }
 
         void DrawPage()
@@ -285,6 +302,30 @@ namespace WavConfigTool
         private void MenuSaveAs_Click(object sender, RoutedEventArgs e)
         {
             SaveAs();
+        }
+
+        private void Button_SetMode(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button.Content == "D" as object) SetMode(WavConfigPoint.D);
+            else if (button.Content == "V" as object) SetMode(WavConfigPoint.V);
+            else if (button.Content == "C" as object) SetMode(WavConfigPoint.C);
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.V))
+                SetMode(WavConfigPoint.V);
+            else if (Keyboard.IsKeyDown(Key.C))
+                SetMode(WavConfigPoint.C);
+            else if (Keyboard.IsKeyDown(Key.D))
+                SetMode(WavConfigPoint.D);
+        }
+
+        void SetMode(WavConfigPoint point)
+        {
+            Mode = point;
+            LabelMode.Content = point;
         }
     }
 }

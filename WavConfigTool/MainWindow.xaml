@@ -8,12 +8,13 @@
     Title="MainWindow"
     Width="1300"
     Height="700"
+    KeyDown="Window_KeyDown"
     WindowState="Maximized"
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
-            <RowDefinition Height="70" />
+            <RowDefinition Height="80" />
             <RowDefinition Height="337*" />
         </Grid.RowDefinitions>
         <Rectangle Grid.RowSpan="3" Fill="#101030" />
@@ -51,27 +52,36 @@
                 Margin="4"
                 BorderBrush="DarkBlue"
                 BorderThickness="1">
-                <StackPanel Height="50">
+                <StackPanel Height="60">
                     <Label
                         Padding="0"
                         HorizontalAlignment="Center"
                         Content="Zones" />
                     <StackPanel
-                        Height="20"
+                        Height="25"
                         Margin="10"
                         Orientation="Horizontal">
                         <Button
                             Width="20"
                             Margin="3,0"
+                            Click="Button_SetMode"
                             Content="D" />
                         <Button
                             Width="20"
                             Margin="3,0"
+                            Click="Button_SetMode"
                             Content="V" />
                         <Button
                             Width="20"
                             Margin="3,0"
+                            Click="Button_SetMode"
                             Content="C" />
+                        <Label Margin="3,0,0,0" Content="Текущий режим:" />
+                        <Label
+                            Name="LabelMode"
+                            Margin="0"
+                            Content="V"
+                            FontWeight="Bold" />
                         <!--<Button
                             Width="20"
                             Margin="20,0,3,0"
@@ -91,14 +101,14 @@
                 Margin="4"
                 BorderBrush="DarkBlue"
                 BorderThickness="1">
-                <StackPanel Height="50">
+                <StackPanel Height="60">
 
                     <Label
                         Padding="0"
                         HorizontalAlignment="Center"
                         Content="Pages" />
                     <StackPanel
-                        Height="20"
+                        Height="25"
                         Margin="10"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
@@ -148,16 +158,16 @@
                 BorderBrush="DarkBlue"
                 BorderThickness="1">
                 <StackPanel
-                    Height="50"
-                    Margin="4"
+                    Height="60"
+                    HorizontalAlignment="Center"
                     Opacity="0.3">
                     <Label
                         Padding="0"
                         HorizontalAlignment="Center"
                         Content="BGM" />
-                    <CheckBox Name="CheckShowGrid" Content="Show grid" />
                     <StackPanel
-                        Height="20"
+                        Height="25"
+                        Margin="10"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
                         <Label
@@ -189,6 +199,14 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             Text="100" />
+                        <Label
+                            Name="LabelShowGrid"
+                            Margin="15,0,0,0"
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Content="Grid"
+                            FontStyle="Italic"
+                            Foreground="Gray" />
                     </StackPanel>
                 </StackPanel>
             </Border>

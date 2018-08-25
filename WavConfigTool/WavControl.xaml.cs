@@ -66,12 +66,7 @@ namespace WavConfigTool
         override protected void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             double x = e.GetPosition(this).X;
-            if (Keyboard.IsKeyDown(Key.V))
-                Draw(WavConfigPoint.V, x);
-            else if (Keyboard.IsKeyDown(Key.C))
-                Draw(WavConfigPoint.C, x);
-            else if (Keyboard.IsKeyDown(Key.D))
-                Draw(WavConfigPoint.D, x);
+            Draw(MainWindow.Mode, x);
         }
 
         public void Draw()
