@@ -307,9 +307,9 @@ namespace WavConfigTool
         private void Button_SetMode(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
-            if (button.Content == "D" as object) SetMode(WavConfigPoint.D);
-            else if (button.Content == "V" as object) SetMode(WavConfigPoint.V);
-            else if (button.Content == "C" as object) SetMode(WavConfigPoint.C);
+            if (button.Content.ToString() == "D") SetMode(WavConfigPoint.D);
+            else if (button.Content.ToString() == "V") SetMode(WavConfigPoint.V);
+            else if (button.Content.ToString() == "C") SetMode(WavConfigPoint.C);
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
