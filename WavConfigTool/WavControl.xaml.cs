@@ -36,7 +36,7 @@ namespace WavConfigTool
         public List<double> Ds;
 
         public WavMarker[] Data = new WavMarker[2]; 
-        public string ImagePath { get { return System.IO.Path.Combine("Temp", Recline.Filename + ".jpg"); } }
+        public string ImagePath { get { return System.IO.Path.Combine("Temp", Recline.Filename + ".png"); } }
 
         public static double ScaleX = 0.7f;
         public static int SampleRate = 44100;
@@ -179,7 +179,7 @@ namespace WavConfigTool
             if (!Directory.Exists("Temp")) Directory.CreateDirectory("Temp");
             using (var fileStream = new FileStream(ImagePath, FileMode.Create))
             {
-                BitmapEncoder encoder = new JpegBitmapEncoder();
+                BitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(bmp));
                 encoder.Save(fileStream);
             }
@@ -189,7 +189,7 @@ namespace WavConfigTool
         {
             Image image;
             var fileStream = new FileStream(ImagePath, FileMode.Open);
-            BitmapDecoder decoder = new JpegBitmapDecoder(fileStream, BitmapCreateOptions.None, BitmapCacheOption.Default);
+            BitmapDecoder decoder = new PngBitmapDecoder(fileStream, BitmapCreateOptions.None, BitmapCacheOption.Default);
             Source = decoder.Preview;
             image = new Image() { Source = Source };
             return image;
