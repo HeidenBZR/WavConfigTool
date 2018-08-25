@@ -33,12 +33,17 @@ namespace WavConfigTool
         int PageTotal = 0;
         byte ItemsOnPage = 4;
 
+        public delegate void ProjectLoadedEventHandler();
+        public event ProjectLoadedEventHandler ProjectLoaded;
+
         public MainWindow()
         {
             InitializeComponent();
+            ProjectLoaded += delegate { DrawAsync(); };
             if (CheckSettings() && CheckLast())
                 { DrawPage(); }
             else OpenProjectWindow();
+
         }
 
         bool CheckSettings()
@@ -160,6 +165,7 @@ namespace WavConfigTool
             Path = TempPath;
             DrawPage();
             Title = $"WavConfig - {System.IO.Path.GetFileName(Path)} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
+            ProjectLoaded();
         }
 
         bool Open(string settings, string project)
@@ -253,6 +259,7 @@ namespace WavConfigTool
             }
             File.WriteAllText("last", Path, Encoding.UTF8);
             Title = $"WavConfig - {System.IO.Path.GetFileName(Path)} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
+            ProjectLoaded();
         }
 
         void Generate()
@@ -387,11 +394,11 @@ namespace WavConfigTool
             if (box.Tag.ToString() == "D") SetFade(WavConfigPoint.D, value);
         }
 
+
         #endregion
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            DrawAsync();
         }
     }
 }
