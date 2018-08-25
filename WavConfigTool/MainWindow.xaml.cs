@@ -36,7 +36,8 @@ namespace WavConfigTool
         public MainWindow()
         {
             InitializeComponent();
-            if (CheckSettings() && CheckLast()) { DrawPage(); }
+            if (CheckSettings() && CheckLast())
+                { DrawPage(); }
             else OpenProjectWindow();
         }
 
@@ -70,6 +71,7 @@ namespace WavConfigTool
 
         void DrawPage()
         {
+            if (!IsInitialized) return;
             WaveControlStackPanel.Children.Clear();
             WaveControlStackPanel.Children.Capacity = 0;
             PageTotal = WavControls.Count / ItemsOnPage;

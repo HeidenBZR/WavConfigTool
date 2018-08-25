@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -139,6 +140,15 @@ namespace WavConfigTool
             // return values as they were before
             obj.LayoutTransform = transform;
             obj.Margin = margin;
+
+            if (!Directory.Exists("Temp")) Directory.CreateDirectory("Temp");
+            string filePath = System.IO.Path.Combine("Temp", Recline.Filename + ".jpg");
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                BitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bmp));
+                encoder.Save(fileStream);
+            }
             return bmp;
         }
 
