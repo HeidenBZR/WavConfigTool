@@ -261,6 +261,7 @@ namespace WavConfigTool
             if (point == WavConfigPoint.V) WavControl.VFade = value;
             else if (point == WavConfigPoint.C) WavControl.CFade = value;
             else if (point == WavConfigPoint.D) WavControl.DFade = value;
+            DrawPage();
         }
 
         #region Events

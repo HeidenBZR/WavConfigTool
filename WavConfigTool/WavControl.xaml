@@ -15,7 +15,7 @@
                 <MenuItem
                     Name="MenuItemReset"
                     Click="WavControl_Reset"
-                    Header="Reset all points (Ctrl+R)" />
+                    Header="Reset all points" />
             </ContextMenu>
         </Grid.ContextMenu>
         <Label
