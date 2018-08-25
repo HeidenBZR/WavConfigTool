@@ -256,6 +256,13 @@ namespace WavConfigTool
             File.WriteAllText(System.IO.Path.Combine(Reclist.VoicebankPath, "oto.ini"), text, Encoding.UTF8);
         }
 
+        void SetFade(WavConfigPoint point, int value)
+        {
+            if (point == WavConfigPoint.V) WavControl.VFade = value;
+            else if (point == WavConfigPoint.C) WavControl.CFade = value;
+            else if (point == WavConfigPoint.D) WavControl.DFade = value;
+        }
+
         #region Events
 
         private void MenuSave_Click(object sender, RoutedEventArgs e)
@@ -352,6 +359,21 @@ namespace WavConfigTool
                 if (Keyboard.IsKeyDown(Key.G))
                     Generate();
                 }
+        }
+
+        private void FadeChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox box = sender as TextBox;
+            int value;
+            if (!int.TryParse(box.Text, out value) || value < 0)
+            {
+                box.Undo();
+                return;
+            }
+            box.Text = value.ToString();
+            if (box.Tag.ToString() == "V") SetFade(WavConfigPoint.V, value);
+            if (box.Tag.ToString() == "C") SetFade(WavConfigPoint.C, value);
+            if (box.Tag.ToString() == "D") SetFade(WavConfigPoint.D, value);
         }
 
         #endregion

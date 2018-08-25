@@ -44,6 +44,7 @@
             BorderThickness="2"
             DragCompleted="MarkerController_DragCompleted"
             DragDelta="MarkerController_DragDelta"
+            DragStarted="MarkerController_DragStarted"
             Style="{DynamicResource WavMarkerControllerStyle}" />
         <Label
             Name="TypeLabel"

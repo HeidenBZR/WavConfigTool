@@ -152,6 +152,52 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
+            <Border
+                Margin="4"
+                BorderBrush="DarkBlue"
+                BorderThickness="1">
+                <StackPanel Height="60">
+                    <Label
+                        Padding="0"
+                        HorizontalAlignment="Center"
+                        Content="Fade" />
+                    <StackPanel
+                        Height="25"
+                        Margin="10"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Label Margin="3,0" Content="V:" />
+                        <TextBox
+                            Name="TextBoxFadeV"
+                            Width="40"
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Tag="V"
+                            Text="100"
+                            TextChanged="FadeChanged" />
+
+                        <Label Margin="3,0" Content="C:" />
+                        <TextBox
+                            Name="TextBoxFadeC"
+                            Width="40"
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Tag="C"
+                            Text="30"
+                            TextChanged="FadeChanged" />
+
+                        <Label Margin="3,0" Content="D:" />
+                        <TextBox
+                            Name="TextBoxFadeD"
+                            Width="40"
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Tag="D"
+                            Text="200"
+                            TextChanged="FadeChanged" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
 
             <Border
                 Margin="4"

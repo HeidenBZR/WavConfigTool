@@ -25,6 +25,7 @@ namespace WavConfigTool
         public double Position;
         public delegate void WavMarkerMoveEventHandler(double x);
         public event WavMarkerMoveEventHandler WavMarkerMoved;
+        public event WavMarkerMoveEventHandler WavMarkerDelete;
 
         public WavMarker(Phoneme phoneme, double x, int i)
         {
@@ -83,6 +84,12 @@ namespace WavConfigTool
         private void MarkerController_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             WavMarkerMoved(Position);
+        }
+
+        private void MarkerController_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+                WavMarkerDelete(Position);
         }
     }
 }

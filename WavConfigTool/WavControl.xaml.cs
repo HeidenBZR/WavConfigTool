@@ -41,9 +41,9 @@ namespace WavConfigTool
         public static int PointSkip = 5;
         public static double MostLeft = 9999;
 
-        public static int VFade = 100;
-        public static int CFade = 30;
-        public static int DFade = 200;
+        public static int VFade;
+        public static int CFade;
+        public static int DFade;
 
         SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(90, 200, 100, 100));
         SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 200, 50));
@@ -246,7 +246,7 @@ namespace WavConfigTool
                     line = new WavMarker((Vowel)Recline.Vowels[i / 2], pos, i % 2);
                 else line = new WavMarker(new Vowel("{V}"), pos, i % 2);
                 MarkerCanvas.Children.Add(line);
-                line.MouseRightButtonUp += delegate
+                line.WavMarkerDelete += delegate
                 {
                     MarkerCanvas.Children.Remove(line);
                     Vs.Remove(pos);
@@ -269,7 +269,7 @@ namespace WavConfigTool
                     line = new WavMarker((Consonant)Recline.Consonants[i / 2], pos, i % 2);
                 else line = new WavMarker(new Consonant("{Cf}"), pos, i % 2);
                 MarkerCanvas.Children.Add(line);
-                line.MouseRightButtonUp += delegate
+                line.WavMarkerDelete += delegate
                 {
                     MarkerCanvas.Children.Remove(line);
                     Cs.Remove(pos);
@@ -290,7 +290,7 @@ namespace WavConfigTool
                 WavMarker line = new WavMarker(pos, i);
                 Data[i] = line;
                 MarkerCanvas.Children.Add(line);
-                line.MouseRightButtonUp += delegate
+                line.WavMarkerDelete += delegate
                 {
                     MarkerCanvas.Children.Remove(line);
                     Ds.Remove(pos);
@@ -391,7 +391,7 @@ namespace WavConfigTool
 
         override protected void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
-            if (Keyboard.IsKeyUp(Key.LeftShift) && Keyboard.IsKeyUp(Key.RightShift))
+            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
             {
                 double x = e.GetPosition(this).X;
                 Draw(MainWindow.Mode, x);
