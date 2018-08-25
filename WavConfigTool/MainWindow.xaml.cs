@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 
 namespace WavConfigTool
 {
+
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
@@ -33,6 +34,8 @@ namespace WavConfigTool
         int PageTotal = 0;
         byte ItemsOnPage = 4;
 
+        bool GotLoaded = false;
+
         public delegate void ProjectLoadedEventHandler();
         public event ProjectLoadedEventHandler ProjectLoaded;
 
@@ -40,10 +43,8 @@ namespace WavConfigTool
         {
             InitializeComponent();
             ProjectLoaded += delegate { DrawAsync(); };
-            if (CheckSettings() && CheckLast())
-                { DrawPage(); }
+            if (CheckSettings() && CheckLast()) { DrawPage(); }
             else OpenProjectWindow();
-
         }
 
         bool CheckSettings()
@@ -93,12 +94,9 @@ namespace WavConfigTool
             ScrollViewer.ScrollToHorizontalOffset(WavControl.MostLeft - 200 * WavControl.ScaleX);
         }
 
-        void Draw()
+        void GenerateWaveforms()
         {
-            foreach (WavControl control in WavControls)
-            {
-                control.Draw();
-            }
+            foreach (WavControl control in WavControls) control.GenerateWaveform();
         }
 
         /// <summary>
@@ -106,7 +104,7 @@ namespace WavConfigTool
         /// </summary>
         async void DrawAsync()
         {
-            Task task = new Task(Draw);
+            Task task = new Task(GenerateWaveforms);
             task.Start();
             await task;
         }
@@ -399,6 +397,7 @@ namespace WavConfigTool
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            GotLoaded = true;
         }
     }
 }

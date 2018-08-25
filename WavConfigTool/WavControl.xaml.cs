@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,6 +36,7 @@ namespace WavConfigTool
         public List<double> Ds;
 
         public WavMarker[] Data = new WavMarker[2]; 
+        public string ImagePath { get { return System.IO.Path.Combine("Temp", Recline.Filename + ".jpg"); } }
 
         public static double ScaleX = 0.7f;
         public static int SampleRate = 44100;
@@ -114,43 +116,6 @@ namespace WavConfigTool
             if (Cs.Count > 0) { }
         }
 
-        public ImageSource ToImageSource(FrameworkElement obj, double w, double h)
-        {
-            // Save current canvas transform
-            Transform transform = obj.LayoutTransform;
-            obj.LayoutTransform = null;
-
-            // fix margin offset as well
-            Thickness margin = obj.Margin;
-            obj.Margin = new Thickness(0, 0,
-                 margin.Right - margin.Left, margin.Bottom - margin.Top);
-
-            // Get the size of canvas
-            Size size = new Size(w, h);
-
-            // force control to Update
-            obj.Measure(size);
-            obj.Arrange(new Rect(size));
-
-            RenderTargetBitmap bmp = new RenderTargetBitmap(
-                (int)w, (int)h, 96, 96, PixelFormats.Pbgra32);
-
-            bmp.Render(obj);
-
-            // return values as they were before
-            obj.LayoutTransform = transform;
-            obj.Margin = margin;
-
-            if (!Directory.Exists("Temp")) Directory.CreateDirectory("Temp");
-            string filePath = System.IO.Path.Combine("Temp", Recline.Filename + ".jpg");
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                BitmapEncoder encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(bmp));
-                encoder.Save(fileStream);
-            }
-            return bmp;
-        }
 
         #region Draw
 
@@ -164,21 +129,89 @@ namespace WavConfigTool
                 DrawConfig();
                 return;
             }
+            if (!File.Exists(ImagePath))
+                GenerateWaveform();
+            Image image = OpenImage();
+            Height = 100;
+            Width = image.Width;
+            WavCanvas.Children.Add(image);
+            DrawConfig();
+        }
+
+        public void GenerateWaveform()
+        {
+            if (File.Exists(ImagePath)) return;
+            Console.WriteLine(ImagePath);
+            var points = GetAudioPoints();
+            Width = points.Last().X;
+            Height = 100;
+
+
+            Thread thread = new Thread(PointsToImage);
+            thread.Name = Recline.Filename;
+            thread.Start(points);
+        }
+
+        void PointsToImage(PointCollection points)
+        {
+            double w = Width;
+            double h = Height;
+            var line = new Polyline();
+            line.SnapsToDevicePixels = true;
+            line.Stroke = WavZoneBrush;
+            line.Points = points;
+            Transform transform = line.LayoutTransform;
+            line.LayoutTransform = null;
+            Thickness margin = line.Margin;
+            line.Margin = new Thickness(0, 0, margin.Right - margin.Left, margin.Bottom - margin.Top);
+            Size size = new Size(w, h);
+            line.Measure(size);
+            line.Arrange(new Rect(size));
+            RenderTargetBitmap bmp = new RenderTargetBitmap((int)w, (int)h, 96, 96, PixelFormats.Pbgra32);
+            bmp.Render(line);
+            line.LayoutTransform = transform;
+            line.Margin = margin;
+            SaveImage(bmp);
+        }
+
+        void SaveImage(BitmapSource bmp)
+        {
+            if (!Directory.Exists("Temp")) Directory.CreateDirectory("Temp");
+            using (var fileStream = new FileStream(ImagePath, FileMode.Create))
+            {
+                BitmapEncoder encoder = new JpegBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bmp));
+                encoder.Save(fileStream);
+            }
+        }
+
+        Image OpenImage()
+        {
+            Image image;
+            var fileStream = new FileStream(ImagePath, FileMode.Open);
+            BitmapDecoder decoder = new JpegBitmapDecoder(fileStream, BitmapCreateOptions.None, BitmapCacheOption.Default);
+            Source = decoder.Preview;
+            image = new Image() { Source = Source };
+            return image;
+        }
+
+        PointCollection GetAudioPoints()
+        {
             AudioFileReader reader = new AudioFileReader(Recline.Path);
             SampleRate = reader.WaveFormat.SampleRate;
             var l = reader.Length;
             float[] data = new float[l];
             reader.Read(data, 0, (int)l);
-            Polyline line = new Polyline();
+            PointCollection points = new PointCollection();
             long lastpoint = 0;
             var max = data.Max();
             for (long i = 0; i < l / 4; i += PointSkip)
             {
                 if (Math.Abs(data[i]) > 0.001)
-                    line.Points.Add(new Point(i * ScaleX / SampleRate * 1000, data[i] * ScaleY + 50));
+                    points.Add(new Point(i * ScaleX / SampleRate * 1000, data[i] * ScaleY + 50));
                 else
                 {
-                    line.Points.Add(new Point(i * ScaleX / SampleRate * 1000, 50));
+                    points.Add(new Point(i * ScaleX / SampleRate * 1000, 50));
                 }
                 if (data[i] >= max * 0.05)
                 {
@@ -194,19 +227,8 @@ namespace WavConfigTool
                 }
             }
             if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate * 1000);
-            line.SnapsToDevicePixels = true;
-            line.Stroke = WavZoneBrush;
-            Height = 100;
-            Width = line.Points.Last().X;
             reader.Close();
-            Source = ToImageSource(line, Width, Height);
-            line.Points.Clear();
-            Image image = new Image() { Source = Source };
-            WavCanvas.Children.Add(image);
-            Background = new SolidColorBrush(Color.FromArgb(20, 90, 200, 200));
-            Margin = new Thickness(0, 10, 0, 10);
-            HorizontalAlignment = HorizontalAlignment.Left;
-            DrawConfig();
+            return points;
         }
 
         void Draw(WavConfigPoint point, double x)
