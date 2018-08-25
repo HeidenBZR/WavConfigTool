@@ -154,6 +154,9 @@ namespace WavConfigTool
 
         #region Draw
 
+        /// <summary>
+        /// Draw Wave Peaks
+        /// </summary>
         public void Draw()
         {
             if (Source != null)
@@ -169,7 +172,7 @@ namespace WavConfigTool
             Polyline line = new Polyline();
             long lastpoint = 0;
             var max = data.Max();
-            for (long i = 0; i < l; i += PointSkip)
+            for (long i = 0; i < l / 4; i += PointSkip)
             {
                 if (Math.Abs(data[i]) > 0.001)
                     line.Points.Add(new Point(i * ScaleX / SampleRate * 1000, data[i] * ScaleY + 50));
