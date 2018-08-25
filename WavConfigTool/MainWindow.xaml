@@ -10,7 +10,7 @@
     Height="700"
     KeyDown="Window_KeyDown"
     WindowState="Maximized"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
