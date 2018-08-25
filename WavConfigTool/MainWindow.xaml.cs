@@ -109,6 +109,7 @@ namespace WavConfigTool
             recline.Reclist = Reclist;
             AddWavControl(recline);
         }
+
         void AddWavControl(Recline recline)
         {
             WavControl control = new WavControl(recline);
@@ -134,6 +135,12 @@ namespace WavConfigTool
                     return;
                 }
             }
+        }
+
+        void TryNewProject()
+        {
+            MessageBoxResult result = MessageBox.Show("Открыть окно проекта? Несохраненные данные будут потеряны", "OpenProjectWindow project", MessageBoxButton.YesNo, MessageBoxImage.Exclamation, MessageBoxResult.No);
+            if (result == MessageBoxResult.Yes) OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path);
         }
 
         void NewProject(string settings, string voicebank)
@@ -165,14 +172,26 @@ namespace WavConfigTool
             openFileDialog.Filter = "WavConfig Project (*.wconfig)|*.wconfig";
             openFileDialog.RestoreDirectory = true;
             openFileDialog.ShowDialog();
+            if (openFileDialog.FileName == "") return;
             Path = openFileDialog.FileName;
             Save();
             Title = $"WavConfig - {System.IO.Path.GetFileName(Path)} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
             File.Delete(lastpath);
         }
 
+        void SetMode(WavConfigPoint point)
+        {
+            Mode = point;
+            LabelMode.Content = point;
+        }
+
         void Save()
         {
+            if (Path == TempPath)
+            {
+                SaveAs();
+                return;
+            }
             string text = "";
             text += $"{Reclist.VoicebankPath}\r\n";
 
@@ -237,12 +256,11 @@ namespace WavConfigTool
             File.WriteAllText(System.IO.Path.Combine(Reclist.VoicebankPath, "oto.ini"), text, Encoding.UTF8);
         }
 
+        #region Events
+
         private void MenuSave_Click(object sender, RoutedEventArgs e)
         {
-            if (Path == TempPath)
-                SaveAs();
-            else
-                Save();
+            Save();
         }
 
         private void MenuGenerate_Click(object sender, RoutedEventArgs e)
@@ -252,8 +270,7 @@ namespace WavConfigTool
 
         private void MenuNew_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Открыть окно проекта? Несохраненные данные будут потеряны", "OpenProjectWindow project", MessageBoxButton.YesNo, MessageBoxImage.Exclamation, MessageBoxResult.No);
-            if (result == MessageBoxResult.Yes) OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path);
+            TryNewProject();
         }
 
         private void NextPage(object sender, RoutedEventArgs e)
@@ -320,12 +337,20 @@ namespace WavConfigTool
                 SetMode(WavConfigPoint.C);
             else if (Keyboard.IsKeyDown(Key.D))
                 SetMode(WavConfigPoint.D);
+            else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                if (Keyboard.IsKeyDown(Key.S))
+                {
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                        SaveAs();
+                    else
+                        Save();
+                }
+                if (Keyboard.IsKeyDown(Key.N) || Keyboard.IsKeyDown(Key.O))
+                    TryNewProject();
+            }
         }
 
-        void SetMode(WavConfigPoint point)
-        {
-            Mode = point;
-            LabelMode.Content = point;
-        }
+        #endregion
     }
 }

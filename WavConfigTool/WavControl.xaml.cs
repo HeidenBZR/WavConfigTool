@@ -62,12 +62,85 @@ namespace WavConfigTool
             LabelName.Content = $"{recline.Description} [{String.Join(" ", recline.Phonemes.Select(n => n.Alias))}]";
         }
 
-
-        override protected void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        void Reset()
         {
-            double x = e.GetPosition(this).X;
-            Draw(MainWindow.Mode, x);
+            Ds = new List<double>();
+            Vs = new List<double>();
+            Cs = new List<double>();
+            DrawConfig();
         }
+
+        public string Generate()
+        {
+            Normalize();
+            List<WavMarker> markers = MarkerCanvas.Children.OfType<WavMarker>().ToList();
+            markers.OrderBy(n => n.Position);
+            string text = "";
+            var phonemes = Recline.Phonemes;
+            Phoneme In = new Rest("-");
+            Phoneme Out = new Rest("-");
+            In.Zone.In = Data[0];
+            In.Zone.Out = Data[0];
+            In.Recline = Recline;
+            Out.Zone.In = Data[1];
+            Out.Zone.Out = Data[1];
+            Out.Recline = Recline;
+            text += phonemes[0].GetMonophone(Recline.Filename);
+            if (phonemes.Count > 1) text += phonemes[0].GetDiphone(Recline.Filename, In);
+            if (phonemes.Count > 1) text += phonemes[1].GetDiphone(Recline.Filename, phonemes[0]);
+            if (phonemes.Count > 2) text += phonemes[1].GetTriphone(Recline.Filename, phonemes[0], In);
+            int i;
+            for (i = 2; i < Recline.Phonemes.Count; i++)
+            {
+                text += phonemes[i].GetMonophone(Recline.Filename);
+                text += phonemes[i].GetDiphone(Recline.Filename, phonemes[i - 1]);
+                text += phonemes[i].GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
+            }
+            text += Out.GetMonophone(Recline.Filename);
+            text += Out.GetDiphone(Recline.Filename, phonemes[i - 1]);
+            text += Out.GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
+            return text;
+        }
+
+        /// <summary>
+        /// Не реализовано!
+        /// </summary>
+        void Normalize()
+        {
+            // Check that all Vowels ans Consonants are inside Data; and Vowels & Consonants doesn't intersect
+            if (Cs.Count > 0) { }
+        }
+
+        public ImageSource ToImageSource(FrameworkElement obj, double w, double h)
+        {
+            // Save current canvas transform
+            Transform transform = obj.LayoutTransform;
+            obj.LayoutTransform = null;
+
+            // fix margin offset as well
+            Thickness margin = obj.Margin;
+            obj.Margin = new Thickness(0, 0,
+                 margin.Right - margin.Left, margin.Bottom - margin.Top);
+
+            // Get the size of canvas
+            Size size = new Size(w, h);
+
+            // force control to Update
+            obj.Measure(size);
+            obj.Arrange(new Rect(size));
+
+            RenderTargetBitmap bmp = new RenderTargetBitmap(
+                (int)w, (int)h, 96, 96, PixelFormats.Pbgra32);
+
+            bmp.Render(obj);
+
+            // return values as they were before
+            obj.LayoutTransform = transform;
+            obj.Margin = margin;
+            return bmp;
+        }
+
+        #region Draw
 
         public void Draw()
         {
@@ -120,7 +193,6 @@ namespace WavConfigTool
             HorizontalAlignment = HorizontalAlignment.Left;
             DrawConfig();
         }
-
 
         void Draw(WavConfigPoint point, double x)
         {
@@ -297,74 +369,28 @@ namespace WavConfigTool
             }
         }
 
-        public string Generate()
+        #endregion
+
+        #region Events
+
+        override protected void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
-            Normalize();
-            List<WavMarker> markers = MarkerCanvas.Children.OfType<WavMarker>().ToList();
-            markers.OrderBy(n => n.Position);
-            string text = "";
-            var phonemes = Recline.Phonemes;
-            Phoneme In = new Rest("-");
-            Phoneme Out = new Rest("-");
-            In.Zone.In = Data[0];
-            In.Zone.Out = Data[0];
-            In.Recline = Recline;
-            Out.Zone.In = Data[1];
-            Out.Zone.Out = Data[1];
-            Out.Recline = Recline;
-            text += phonemes[0].GetMonophone(Recline.Filename);
-            if (phonemes.Count > 1) text += phonemes[0].GetDiphone(Recline.Filename, In);
-            if (phonemes.Count > 1) text += phonemes[1].GetDiphone(Recline.Filename, phonemes[0]);
-            if (phonemes.Count > 2) text += phonemes[1].GetTriphone(Recline.Filename, phonemes[0], In);
-            int i;
-            for (i = 2; i < Recline.Phonemes.Count; i++)
-            {
-                text += phonemes[i].GetMonophone(Recline.Filename);
-                text += phonemes[i].GetDiphone(Recline.Filename, phonemes[i - 1]);
-                text += phonemes[i].GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
-            }
-            text += Out.GetMonophone(Recline.Filename);
-            text += Out.GetDiphone(Recline.Filename, phonemes[i - 1]);
-            text += Out.GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
-            return text;
+            double x = e.GetPosition(this).X;
+            Draw(MainWindow.Mode, x);
         }
 
-        /// <summary>
-        /// Не реализовано!
-        /// </summary>
-        void Normalize()
+        private void WavControl_Reset(object sender, RoutedEventArgs e)
         {
-            // Check that all Vowels ans Consonants are inside Data; and Vowels & Consonants doesn't intersect
-            if (Cs.Count > 0) { }
+            Reset();
         }
 
-        public ImageSource ToImageSource(FrameworkElement obj, double w, double h)
+        private void UserControl_KeyDown(object sender, KeyEventArgs e)
         {
-            // Save current canvas transform
-            Transform transform = obj.LayoutTransform;
-            obj.LayoutTransform = null;
-
-            // fix margin offset as well
-            Thickness margin = obj.Margin;
-            obj.Margin = new Thickness(0, 0,
-                 margin.Right - margin.Left, margin.Bottom - margin.Top);
-
-            // Get the size of canvas
-            Size size = new Size(w, h);
-
-            // force control to Update
-            obj.Measure(size);
-            obj.Arrange(new Rect(size));
-
-            RenderTargetBitmap bmp = new RenderTargetBitmap(
-                (int)w, (int)h, 96, 96, PixelFormats.Pbgra32);
-
-            bmp.Render(obj);
-
-            // return values as they were before
-            obj.LayoutTransform = transform;
-            obj.Margin = margin;
-            return bmp;
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+                if (Keyboard.IsKeyDown(Key.R))
+                    Reset();
         }
+
+        #endregion
     }
 }

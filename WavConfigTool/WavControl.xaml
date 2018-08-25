@@ -7,8 +7,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="100"
     d:DesignWidth="800"
+    KeyDown="UserControl_KeyDown"
     mc:Ignorable="d">
     <Grid>
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem
+                    Name="MenuItemReset"
+                    Click="WavControl_Reset"
+                    Header="Reset all points" />
+            </ContextMenu>
+        </Grid.ContextMenu>
         <Label
             Name="LabelName"
             Margin="0,0,0,0"
