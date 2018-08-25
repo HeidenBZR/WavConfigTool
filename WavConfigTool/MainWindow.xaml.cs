@@ -88,16 +88,24 @@ namespace WavConfigTool
             ScrollViewer.ScrollToHorizontalOffset(WavControl.MostLeft - 200 * WavControl.ScaleX);
         }
 
-        /// <summary>
-        /// Надо асинхронно
-        /// </summary>
-        void DrawAsync()
+        void Draw()
         {
             foreach (WavControl control in WavControls)
             {
                 control.Draw();
             }
         }
+
+        /// <summary>
+        /// Надо асинхронно
+        /// </summary>
+        async void DrawAsync()
+        {
+            Task task = new Task(Draw);
+            task.Start();
+            await task;
+        }
+
 
         void AddFile(string filename, string phonemes)
         {
@@ -380,5 +388,10 @@ namespace WavConfigTool
         }
 
         #endregion
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            DrawAsync();
+        }
     }
 }
