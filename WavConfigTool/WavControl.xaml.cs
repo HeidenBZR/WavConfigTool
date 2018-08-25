@@ -46,9 +46,11 @@ namespace WavConfigTool
         public static int DFade = 200;
 
         SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(90, 200, 100, 100));
-        SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 50, 200));
-        SolidColorBrush CZoneBrush = new SolidColorBrush(Color.FromArgb(200, 250, 250, 50));
+        SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 200, 50));
+        SolidColorBrush CZoneBrush = new SolidColorBrush(Color.FromArgb(250, 50, 250, 250));
         SolidColorBrush WavZoneBrush = new SolidColorBrush(Color.FromArgb(250, 100, 200, 100));
+        SolidColorBrush FillVowelZoneBrush = new SolidColorBrush(Color.FromArgb(50, 200, 200, 50));
+        SolidColorBrush FillCZoneBrush = new SolidColorBrush(Color.FromArgb(50, 50, 250, 250));
 
         ImageSource Source;
 
@@ -243,7 +245,6 @@ namespace WavConfigTool
                 if (i / 2 < Recline.Vowels.Count)
                     line = new WavMarker((Vowel)Recline.Vowels[i / 2], pos, i % 2);
                 else line = new WavMarker(new Vowel("{V}"), pos, i % 2);
-                line.Margin = new Thickness(pos * ScaleX, 0, 0, 0);
                 MarkerCanvas.Children.Add(line);
                 line.MouseRightButtonUp += delegate
                 {
@@ -251,21 +252,9 @@ namespace WavConfigTool
                     Vs.Remove(pos);
                     DrawConfig();
                 };
-            }
-        }
-        void DrawD()
-        {
-            for (int i = 0; i < Ds.Count; i++)
-            {
-                double pos = Ds[i];
-                WavMarker line = new WavMarker(pos, i);
-                Data[i] = line;
-                line.Margin = new Thickness(pos * ScaleX, 0, 0, 0);
-                MarkerCanvas.Children.Add(line);
-                line.MouseRightButtonUp += delegate
+                line.WavMarkerMoved += delegate (double newpos)
                 {
-                    MarkerCanvas.Children.Remove(line);
-                    Ds.Remove(pos);
+                    Vs[Vs.IndexOf(pos)] = Math.Truncate(newpos);
                     DrawConfig();
                 };
             }
@@ -279,12 +268,37 @@ namespace WavConfigTool
                 if (i / 2 < Recline.Consonants.Count)
                     line = new WavMarker((Consonant)Recline.Consonants[i / 2], pos, i % 2);
                 else line = new WavMarker(new Consonant("{Cf}"), pos, i % 2);
-                line.Margin = new Thickness(pos * ScaleX, 0, 0, 0);
                 MarkerCanvas.Children.Add(line);
                 line.MouseRightButtonUp += delegate
                 {
                     MarkerCanvas.Children.Remove(line);
                     Cs.Remove(pos);
+                    DrawConfig();
+                };
+                line.WavMarkerMoved += delegate (double newpos)
+                {
+                    Cs[Cs.IndexOf(pos)] = Math.Truncate(newpos);
+                    DrawConfig();
+                };
+            }
+        }
+        void DrawD()
+        {
+            for (int i = 0; i < Ds.Count; i++)
+            {
+                double pos = Ds[i];
+                WavMarker line = new WavMarker(pos, i);
+                Data[i] = line;
+                MarkerCanvas.Children.Add(line);
+                line.MouseRightButtonUp += delegate
+                {
+                    MarkerCanvas.Children.Remove(line);
+                    Ds.Remove(pos);
+                    DrawConfig();
+                };
+                line.WavMarkerMoved += delegate (double newpos)
+                {
+                    Ds[Ds.IndexOf(pos)] = Math.Truncate(newpos);
                     DrawConfig();
                 };
             }
@@ -305,7 +319,8 @@ namespace WavConfigTool
                         new Point((Vs[i + 1]) * ScaleX, 50),
                         new Point((Vs[i + 1] - VFade) * ScaleX, 70),
                         new Point((Vs[i] + VFade) * ScaleX, 70)
-                    }
+                    },
+                    Fill = FillVowelZoneBrush
                 };
                 AreasCanvas.Children.Add(Zone);
             }
@@ -363,7 +378,8 @@ namespace WavConfigTool
                         new Point((Cs[i + 1]) * ScaleX, 50),
                         new Point((Cs[i + 1] - CFade) * ScaleX, 60),
                         new Point((Cs[i] + CFade) * ScaleX, 60)
-                    }
+                    },
+                    Fill = FillCZoneBrush
                 };
                 AreasCanvas.Children.Add(Zone);
             }
@@ -375,8 +391,11 @@ namespace WavConfigTool
 
         override protected void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
-            double x = e.GetPosition(this).X;
-            Draw(MainWindow.Mode, x);
+            if (Keyboard.IsKeyUp(Key.LeftShift) && Keyboard.IsKeyUp(Key.RightShift))
+            {
+                double x = e.GetPosition(this).X;
+                Draw(MainWindow.Mode, x);
+            }
         }
 
         private void WavControl_Reset(object sender, RoutedEventArgs e)

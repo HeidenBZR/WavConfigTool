@@ -12,8 +12,8 @@
     SnapsToDevicePixels="True"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <SolidColorBrush x:Key="VBorderBrush" Color="#802080" />
-        <SolidColorBrush x:Key="VBackBrush" Color="#FB20FB" />
+        <SolidColorBrush x:Key="VBorderBrush" Color="#808020" />
+        <SolidColorBrush x:Key="VBackBrush" Color="#FBFB20" />
         <SolidColorBrush x:Key="CBorderBrush" Color="#208080" />
         <SolidColorBrush x:Key="CBackBrush" Color="#20FBFB" />
         <SolidColorBrush x:Key="DBorderBrush" Color="#802020" />
@@ -21,14 +21,18 @@
         <SolidColorBrush x:Key="BorderBrush" Color="Red" />
         <SolidColorBrush x:Key="BackBrush" />
         <SolidColorBrush x:Key="ForeBrush" Color="#BBBBFF" />
+        <SolidColorBrush x:Key="DarkForeBrush" Color="#000044" />
     </UserControl.Resources>
-    <Grid>
+    <Grid Name="Grid">
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="1" ShadowDepth="1" />
+        </Grid.Effect>
         <Rectangle
             Name="Line"
             Width="2"
             HorizontalAlignment="Left"
             VerticalAlignment="Stretch"
-            Stroke="{DynamicResource BorderBrush}" />
+            Fill="{DynamicResource BorderBrush}" />
         <Thumb
             Name="MarkerController"
             Width="15"
@@ -38,11 +42,22 @@
             Background="{DynamicResource BackBrush}"
             BorderBrush="{DynamicResource BorderBrush}"
             BorderThickness="2"
+            DragCompleted="MarkerController_DragCompleted"
+            DragDelta="MarkerController_DragDelta"
             Style="{DynamicResource WavMarkerControllerStyle}" />
         <Label
             Name="TypeLabel"
+            Width="15"
+            Height="15"
+            Margin="12,0,0,0"
             Padding="0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
             Content="X"
+            FontFamily="Century Gothic"
+            FontSize="14"
             Foreground="{DynamicResource ForeBrush}" />
     </Grid>
 </UserControl>

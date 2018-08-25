@@ -23,21 +23,21 @@
                 <MenuItem
                     Name="MenuNew"
                     Click="MenuNew_Click"
-                    Header="New/Open WavConfig..." />
+                    Header="New/Open WavConfig... (Ctrl+N, Ctrl+O)" />
                 <MenuItem
                     Name="MenuSave"
                     Click="MenuSave_Click"
-                    Header="Save WavConfig" />
+                    Header="Save WavConfig (Ctrl+S)" />
                 <MenuItem
                     Name="MenuSaveAs"
                     Click="MenuSaveAs_Click"
-                    Header="Save WavConfig As New..." />
+                    Header="Save WavConfig As New... (Shift+Ctrl+S)" />
             </MenuItem>
             <MenuItem Name="MenuOptions" Header="Options" />
             <MenuItem
                 Name="MenuGenerate"
                 Click="MenuGenerate_Click"
-                Header="Generate Oto.ini" />
+                Header="Generate Oto.ini (Ctrl+G)" />
             <MenuItem Name="MenuHelp" Header="Help" />
         </Menu>
         <StackPanel Grid.Row="1" Orientation="Horizontal">

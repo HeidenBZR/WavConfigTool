@@ -348,7 +348,10 @@ namespace WavConfigTool
                 }
                 if (Keyboard.IsKeyDown(Key.N) || Keyboard.IsKeyDown(Key.O))
                     TryNewProject();
-            }
+
+                if (Keyboard.IsKeyDown(Key.G))
+                    Generate();
+                }
         }
 
         #endregion

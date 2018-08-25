@@ -23,11 +23,14 @@ namespace WavConfigTool
         public Phoneme Phoneme;
         public WavConfigPoint Type;
         public double Position;
+        public delegate void WavMarkerMoveEventHandler(double x);
+        public event WavMarkerMoveEventHandler WavMarkerMoved;
 
         public WavMarker(Phoneme phoneme, double x, int i)
         {
             InitializeComponent();
             Position = x;
+            Margin = new Thickness(x * WavControl.ScaleX, 0, 0, 0);
             Phoneme = phoneme;
             if (i == 0) phoneme.Zone.In = this;
             else phoneme.Zone.Out = this;
@@ -38,35 +41,48 @@ namespace WavConfigTool
         {
             Resources["BackBrush"] = Resources["VBackBrush"];
             Resources["BorderBrush"] = Resources["VBorderBrush"];
-            Height = 100;
             Type = WavConfigPoint.V;
-            MarkerController.Margin = new Thickness(0, 20, 0, 0);
-            Line.Margin = new Thickness(0, 20, 0, 0);
-            TypeLabel.Margin = new Thickness(17, 20, 0, 0);
+            Grid.Margin = new Thickness(0, 30, 0, 0);
+            VerticalAlignment = VerticalAlignment.Bottom;
+            MarkerController.VerticalAlignment = VerticalAlignment.Top;
+            TypeLabel.VerticalAlignment = VerticalAlignment.Top;
         }
         public WavMarker(Consonant phoneme, double x, int i) : this(phoneme as Phoneme, x, i)
         {
             Resources["BackBrush"] = Resources["CBackBrush"];
             Resources["BorderBrush"] = Resources["CBorderBrush"];
-            MarkerController.Margin = new Thickness(0, 75, 0, 0);
-            TypeLabel.Margin = new Thickness(17, 75, 0, 0);
             Height = 90;
             Type = WavConfigPoint.C;
+            VerticalAlignment = VerticalAlignment.Top;
+            MarkerController.VerticalAlignment = VerticalAlignment.Bottom;
+            TypeLabel.VerticalAlignment = VerticalAlignment.Bottom;
         }
         public WavMarker(double x, int i) : this(new Rest("-"), x, i)
         {
             Resources["BackBrush"] = Resources["DBackBrush"];
             Resources["BorderBrush"] = Resources["DBorderBrush"];
-            Height = 15;
+            Height = 30;
             Type = WavConfigPoint.D;
-            MarkerController.Margin = new Thickness(0, 0, 0, 0);
-            TypeLabel.Margin = new Thickness(17, 0, 0, 0);
             TypeLabel.Content = "D";
+            VerticalAlignment = VerticalAlignment.Top;
+            MarkerController.VerticalAlignment = VerticalAlignment.Bottom;
+            TypeLabel.VerticalAlignment = VerticalAlignment.Bottom;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void MarkerController_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+        {
+            Position += e.HorizontalChange / WavControl.ScaleX;
+            Margin = new Thickness(Position * WavControl.ScaleX, 0, 0, 0);
+        }
+
+        private void MarkerController_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            WavMarkerMoved(Position);
         }
     }
 }
