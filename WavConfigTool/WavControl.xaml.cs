@@ -129,8 +129,18 @@ namespace WavConfigTool
                 DrawConfig();
                 return;
             }
-            if (!File.Exists(ImagePath))
-                GenerateWaveform();
+            //int i = 0;
+            //while (!File.Exists(ImagePath))
+            //{
+            //    Thread.Sleep(100);
+            //    i++;
+            //    if (i == 100) throw new Exception("Сколько можно рендерить чета тут не так");
+            //}
+                
+        }
+
+        void Display()
+        {
             Image image = OpenImage();
             Height = 100;
             Width = image.Width;
@@ -141,7 +151,6 @@ namespace WavConfigTool
         public void GenerateWaveform()
         {
             if (File.Exists(ImagePath)) return;
-            Console.WriteLine(ImagePath);
             var points = GetAudioPoints();
             Width = points.Last().X;
             Height = 100;
@@ -149,30 +158,34 @@ namespace WavConfigTool
 
             Thread thread = new Thread(PointsToImage);
             thread.Name = Recline.Filename;
-            thread.Start(points);
+            thread.Start((points, Width, Height));
         }
 
-        void PointsToImage(object p)
+        void PointsToImage(object data)
         {
-            PointCollection points = p as PointCollection;
-            double w = Width;
-            double h = Height;
-            var line = new Polyline();
-            line.SnapsToDevicePixels = true;
-            line.Stroke = WavZoneBrush;
-            line.Points = points;
-            Transform transform = line.LayoutTransform;
-            line.LayoutTransform = null;
-            Thickness margin = line.Margin;
-            line.Margin = new Thickness(0, 0, margin.Right - margin.Left, margin.Bottom - margin.Top);
-            Size size = new Size(w, h);
-            line.Measure(size);
-            line.Arrange(new Rect(size));
-            RenderTargetBitmap bmp = new RenderTargetBitmap((int)w, (int)h, 96, 96, PixelFormats.Pbgra32);
-            bmp.Render(line);
-            line.LayoutTransform = transform;
-            line.Margin = margin;
-            SaveImage(bmp);
+            (PointCollection points, double w, double h) = ((PointCollection points, double w, double h)) data;
+            Console.WriteLine(ImagePath);
+            Dispatcher.Invoke(delegate 
+            {
+                var line = new Polyline();
+                line.SnapsToDevicePixels = true;
+                line.Stroke = WavZoneBrush;
+                line.Points = points;
+                Transform transform = line.LayoutTransform;
+                line.LayoutTransform = null;
+                Thickness margin = line.Margin;
+                line.Margin = new Thickness(0, 0, margin.Right - margin.Left, margin.Bottom - margin.Top);
+                Size size = new Size(w, h);
+                line.Measure(size);
+                line.Arrange(new Rect(size));
+                RenderTargetBitmap bmp = new RenderTargetBitmap((int)w, (int)h, 96, 96, PixelFormats.Pbgra32);
+                bmp.Render(line);
+                line.LayoutTransform = transform;
+                line.Margin = margin;
+                SaveImage(bmp);
+                Display();
+            });
+            Console.WriteLine("...");
         }
 
         void SaveImage(BitmapSource bmp)
