@@ -67,17 +67,38 @@
                             Width="20"
                             Margin="3,0"
                             Click="Button_SetMode"
-                            Content="D" />
+                            Content="D">
+                            <Button.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Offset="0.007" Color="Red" />
+                                    <GradientStop Offset="0.5" Color="#FFFFA9A9" />
+                                </LinearGradientBrush>
+                            </Button.Background>
+                        </Button>
                         <Button
                             Width="20"
                             Margin="3,0"
                             Click="Button_SetMode"
-                            Content="V" />
+                            Content="V">
+                            <Button.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Offset="0.5" Color="#FFF3EDC4" />
+                                    <GradientStop Color="#FFFFDD00" />
+                                </LinearGradientBrush>
+                            </Button.Background>
+                        </Button>
                         <Button
                             Width="20"
                             Margin="3,0"
                             Click="Button_SetMode"
-                            Content="C" />
+                            Content="C">
+                            <Button.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Offset="0.5" Color="#FFA1E6EA" />
+                                    <GradientStop Color="#FF00F3FF" />
+                                </LinearGradientBrush>
+                            </Button.Background>
+                        </Button>
                         <Label Margin="3,0,0,0" Content="Текущий режим:" />
                         <Label
                             Name="LabelMode"
@@ -175,7 +196,7 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             Tag="V"
-                            Text="100"
+                            Text="30"
                             TextChanged="FadeChanged" />
 
                         <Label Margin="3,0" Content="C:" />
@@ -185,7 +206,7 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             Tag="C"
-                            Text="30"
+                            Text="10"
                             TextChanged="FadeChanged" />
 
                         <Label Margin="3,0" Content="D:" />

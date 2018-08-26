@@ -260,7 +260,7 @@ namespace WavConfigTool
             {
                 text += control.Generate();
             }
-            File.WriteAllText(System.IO.Path.Combine(Reclist.VoicebankPath, "oto.ini"), text, Encoding.UTF8);
+            File.WriteAllText(System.IO.Path.Combine(Reclist.VoicebankPath, "oto.ini"), text, Encoding.ASCII);
         }
 
         void SetFade(WavConfigPoint point, int value)

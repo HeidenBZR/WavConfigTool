@@ -33,9 +33,16 @@ namespace WavConfigTool
             Position = x;
             Margin = new Thickness(x * WavControl.ScaleX, 0, 0, 0);
             Phoneme = phoneme;
-            if (i == 0) phoneme.Zone.In = this;
-            else phoneme.Zone.Out = this;
-            TypeLabel.Content = Phoneme.Alias;
+            if (i == 0)
+            {
+                phoneme.Zone.In = this;
+                TypeLabel.Content = Phoneme.Alias;
+            }
+            else
+            {
+                phoneme.Zone.Out = this;
+                TypeLabel.Content = "";
+            }
         }
 
         public WavMarker(Vowel phoneme, double x, int i) : this(phoneme as Phoneme, x, i)
@@ -43,7 +50,8 @@ namespace WavConfigTool
             Resources["BackBrush"] = Resources["VBackBrush"];
             Resources["BorderBrush"] = Resources["VBorderBrush"];
             Type = WavConfigPoint.V;
-            Grid.Margin = new Thickness(0, 30, 0, 0);
+            Height = 100;
+            Grid.Margin = new Thickness(0, 10, 0, 0);
             VerticalAlignment = VerticalAlignment.Bottom;
             MarkerController.VerticalAlignment = VerticalAlignment.Top;
             TypeLabel.VerticalAlignment = VerticalAlignment.Top;
@@ -62,9 +70,9 @@ namespace WavConfigTool
         {
             Resources["BackBrush"] = Resources["DBackBrush"];
             Resources["BorderBrush"] = Resources["DBorderBrush"];
-            Height = 30;
+            Height = 70;
             Type = WavConfigPoint.D;
-            TypeLabel.Content = "D";
+            TypeLabel.Content = "";
             VerticalAlignment = VerticalAlignment.Top;
             MarkerController.VerticalAlignment = VerticalAlignment.Bottom;
             TypeLabel.VerticalAlignment = VerticalAlignment.Bottom;

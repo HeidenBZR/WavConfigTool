@@ -29,8 +29,8 @@ namespace WavConfigTool
 
     public abstract class Phoneme : IPhoneme
     {
-        public double Preutterance = 60;
-        public double Overlap = 30;
+        public double Preutterance;
+        public double Overlap;
         public double Length { get { return (Zone.Out).Position - (Zone.In).Position; } }
         public double FadeIn = 10;
         public double FadeOut = 0;
@@ -46,7 +46,7 @@ namespace WavConfigTool
         public bool IsVowel { get { return Type == PhonemeType.Vowel; } }
         public bool IsRest { get { return Type == PhonemeType.Rest; } }
 
-        public Phoneme(string l, string letter = "") { Alias = l; Letter = letter; }
+        public Phoneme(string l, string letter = "") { Alias = l; Letter = letter; Preutterance = 60; Overlap = 30; }
 
 
         public abstract Phoneme Clone();
@@ -69,16 +69,18 @@ namespace WavConfigTool
 
         public virtual string GetMonophone(string filename)
         {
-            if (!NeedAlias() || !HasZone) return "";
             string alias = GetAlias();
+            if (!NeedAlias()) return "";
+            if (!HasZone) return "";
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
             double of = Zone.In.Position + FadeIn;
             double con = FadeIn;
-            double cut = -Length + FadeOut + FadeIn;
+            double cut = -(Zone.Out.Position - of - FadeOut - FadeIn);
             double pre = Preutterance;
             double ov = Overlap;
+            con = -cut / 2;
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
         }
@@ -103,10 +105,12 @@ namespace WavConfigTool
 
             double of = prevp - prev.Overlap;
             double con = prev.Overlap + dist + FadeIn;
-            double cut = -(Zone.Out.Position - of - FadeOut);
+            double cut = -(Zone.Out.Position - of - FadeIn);
             double pre = IsConsonant && prev.IsVowel ? prevp - of + prev.FadeOut : Zone.In.Position - of;
             double ov = prev.Overlap;
             if (IsRest) cut -= 50;
+            if (IsVowel)
+                con -= cut/3;
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
         }
@@ -167,8 +171,19 @@ namespace WavConfigTool
             double cut = -(Zone.Out.Position - of - FadeOut);
             double pre = dist + Preutterance;
             double ov = Overlap;
-            if (IsRest) pre = of + Preutterance;
-            if (IsRest) cut -= 50;
+            if (IsRest)
+            {
+                of = prevp - Overlap;
+                pre = prev.Zone.Out.Position - of;
+                cut = -Zone.In.Position;
+            }
+            else
+            {
+                of = prevp;
+                pre = Zone.In.Position - of;
+                Overlap = prev.Overlap;
+                cut = -(Zone.Out.Position - of - FadeOut);
+            }
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
         }
@@ -194,8 +209,6 @@ namespace WavConfigTool
         public Vowel(string l, string letter = "") : base(l, letter)
         {
             Type = PhonemeType.Vowel;
-            FadeIn = 150;
-            FadeOut = 150;
             Overlap = 50;
             Preutterance = 60;
         }

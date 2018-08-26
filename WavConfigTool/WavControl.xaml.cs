@@ -36,7 +36,7 @@ namespace WavConfigTool
         public List<double> Ds;
 
         public WavMarker[] Data = new WavMarker[2];
-        public string ImagePath { get { return System.IO.Path.Combine("Temp", $"{Recline.Filename}_{AudioCode}.png"); } }
+        public string ImagePath { get { return System.IO.Path.Combine("Temp", $"{AudioCode}_{Recline.Filename}.png"); } }
 
         public static double ScaleX = 0.7f;
         public static int SampleRate = 44100;
@@ -84,6 +84,8 @@ namespace WavConfigTool
 
         public string Generate()
         {
+            DrawConfig();
+            ApplyFade();
             Normalize();
             List<WavMarker> markers = MarkerCanvas.Children.OfType<WavMarker>().ToList();
             markers.OrderBy(n => n.Position);
@@ -114,6 +116,19 @@ namespace WavConfigTool
             return text;
         }
 
+
+        void ApplyFade()
+        {
+            foreach (var phoneme in Recline.Phonemes)
+            {
+                int fade;
+                if (phoneme.Type == PhonemeType.Consonant) fade = CFade;
+                else if (phoneme.Type == PhonemeType.Vowel) fade = VFade;
+                else fade = DFade;
+                phoneme.FadeIn = fade;
+                phoneme.FadeOut = fade;
+            }
+        }
         /// <summary>
         /// Не реализовано!
         /// </summary>
