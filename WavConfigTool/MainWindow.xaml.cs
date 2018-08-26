@@ -39,6 +39,7 @@ namespace WavConfigTool
 
         public MainWindow()
         {
+            ClearTemp();
             InitializeComponent();
             ProjectLoaded += delegate { GenerateWaveforms(); };
             if (CheckSettings() && CheckLast()) { DrawPage(); }
@@ -126,6 +127,8 @@ namespace WavConfigTool
             while (true)
             { 
                 project.ShowDialog();
+                if (project.Result == Result.Cancel) return;
+                ClearTemp();
                 if (project.Result == Result.Close) { Close(); return; }
                 else if (project.Result == Result.Open)
                     if (Open(project.Settings, project.Path))
@@ -267,6 +270,13 @@ namespace WavConfigTool
             else if (point == WavConfigPoint.D) WavControl.DFade = value;
             DrawPage();
         }
+        
+        void ClearTemp()
+        {
+            foreach (string filename in Directory.GetFiles("Temp"))
+                File.Delete(filename);
+
+        }
 
         #region Events
 
@@ -384,6 +394,11 @@ namespace WavConfigTool
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             GenerateWaveforms();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ClearTemp();
         }
 
         #endregion

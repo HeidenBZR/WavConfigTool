@@ -35,12 +35,12 @@ namespace WavConfigTool
         public List<double> Vs;
         public List<double> Ds;
 
-        public WavMarker[] Data = new WavMarker[2]; 
-        public string ImagePath { get { return System.IO.Path.Combine("Temp", Recline.Filename + ".png"); } }
+        public WavMarker[] Data = new WavMarker[2];
+        public string ImagePath { get { return System.IO.Path.Combine("Temp", $"{Recline.Filename}_{AudioCode}.png"); } }
 
         public static double ScaleX = 0.7f;
         public static int SampleRate = 44100;
-        public static double ScaleY = 100f;
+        public static double ScaleY = 80f;
         public static int PointSkip = 5;
         public static double MostLeft = 9999;
 
@@ -51,11 +51,18 @@ namespace WavConfigTool
         SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(90, 200, 100, 100));
         SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 200, 50));
         SolidColorBrush CZoneBrush = new SolidColorBrush(Color.FromArgb(250, 50, 250, 250));
-        SolidColorBrush WavZoneBrush = new SolidColorBrush(Color.FromArgb(250, 100, 200, 100));
         SolidColorBrush FillVowelZoneBrush = new SolidColorBrush(Color.FromArgb(50, 200, 200, 50));
         SolidColorBrush FillCZoneBrush = new SolidColorBrush(Color.FromArgb(50, 50, 250, 250));
 
-        ImageSource Source;
+        public bool IsImageGenerated { get { return File.Exists(ImagePath); } }
+
+        public string AudioCode
+        {
+            get
+            {
+                return new DirectoryInfo(Recline.Reclist.VoicebankPath).Name;
+            }
+        }
 
         public WavControl(Recline recline)
         {
@@ -115,37 +122,28 @@ namespace WavConfigTool
             // Check that all Vowels ans Consonants are inside Data; and Vowels & Consonants doesn't intersect
             if (Cs.Count > 0) { }
         }
-
-
+        
         #region Draw
 
-        /// <summary>
-        /// Draw Wave Peaks
-        /// </summary>
         public void Draw()
         {
-            if (Source != null)
-            {
-                DrawConfig();
-                return;
-            }
+            if (!File.Exists(ImagePath)) GenerateWaveform();
             Display();
-            //int i = 0;
-            //while (!File.Exists(ImagePath))
-            //{
-            //    Thread.Sleep(100);
-            //    i++;
-            //    if (i == 100) throw new Exception("Сколько можно рендерить чета тут не так");
-            //}
+            DrawConfig();
+        }
 
+        public void Undraw()
+        {
+            AreasCanvas.Children.Clear();
+            GridCanvas.Children.Clear();
+            MarkerCanvas.Children.Clear();
+            WavCanvas.Children.Clear();
         }
 
         void Display()
         {
+            WavCanvas.Children.Clear();
             Image image = OpenImage();
-            Height = 100;
-            Width = image.Width;
-            WavCanvas.Children.Add(image);
             DrawConfig();
         }
 
@@ -157,67 +155,40 @@ namespace WavConfigTool
             Height = 100;
 
 
-            Thread thread = new Thread(PointsToImage);
+            Thread thread = new Thread(WaveForm.PointsToImage);
             thread.Name = Recline.Filename;
-            thread.Start((points, Width, Height));
+            thread.Start((points, (int)Width, (int)Height, this));
         }
 
-        void PointsToImage(object data)
-        {
-            (PointCollection points, double w, double h) = ((PointCollection points, double w, double h)) data;
-            Console.WriteLine(ImagePath);
-            Dispatcher.Invoke(delegate 
-            {
-                var line = new Polyline();
-                line.SnapsToDevicePixels = true;
-                line.Stroke = WavZoneBrush;
-                line.Points = points;
-                Transform transform = line.LayoutTransform;
-                line.LayoutTransform = null;
-                Thickness margin = line.Margin;
-                line.Margin = new Thickness(0, 0, margin.Right - margin.Left, margin.Bottom - margin.Top);
-                Size size = new Size(w, h);
-                line.Measure(size);
-                line.Arrange(new Rect(size));
-                RenderTargetBitmap bmp = new RenderTargetBitmap((int)w, (int)h, 96, 96, PixelFormats.Pbgra32);
-                bmp.Render(line);
-                line.LayoutTransform = transform;
-                line.Margin = margin;
-                SaveImage(bmp);
-                Display();
-            });
-            Console.WriteLine("...");
-        }
-
-        void SaveImage(BitmapSource bmp)
-        {
-            if (!Directory.Exists("Temp")) Directory.CreateDirectory("Temp");
-            using (var fileStream = new FileStream(ImagePath, FileMode.Create))
-            {
-                BitmapEncoder encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(bmp));
-                encoder.Save(fileStream);
-            }
-        }
 
         Image OpenImage()
         {
-            Image image;
-            var fileStream = new FileStream(ImagePath, FileMode.Open);
-            BitmapDecoder decoder = new PngBitmapDecoder(fileStream, BitmapCreateOptions.None, BitmapCacheOption.Default);
-            Source = decoder.Preview;
-            image = new Image() { Source = Source };
+            for (int i = 0; !IsImageGenerated; i++)
+            {
+                i++;
+                Thread.Sleep(100);
+                if (i > 300) throw new Exception("awdawdawwad");
+            }
+            BitmapImage src = new BitmapImage();
+            src.BeginInit();
+            src.UriSource = new Uri(ImagePath, UriKind.Relative);
+            src.CacheOption = BitmapCacheOption.OnLoad;
+            src.EndInit();
+            Image image = new Image() { Source = src };
+            WavCanvas.Children.Add(image);
+            Height = 100;
+            Width = src.Width;
             return image;
         }
 
-        PointCollection GetAudioPoints()
+        Point[] GetAudioPoints()
         {
             AudioFileReader reader = new AudioFileReader(Recline.Path);
             SampleRate = reader.WaveFormat.SampleRate;
             var l = reader.Length;
             float[] data = new float[l];
             reader.Read(data, 0, (int)l);
-            PointCollection points = new PointCollection();
+            List<Point> points = new List<Point>();
             long lastpoint = 0;
             var max = data.Max();
             for (long i = 0; i < l / 4; i += PointSkip)
@@ -243,7 +214,7 @@ namespace WavConfigTool
             }
             if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate * 1000);
             reader.Close();
-            return points;
+            return points.ToArray();
         }
 
         void Draw(WavConfigPoint point, double x)

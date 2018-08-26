@@ -9,6 +9,7 @@
     Width="520"
     Height="200"
     Closing="Window_Closing"
+    WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Grid>
         <StackPanel Margin="5" Orientation="Vertical">

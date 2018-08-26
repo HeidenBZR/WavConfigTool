@@ -23,7 +23,8 @@ namespace WavConfigTool
     {
         Open,
         New,
-        Close
+        Close,
+        Cancel
     }
     public partial class Project : Window
     {
@@ -86,7 +87,7 @@ namespace WavConfigTool
 
         private void ButtonCancel(object sender, RoutedEventArgs e)
         {
-            Result = Result.Close;
+            Result = Result.Cancel;
             Close();
         }
 

@@ -68,6 +68,7 @@
     <Compile Include="WavControl.xaml.cs">
       <DependentUpon>WavControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WaveForm.cs" />
     <Compile Include="WavMarker.xaml.cs">
       <DependentUpon>WavMarker.xaml</DependentUpon>
     </Compile>

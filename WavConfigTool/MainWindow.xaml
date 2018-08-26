@@ -8,9 +8,11 @@
     Title="MainWindow"
     Width="1300"
     Height="700"
+    Closing="Window_Closing"
     KeyDown="Window_KeyDown"
+    Loaded="Window_Loaded"
     WindowState="Maximized"
-    mc:Ignorable="d" Loaded="Window_Loaded">
+    mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
