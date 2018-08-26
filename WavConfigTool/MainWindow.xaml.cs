@@ -365,9 +365,12 @@ namespace WavConfigTool
             if (byte.TryParse(LabelItemsOnPage.Text, out byte items) && items <= 20)
             {
                 ItemsOnPage = items;
-                PageTotal = WavControls.Count / ItemsOnPage;
-                if (PageCurrent > PageTotal) PageCurrent = PageTotal;
-                DrawPage();
+                if (ItemsOnPage != 0)
+                {
+                    PageTotal = WavControls.Count / ItemsOnPage;
+                    if (PageCurrent > PageTotal) PageCurrent = PageTotal;
+                    DrawPage();
+                }
             }
             else LabelItemsOnPage.Text = ItemsOnPage.ToString();
         }
