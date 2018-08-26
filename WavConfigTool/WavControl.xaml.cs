@@ -152,8 +152,9 @@ namespace WavConfigTool
             thread.Start(points);
         }
 
-        void PointsToImage(PointCollection points)
+        void PointsToImage(object p)
         {
+            PointCollection points = p as PointCollection;
             double w = Width;
             double h = Height;
             var line = new Polyline();

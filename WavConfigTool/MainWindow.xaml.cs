@@ -34,15 +34,13 @@ namespace WavConfigTool
         int PageTotal = 0;
         byte ItemsOnPage = 4;
 
-        bool GotLoaded = false;
-
         public delegate void ProjectLoadedEventHandler();
         public event ProjectLoadedEventHandler ProjectLoaded;
 
         public MainWindow()
         {
             InitializeComponent();
-            ProjectLoaded += delegate { DrawAsync(); };
+            ProjectLoaded += delegate { GenerateWaveforms(); };
             if (CheckSettings() && CheckLast()) { DrawPage(); }
             else OpenProjectWindow();
         }
@@ -97,16 +95,6 @@ namespace WavConfigTool
         void GenerateWaveforms()
         {
             foreach (WavControl control in WavControls) control.GenerateWaveform();
-        }
-
-        /// <summary>
-        /// Надо асинхронно
-        /// </summary>
-        async void DrawAsync()
-        {
-            Task task = new Task(GenerateWaveforms);
-            task.Start();
-            await task;
         }
 
 
@@ -392,12 +380,11 @@ namespace WavConfigTool
             if (box.Tag.ToString() == "D") SetFade(WavConfigPoint.D, value);
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+        }
 
         #endregion
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            GotLoaded = true;
-        }
     }
 }
