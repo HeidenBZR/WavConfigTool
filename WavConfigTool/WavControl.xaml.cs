@@ -47,6 +47,8 @@ namespace WavConfigTool
         public static int VFade;
         public static int CFade;
         public static int DFade;
+        public static string Prefix;
+        public static string Suffix;
 
         SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(90, 200, 100, 100));
         SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 200, 50));

@@ -52,9 +52,9 @@ namespace WavConfigTool
         public abstract Phoneme Clone();
 
         // Override to build Alias
-        public virtual string GetAlias() { return Alias; }
-        public virtual string GetAlias(Phoneme prev) { return $"{prev.Alias}{Alias}"; }
-        public virtual string GetAlias(Phoneme prev, Phoneme preprev) { return $"{preprev.Alias}{prev.Alias}{Alias}"; }
+        public virtual string GetAlias() { return $"{WavControl.Prefix}{Alias}{WavControl.Suffix}"; }
+        public virtual string GetAlias(Phoneme prev) { return $"{WavControl.Prefix}{prev.Alias}{Alias}{WavControl.Suffix}"; }
+        public virtual string GetAlias(Phoneme prev, Phoneme preprev) { return $"{WavControl.Prefix}{preprev.Alias}{prev.Alias}{Alias}{WavControl.Suffix}"; }
 
         // Override to check if these phonemes must have alias
         public virtual bool NeedAlias() { return true; }
@@ -241,9 +241,9 @@ namespace WavConfigTool
         public override string GetAlias(Phoneme prev)
         {
             if (prev.IsVowel)
-                return $"{prev.Alias}{Alias}"; // v-
+                return $"{WavControl.Prefix}{prev.Alias}{Alias}{WavControl.Suffix}"; // v-
             else
-                return $"{prev.Alias}"; // c
+                return $"{WavControl.Prefix}{prev.Alias}{WavControl.Suffix}"; // c
         }
     };
 

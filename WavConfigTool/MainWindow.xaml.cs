@@ -362,7 +362,7 @@ namespace WavConfigTool
         private void ItemsOnPageChanged(object sender, TextChangedEventArgs e)
         {
             if (!IsLoaded) return;
-            if (byte.TryParse(LabelItemsOnPage.Text, out byte items))
+            if (byte.TryParse(LabelItemsOnPage.Text, out byte items) && items <= 20)
             {
                 ItemsOnPage = items;
                 PageTotal = WavControls.Count / ItemsOnPage;
@@ -400,6 +400,16 @@ namespace WavConfigTool
                 SetMode(WavConfigPoint.C);
             else if (Keyboard.IsKeyDown(Key.D))
                 SetMode(WavConfigPoint.D);
+            else if (Keyboard.IsKeyDown(Key.OemOpenBrackets))
+                NextPage(new object(), new RoutedEventArgs());
+            else if (Keyboard.IsKeyDown(Key.OemCloseBrackets))
+                NextPage(new object(), new RoutedEventArgs());
+            else if (Keyboard.IsKeyDown(Key.OemPlus))
+                LabelItemsOnPage.Text = (ItemsOnPage + 1).ToString();
+            else if (Keyboard.IsKeyDown(Key.OemMinus))
+                LabelItemsOnPage.Text = (ItemsOnPage - 1).ToString();
+            else if (Keyboard.IsKeyDown(Key.Back))
+                ToggleTools();
             else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
                 if (Keyboard.IsKeyDown(Key.S))
@@ -414,7 +424,7 @@ namespace WavConfigTool
 
                 if (Keyboard.IsKeyDown(Key.G))
                     Generate();
-                }
+            }
         }
 
         private void FadeChanged(object sender, TextChangedEventArgs e)
@@ -444,7 +454,23 @@ namespace WavConfigTool
                     e.Cancel = true;
         }
 
+        private void AliasChanged(object sender, TextChangedEventArgs e)
+        {
+            WavControl.Suffix = TextBoxSuffix.Text;
+            WavControl.Prefix = TextBoxPrefix.Text;
+        }
+
         #endregion
 
+        void ToggleTools()
+        {
+            if (ToolsPanel.Height == new GridLength(80)) ToolsPanel.Height = new GridLength(0);
+            else ToolsPanel.Height = new GridLength(80);
+        }
+
+        private void Button_HideTools(object sender, RoutedEventArgs e)
+        {
+            ToggleTools();
+        }
     }
 }

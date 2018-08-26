@@ -15,11 +15,12 @@
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25" />
-            <RowDefinition Height="80" />
+            <RowDefinition Height="21" />
+            <RowDefinition Name="ToolsPanel" Height="80" />
+            <RowDefinition Height="12" />
             <RowDefinition Height="337*" />
         </Grid.RowDefinitions>
-        <Rectangle Grid.RowSpan="3" Fill="#101030" />
+        <Rectangle Grid.RowSpan="4" Fill="#101030" />
         <Menu HorizontalAlignment="Stretch" VerticalAlignment="Top">
             <MenuItem Name="MenuFile" Header="File">
                 <MenuItem
@@ -35,12 +36,10 @@
                     Click="MenuSaveAs_Click"
                     Header="Save WavConfig As New... (Shift+Ctrl+S)" />
             </MenuItem>
-            <MenuItem Name="MenuOptions" Header="Options" />
             <MenuItem
                 Name="MenuGenerate"
                 Click="MenuGenerate_Click"
                 Header="Generate Oto.ini (Ctrl+G)" />
-            <MenuItem Name="MenuHelp" Header="Help" />
         </Menu>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <StackPanel.Background>
@@ -141,9 +140,11 @@
                             Content="˂" />
                         <TextBox
                             Name="LabelPage"
+                            Width="30"
                             Margin="3,0"
                             Padding="0"
                             VerticalAlignment="Center"
+                            HorizontalContentAlignment="Right"
                             Text="00"
                             TextChanged="PageChanged" />
                         <Label
@@ -167,8 +168,9 @@
                             Content="На странице: " />
                         <TextBox
                             Name="LabelItemsOnPage"
+                            Width="25"
                             Margin="3,0"
-                            Padding="0"
+                            Padding="1"
                             VerticalAlignment="Center"
                             Text="5"
                             TextChanged="ItemsOnPageChanged" />
@@ -222,6 +224,42 @@
                 </StackPanel>
             </Border>
 
+            <Border
+                Margin="4"
+                BorderBrush="DarkBlue"
+                BorderThickness="1">
+                <StackPanel Height="60">
+                    <Label
+                        Padding="0"
+                        HorizontalAlignment="Center"
+                        Content="Alias" />
+                    <StackPanel
+                        Height="25"
+                        Margin="10"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Label Margin="3,0" Content="Prefix:" />
+                        <TextBox
+                            Name="TextBoxPrefix"
+                            Width="40"
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Text=""
+                            TextChanged="AliasChanged" />
+
+                        <Label Margin="3,0" Content="Suffix:" />
+                        <TextBox
+                            Name="TextBoxSuffix"
+                            Width="40"
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Tag="C"
+                            Text=""
+                            TextChanged="AliasChanged" />
+
+                    </StackPanel>
+                </StackPanel>
+            </Border>
             <Border
                 Margin="4"
                 BorderBrush="DarkBlue"
@@ -280,9 +318,55 @@
                 </StackPanel>
             </Border>
         </StackPanel>
+        <Button
+            Grid.Row="2"
+            Width="200"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Stretch"
+            Click="Button_HideTools">
+            <Button.Template>
+                <ControlTemplate>
+                    <Border
+                        Width="200"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Stretch"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <Canvas Background="AliceBlue">
+                            <StackPanel
+                                Width="200"
+                                Height="10"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch">
+                                <Line
+                                    Margin="0,4,0,2.5"
+                                    HorizontalAlignment="Center"
+                                    SnapsToDevicePixels="True"
+                                    Stroke="Black"
+                                    StrokeEndLineCap="Triangle"
+                                    X1="0"
+                                    X2="190"
+                                    Y1="0"
+                                    Y2="0" />
+                                <Line
+                                    HorizontalAlignment="Center"
+                                    SnapsToDevicePixels="True"
+                                    Stroke="Black"
+                                    StrokeEndLineCap="Triangle"
+                                    X1="0"
+                                    X2="190"
+                                    Y1="0"
+                                    Y2="0" />
+                            </StackPanel>
+                        </Canvas>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
         <ScrollViewer
             Name="ScrollViewer"
-            Grid.Row="2"
+            Grid.Row="3"
             Margin="5"
             HorizontalScrollBarVisibility="Auto"
             ScrollChanged="ScrollViewer_ScrollChanged"
