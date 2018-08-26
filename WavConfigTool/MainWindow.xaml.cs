@@ -94,6 +94,7 @@ namespace WavConfigTool
 
         void GenerateWaveforms()
         {
+            if (!IsLoaded) return;
             foreach (WavControl control in WavControls) control.GenerateWaveform();
         }
 
@@ -382,6 +383,7 @@ namespace WavConfigTool
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            GenerateWaveforms();
         }
 
         #endregion

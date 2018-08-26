@@ -129,6 +129,7 @@ namespace WavConfigTool
                 DrawConfig();
                 return;
             }
+            Display();
             //int i = 0;
             //while (!File.Exists(ImagePath))
             //{
@@ -136,7 +137,7 @@ namespace WavConfigTool
             //    i++;
             //    if (i == 100) throw new Exception("Сколько можно рендерить чета тут не так");
             //}
-                
+
         }
 
         void Display()
