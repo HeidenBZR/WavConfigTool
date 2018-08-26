@@ -184,11 +184,14 @@ namespace WavConfigTool
 
         Image OpenImage()
         {
-            for (int i = 0; !IsImageGenerated; i++)
+            bool isAlowed = false;
+            for (int i = 0; !IsImageGenerated && !isAlowed; i++)
             {
                 i++;
                 Thread.Sleep(100);
-                if (i > 300) throw new Exception("awdawdawwad");
+                if (i > 1000) throw new Exception("It's beeeeen too loooong~");
+                try { var f = File.Open(ImagePath, FileMode.Open); isAlowed = true; f.Close(); }
+                catch (IOException) { isAlowed = false; }
             }
             BitmapImage src = new BitmapImage();
             src.BeginInit();
