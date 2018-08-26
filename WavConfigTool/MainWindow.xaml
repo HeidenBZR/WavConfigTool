@@ -281,6 +281,36 @@
                 Margin="4"
                 BorderBrush="DarkBlue"
                 BorderThickness="1">
+                <StackPanel Height="60">
+                    <Label
+                        Padding="0"
+                        HorizontalAlignment="Center"
+                        Content="View" />
+                    <StackPanel
+                        Height="25"
+                        Margin="10"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+
+                        <Label
+                            Margin="3,0"
+                            Content="WAT:"
+                            ToolTip="Waveform Amplitude Multiplayer" />
+                        <TextBox
+                            Name="TextBoxMultiplier"
+                            Width="30"
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Text="1.00"
+                            TextChanged="TextBoxMultiplier_TextChanged" />
+
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <Border
+                Margin="4"
+                BorderBrush="DarkBlue"
+                BorderThickness="1">
                 <StackPanel
                     Height="60"
                     HorizontalAlignment="Center"

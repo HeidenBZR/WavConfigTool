@@ -40,9 +40,10 @@ namespace WavConfigTool
 
         public static double ScaleX = 0.7f;
         public static int SampleRate = 44100;
-        public static double ScaleY = 80f;
+        public static double ScaleY = 60f;
         public static int PointSkip = 5;
         public static double MostLeft = 9999;
+        public static double WaveformAmplitudeMultiplayer = 1f;
 
         public static int VFade;
         public static int CFade;
@@ -165,12 +166,11 @@ namespace WavConfigTool
         {
             WavCanvas.Children.Clear();
             Image image = OpenImage();
-            DrawConfig();
         }
 
-        public void GenerateWaveform()
+        public void GenerateWaveform(bool force = false)
         {
-            if (File.Exists(ImagePath)) return;
+            if (!force && File.Exists(ImagePath)) return;
             var points = GetAudioPoints();
             Width = points.Last().X;
             Height = 100;
@@ -179,6 +179,7 @@ namespace WavConfigTool
             Thread thread = new Thread(WaveForm.PointsToImage);
             thread.Name = Recline.Filename;
             thread.Start((points, (int)Width, (int)Height, this));
+            if (force) Undraw();
         }
 
 
@@ -218,7 +219,7 @@ namespace WavConfigTool
             for (long i = 0; i < l / 4; i += PointSkip)
             {
                 if (Math.Abs(data[i]) > 0.001)
-                    points.Add(new Point(i * ScaleX / SampleRate * 1000, data[i] * ScaleY + 50));
+                    points.Add(new Point(i * ScaleX / SampleRate * 1000, data[i] * ScaleY * WaveformAmplitudeMultiplayer + 50));
                 else
                 {
                     points.Add(new Point(i * ScaleX / SampleRate * 1000, 50));
@@ -227,7 +228,7 @@ namespace WavConfigTool
                 {
                     if (Ds.Count == 0)
                     {
-                        Ds.Add((double)i / SampleRate * 1000);
+                        Ds.Add((double)i / SampleRate * 1000 * WaveformAmplitudeMultiplayer);
                     }
                     else
                     {
@@ -236,7 +237,7 @@ namespace WavConfigTool
                     }
                 }
             }
-            if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate * 1000);
+            if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate * 1000 * WaveformAmplitudeMultiplayer);
             reader.Close();
             return points.ToArray();
         }

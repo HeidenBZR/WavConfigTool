@@ -95,10 +95,10 @@ namespace WavConfigTool
             ScrollViewer.ScrollToHorizontalOffset(WavControl.MostLeft - 200 * WavControl.ScaleX);
         }
 
-        void GenerateWaveforms()
+        void GenerateWaveforms(bool force = false)
         {
             if (!IsLoaded) return;
-            foreach (WavControl control in WavControls) control.GenerateWaveform();
+            foreach (WavControl control in WavControls) control.GenerateWaveform(force);
         }
 
 
@@ -347,6 +347,17 @@ namespace WavConfigTool
             else LabelItemsOnPage.Text = ItemsOnPage.ToString();
         }
 
+        void SetWaveformAmplitudeMultiplayer(float value)
+        {
+            if (value > 0 && value < 50f)
+            {
+                WavControl.WaveformAmplitudeMultiplayer = value;
+                ClearTemp();
+                GenerateWaveforms(force: true);
+                DrawPage();
+            }
+        }
+
         #region Events
 
         private void MenuSave_Click(object sender, RoutedEventArgs e)
@@ -522,9 +533,16 @@ namespace WavConfigTool
         {
             ToggleTools();
         }
-
-
+        
         #endregion
 
+        private void TextBoxMultiplier_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!IsLoaded) return;
+            if (float.TryParse(TextBoxMultiplier.Text, out float value))
+                SetWaveformAmplitudeMultiplayer(value);
+            TextBoxMultiplier.Text = WavControl.WaveformAmplitudeMultiplayer.ToString("f2");
+
+        }
     }
 }
