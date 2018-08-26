@@ -90,8 +90,8 @@ namespace WavConfigTool
                 control.Draw();
             }
             LabelItemsOnPage.Text = ItemsOnPage.ToString();
-            LabelPage.Text = PageCurrent.ToString();
-            LabelPageTotal.Content = PageTotal.ToString();
+            LabelPage.Text = (PageCurrent + 1).ToString();
+            LabelPageTotal.Content = (PageTotal - 1).ToString();
             ScrollViewer.ScrollToHorizontalOffset(WavControl.MostLeft - 200 * WavControl.ScaleX);
         }
 
@@ -319,6 +319,34 @@ namespace WavConfigTool
             else return false;
         }
 
+        void ToggleTools()
+        {
+            if (ToolsPanel.Height == new GridLength(80)) ToolsPanel.Height = new GridLength(0);
+            else ToolsPanel.Height = new GridLength(80);
+        }
+
+        void SetPage(int page)
+        {
+            if (page <= PageTotal && page > 0)
+            {
+                PageCurrent = page;
+                DrawPage();
+            }
+            else LabelPage.Text = PageCurrent.ToString();
+        }
+
+        void SetItemsOnPage(byte items)
+        {
+            if (items <= 20 && items > 0)
+            {
+                ItemsOnPage = items;
+                PageTotal = WavControls.Count / ItemsOnPage;
+                if (PageCurrent > PageTotal) PageCurrent = PageTotal;
+                DrawPage();
+            }
+            else LabelItemsOnPage.Text = ItemsOnPage.ToString();
+        }
+
         #region Events
 
         private void MenuSave_Click(object sender, RoutedEventArgs e)
@@ -347,31 +375,7 @@ namespace WavConfigTool
             if (PageCurrent > 0) PageCurrent--;
             DrawPage();
         }
-
-        private void PageChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!IsLoaded) return;
-            if (int.TryParse(LabelPage.Text, out int page) && page <= PageTotal)
-            {
-                PageCurrent = page;
-                DrawPage();
-            }
-            else LabelPage.Text = PageCurrent.ToString();
-        }
-
-        private void ItemsOnPageChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!IsLoaded) return;
-            if (byte.TryParse(LabelItemsOnPage.Text, out byte items) && items <= 20)
-            {
-                ItemsOnPage = items;
-                PageTotal = WavControls.Count / ItemsOnPage;
-                if (PageCurrent > PageTotal) PageCurrent = PageTotal;
-                DrawPage();
-            }
-            else LabelItemsOnPage.Text = ItemsOnPage.ToString();
-        }
-
+        
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             if (!IsLoaded) return;
@@ -401,13 +405,13 @@ namespace WavConfigTool
             else if (Keyboard.IsKeyDown(Key.D))
                 SetMode(WavConfigPoint.D);
             else if (Keyboard.IsKeyDown(Key.OemOpenBrackets))
-                NextPage(new object(), new RoutedEventArgs());
+                PrevPage(new object(), new RoutedEventArgs());
             else if (Keyboard.IsKeyDown(Key.OemCloseBrackets))
                 NextPage(new object(), new RoutedEventArgs());
             else if (Keyboard.IsKeyDown(Key.OemPlus))
-                LabelItemsOnPage.Text = (ItemsOnPage + 1).ToString();
+                SetItemsOnPage((byte)(ItemsOnPage + 1));
             else if (Keyboard.IsKeyDown(Key.OemMinus))
-                LabelItemsOnPage.Text = (ItemsOnPage - 1).ToString();
+                SetItemsOnPage((byte)(ItemsOnPage - 1));
             else if (Keyboard.IsKeyDown(Key.Back))
                 ToggleTools();
             else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
@@ -460,17 +464,27 @@ namespace WavConfigTool
             WavControl.Prefix = TextBoxPrefix.Text;
         }
 
-        #endregion
-
-        void ToggleTools()
-        {
-            if (ToolsPanel.Height == new GridLength(80)) ToolsPanel.Height = new GridLength(0);
-            else ToolsPanel.Height = new GridLength(80);
-        }
-
         private void Button_HideTools(object sender, RoutedEventArgs e)
         {
             ToggleTools();
         }
+
+        private void LabelItemsOnPage_TextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (!IsLoaded) return;
+            if (byte.TryParse(LabelItemsOnPage.Text, out byte items)) SetItemsOnPage(items);
+            else LabelItemsOnPage.Text = ItemsOnPage.ToString();
+        }
+
+        private void LabelPage_TextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (!IsLoaded) return;
+            if (int.TryParse(LabelPage.Text, out int page)) SetPage(page);
+            else LabelPage.Text = PageCurrent.ToString();
+        }
+
+
+        #endregion
+
     }
 }

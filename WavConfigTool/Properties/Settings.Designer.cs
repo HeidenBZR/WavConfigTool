@@ -58,5 +58,29 @@ namespace WavConfigTool.Properties {
                 this["FadeD"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int ItemsOnPage {
+            get {
+                return ((int)(this["ItemsOnPage"]));
+            }
+            set {
+                this["ItemsOnPage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int CurrentPage {
+            get {
+                return ((int)(this["CurrentPage"]));
+            }
+            set {
+                this["CurrentPage"] = value;
+            }
+        }
     }
 }

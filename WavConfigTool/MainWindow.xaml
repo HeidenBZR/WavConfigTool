@@ -145,8 +145,8 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             HorizontalContentAlignment="Right"
-                            Text="00"
-                            TextChanged="PageChanged" />
+                            TextInput="LabelPage_TextInput"
+                            Text="00" />
                         <Label
                             Padding="0"
                             VerticalAlignment="Center"
@@ -173,7 +173,7 @@
                             Padding="1"
                             VerticalAlignment="Center"
                             Text="5"
-                            TextChanged="ItemsOnPageChanged" />
+                            TextInput="LabelItemsOnPage_TextInput" />
                     </StackPanel>
                 </StackPanel>
             </Border>

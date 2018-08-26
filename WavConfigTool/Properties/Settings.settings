@@ -11,5 +11,11 @@
     <Setting Name="FadeD" Type="System.String" Scope="User">
       <Value Profile="(Default)">100</Value>
     </Setting>
+    <Setting Name="ItemsOnPage" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="CurrentPage" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
