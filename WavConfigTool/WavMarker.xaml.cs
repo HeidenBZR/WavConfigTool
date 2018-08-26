@@ -26,6 +26,7 @@ namespace WavConfigTool
         public delegate void WavMarkerMoveEventHandler(double x);
         public event WavMarkerMoveEventHandler WavMarkerMoved;
         public event WavMarkerMoveEventHandler WavMarkerDelete;
+        public event WavMarkerMoveEventHandler WavMarkerCreated;
 
         public WavMarker(Phoneme phoneme, double x, int i)
         {
@@ -33,6 +34,7 @@ namespace WavConfigTool
             Position = x;
             Margin = new Thickness(x * WavControl.ScaleX, 0, 0, 0);
             Phoneme = phoneme;
+            WavMarkerCreated = delegate { };
             if (i == 0)
             {
                 phoneme.Zone.In = this;
@@ -55,6 +57,7 @@ namespace WavConfigTool
             VerticalAlignment = VerticalAlignment.Bottom;
             MarkerController.VerticalAlignment = VerticalAlignment.Top;
             TypeLabel.VerticalAlignment = VerticalAlignment.Top;
+            WavMarkerCreated(Position);
         }
         public WavMarker(Consonant phoneme, double x, int i) : this(phoneme as Phoneme, x, i)
         {
@@ -65,6 +68,7 @@ namespace WavConfigTool
             VerticalAlignment = VerticalAlignment.Top;
             MarkerController.VerticalAlignment = VerticalAlignment.Bottom;
             TypeLabel.VerticalAlignment = VerticalAlignment.Bottom;
+            WavMarkerCreated(Position);
         }
         public WavMarker(double x, int i) : this(new Rest("-"), x, i)
         {
@@ -76,6 +80,7 @@ namespace WavConfigTool
             VerticalAlignment = VerticalAlignment.Top;
             MarkerController.VerticalAlignment = VerticalAlignment.Bottom;
             TypeLabel.VerticalAlignment = VerticalAlignment.Bottom;
+            WavMarkerCreated(Position);
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

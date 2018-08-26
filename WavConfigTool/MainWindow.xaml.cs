@@ -37,6 +37,8 @@ namespace WavConfigTool
         public delegate void ProjectLoadedEventHandler();
         public event ProjectLoadedEventHandler ProjectLoaded;
 
+        bool IsUnsaved = false;
+
         public MainWindow()
         {
             ClearTemp();
@@ -116,6 +118,7 @@ namespace WavConfigTool
         void AddWavControl(Recline recline)
         {
             WavControl control = new WavControl(recline);
+            control.WavControlChanged += SaveBackup;
             recline.Reclist = Reclist;
             Reclist.Reclines.Add(recline);
             WavControls.Add(control);
@@ -154,7 +157,7 @@ namespace WavConfigTool
             Reclist.VoicebankPath = voicebank;
             Path = TempPath;
             DrawPage();
-            Title = $"WavConfig - {System.IO.Path.GetFileName(Path)} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
+            SetTitle();
             ProjectLoaded();
         }
 
@@ -165,24 +168,11 @@ namespace WavConfigTool
             {
                 ReadProject(project);
                 DrawPage();
+                SetTitle();
                 return true;
             }
             else MessageBox.Show("Ошибка при открытии файла проекта", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             return false;
-        }
-
-        void SaveAs()
-        {
-            string lastpath = Path;
-            SaveFileDialog openFileDialog = new SaveFileDialog();
-            openFileDialog.Filter = "WavConfig Project (*.wconfig)|*.wconfig";
-            openFileDialog.RestoreDirectory = true;
-            openFileDialog.ShowDialog();
-            if (openFileDialog.FileName == "") return;
-            Path = openFileDialog.FileName;
-            Save();
-            Title = $"WavConfig - {System.IO.Path.GetFileName(Path)} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
-            File.Delete(lastpath);
         }
 
         void SetMode(WavConfigPoint point)
@@ -209,6 +199,45 @@ namespace WavConfigTool
                 text += $"{String.Join(" ", control.Cs.Select(n => n.ToString("f0")))}\r\n";
             }
             File.WriteAllText(Path, text, Encoding.UTF8);
+            IsUnsaved = false;
+            SetTitle();
+            if (File.Exists(TempPath)) File.Delete(TempPath);
+        }
+
+        void SaveAs()
+        {
+            string lastpath = Path;
+            SaveFileDialog openFileDialog = new SaveFileDialog();
+            openFileDialog.Filter = "WavConfig Project (*.wconfig)|*.wconfig";
+            openFileDialog.RestoreDirectory = true;
+            openFileDialog.ShowDialog();
+            if (openFileDialog.FileName == "") return;
+            Path = openFileDialog.FileName;
+            Save();
+            File.Delete(lastpath);
+            IsUnsaved = false;
+        }
+
+        void SetTitle(bool unsaved = false)
+        {
+            Title = $"WavConfig - {System.IO.Path.GetFileName(Path)}{(unsaved? "*" : "")} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
+        }
+
+        void SaveBackup()
+        {
+            string text = "";
+            text += $"{Reclist.VoicebankPath}\r\n";
+
+            foreach (WavControl control in WavControls)
+            {
+                text += $"{control.Recline.Filename}\r\n";
+                text += $"{String.Join(" ", control.Ds.Select(n => n.ToString("f0")))}\r\n";
+                text += $"{ String.Join(" ", control.Vs.Select(n => n.ToString("f0"))) }\r\n";
+                text += $"{String.Join(" ", control.Cs.Select(n => n.ToString("f0")))}\r\n";
+            }
+            File.WriteAllText(TempPath, text, Encoding.UTF8);
+            SetTitle(true);
+            IsUnsaved = true;
         }
 
         void ReadSettings(string settings)
@@ -276,6 +305,18 @@ namespace WavConfigTool
             foreach (string filename in Directory.GetFiles("Temp"))
                 File.Delete(filename);
 
+        }
+
+        bool WarningUnsaved()
+        {
+            var result = MessageBox.Show("Имеются несохраненные изменения. Действительно выйти?", "Несохраненные изменения", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            if (result == MessageBoxResult.Yes)
+            {
+                File.Delete(TempPath);
+                ClearTemp();
+                return true;
+            }
+            else return false;
         }
 
         #region Events
@@ -398,7 +439,9 @@ namespace WavConfigTool
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ClearTemp();
+            if (IsUnsaved)
+                if (!WarningUnsaved())
+                    e.Cancel = true;
         }
 
         #endregion

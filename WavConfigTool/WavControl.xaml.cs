@@ -54,6 +54,9 @@ namespace WavConfigTool
         SolidColorBrush FillVowelZoneBrush = new SolidColorBrush(Color.FromArgb(50, 200, 200, 50));
         SolidColorBrush FillCZoneBrush = new SolidColorBrush(Color.FromArgb(50, 50, 250, 250));
 
+        public delegate void WavControlChangedHandler();
+        public event WavControlChangedHandler WavControlChanged;
+
         public bool IsImageGenerated { get { return File.Exists(ImagePath); } }
 
         public string AudioCode
@@ -80,6 +83,7 @@ namespace WavConfigTool
             Vs = new List<double>();
             Cs = new List<double>();
             DrawConfig();
+            WavControlChanged();
         }
 
         public string Generate()
@@ -287,11 +291,13 @@ namespace WavConfigTool
                     MarkerCanvas.Children.Remove(line);
                     Vs.Remove(pos);
                     DrawConfig();
+                    WavControlChanged();
                 };
                 line.WavMarkerMoved += delegate (double newpos)
                 {
                     Vs[Vs.IndexOf(pos)] = Math.Truncate(newpos);
                     DrawConfig();
+                    WavControlChanged();
                 };
             }
         }
@@ -310,11 +316,13 @@ namespace WavConfigTool
                     MarkerCanvas.Children.Remove(line);
                     Cs.Remove(pos);
                     DrawConfig();
+                    WavControlChanged();
                 };
                 line.WavMarkerMoved += delegate (double newpos)
                 {
                     Cs[Cs.IndexOf(pos)] = Math.Truncate(newpos);
                     DrawConfig();
+                    WavControlChanged();
                 };
             }
         }
@@ -331,11 +339,13 @@ namespace WavConfigTool
                     MarkerCanvas.Children.Remove(line);
                     Ds.Remove(pos);
                     DrawConfig();
+                    WavControlChanged();
                 };
                 line.WavMarkerMoved += delegate (double newpos)
                 {
                     Ds[Ds.IndexOf(pos)] = Math.Truncate(newpos);
                     DrawConfig();
+                    WavControlChanged();
                 };
             }
         }
@@ -431,6 +441,7 @@ namespace WavConfigTool
             {
                 double x = e.GetPosition(this).X;
                 Draw(MainWindow.Mode, x);
+                WavControlChanged();
             }
         }
 
