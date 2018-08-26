@@ -483,6 +483,46 @@ namespace WavConfigTool
             else LabelPage.Text = PageCurrent.ToString();
         }
 
+        private void ToggleWaveform_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ToggleSpectrum_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TogglePitch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void NextPage_Click(object sender, RoutedEventArgs e)
+        {
+            SetPage(PageCurrent + 1);
+        }
+
+        private void PrevPage_Click(object sender, RoutedEventArgs e)
+        {
+            SetPage(PageCurrent - 1);
+        }
+
+        private void MoreItems_Click(object sender, RoutedEventArgs e)
+        {
+            SetItemsOnPage((byte)(ItemsOnPage + 1));
+        }
+
+        private void LessItems_Click(object sender, RoutedEventArgs e)
+        {
+            SetItemsOnPage((byte)(ItemsOnPage - 1));
+        }
+
+        private void ToggleToolsPanel_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleTools();
+        }
+
 
         #endregion
 

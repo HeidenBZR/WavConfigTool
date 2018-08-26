@@ -27,6 +27,7 @@
                     Name="MenuNew"
                     Click="MenuNew_Click"
                     Header="New/Open WavConfig... (Ctrl+N, Ctrl+O)" />
+                <Separator />
                 <MenuItem
                     Name="MenuSave"
                     Click="MenuSave_Click"
@@ -35,11 +36,27 @@
                     Name="MenuSaveAs"
                     Click="MenuSaveAs_Click"
                     Header="Save WavConfig As New... (Shift+Ctrl+S)" />
+                <Separator />
+                <MenuItem
+                    Name="MenuGenerate"
+                    Click="MenuGenerate_Click"
+                    Header="Generate Oto.ini (Ctrl+G)" />
+                <Separator />
+                <MenuItem Header="Exit" />
             </MenuItem>
-            <MenuItem
-                Name="MenuGenerate"
-                Click="MenuGenerate_Click"
-                Header="Generate Oto.ini (Ctrl+G)" />
+            <MenuItem Header="View">
+                <MenuItem Click="ToggleWaveform_Click" Header="Toggle Waveform (Ctrl+Q)" />
+                <MenuItem Click="ToggleSpectrum_Click" Header="Toggle Spectrum (Ctrl+W)" />
+                <MenuItem Click="TogglePitch_Click" Header="Toggle Pitch (Ctrl+E)" />
+                <Separator />
+                <MenuItem Click="PrevPage_Click" Header="Предыдущая страница ( ] )" />
+                <MenuItem Click="NextPage_Click" Header="Следующая страница ( [ )" />
+                <Separator />
+                <MenuItem Click="MoreItems_Click" Header="Больше строк на странице (+)" />
+                <MenuItem Click="LessItems_Click" Header="Меньше строк на странице (-)" />
+                <Separator />
+                <MenuItem Click="ToggleToolsPanel_Click" Header="Toggle Tools Panel (Backspace)" />
+            </MenuItem>
         </Menu>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <StackPanel.Background>
@@ -145,8 +162,8 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             HorizontalContentAlignment="Right"
-                            TextInput="LabelPage_TextInput"
-                            Text="00" />
+                            Text="00"
+                            TextInput="LabelPage_TextInput" />
                         <Label
                             Padding="0"
                             VerticalAlignment="Center"
