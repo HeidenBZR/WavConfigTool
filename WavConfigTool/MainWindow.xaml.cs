@@ -360,6 +360,7 @@ namespace WavConfigTool
             if (value > 0 && value < 50f)
             {
                 WavControl.WaveformAmplitudeMultiplayer = value;
+                foreach (var control in WavControls) control.Undraw();
                 ClearTemp();
                 GenerateWaveforms(force: true);
                 DrawPage();
@@ -576,6 +577,11 @@ namespace WavConfigTool
             if (!IsLoaded) return;
             if (byte.TryParse(LabelItemsOnPage.Text, out byte items)) SetItemsOnPage(items);
             else LabelItemsOnPage.Text = ItemsOnPage.ToString();
+        }
+
+        private void MenuExit_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
 
         #endregion

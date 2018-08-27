@@ -168,13 +168,11 @@ namespace WavConfigTool
             AreasCanvas.Children.Clear();
             GridCanvas.Children.Clear();
             MarkerCanvas.Children.Clear();
-            WavCanvas.Children.Clear();
         }
 
         void Display()
         {
-            WavCanvas.Children.Clear();
-            Image image = OpenImage();
+            OpenImage();
         }
 
         public void GenerateWaveform(bool force = false)
@@ -192,7 +190,7 @@ namespace WavConfigTool
         }
 
 
-        Image OpenImage()
+        void OpenImage()
         {
             bool isAlowed = false;
             for (int i = 0; !IsImageGenerated && !isAlowed; i++)
@@ -208,11 +206,8 @@ namespace WavConfigTool
             src.UriSource = new Uri(ImagePath, UriKind.Relative);
             src.CacheOption = BitmapCacheOption.OnLoad;
             src.EndInit();
-            Image image = new Image() { Source = src };
-            WavCanvas.Children.Add(image);
-            Height = 100;
+            WavImage.Source = src;
             Width = src.Width;
-            return image;
         }
 
         Point[] GetAudioPoints()

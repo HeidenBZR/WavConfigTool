@@ -43,7 +43,8 @@
                     Click="MenuGenerate_Click"
                     Header="Generate Oto.ini (Ctrl+G)" />
                 <Separator />
-                <MenuItem Header="Exit" />
+                <MenuItem Header="Exit"
+                    Click="MenuExit_Click" />
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Click="ToggleWaveform_Click" Header="Toggle Waveform (Ctrl+Q)" />
