@@ -45,9 +45,9 @@ namespace WavConfigTool
         public static double MostLeft = 9999;
         public static double WaveformAmplitudeMultiplayer = 1f;
 
-        public static int VFade;
-        public static int CFade;
-        public static int DFade;
+        public static int VFade = 30;
+        public static int CFade = 10;
+        public static int DFade = 200;
         public static string Prefix;
         public static string Suffix;
 
@@ -203,6 +203,7 @@ namespace WavConfigTool
             }
             BitmapImage src = new BitmapImage();
             src.BeginInit();
+            src.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
             src.UriSource = new Uri(ImagePath, UriKind.Relative);
             src.CacheOption = BitmapCacheOption.OnLoad;
             src.EndInit();

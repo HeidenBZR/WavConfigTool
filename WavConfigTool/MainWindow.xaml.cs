@@ -462,9 +462,11 @@ namespace WavConfigTool
                 if (Keyboard.IsKeyDown(Key.G))
                     Generate();
             }
+            else if (Keyboard.IsKeyDown(Key.Enter))
+                Focus();
         }
 
-        private void FadeChanged(object sender, TextChangedEventArgs e)
+        private void FadeChanged(object sender, RoutedEventArgs e)
         {
             TextBox box = sender as TextBox;
             int value;
@@ -491,7 +493,7 @@ namespace WavConfigTool
                     e.Cancel = true;
         }
 
-        private void AliasChanged(object sender, TextChangedEventArgs e)
+        private void AliasChanged(object sender, RoutedEventArgs e)
         {
             WavControl.Suffix = TextBoxSuffix.Text;
             WavControl.Prefix = TextBoxPrefix.Text;
@@ -542,7 +544,7 @@ namespace WavConfigTool
             ToggleTools();
         }
 
-        private void TextBoxMultiplier_TextChanged(object sender, TextChangedEventArgs e)
+        private void TextBoxMultiplier_TextChanged(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
             if (float.TryParse(TextBoxMultiplier.Text, out float value))
@@ -565,23 +567,22 @@ namespace WavConfigTool
             PrevMousePosition = e.GetPosition(this);
         }
 
-        private void LabelPage_TextChanged(object sender, TextChangedEventArgs e)
+        private void MenuExit_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+        private void LabelPage_LostFocus(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
             if (int.TryParse(LabelPage.Text, out int page)) SetPage(page);
             else LabelPage.Text = PageCurrent.ToString();
         }
 
-        private void LabelItemsOnPage_TextChanged(object sender, TextChangedEventArgs e)
+        private void LabelItemsOnPage_LostFocus(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
             if (byte.TryParse(LabelItemsOnPage.Text, out byte items)) SetItemsOnPage(items);
             else LabelItemsOnPage.Text = ItemsOnPage.ToString();
-        }
-
-        private void MenuExit_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
         }
 
         #endregion

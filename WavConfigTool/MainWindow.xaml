@@ -43,8 +43,7 @@
                     Click="MenuGenerate_Click"
                     Header="Generate Oto.ini (Ctrl+G)" />
                 <Separator />
-                <MenuItem Header="Exit"
-                    Click="MenuExit_Click" />
+                <MenuItem Click="MenuExit_Click" Header="Exit" />
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Click="ToggleWaveform_Click" Header="Toggle Waveform (Ctrl+Q)" />
@@ -164,8 +163,8 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             HorizontalContentAlignment="Right"
-                            Text="00"
-                            TextChanged="LabelPage_TextChanged" />
+                            LostFocus="LabelPage_LostFocus"
+                            Text="00" />
                         <Label
                             Padding="0"
                             VerticalAlignment="Center"
@@ -191,8 +190,8 @@
                             Margin="3,0"
                             Padding="1"
                             VerticalAlignment="Center"
-                            Text="5"
-                            TextChanged="LabelItemsOnPage_TextChanged" />
+                            LostFocus="LabelItemsOnPage_LostFocus"
+                            Text="5" />
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -216,9 +215,9 @@
                             Width="40"
                             Padding="0"
                             VerticalAlignment="Center"
+                            LostFocus="FadeChanged"
                             Tag="V"
-                            Text="30"
-                            TextChanged="FadeChanged" />
+                            Text="30" />
 
                         <Label Margin="3,0" Content="C:" />
                         <TextBox
@@ -226,9 +225,9 @@
                             Width="40"
                             Padding="0"
                             VerticalAlignment="Center"
+                            LostFocus="FadeChanged"
                             Tag="C"
-                            Text="10"
-                            TextChanged="FadeChanged" />
+                            Text="10" />
 
                         <Label Margin="3,0" Content="D:" />
                         <TextBox
@@ -236,9 +235,9 @@
                             Width="40"
                             Padding="0"
                             VerticalAlignment="Center"
+                            LostFocus="FadeChanged"
                             Tag="D"
-                            Text="200"
-                            TextChanged="FadeChanged" />
+                            Text="200" />
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -263,8 +262,8 @@
                             Width="40"
                             Padding="0"
                             VerticalAlignment="Center"
-                            Text=""
-                            TextChanged="AliasChanged" />
+                            LostFocus="AliasChanged"
+                            Text="" />
 
                         <Label Margin="3,0" Content="Suffix:" />
                         <TextBox
@@ -272,9 +271,9 @@
                             Width="40"
                             Padding="0"
                             VerticalAlignment="Center"
+                            LostFocus="AliasChanged"
                             Tag="C"
-                            Text=""
-                            TextChanged="AliasChanged" />
+                            Text="" />
 
                     </StackPanel>
                 </StackPanel>
@@ -303,8 +302,8 @@
                             Width="30"
                             Padding="0"
                             VerticalAlignment="Center"
-                            Text="1.00"
-                            TextChanged="TextBoxMultiplier_TextChanged" />
+                            LostFocus="TextBoxMultiplier_TextChanged"
+                            Text="1.00" />
 
                     </StackPanel>
                 </StackPanel>
