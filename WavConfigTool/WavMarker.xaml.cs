@@ -63,7 +63,8 @@ namespace WavConfigTool
         {
             Resources["BackBrush"] = Resources["CBackBrush"];
             Resources["BorderBrush"] = Resources["CBorderBrush"];
-            Height = 90;
+            Height = 100;
+            Grid.Margin = new Thickness(0, 0, 0, 10);
             Type = WavConfigPoint.C;
             VerticalAlignment = VerticalAlignment.Top;
             MarkerController.VerticalAlignment = VerticalAlignment.Bottom;

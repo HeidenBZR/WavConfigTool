@@ -77,7 +77,8 @@ namespace WavConfigTool
             Cs = new List<double>();
             Vs = new List<double>();
             Ds = new List<double>();
-            LabelName.Content = $"{recline.Description} [{String.Join(" ", recline.Phonemes.Select(n => n.Alias))}]";
+            int ind = Recline.Reclist.Reclines.IndexOf(Recline) + 1;
+            LabelName.Content = $"{ind}. {recline.Description} [{String.Join(" ", recline.Phonemes.Select(n => n.Alias))}]";
         }
 
         void Reset()

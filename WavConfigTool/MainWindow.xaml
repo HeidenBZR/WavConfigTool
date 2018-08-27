@@ -11,6 +11,7 @@
     Closing="Window_Closing"
     KeyDown="Window_KeyDown"
     Loaded="Window_Loaded"
+    MouseMove="Window_MouseMove"
     WindowState="Maximized"
     mc:Ignorable="d">
     <Grid>

@@ -34,6 +34,8 @@ namespace WavConfigTool
         int PageTotal = 0;
         byte ItemsOnPage = 4;
 
+        Point PrevMousePosition;
+
         public delegate void ProjectLoadedEventHandler();
         public event ProjectLoadedEventHandler ProjectLoaded;
 
@@ -43,6 +45,7 @@ namespace WavConfigTool
         {
             ClearTemp();
             InitializeComponent();
+            PrevMousePosition = Mouse.GetPosition(this);
             ProjectLoaded += delegate { GenerateWaveforms(); };
             if (CheckSettings() && CheckLast()) { DrawPage(); }
             else OpenProjectWindow();
@@ -93,6 +96,8 @@ namespace WavConfigTool
             LabelPage.Text = (PageCurrent + 1).ToString();
             LabelPageTotal.Content = (PageTotal - 1).ToString();
             ScrollViewer.ScrollToHorizontalOffset(WavControl.MostLeft - 200 * WavControl.ScaleX);
+            foreach (WavControl control in WavControls)
+                control.LabelName.Margin = new Thickness(WavControl.MostLeft - 200 * WavControl.ScaleX, 0, 0, 0);
         }
 
         void GenerateWaveforms(bool force = false)
@@ -106,12 +111,14 @@ namespace WavConfigTool
         {
             Recline recline = new Recline(filename, phonemes);
             recline.Reclist = Reclist;
+            Reclist.Reclines.Add(recline);
             AddWavControl(recline);
         }
         void AddFile(string filename, string phonemes, string description)
         {
             Recline recline = new Recline(filename, phonemes, description);
             recline.Reclist = Reclist;
+            Reclist.Reclines.Add(recline);
             AddWavControl(recline);
         }
 
@@ -119,8 +126,6 @@ namespace WavConfigTool
         {
             WavControl control = new WavControl(recline);
             control.WavControlChanged += SaveBackup;
-            recline.Reclist = Reclist;
-            Reclist.Reclines.Add(recline);
             WavControls.Add(control);
         }
 
@@ -358,6 +363,14 @@ namespace WavConfigTool
             }
         }
 
+        void ContentMove(Point position)
+        {
+            double deltaX = PrevMousePosition.X - position.X;
+            double deltaY = PrevMousePosition.Y - position.Y;
+            ScrollViewer.ScrollToHorizontalOffset(ScrollViewer.HorizontalOffset + deltaX);
+            ScrollViewer.ScrollToVerticalOffset(ScrollViewer.VerticalOffset + deltaY);
+        }
+
         #region Events
 
         private void MenuSave_Click(object sender, RoutedEventArgs e)
@@ -533,8 +546,6 @@ namespace WavConfigTool
         {
             ToggleTools();
         }
-        
-        #endregion
 
         private void TextBoxMultiplier_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -544,5 +555,22 @@ namespace WavConfigTool
             TextBoxMultiplier.Text = WavControl.WaveformAmplitudeMultiplayer.ToString("f2");
 
         }
+
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.Space) && e.LeftButton == MouseButtonState.Pressed)
+            {
+                ContentMove(e.GetPosition(this));
+                this.Cursor = Cursors.Hand;
+            }
+            else
+            {
+                this.Cursor = Cursors.Arrow;
+            }
+            PrevMousePosition = e.GetPosition(this);
+        }
+
+        #endregion
+
     }
 }
