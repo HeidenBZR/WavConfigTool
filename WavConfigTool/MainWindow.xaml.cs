@@ -565,7 +565,7 @@ namespace WavConfigTool
             }
             else
             {
-                this.Cursor = Cursors.Arrow;
+                this.Cursor = null;
             }
             PrevMousePosition = e.GetPosition(this);
         }

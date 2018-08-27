@@ -27,6 +27,7 @@ namespace WavConfigTool
         public event WavMarkerMoveEventHandler WavMarkerMoved;
         public event WavMarkerMoveEventHandler WavMarkerDelete;
         public event WavMarkerMoveEventHandler WavMarkerCreated;
+        bool IsClosed = false;
 
         public WavMarker(Phoneme phoneme, double x, int i)
         {
@@ -42,8 +43,13 @@ namespace WavConfigTool
             }
             else
             {
+                IsClosed = true;
                 phoneme.Zone.Out = this;
-                TypeLabel.Content = "";
+                TypeLabel.Visibility = Visibility.Hidden;
+                Line.HorizontalAlignment = HorizontalAlignment.Right;
+                MarkerController.HorizontalAlignment = HorizontalAlignment.Right;
+                MarkerController.Style = FindResource("WavMarkerControllerStyleClosed") as Style;
+                Margin = new Thickness(Margin.Left - Width, Margin.Top, Margin.Right, Margin.Bottom);
             }
         }
 
@@ -93,6 +99,8 @@ namespace WavConfigTool
         {
             Position += e.HorizontalChange / WavControl.ScaleX;
             Margin = new Thickness(Position * WavControl.ScaleX, 0, 0, 0);
+            if (IsClosed)
+                Margin = new Thickness(Margin.Left - Width, Margin.Top, Margin.Right, Margin.Bottom);
         }
 
         private void MarkerController_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
