@@ -89,6 +89,14 @@ namespace WavConfigTool
             DrawConfig();
             WavControlChanged();
         }
+        void Reset(WavConfigPoint point)
+        {
+            if (point == WavConfigPoint.C) Cs = new List<double>();
+            if (point == WavConfigPoint.V) Vs = new List<double>();
+            if (point == WavConfigPoint.D) Ds = new List<double>();
+            DrawConfig();
+            WavControlChanged();
+        }
 
         public string Generate()
         {
@@ -454,7 +462,11 @@ namespace WavConfigTool
 
         private void WavControl_Reset(object sender, RoutedEventArgs e)
         {
-            Reset();
+            string tag = (sender as MenuItem).Tag.ToString();
+            if (tag == "All") Reset();
+            else if (tag == "C") Reset(WavConfigPoint.C);
+            else if (tag == "V") Reset(WavConfigPoint.V);
+            else if (tag == "D") Reset(WavConfigPoint.D);
         }
 
         private void UserControl_KeyDown(object sender, KeyEventArgs e)

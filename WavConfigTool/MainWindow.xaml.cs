@@ -79,7 +79,7 @@ namespace WavConfigTool
             return false;
         }
 
-        void DrawPage()
+        void DrawPage(bool manual = true)
         {
             if (!IsInitialized) return;
             WaveControlStackPanel.Children.Clear();
@@ -92,9 +92,12 @@ namespace WavConfigTool
                 WaveControlStackPanel.Children.Add(control);
                 control.Draw();
             }
-            LabelItemsOnPage.Text = ItemsOnPage.ToString();
-            LabelPage.Text = (PageCurrent + 1).ToString();
-            LabelPageTotal.Content = (PageTotal - 1).ToString();
+            if (manual)
+            {
+                LabelItemsOnPage.Text = ItemsOnPage.ToString();
+                LabelPage.Text = (PageCurrent + 1).ToString();
+                LabelPageTotal.Content = (PageTotal - 1).ToString();
+            }
             ScrollViewer.ScrollToHorizontalOffset(WavControl.MostLeft - 200 * WavControl.ScaleX);
             foreach (WavControl control in WavControls)
                 control.LabelName.Margin = new Thickness(WavControl.MostLeft - 200 * WavControl.ScaleX, 0, 0, 0);
@@ -335,9 +338,9 @@ namespace WavConfigTool
             if (page <= PageTotal && page > 0)
             {
                 PageCurrent = page;
-                DrawPage();
+                DrawPage(manual:false);
             }
-            else LabelPage.Text = PageCurrent.ToString();
+            //else LabelPage.Text = PageCurrent.ToString();
         }
 
         void SetItemsOnPage(byte items)
@@ -347,9 +350,9 @@ namespace WavConfigTool
                 ItemsOnPage = items;
                 PageTotal = WavControls.Count / ItemsOnPage;
                 if (PageCurrent > PageTotal) PageCurrent = PageTotal;
-                DrawPage();
+                DrawPage(manual:false);
             }
-            else LabelItemsOnPage.Text = ItemsOnPage.ToString();
+            //else LabelItemsOnPage.Text = ItemsOnPage.ToString();
         }
 
         void SetWaveformAmplitudeMultiplayer(float value)
@@ -370,6 +373,11 @@ namespace WavConfigTool
             ScrollViewer.ScrollToHorizontalOffset(ScrollViewer.HorizontalOffset + deltaX);
             ScrollViewer.ScrollToVerticalOffset(ScrollViewer.VerticalOffset + deltaY);
         }
+
+        void ToggleWaveform() { }
+        void ToggleSpectrum() { }
+        void TogglePitch() { }
+
 
         #region Events
 
@@ -493,33 +501,19 @@ namespace WavConfigTool
             ToggleTools();
         }
 
-        private void LabelItemsOnPage_TextInput(object sender, TextCompositionEventArgs e)
-        {
-            if (!IsLoaded) return;
-            if (byte.TryParse(LabelItemsOnPage.Text, out byte items)) SetItemsOnPage(items);
-            else LabelItemsOnPage.Text = ItemsOnPage.ToString();
-        }
-
-        private void LabelPage_TextInput(object sender, TextCompositionEventArgs e)
-        {
-            if (!IsLoaded) return;
-            if (int.TryParse(LabelPage.Text, out int page)) SetPage(page);
-            else LabelPage.Text = PageCurrent.ToString();
-        }
-
         private void ToggleWaveform_Click(object sender, RoutedEventArgs e)
         {
-
+            ToggleWaveform();
         }
 
         private void ToggleSpectrum_Click(object sender, RoutedEventArgs e)
         {
-
+            ToggleSpectrum();
         }
 
         private void TogglePitch_Click(object sender, RoutedEventArgs e)
         {
-
+            TogglePitch();
         }
 
         private void NextPage_Click(object sender, RoutedEventArgs e)
@@ -568,6 +562,20 @@ namespace WavConfigTool
                 this.Cursor = null;
             }
             PrevMousePosition = e.GetPosition(this);
+        }
+
+        private void LabelPage_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!IsLoaded) return;
+            if (int.TryParse(LabelPage.Text, out int page)) SetPage(page);
+            else LabelPage.Text = PageCurrent.ToString();
+        }
+
+        private void LabelItemsOnPage_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!IsLoaded) return;
+            if (byte.TryParse(LabelItemsOnPage.Text, out byte items)) SetItemsOnPage(items);
+            else LabelItemsOnPage.Text = ItemsOnPage.ToString();
         }
 
         #endregion
