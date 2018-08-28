@@ -98,9 +98,9 @@ namespace WavConfigTool
                 LabelPage.Text = (PageCurrent + 1).ToString();
                 LabelPageTotal.Content = (PageTotal - 1).ToString();
             }
-            ScrollViewer.ScrollToHorizontalOffset(WavControl.MostLeft - 200 * WavControl.ScaleX);
+            ScrollViewer.ScrollToHorizontalOffset(WavControl.MostLeft - 100 * WavControl.ScaleX);
             foreach (WavControl control in WavControls)
-                control.LabelName.Margin = new Thickness(WavControl.MostLeft - 200 * WavControl.ScaleX, 0, 0, 0);
+                control.LabelName.Margin = new Thickness(WavControl.MostLeft - 100 * WavControl.ScaleX, 0, 0, 0);
         }
 
         void GenerateWaveforms(bool force = false)

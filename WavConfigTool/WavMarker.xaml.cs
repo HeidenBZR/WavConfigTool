@@ -40,6 +40,7 @@ namespace WavConfigTool
             {
                 phoneme.Zone.In = this;
                 TypeLabel.Content = Phoneme.Alias;
+                Panel.SetZIndex(this, 0);
             }
             else
             {
@@ -50,6 +51,7 @@ namespace WavConfigTool
                 MarkerController.HorizontalAlignment = HorizontalAlignment.Right;
                 MarkerController.Style = FindResource("WavMarkerControllerStyleClosed") as Style;
                 Margin = new Thickness(Margin.Left - Width, Margin.Top, Margin.Right, Margin.Bottom);
+                Panel.SetZIndex(this, 10);
             }
         }
 
