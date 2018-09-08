@@ -1,0 +1,44 @@
+﻿<UserControl
+    x:Class="WavConfigTool.OtoPreviewControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:WavConfigTool"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Height="100"
+    d:DesignWidth="600"
+    mc:Ignorable="d">
+    <Grid Margin="3">
+        <Image
+            Name="ImageWav"
+            Height="100"
+            HorizontalAlignment="Left" />
+        <Label Name="Filename" />
+        <Rectangle
+            Name="Offset"
+            HorizontalAlignment="Left"
+            Fill="#556075A2" />
+        <Rectangle
+            Name="Consonant"
+            HorizontalAlignment="Left"
+            Fill="#55CD8C8C" />
+        <Rectangle
+            Name="Cutoff"
+            HorizontalAlignment="Right"
+            Fill="#556075A2" />
+        <Rectangle
+            Name="Overlap"
+            Width="1"
+            Height="60"
+            HorizontalAlignment="Left"
+            Fill="#FF0C4707"
+            SnapsToDevicePixels="True" />
+        <Rectangle
+            Name="Preutterance"
+            Width="1"
+            Height="80"
+            HorizontalAlignment="Left"
+            Fill="#FFCF1A1A"
+            SnapsToDevicePixels="True" />
+    </Grid>
+</UserControl>

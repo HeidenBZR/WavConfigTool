@@ -54,6 +54,7 @@ namespace WavConfigTool
         public static string Prefix;
         public static string Suffix;
 
+        public int Length;
         public bool IsCompleted;
 
         SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(90, 200, 100, 100));
@@ -172,6 +173,24 @@ namespace WavConfigTool
             if (Cs.Count > 0) { }
         }
         
+        void DrawOtoPreview()
+        {
+            Recline.Reclist.Aliases = new List<string>();
+            string oto = Generate();
+            OtoPreviewWindow window = new OtoPreviewWindow(Recline.Filename);
+            foreach (string line in oto.Split(new[] { '\r', '\n' }))
+            {
+                if (line.Length == 0) continue;
+                var ops = line.Split('=');
+                var ops2 = ops[1].Split(',');
+                var ops3 = ops2.Skip(1);
+                int[] opsi = ops3.Select(n => int.Parse(n)).ToArray();
+                OtoPreviewControl control = new OtoPreviewControl(WavImage.Source, ops2[0], opsi, Length);
+                window.Add(control);
+            }
+            window.ShowDialog();
+        }
+
         #region Draw
 
         public void Draw()
@@ -240,7 +259,8 @@ namespace WavConfigTool
             List<Point> points = new List<Point>();
             long lastpoint = 0;
             var max = data.Max();
-            for (long i = 0; i < l / 4; i += PointSkip)
+            long i = 0;
+            for ( ; i < l / 4; i += PointSkip)
             {
                 if (Math.Abs(data[i]) > 0.001)
                     points.Add(new Point(i * ScaleX / SampleRate * 1000, data[i] * ScaleY * WaveformAmplitudeMultiplayer + 50));
@@ -261,6 +281,7 @@ namespace WavConfigTool
                     }
                 }
             }
+            Length = (int)(i * 1000 / SampleRate);
             if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate * 1000 * WaveformAmplitudeMultiplayer);
             reader.Close();
             return points.ToArray();
@@ -461,6 +482,7 @@ namespace WavConfigTool
             }
         }
 
+
         #endregion
 
         #region Events
@@ -493,6 +515,12 @@ namespace WavConfigTool
             }
         }
 
+        private void OtoPreview_Click(object sender, RoutedEventArgs e)
+        {
+            DrawOtoPreview();
+        }
+
         #endregion
+
     }
 }

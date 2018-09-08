@@ -101,6 +101,7 @@ namespace WavConfigTool
             else Recline.Reclist.Aliases.Add(alias);
 
             double prevp = prev.Zone.Out.Position - prev.FadeOut;
+            if (prev.IsRest) prevp = prev.Zone.Out.Position;
             double dist = Zone.In.Position - prevp;
 
             double of = prevp - prev.Overlap;
