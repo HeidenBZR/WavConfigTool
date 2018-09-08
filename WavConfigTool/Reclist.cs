@@ -180,7 +180,7 @@ namespace WavConfigTool
             if (IsRest)
             {
                 of = prevp - preprev.Overlap - preprev.FadeOut;
-                pre = prev.Zone.In.Position - of;
+                pre = prev.Zone.In.Position + prev.FadeOut - of;
                 cut = -(Zone.In.Position - of + FadeOut);
             }
             else
