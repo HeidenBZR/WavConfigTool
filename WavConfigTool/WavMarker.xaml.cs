@@ -94,19 +94,15 @@ namespace WavConfigTool
         void SetLeft()
         {
             IsClosed = true;
-            Line.HorizontalAlignment = HorizontalAlignment.Right;
-            MarkerController.HorizontalAlignment = HorizontalAlignment.Right;
+            Line.HorizontalAlignment = HorizontalAlignment.Center;
+            MarkerController.HorizontalAlignment = HorizontalAlignment.Left;
             MarkerController.Style = FindResource("WavMarkerControllerStyleClosed") as Style;
-            Margin = new Thickness(Margin.Left - Width, Margin.Top, Margin.Right, Margin.Bottom);
-            Panel.SetZIndex(this, 10);
-            TypeLabel.Visibility = Visibility.Hidden;
-
+            Margin = new Thickness(Margin.Left - MarkerController.Width, Margin.Top, Margin.Right, Margin.Bottom);
+            TypeLabel.HorizontalAlignment = HorizontalAlignment.Right;
         }
         void SetRight()
         {
             IsClosed = false;
-            Panel.SetZIndex(this, 0);
-            TypeLabel.Content = Phoneme.Alias;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -119,7 +115,7 @@ namespace WavConfigTool
             Position += e.HorizontalChange / WavControl.ScaleX;
             Margin = new Thickness(Position * WavControl.ScaleX, 0, 0, 0);
             if (IsClosed)
-                Margin = new Thickness(Margin.Left - Width, Margin.Top, Margin.Right, Margin.Bottom);
+                SetLeft();
         }
 
         private void MarkerController_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
