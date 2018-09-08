@@ -37,6 +37,7 @@ namespace WavConfigTool
         public Project()
         {
             InitializeComponent();
+            Result = Result.Cancel;
         }
         public Project(string vb, string ws, string path)
         {
@@ -47,6 +48,7 @@ namespace WavConfigTool
             TextBoxVB.Text = vb;
             TextBoxWS.Text = ws;
             TextBoxPath.Text = path;
+            Result = Result.Cancel;
         }
 
         private void ButtonSettings(object sender, RoutedEventArgs e)

@@ -153,12 +153,6 @@ namespace WavConfigTool
             }
         }
 
-        void TryNewProject()
-        {
-            MessageBoxResult result = MessageBox.Show("Открыть окно проекта? Несохраненные данные будут потеряны", "OpenProjectWindow project", MessageBoxButton.YesNo, MessageBoxImage.Exclamation, MessageBoxResult.No);
-            if (result == MessageBoxResult.Yes) OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path);
-        }
-
         void NewProject(string settings, string voicebank)
         {
             ReadSettings(settings);
@@ -315,9 +309,10 @@ namespace WavConfigTool
 
         }
 
-        bool WarningUnsaved()
+        bool DoEvenIfUnsaved()
         {
-            var result = MessageBox.Show("Имеются несохраненные изменения. Действительно выйти?", "Несохраненные изменения", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            if (!IsUnsaved) return true;
+            var result = MessageBox.Show("Имеются несохраненные изменения. Продолжить?", "Несохраненные изменения", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
                 File.Delete(TempPath);
@@ -394,7 +389,8 @@ namespace WavConfigTool
 
         private void MenuNew_Click(object sender, RoutedEventArgs e)
         {
-            TryNewProject();
+            if (DoEvenIfUnsaved())
+                OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path);
         }
 
         private void NextPage(object sender, RoutedEventArgs e)
@@ -457,7 +453,8 @@ namespace WavConfigTool
                         Save();
                 }
                 if (Keyboard.IsKeyDown(Key.N) || Keyboard.IsKeyDown(Key.O))
-                    TryNewProject();
+                    if (DoEvenIfUnsaved())
+                        OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path);
 
                 if (Keyboard.IsKeyDown(Key.G))
                     Generate();
@@ -488,9 +485,8 @@ namespace WavConfigTool
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (IsUnsaved)
-                if (!WarningUnsaved())
-                    e.Cancel = true;
+            if (!DoEvenIfUnsaved())
+                e.Cancel = true;
         }
 
         private void AliasChanged(object sender, RoutedEventArgs e)
@@ -571,6 +567,7 @@ namespace WavConfigTool
         {
             Close();
         }
+
         private void LabelPage_LostFocus(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
