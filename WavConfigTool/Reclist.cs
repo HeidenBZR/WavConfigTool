@@ -88,7 +88,7 @@ namespace WavConfigTool
         public virtual string GetDiphone(string filename, Phoneme prev)
         {
             if (prev == null || !NeedAlias(prev) || !HasZone || !prev.HasZone) return "";
-            if (IsConsonant && prev.IsRest) return ConsonantDiphone(filename, prev);
+            if (IsConsonant && prev.IsRest) return ConsonantBeginning(filename, prev);
             if (IsRest && prev.IsConsonant) return ConsonantEnding(filename, prev);
             return NormalDiphone(filename, prev);
 
@@ -115,7 +115,7 @@ namespace WavConfigTool
             return $"{filename}={alias},{oto}\r\n";
         }
 
-        string ConsonantDiphone(string filename, Phoneme prev)
+        string ConsonantBeginning(string filename, Phoneme prev)
         {
             string alias = GetAlias(prev);
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
@@ -174,14 +174,14 @@ namespace WavConfigTool
             if (IsRest)
             {
                 of = prevp - preprev.Overlap - preprev.FadeOut;
-                pre = prev.Zone.Out.Position - of;
-                cut = -Zone.In.Position;
+                pre = preprev.Zone.Out.Position - of;
+                cut = -(Zone.In.Position - of);
             }
             else
             {
                 of = prevp;
                 pre = Zone.In.Position - of;
-                Overlap = prev.Overlap;
+                ov = Overlap;
                 cut = -(Zone.Out.Position - of - FadeOut);
             }
             string oto = Oto(of, con, cut, pre, ov);

@@ -38,20 +38,13 @@ namespace WavConfigTool
             WavMarkerCreated = delegate { };
             if (i == 0)
             {
-                phoneme.Zone.In = this;
                 TypeLabel.Content = Phoneme.Alias;
-                Panel.SetZIndex(this, 0);
+                Phoneme.Zone.In = this;
             }
             else
             {
-                IsClosed = true;
-                phoneme.Zone.Out = this;
                 TypeLabel.Visibility = Visibility.Hidden;
-                Line.HorizontalAlignment = HorizontalAlignment.Right;
-                MarkerController.HorizontalAlignment = HorizontalAlignment.Right;
-                MarkerController.Style = FindResource("WavMarkerControllerStyleClosed") as Style;
-                Margin = new Thickness(Margin.Left - Width, Margin.Top, Margin.Right, Margin.Bottom);
-                Panel.SetZIndex(this, 10);
+                Phoneme.Zone.Out = this;
             }
         }
 
@@ -65,6 +58,8 @@ namespace WavConfigTool
             VerticalAlignment = VerticalAlignment.Bottom;
             MarkerController.VerticalAlignment = VerticalAlignment.Top;
             TypeLabel.VerticalAlignment = VerticalAlignment.Top;
+            if (i == 0) SetRight();
+            else SetLeft();
             WavMarkerCreated(Position);
         }
         public WavMarker(Consonant phoneme, double x, int i) : this(phoneme as Phoneme, x, i)
@@ -77,6 +72,8 @@ namespace WavConfigTool
             VerticalAlignment = VerticalAlignment.Top;
             MarkerController.VerticalAlignment = VerticalAlignment.Bottom;
             TypeLabel.VerticalAlignment = VerticalAlignment.Bottom;
+            if (i == 0) SetLeft();
+            else SetRight();
             WavMarkerCreated(Position);
         }
         public WavMarker(double x, int i) : this(new Rest("-"), x, i)
@@ -89,7 +86,25 @@ namespace WavConfigTool
             VerticalAlignment = VerticalAlignment.Top;
             MarkerController.VerticalAlignment = VerticalAlignment.Bottom;
             TypeLabel.VerticalAlignment = VerticalAlignment.Bottom;
+            if (i == 0) SetLeft();
+            else SetRight();
             WavMarkerCreated(Position);
+        }
+
+        void SetLeft()
+        {
+            IsClosed = true;
+            Line.HorizontalAlignment = HorizontalAlignment.Right;
+            MarkerController.HorizontalAlignment = HorizontalAlignment.Right;
+            MarkerController.Style = FindResource("WavMarkerControllerStyleClosed") as Style;
+            Margin = new Thickness(Margin.Left - Width, Margin.Top, Margin.Right, Margin.Bottom);
+            Panel.SetZIndex(this, 10);
+
+        }
+        void SetRight()
+        {
+            IsClosed = false;
+            Panel.SetZIndex(this, 0);
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
