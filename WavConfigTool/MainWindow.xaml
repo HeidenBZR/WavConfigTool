@@ -39,6 +39,11 @@
                     Header="Save WavConfig As New... (Shift+Ctrl+S)" />
                 <Separator />
                 <MenuItem
+                    Name="MenuFindUncompleted"
+                    Click="MenuFindUncompleted_Click"
+                    Header="Find Uncompleted (Ctrl+U)" />
+                <Separator />
+                <MenuItem
                     Name="MenuGenerate"
                     Click="MenuGenerate_Click"
                     Header="Generate Oto.ini (Ctrl+G)" />

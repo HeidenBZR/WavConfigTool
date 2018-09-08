@@ -31,9 +31,12 @@ namespace WavConfigTool
     public partial class WavControl : UserControl
     {
         public Recline Recline;
-        public List<double> Cs;
-        public List<double> Vs;
-        public List<double> Ds;
+        List<double> _cs = new List<double>();
+        List<double> _vs = new List<double>();
+        List<double> _ds = new List<double>();
+        public List<double> Cs { get { return _cs; } set { _cs = value; CheckCompleted(); } }
+        public List<double> Vs { get { return _vs; } set { _vs = value; CheckCompleted(); } }
+        public List<double> Ds { get { return _ds; } set { _ds = value; CheckCompleted(); } }
 
         public WavMarker[] Data = new WavMarker[2];
         public string ImagePath { get { return System.IO.Path.Combine("Temp", $"{AudioCode}_{Recline.Filename}.png"); } }

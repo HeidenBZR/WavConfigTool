@@ -334,8 +334,21 @@ namespace WavConfigTool
             {
                 PageCurrent = page;
                 DrawPage(manual:false);
+                if (LabelPage.Text != (page + 1).ToString())
+                    LabelPage.Text = (page + 1).ToString();
             }
             //else LabelPage.Text = PageCurrent.ToString();
+        }
+
+        void GotoWav(WavControl control)
+        {
+            GotoWav(control.Recline);
+        }
+        void GotoWav(Recline recline)
+        {
+            int ind = Reclist.Reclines.IndexOf(recline);
+            int page = ind / ItemsOnPage;
+            SetPage(page);
         }
 
         void SetItemsOnPage(byte items)
@@ -374,6 +387,14 @@ namespace WavConfigTool
         void ToggleSpectrum() { }
         void TogglePitch() { }
 
+        void FindUmcompleted()
+        {
+            int ind = WavControls.FindIndex(n => !n.IsCompleted);
+            if (ind == -1)
+                MessageBox.Show("Все аудиофайлы настроены.", "Не найдено", MessageBoxButton.OK, MessageBoxImage.Information);
+            else
+                GotoWav(WavControls[ind]);
+        }
 
         #region Events
 
@@ -458,6 +479,9 @@ namespace WavConfigTool
 
                 if (Keyboard.IsKeyDown(Key.G))
                     Generate();
+
+                if (Keyboard.IsKeyDown(Key.U))
+                    FindUmcompleted();
             }
             else if (Keyboard.IsKeyDown(Key.Enter))
                 Focus();
@@ -580,6 +604,11 @@ namespace WavConfigTool
             if (!IsLoaded) return;
             if (byte.TryParse(LabelItemsOnPage.Text, out byte items)) SetItemsOnPage(items);
             else LabelItemsOnPage.Text = ItemsOnPage.ToString();
+        }
+
+        private void MenuFindUncompleted_Click(object sender, RoutedEventArgs e)
+        {
+            FindUmcompleted();
         }
 
         #endregion
