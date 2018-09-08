@@ -292,6 +292,7 @@ namespace WavConfigTool
                 text += control.Generate();
             }
             File.WriteAllText(System.IO.Path.Combine(Reclist.VoicebankPath, "oto.ini"), text, Encoding.ASCII);
+            MessageBox.Show("Файл oto.ini успешно сгенерирован!", "oto.ini", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         void SetFade(WavConfigPoint point, int value)
