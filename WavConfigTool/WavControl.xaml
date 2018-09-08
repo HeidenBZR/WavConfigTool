@@ -47,6 +47,13 @@
                 Height="100"
                 HorizontalAlignment="Stretch" />
         </Canvas>
+        <Border
+            Name="WavCompleted"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="#3010FF22"
+            BorderBrush="#FF159B00"
+            BorderThickness="0,3,0,3" />
         <Canvas
             Name="GridCanvas"
             HorizontalAlignment="Stretch"

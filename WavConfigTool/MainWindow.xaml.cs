@@ -340,7 +340,7 @@ namespace WavConfigTool
 
         void SetItemsOnPage(byte items)
         {
-            if (items <= 20 && items > 0)
+            if (items <= 100 && items > 0)
             {
                 ItemsOnPage = items;
                 PageTotal = WavControls.Count / ItemsOnPage;

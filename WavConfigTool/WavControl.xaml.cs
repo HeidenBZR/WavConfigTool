@@ -51,6 +51,8 @@ namespace WavConfigTool
         public static string Prefix;
         public static string Suffix;
 
+        public bool IsCompleted;
+
         SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(90, 200, 100, 100));
         SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 200, 50));
         SolidColorBrush CZoneBrush = new SolidColorBrush(Color.FromArgb(250, 50, 250, 250));
@@ -79,6 +81,16 @@ namespace WavConfigTool
             Ds = new List<double>();
             int ind = Recline.Reclist.Reclines.IndexOf(Recline) + 1;
             LabelName.Content = $"{ind}. {recline.Description} [{String.Join(" ", recline.Phonemes.Select(n => n.Alias))}]";
+            WavControlChanged += delegate { CheckCompleted(); };
+        }
+
+        void CheckCompleted()
+        {
+            IsCompleted = Ds.Count == 2 &&
+                Vs.Count / 2 >= Recline.Vowels.Count &&
+                Cs.Count / 2 >= Recline.Consonants.Count;
+            if (IsCompleted) WavCompleted.Opacity = 1;
+            else WavCompleted.Opacity = 0;
         }
 
         void Reset()
@@ -161,6 +173,7 @@ namespace WavConfigTool
             if (!File.Exists(ImagePath)) GenerateWaveform();
             Display();
             DrawConfig();
+            CheckCompleted();
         }
 
         public void Undraw()
