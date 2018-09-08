@@ -10,7 +10,7 @@
     Height="450"
     WindowState="Maximized"
     mc:Ignorable="d">
-    <ScrollViewer Name="ScrollViewer" ScrollChanged="ScrollViewer_ScrollChanged">
+    <ScrollViewer Name="ScrollViewer" ScrollChanged="ScrollViewer_ScrollChanged" HorizontalScrollBarVisibility="Visible">
         <ListView Name="OtoPreviewView"/>
     </ScrollViewer>
 </Window>
