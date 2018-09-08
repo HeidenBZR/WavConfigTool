@@ -108,7 +108,11 @@ namespace WavConfigTool
             double cut = -(Zone.Out.Position - of - FadeIn);
             double pre = IsConsonant && prev.IsVowel ? prevp - of + prev.FadeOut : Zone.In.Position - of;
             double ov = prev.Overlap;
-            if (IsRest) cut -= 50;
+            if (IsRest)
+            {
+                con = pre + prev.FadeOut;
+                cut = -(Zone.Out.Position - of + FadeOut);
+            }
             if (IsVowel)
                 con -= cut/3;
             string oto = Oto(of, con, cut, pre, ov);
@@ -145,7 +149,7 @@ namespace WavConfigTool
 
             double of = prevp + prev.FadeIn;
             double con = Zone.Out.Position - of + FadeIn;
-            double cut = -(Zone.Out.Position - of - FadeOut);
+            double cut = -(Zone.Out.Position - of + FadeOut);
             double pre = prev.Zone.Out.Position - of;
             double ov = prev.Overlap;
             cut -= 50;
@@ -175,7 +179,7 @@ namespace WavConfigTool
             {
                 of = prevp - preprev.Overlap - preprev.FadeOut;
                 pre = preprev.Zone.Out.Position - of;
-                cut = -(Zone.In.Position - of);
+                cut = -(Zone.In.Position - of + FadeOut);
             }
             else
             {

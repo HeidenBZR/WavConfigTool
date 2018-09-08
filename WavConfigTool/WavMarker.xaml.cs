@@ -99,12 +99,14 @@ namespace WavConfigTool
             MarkerController.Style = FindResource("WavMarkerControllerStyleClosed") as Style;
             Margin = new Thickness(Margin.Left - Width, Margin.Top, Margin.Right, Margin.Bottom);
             Panel.SetZIndex(this, 10);
+            TypeLabel.Visibility = Visibility.Hidden;
 
         }
         void SetRight()
         {
             IsClosed = false;
             Panel.SetZIndex(this, 0);
+            TypeLabel.Content = Phoneme.Alias;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

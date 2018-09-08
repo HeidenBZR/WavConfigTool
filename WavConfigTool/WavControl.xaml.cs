@@ -123,9 +123,13 @@ namespace WavConfigTool
             var phonemes = Recline.Phonemes;
             Phoneme In = new Rest("-");
             Phoneme Out = new Rest("-");
+            In.FadeIn = DFade;
+            In.FadeOut = DFade;
             In.Zone.In = Data[0];
             In.Zone.Out = Data[0];
             In.Recline = Recline;
+            Out.FadeIn = DFade;
+            Out.FadeOut = DFade;
             Out.Zone.In = Data[1];
             Out.Zone.Out = Data[1];
             Out.Recline = Recline;
