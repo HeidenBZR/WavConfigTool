@@ -60,6 +60,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FindWavDialog.xaml.cs">
+      <DependentUpon>FindWavDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MusicMath.cs" />
     <Compile Include="Project.xaml.cs">
       <DependentUpon>Project.xaml</DependentUpon>
@@ -72,6 +75,10 @@
     <Compile Include="WavMarker.xaml.cs">
       <DependentUpon>WavMarker.xaml</DependentUpon>
     </Compile>
+    <Page Include="FindWavDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

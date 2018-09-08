@@ -396,6 +396,13 @@ namespace WavConfigTool
                 GotoWav(WavControls[ind]);
         }
 
+        void FindWav()
+        {
+            var dialog = new FindWavDialog(Reclist);
+            dialog.ShowDialog();
+            if (dialog.Index != -1) GotoWav(WavControls[dialog.Index]);
+        }
+
         #region Events
 
         private void MenuSave_Click(object sender, RoutedEventArgs e)
@@ -482,6 +489,9 @@ namespace WavConfigTool
 
                 if (Keyboard.IsKeyDown(Key.U))
                     FindUmcompleted();
+
+                if (Keyboard.IsKeyDown(Key.F))
+                    FindWav();
             }
             else if (Keyboard.IsKeyDown(Key.Enter))
                 Focus();
@@ -609,6 +619,11 @@ namespace WavConfigTool
         private void MenuFindUncompleted_Click(object sender, RoutedEventArgs e)
         {
             FindUmcompleted();
+        }
+
+        private void MenuFindWav_Click(object sender, RoutedEventArgs e)
+        {
+            FindWav();
         }
 
         #endregion

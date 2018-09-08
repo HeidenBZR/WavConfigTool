@@ -39,6 +39,10 @@
                     Header="Save WavConfig As New... (Shift+Ctrl+S)" />
                 <Separator />
                 <MenuItem
+                    Name="MenuFindWav"
+                    Click="MenuFindWav_Click"
+                    Header="Find Wav (Ctrl+F)" />
+                <MenuItem
                     Name="MenuFindUncompleted"
                     Click="MenuFindUncompleted_Click"
                     Header="Find Uncompleted (Ctrl+U)" />

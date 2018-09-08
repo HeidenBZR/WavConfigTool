@@ -268,12 +268,20 @@ namespace WavConfigTool
     public class Recline
     {
         public string Filename;
-        public string Description;
+        public string Description { get; set; }
         public List<Phoneme> Phonemes;
         public List<Phoneme> Vowels { get { return Phonemes.Where(n => n.IsVowel).ToList(); } }
         public List<Phoneme> Consonants { get { return Phonemes.Where(n => n.IsConsonant).ToList(); } }
         public Reclist Reclist;
         public string Path { get { return System.IO.Path.Combine(Reclist.VoicebankPath, Filename); } }
+        public string Name
+        {
+            get
+            {
+                int ind = Reclist.Reclines.IndexOf(this) + 1;
+                return $"{ind}. {Description} [{String.Join(" ", Phonemes.Select(n => n.Alias))}]";
+            }
+        }
 
         public Recline(string filename, string phonemes)
         {
