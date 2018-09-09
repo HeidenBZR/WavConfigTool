@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 namespace WavConfigTool
 {
 
+
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
@@ -185,10 +186,10 @@ namespace WavConfigTool
             return false;
         }
 
-        void SetMode(WavConfigPoint point)
+        void SetMode(WavConfigPoint mode)
         {
-            Mode = point;
-            LabelMode.Content = point;
+            Mode = mode;
+            LabelMode.Content = mode;
         }
 
         void Save()

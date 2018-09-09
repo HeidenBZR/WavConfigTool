@@ -487,16 +487,6 @@ namespace WavConfigTool
 
         #region Events
 
-        override protected void OnMouseLeftButtonUp(MouseButtonEventArgs e)
-        {
-            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-            {
-                double x = e.GetPosition(this).X;
-                Draw(MainWindow.Mode, x);
-                WavControlChanged();
-            }
-        }
-
         private void WavControl_Reset(object sender, RoutedEventArgs e)
         {
             string tag = (sender as MenuItem).Tag.ToString();
@@ -506,18 +496,19 @@ namespace WavConfigTool
             else if (tag == "D") Reset(WavConfigPoint.D);
         }
 
-        private void UserControl_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            {
-                if (Keyboard.IsKeyDown(Key.R))
-                    Reset();
-            }
-        }
-
         private void WavControl_OtoPreview(object sender, RoutedEventArgs e)
         {
             DrawOtoPreview();
+        }
+
+        private void WavCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!WavContextMenu.IsOpen)
+            {
+                double x = e.GetPosition(this).X;
+                Draw(MainWindow.Mode, x);
+                WavControlChanged();
+            }
         }
 
         #endregion

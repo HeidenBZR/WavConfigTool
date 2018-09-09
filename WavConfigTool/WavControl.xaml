@@ -10,45 +10,8 @@
     Margin="0,10,0,10"
     HorizontalAlignment="Left"
     Background="#1555CCCC"
-    KeyDown="UserControl_KeyDown"
     mc:Ignorable="d">
     <Grid Name="Main">
-        <Grid.ContextMenu>
-            <ContextMenu>
-                <MenuItem
-                    Click="WavControl_Reset"
-                    Header="Сбросить все маркеры в текущем аудио"
-                    Tag="All" />
-                <Separator />
-                <MenuItem
-                    Click="WavControl_Reset"
-                    Header="Сбросить все маркеры гласных (V) в текущем аудио"
-                    Tag="V" />
-                <MenuItem
-                    Click="WavControl_Reset"
-                    Header="Сбросить все маркеры согласных (C) в текущем аудио"
-                    Tag="C" />
-                <MenuItem
-                    Click="WavControl_Reset"
-                    Header="Сбросить все маркеры области данных (D) в текущем аудио"
-                    Tag="D" />
-                <Separator />
-                <MenuItem Click="WavControl_OtoPreview" Header="Предпросмотр oto.ini" />
-            </ContextMenu>
-        </Grid.ContextMenu>
-        <Label
-            Name="LabelName"
-            Margin="0,0,0,0"
-            Foreground="#BBBBFF" />
-        <Canvas
-            Name="WavCanvas"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch">
-            <Image
-                Name="WavImage"
-                Height="100"
-                HorizontalAlignment="Stretch" />
-        </Canvas>
         <Border
             Name="WavCompleted"
             HorizontalAlignment="Stretch"
@@ -56,6 +19,43 @@
             Background="#3010FF22"
             BorderBrush="#FF159B00"
             BorderThickness="0,3,0,3" />
+        <Label
+            Name="LabelName"
+            Margin="0,0,0,0"
+            Foreground="#BBBBFF" />
+        <Canvas
+            Name="WavCanvas"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            MouseLeftButtonDown="WavCanvas_MouseLeftButtonDown">
+            <Canvas.ContextMenu>
+                <ContextMenu Name="WavContextMenu">
+                    <MenuItem
+                        Click="WavControl_Reset"
+                        Header="Сбросить все маркеры в текущем аудио"
+                        Tag="All" />
+                    <Separator />
+                    <MenuItem
+                        Click="WavControl_Reset"
+                        Header="Сбросить все маркеры гласных (V) в текущем аудио"
+                        Tag="V" />
+                    <MenuItem
+                        Click="WavControl_Reset"
+                        Header="Сбросить все маркеры согласных (C) в текущем аудио"
+                        Tag="C" />
+                    <MenuItem
+                        Click="WavControl_Reset"
+                        Header="Сбросить все маркеры области данных (D) в текущем аудио"
+                        Tag="D" />
+                    <Separator />
+                    <MenuItem Click="WavControl_OtoPreview" Header="Предпросмотр oto.ini" />
+                </ContextMenu>
+            </Canvas.ContextMenu>
+            <Image
+                Name="WavImage"
+                Height="100"
+                HorizontalAlignment="Stretch" />
+        </Canvas>
         <Canvas
             Name="GridCanvas"
             HorizontalAlignment="Stretch"

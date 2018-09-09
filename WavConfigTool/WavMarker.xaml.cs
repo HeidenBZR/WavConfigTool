@@ -125,8 +125,12 @@ namespace WavConfigTool
 
         private void MarkerController_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-                WavMarkerDelete(Position);
+
+        }
+
+        private void MarkerController_MouseRightButton(object sender, MouseButtonEventArgs e)
+        {
+            WavMarkerDelete(Position);
         }
     }
 }
