@@ -321,16 +321,27 @@ namespace WavConfigTool
             ProjectLoaded();
         }
 
+        string SaveOto()
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "oto.ini file (*.ini)|*.ini";
+            dialog.InitialDirectory = Reclist.VoicebankPath;
+            dialog.ShowDialog();
+            return dialog.FileName;
+        }
+
         void Generate()
         {
+            Dispatcher.Invoke((ThreadStart)delegate { CanvasLoading.Visibility = Visibility.Visible; });
             string text = "";
             Reclist.Aliases = new List<string>();
             foreach (WavControl control in WavControls)
             {
                 text += control.Generate();
             }
-            File.WriteAllText(System.IO.Path.Combine(Reclist.VoicebankPath, "oto.ini"), text, Encoding.ASCII);
-            MessageBox.Show("Файл oto.ini успешно сгенерирован!", "oto.ini", MessageBoxButton.OK, MessageBoxImage.Information);
+            Dispatcher.Invoke(delegate { CanvasLoading.Visibility = Visibility.Hidden; });
+            if (SaveOto() != "")
+                File.WriteAllText(System.IO.Path.Combine(Reclist.VoicebankPath, "oto.ini"), text, Encoding.ASCII);
         }
 
         void SetFade(WavConfigPoint point, int value)
