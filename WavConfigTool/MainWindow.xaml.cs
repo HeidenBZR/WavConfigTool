@@ -55,7 +55,6 @@ namespace WavConfigTool
             ProjectLoaded += delegate 
             {
                 GenerateWaveforms();
-                Dispatcher.Invoke(delegate { CanvasLoading.Visibility = Visibility.Hidden; });
             };
             if (CheckSettings() && CheckLast()) { DrawPage(); }
             else OpenProjectWindow();
@@ -113,7 +112,6 @@ namespace WavConfigTool
             double offset = WavControl.MostLeft - 100 * WavControl.ScaleX;
             ScrollViewer.ScrollToHorizontalOffset(offset);
             ScrollContent(offset);
-            Dispatcher.Invoke(delegate { CanvasLoading.Visibility = Visibility.Hidden; });
         }
 
         void ScrollContent(double offset = -1)
@@ -191,7 +189,6 @@ namespace WavConfigTool
 
         void NewProject(string settings, string voicebank)
         {
-            Dispatcher.Invoke(delegate { CanvasLoading.Visibility = Visibility.Visible; });
             ReadSettings(settings);
             Reclist.VoicebankPath = voicebank;
             Settings.ProjectFile = TempPath;
@@ -203,7 +200,6 @@ namespace WavConfigTool
 
         bool Open(string settings, string project)
         {
-            Dispatcher.Invoke(delegate { CanvasLoading.Visibility = Visibility.Visible; });
             ReadSettings(settings);
             if (File.Exists(project))
             {
@@ -332,14 +328,12 @@ namespace WavConfigTool
 
         void Generate()
         {
-            Dispatcher.Invoke((ThreadStart)delegate { CanvasLoading.Visibility = Visibility.Visible; });
             string text = "";
             Reclist.Aliases = new List<string>();
             foreach (WavControl control in WavControls)
             {
                 text += control.Generate();
             }
-            Dispatcher.Invoke(delegate { CanvasLoading.Visibility = Visibility.Hidden; });
             if (SaveOto() != "")
                 File.WriteAllText(System.IO.Path.Combine(Reclist.VoicebankPath, "oto.ini"), text, Encoding.ASCII);
         }
