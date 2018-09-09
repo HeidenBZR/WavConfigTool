@@ -324,7 +324,7 @@ namespace WavConfigTool
         string SaveOto()
         {
             SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filter = "oto.ini file (*.ini)|*.ini";
+            dialog.Filter = "oto.ini file (oto.ini)|*oto*.ini";
             dialog.InitialDirectory = Reclist.VoicebankPath;
             dialog.ShowDialog();
             return dialog.FileName;
