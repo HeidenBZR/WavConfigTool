@@ -59,6 +59,7 @@ namespace WavConfigTool
             openFileDialog.FilterIndex = 1;
             openFileDialog.RestoreDirectory = true;
             openFileDialog.ShowDialog();
+            if (openFileDialog.FileName == "") return;
             TextBoxWS.Text = openFileDialog.FileName;
         }
 
@@ -70,6 +71,7 @@ namespace WavConfigTool
             openFileDialog.FilterIndex = 1;
             openFileDialog.RestoreDirectory = true;
             openFileDialog.ShowDialog();
+            if (openFileDialog.FileName == "") return;
             TextBoxVB.Text = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
         }
 
@@ -99,6 +101,7 @@ namespace WavConfigTool
             openFileDialog.Filter = "WavConfig Project (*.wconfig)|*.wconfig";
             openFileDialog.RestoreDirectory = true;
             openFileDialog.ShowDialog();
+            if (openFileDialog.FileName == "") return;
             TextBoxPath.Text = openFileDialog.FileName;
         }
 

@@ -14,6 +14,8 @@ namespace WavConfigTool
     {
         static SolidBrush WavZoneBrush = new SolidBrush(System.Drawing.Color.FromArgb(250, 100, 200, 100));
 
+
+
         public static void PointsToImage(object data)
         {
             (System.Windows.Point[] points, int w, int h, WavControl control) = ((System.Windows.Point[] points, int w, int h, WavControl control))data;

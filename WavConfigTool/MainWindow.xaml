@@ -469,6 +469,31 @@
             VerticalScrollBarVisibility="Auto">
             <StackPanel Name="WaveControlStackPanel" />
         </ScrollViewer>
+        <Grid
+            Name="CanvasLoading"
+            Grid.Row="3"
+            Margin="5"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="#557BCBC4">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Ellipse
+                    Width="30"
+                    Height="30"
+                    StrokeThickness="3">
+                    <Ellipse.Stroke>
+                        <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0.5,0" EndPoint="0.5,1">
+                            <GradientStop Offset="0" Color="#FFAAEAE4" />
+                            <GradientStop Offset="0.285" Color="#FF7BCBC4" />
+                            <GradientStop Offset="0.609" Color="#FF3B4746" />
+                            <GradientStop Color="#FF488F89" Offset="0.883"/>
+                            <GradientStop Color="#FF54B8AF" Offset="0.982"/>
+                        </LinearGradientBrush>
+                    </Ellipse.Stroke>
+                </Ellipse>
+                <Label Content="Loading..." Foreground="#FFCDEEEB" />
+            </StackPanel>
 
+        </Grid>
     </Grid>
 </Window>

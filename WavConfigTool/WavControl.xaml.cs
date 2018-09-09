@@ -202,25 +202,41 @@ namespace WavConfigTool
         {
             if (!force && File.Exists(ImagePath)) return;
             var points = GetAudioPoints();
-            Width = points.Last().X;
-            Height = 100;
+            int width = (int) points.Last().X;
+            Dispatcher.BeginInvoke((ThreadStart)delegate
+            {
+                Width = width;
+                Height = 100;
+            });
 
 
             Thread thread = new Thread(WaveForm.PointsToImage);
+            thread.IsBackground = true;
             thread.Name = Recline.Filename;
-            thread.Start((points, (int)Width, (int)Height, this));
-            if (force) Undraw();
+            thread.Start((points, width, 100, this));
         }
 
 
         void OpenImage()
         {
+            //Thread thread = new Thread(OpenImageThread);
+            //thread.Start(Recline.Path);
+            ThreadPool.QueueUserWorkItem(OpenImageThread);
+        }
+
+        void LoadImage()
+        {
+            var uri = new Uri(ImagePath, UriKind.Relative);
+            WavImage.Source = new BitmapImage(uri);
+            //Width = WavImage.Width;
+        }
+
+        public void OpenImageThread(object path)
+        {
             bool isAlowed = false;
-            for (int i = 0; !IsImageGenerated && !isAlowed; i++)
+            for (int i = 0; !isAlowed; i++)
             {
-                i++;
-                Thread.Sleep(100);
-                if (i > 1000) throw new Exception("It's beeeeen too loooong~");
+                if (i > 100000) throw new Exception();
                 try { var f = File.Open(ImagePath, FileMode.Open); isAlowed = true; f.Close(); }
                 catch (IOException) { isAlowed = false; }
             }
@@ -230,8 +246,11 @@ namespace WavConfigTool
             src.UriSource = new Uri(ImagePath, UriKind.Relative);
             src.CacheOption = BitmapCacheOption.OnLoad;
             src.EndInit();
-            WavImage.Source = src;
-            Width = src.Width;
+            src.Freeze();
+            Dispatcher.BeginInvoke((ThreadStart)delegate
+            {
+                WavImage.Source = src;
+            });
         }
 
         Point[] GetAudioPoints()

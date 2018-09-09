@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -51,7 +52,11 @@ namespace WavConfigTool
             ClearTemp();
             InitTextBoxes();
             PrevMousePosition = Mouse.GetPosition(this);
-            ProjectLoaded += delegate { GenerateWaveforms(); };
+            ProjectLoaded += delegate 
+            {
+                GenerateWaveforms();
+                Dispatcher.Invoke(delegate { CanvasLoading.Visibility = Visibility.Hidden; });
+            };
             if (CheckSettings() && CheckLast()) { DrawPage(); }
             else OpenProjectWindow();
         }
@@ -108,6 +113,7 @@ namespace WavConfigTool
             double offset = WavControl.MostLeft - 100 * WavControl.ScaleX;
             ScrollViewer.ScrollToHorizontalOffset(offset);
             ScrollContent(offset);
+            Dispatcher.Invoke(delegate { CanvasLoading.Visibility = Visibility.Hidden; });
         }
 
         void ScrollContent(double offset = -1)
@@ -121,7 +127,13 @@ namespace WavConfigTool
         void GenerateWaveforms(bool force = false)
         {
             if (!IsLoaded) return;
-            foreach (WavControl control in WavControls) control.GenerateWaveform(force);
+            GenerateWaveformsAsync(force);
+        }
+        async void GenerateWaveformsAsync(bool force)
+        {
+            foreach (WavControl control in WavControls)
+                await Task.Run(() => { control.GenerateWaveform(force); });
+
         }
 
 
@@ -149,11 +161,20 @@ namespace WavConfigTool
 
         void OpenProjectWindow(string voicebank = "", string wavsettings = "", string path = "", bool open = false)
         {
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                WaveControlStackPanel.Children.Clear();
+                WaveControlStackPanel.Children.Capacity = 0;
+            });
             Project project = new Project(voicebank, wavsettings, path, open);
             while (true)
             { 
                 project.ShowDialog();
-                if (project.Result == Result.Cancel) return;
+                if (project.Result == Result.Cancel)
+                {
+                    DrawPage();
+                    return;
+                }
                 ClearTemp();
                 if (project.Result == Result.Close) { Close(); return; }
                 else if (project.Result == Result.Open)
@@ -170,6 +191,7 @@ namespace WavConfigTool
 
         void NewProject(string settings, string voicebank)
         {
+            Dispatcher.Invoke(delegate { CanvasLoading.Visibility = Visibility.Visible; });
             ReadSettings(settings);
             Reclist.VoicebankPath = voicebank;
             Settings.ProjectFile = TempPath;
@@ -180,6 +202,7 @@ namespace WavConfigTool
 
         bool Open(string settings, string project)
         {
+            Dispatcher.Invoke(delegate { CanvasLoading.Visibility = Visibility.Visible; });
             ReadSettings(settings);
             if (File.Exists(project))
             {
@@ -318,11 +341,13 @@ namespace WavConfigTool
         
         void ClearTemp()
         {
-            WaveControlStackPanel.Children.Clear();
-            WaveControlStackPanel.Children.Capacity = 0;
+            Dispatcher.Invoke((ThreadStart)delegate
+            {
+                WaveControlStackPanel.Children.Clear();
+                WaveControlStackPanel.Children.Capacity = 0;
+            });
             foreach (string filename in Directory.GetFiles("Temp"))
                 File.Delete(filename);
-
         }
 
         bool DoEvenIfUnsaved()
@@ -386,7 +411,6 @@ namespace WavConfigTool
             if (value > 0 && value < 50f)
             {
                 Settings.WAM = value;
-                foreach (var control in WavControls) control.Undraw();
                 ClearTemp();
                 GenerateWaveforms(force: true);
                 DrawPage();
