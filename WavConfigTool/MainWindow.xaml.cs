@@ -43,6 +43,11 @@ namespace WavConfigTool
         public MainWindow()
         {
             InitializeComponent();
+            Width = Settings.WindowSize.X;
+            Height = Settings.WindowSize.Y;
+            Left = Settings.WindowPosition.X;
+            Top = Settings.WindowPosition.Y;
+            WindowState = Settings.IsMaximized ? WindowState.Maximized : WindowState.Normal;
             ClearTemp();
             InitTextBoxes();
             PrevMousePosition = Mouse.GetPosition(this);
@@ -541,7 +546,12 @@ namespace WavConfigTool
             if (!DoEvenIfUnsaved())
                 e.Cancel = true;
             else
+            {
+                Settings.WindowSize = new System.Drawing.Point((int)Width, (int)Height);
+                Settings.WindowPosition = new System.Drawing.Point((int)Left, (int)Top);
+                Settings.IsMaximized = WindowState == WindowState.Maximized;
                 Properties.Settings.Default.Save();
+            }
         }
 
         private void AliasChanged(object sender, RoutedEventArgs e)

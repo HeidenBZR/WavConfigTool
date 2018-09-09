@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -111,6 +110,45 @@ namespace WavConfigTool
             set
             {
                 Properties.Settings.Default.WavSettings = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static bool IsMaximized
+        {
+            get
+            {
+                return Properties.Settings.Default.IsMaximized;
+            }
+            set
+            {
+                Properties.Settings.Default.IsMaximized = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static System.Drawing.Point WindowSize
+        {
+            get
+            {
+                return Properties.Settings.Default.WindowSize;
+            }
+            set
+            {
+                Properties.Settings.Default.WindowSize = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static System.Drawing.Point WindowPosition
+        {
+            get
+            {
+                return Properties.Settings.Default.WindowPosition;
+            }
+            set
+            {
+                Properties.Settings.Default.WindowPosition = value;
                 Properties.Settings.Default.Save();
             }
         }
