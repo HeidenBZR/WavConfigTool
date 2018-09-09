@@ -205,13 +205,13 @@
                             Click="PrevPage"
                             Content="˂" />
                         <TextBox
-                            Name="LabelPage"
+                            Name="TextBoxPage"
                             Width="30"
                             Margin="3,0"
                             Padding="0"
                             VerticalAlignment="Center"
                             HorizontalContentAlignment="Right"
-                            LostFocus="LabelPage_LostFocus"
+                            LostFocus="TextBoxPage_LostFocus"
                             Text="00" />
                         <Label
                             Padding="0"
@@ -233,12 +233,12 @@
                             VerticalAlignment="Center"
                             Content="На странице: " />
                         <TextBox
-                            Name="LabelItemsOnPage"
+                            Name="TextBoxItemsOnPage"
                             Width="25"
                             Margin="3,0"
                             Padding="1"
                             VerticalAlignment="Center"
-                            LostFocus="LabelItemsOnPage_LostFocus"
+                            LostFocus="TextBoxItemsOnPage_LostFocus"
                             Text="5" />
                     </StackPanel>
                 </StackPanel>
@@ -343,7 +343,7 @@
 
                         <Label
                             Margin="3,0"
-                            Content="WAT:"
+                            Content="WAM:"
                             ToolTip="Waveform Amplitude Multiplayer" />
                         <TextBox
                             Name="TextBoxMultiplier"

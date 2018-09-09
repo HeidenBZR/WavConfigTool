@@ -26,9 +26,9 @@ namespace WavConfigTool.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("30")]
-        public string FadeV {
+        public int FadeV {
             get {
-                return ((string)(this["FadeV"]));
+                return ((int)(this["FadeV"]));
             }
             set {
                 this["FadeV"] = value;
@@ -38,9 +38,9 @@ namespace WavConfigTool.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public string FadeC {
+        public int FadeC {
             get {
-                return ((string)(this["FadeC"]));
+                return ((int)(this["FadeC"]));
             }
             set {
                 this["FadeC"] = value;
@@ -50,9 +50,9 @@ namespace WavConfigTool.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public string FadeD {
+        public int FadeD {
             get {
-                return ((string)(this["FadeD"]));
+                return ((int)(this["FadeD"]));
             }
             set {
                 this["FadeD"] = value;
@@ -80,6 +80,42 @@ namespace WavConfigTool.Properties {
             }
             set {
                 this["CurrentPage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double WAM {
+            get {
+                return ((double)(this["WAM"]));
+            }
+            set {
+                this["WAM"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("D:\\Github\\WavConfigTool\\WavConfigTool\\bin\\Debug\\minto_power.wconfig")]
+        public string ProjectFile {
+            get {
+                return ((string)(this["ProjectFile"]));
+            }
+            set {
+                this["ProjectFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("D:\\Github\\WavConfigTool\\WavConfigTool\\bin\\Debug\\cvc_rus.wsettings")]
+        public string WavSettings {
+            get {
+                return ((string)(this["WavSettings"]));
+            }
+            set {
+                this["WavSettings"] = value;
             }
         }
     }

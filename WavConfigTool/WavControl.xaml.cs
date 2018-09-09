@@ -46,11 +46,7 @@ namespace WavConfigTool
         public static double ScaleY = 60f;
         public static int PointSkip = 5;
         public static double MostLeft = 9999;
-        public static double WaveformAmplitudeMultiplayer = 1f;
 
-        public static int VFade = 30;
-        public static int CFade = 10;
-        public static int DFade = 200;
         public static string Prefix;
         public static string Suffix;
 
@@ -122,18 +118,8 @@ namespace WavConfigTool
             markers.OrderBy(n => n.Position);
             string text = "";
             var phonemes = Recline.Phonemes;
-            Phoneme In = new Rest("-");
-            Phoneme Out = new Rest("-");
-            In.FadeIn = DFade;
-            In.FadeOut = DFade;
-            In.Zone.In = Data[0];
-            In.Zone.Out = Data[0];
-            In.Recline = Recline;
-            Out.FadeIn = DFade;
-            Out.FadeOut = DFade;
-            Out.Zone.In = Data[1];
-            Out.Zone.Out = Data[1];
-            Out.Recline = Recline;
+            Phoneme In = new Rest("-", Data[0], Recline);
+            Phoneme Out = new Rest("-", Data[1], Recline);
             text += phonemes[0].GetMonophone(Recline.Filename);
             if (phonemes.Count > 1) text += phonemes[0].GetDiphone(Recline.Filename, In);
             if (phonemes.Count > 1) text += phonemes[1].GetDiphone(Recline.Filename, phonemes[0]);
@@ -157,11 +143,10 @@ namespace WavConfigTool
             foreach (var phoneme in Recline.Phonemes)
             {
                 int fade;
-                if (phoneme.Type == PhonemeType.Consonant) fade = CFade;
-                else if (phoneme.Type == PhonemeType.Vowel) fade = VFade;
-                else fade = DFade;
-                phoneme.FadeIn = fade;
-                phoneme.FadeOut = fade;
+                if (phoneme.Type == PhonemeType.Consonant) fade = Settings.FadeC;
+                else if (phoneme.Type == PhonemeType.Vowel) fade = Settings.FadeV;
+                else fade = Settings.FadeD;
+                phoneme.Fade = fade;
             }
         }
         /// <summary>
@@ -263,7 +248,7 @@ namespace WavConfigTool
             for ( ; i < l / 4; i += PointSkip)
             {
                 if (Math.Abs(data[i]) > 0.001)
-                    points.Add(new Point(i * ScaleX / SampleRate * 1000, data[i] * ScaleY * WaveformAmplitudeMultiplayer + 50));
+                    points.Add(new Point(i * ScaleX / SampleRate * 1000, data[i] * ScaleY * Settings.WAM + 50));
                 else
                 {
                     points.Add(new Point(i * ScaleX / SampleRate * 1000, 50));
@@ -272,7 +257,7 @@ namespace WavConfigTool
                 {
                     if (Ds.Count == 0)
                     {
-                        Ds.Add((double)i / SampleRate * 1000 * WaveformAmplitudeMultiplayer);
+                        Ds.Add((double)i / SampleRate * 1000 - 20);
                     }
                     else
                     {
@@ -282,7 +267,7 @@ namespace WavConfigTool
                 }
             }
             Length = (int)(i * 1000 / SampleRate);
-            if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate * 1000 * WaveformAmplitudeMultiplayer);
+            if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate * 1000 + 20);
             reader.Close();
             return points.ToArray();
         }
@@ -292,20 +277,16 @@ namespace WavConfigTool
             switch (point)
             {
                 case WavConfigPoint.C:
-                    Cs.Add(x / ScaleX);
+                    if (Cs.Count < Recline.Consonants.Count * 2)
+                        Cs.Add(x / ScaleX);
                     break;
                 case WavConfigPoint.V:
-                    Vs.Add(x / ScaleX);
+                    if (Vs.Count < Recline.Vowels.Count * 2)
+                        Vs.Add(x / ScaleX);
                     break;
                 case WavConfigPoint.D:
-                    if (Ds.Count < 2) Ds.Add(x / ScaleX);
-                    else
-                    {
-                        var distance1 = Math.Abs(Ds[0] - x);
-                        var distance2 = Math.Abs(Ds[1] - x);
-                        if (distance1 < distance2) distance1 = x;
-                        else  distance2 = x;
-                    }
+                    if (Ds.Count < 2)
+                        Ds.Add(x / ScaleX);
                     break;
             }
             DrawConfig();
@@ -411,11 +392,11 @@ namespace WavConfigTool
                     Points = new PointCollection
                     {
                         new Point((Vs[i]) * ScaleX, 50),
-                        new Point((Vs[i] + VFade) * ScaleX, 30),
-                        new Point((Vs[i + 1] - VFade) * ScaleX, 30),
+                        new Point((Vs[i] + Settings.FadeV) * ScaleX, 30),
+                        new Point((Vs[i + 1] - Settings.FadeV) * ScaleX, 30),
                         new Point((Vs[i + 1]) * ScaleX, 50),
-                        new Point((Vs[i + 1] - VFade) * ScaleX, 70),
-                        new Point((Vs[i] + VFade) * ScaleX, 70)
+                        new Point((Vs[i + 1] - Settings.FadeV) * ScaleX, 70),
+                        new Point((Vs[i] + Settings.FadeV) * ScaleX, 70)
                     },
                     Fill = FillVowelZoneBrush
                 };
@@ -434,7 +415,7 @@ namespace WavConfigTool
                     new Point(0,0),
                     new Point(x,0),
                     new Point(x,0),
-                    new Point(x - DFade * ScaleX,50),
+                    new Point(x - Settings.FadeD * ScaleX,50),
                     new Point(x,100),
                     new Point(0,100)
                 },
@@ -451,7 +432,7 @@ namespace WavConfigTool
                     new Point(Width,0),
                     new Point(x,0),
                     new Point(x,0),
-                    new Point(x + DFade * ScaleX,50),
+                    new Point(x + Settings.FadeD * ScaleX,50),
                     new Point(x,100),
                     new Point(Width,100)
                 },
@@ -470,11 +451,11 @@ namespace WavConfigTool
                     Points = new PointCollection
                     {
                         new Point((Cs[i]) * ScaleX, 50),
-                        new Point((Cs[i] + CFade) * ScaleX, 40),
-                        new Point((Cs[i + 1] - CFade) * ScaleX, 40),
+                        new Point((Cs[i] + Settings.FadeC) * ScaleX, 40),
+                        new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 40),
                         new Point((Cs[i + 1]) * ScaleX, 50),
-                        new Point((Cs[i + 1] - CFade) * ScaleX, 60),
-                        new Point((Cs[i] + CFade) * ScaleX, 60)
+                        new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 60),
+                        new Point((Cs[i] + Settings.FadeC) * ScaleX, 60)
                     },
                     Fill = FillCZoneBrush
                 };
@@ -503,7 +484,7 @@ namespace WavConfigTool
 
         private void WavCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!WavContextMenu.IsVisible)
+            if (!WavContextMenu.IsVisible && Keyboard.IsKeyUp(Key.Space))
             {
                 double x = e.GetPosition(this).X;
                 Draw(MainWindow.Mode, x);

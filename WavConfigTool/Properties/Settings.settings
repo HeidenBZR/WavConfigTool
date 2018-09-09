@@ -2,13 +2,13 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WavConfigTool.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="FadeV" Type="System.String" Scope="User">
+    <Setting Name="FadeV" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">30</Value>
     </Setting>
-    <Setting Name="FadeC" Type="System.String" Scope="User">
+    <Setting Name="FadeC" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
-    <Setting Name="FadeD" Type="System.String" Scope="User">
+    <Setting Name="FadeD" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">100</Value>
     </Setting>
     <Setting Name="ItemsOnPage" Type="System.Int32" Scope="User">
@@ -16,6 +16,15 @@
     </Setting>
     <Setting Name="CurrentPage" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="WAM" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="ProjectFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\Github\WavConfigTool\WavConfigTool\bin\Debug\minto_power.wconfig</Value>
+    </Setting>
+    <Setting Name="WavSettings" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\Github\WavConfigTool\WavConfigTool\bin\Debug\cvc_rus.wsettings</Value>
     </Setting>
   </Settings>
 </SettingsFile>

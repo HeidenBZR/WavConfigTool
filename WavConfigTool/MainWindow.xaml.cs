@@ -25,8 +25,6 @@ namespace WavConfigTool
     public partial class MainWindow : Window
     {
         Reclist Reclist;
-        string WavSettings;
-        string Path;
         string TempPath = "temp.wconfig";
         List<WavControl> WavControls;
         public static WavConfigPoint Mode = WavConfigPoint.V;
@@ -44,38 +42,41 @@ namespace WavConfigTool
 
         public MainWindow()
         {
-            ClearTemp();
             InitializeComponent();
+            ClearTemp();
+            InitTextBoxes();
             PrevMousePosition = Mouse.GetPosition(this);
             ProjectLoaded += delegate { GenerateWaveforms(); };
             if (CheckSettings() && CheckLast()) { DrawPage(); }
             else OpenProjectWindow();
         }
 
+        void InitTextBoxes()
+        {
+            TextBoxFadeC.Text = Settings.FadeC.ToString();
+            TextBoxFadeV.Text = Settings.FadeV.ToString();
+            TextBoxFadeD.Text = Settings.FadeD.ToString();
+            TextBoxItemsOnPage.Text = Settings.ItemsOnPage.ToString();
+            TextBoxPage.Text = Settings.CurrentPage.ToString();
+            TextBoxMultiplier.Text = Settings.WAM.ToString("f2");
+        }
+
         bool CheckSettings()
         {
-            if (File.Exists("settings"))
+            if (Settings.WavSettings != "" && File.Exists(Settings.WavSettings))
             {
-                string filename = File.ReadAllText("settings", Encoding.UTF8);
-                if (File.Exists(filename))
-                {
-                    ReadSettings(filename);
-                    return true;
-                }
+                ReadSettings(Settings.WavSettings);
+                return true;
             }
             return false;
         }
 
         bool CheckLast()
         {
-            if (File.Exists("last"))
+            if (Settings.ProjectFile != "" && File.Exists(Settings.ProjectFile))
             {
-                string filename = File.ReadAllText("last", Encoding.UTF8);
-                if (File.Exists(filename))
-                {
-                    ReadProject(filename);
-                    return true;
-                }
+                ReadProject(Settings.ProjectFile);
+                return true;
             }
             return false;
         }
@@ -95,8 +96,8 @@ namespace WavConfigTool
             }
             if (manual)
             {
-                LabelItemsOnPage.Text = ItemsOnPage.ToString();
-                LabelPage.Text = (PageCurrent + 1).ToString();
+                TextBoxItemsOnPage.Text = ItemsOnPage.ToString();
+                TextBoxPage.Text = (PageCurrent + 1).ToString();
                 LabelPageTotal.Content = (PageTotal - 1).ToString();
             }
             double offset = WavControl.MostLeft - 100 * WavControl.ScaleX;
@@ -166,7 +167,7 @@ namespace WavConfigTool
         {
             ReadSettings(settings);
             Reclist.VoicebankPath = voicebank;
-            Path = TempPath;
+            Settings.ProjectFile = TempPath;
             DrawPage();
             SetTitle();
             ProjectLoaded();
@@ -194,7 +195,7 @@ namespace WavConfigTool
 
         void Save()
         {
-            if (Path == TempPath)
+            if (Settings.ProjectFile == TempPath)
             {
                 SaveAs();
                 return;
@@ -209,7 +210,7 @@ namespace WavConfigTool
                 text += $"{ String.Join(" ", control.Vs.Select(n => n.ToString("f0"))) }\r\n";
                 text += $"{String.Join(" ", control.Cs.Select(n => n.ToString("f0")))}\r\n";
             }
-            File.WriteAllText(Path, text, Encoding.UTF8);
+            File.WriteAllText(Settings.ProjectFile, text, Encoding.UTF8);
             IsUnsaved = false;
             SetTitle();
             if (File.Exists(TempPath)) File.Delete(TempPath);
@@ -217,13 +218,13 @@ namespace WavConfigTool
 
         void SaveAs()
         {
-            string lastpath = Path;
+            string lastpath = Settings.ProjectFile;
             SaveFileDialog openFileDialog = new SaveFileDialog();
             openFileDialog.Filter = "WavConfig Project (*.wconfig)|*.wconfig";
             openFileDialog.RestoreDirectory = true;
             openFileDialog.ShowDialog();
             if (openFileDialog.FileName == "") return;
-            Path = openFileDialog.FileName;
+            Settings.ProjectFile = openFileDialog.FileName;
             Save();
             File.Delete(lastpath);
             IsUnsaved = false;
@@ -231,7 +232,7 @@ namespace WavConfigTool
 
         void SetTitle(bool unsaved = false)
         {
-            Title = $"WavConfig - {System.IO.Path.GetFileName(Path)}{(unsaved? "*" : "")} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
+            Title = $"WavConfig - {System.IO.Path.GetFileName(Settings.ProjectFile)}{(unsaved? "*" : "")} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
         }
 
         void SaveBackup()
@@ -264,13 +265,12 @@ namespace WavConfigTool
                 if (items.Length != 3) continue;
                 AddFile(items[0], items[1], items[2]);
             }
-            WavSettings = settings;
-            File.WriteAllText("settings", WavSettings, Encoding.UTF8);
+            Settings.WavSettings = settings;
         }
 
         void ReadProject(string project)
         {
-            Path = project;
+            Settings.ProjectFile = project;
             string[] lines = File.ReadAllLines(project);
             Reclist.VoicebankPath = lines[0];
             for (int i = 1; i + 3 < lines.Length;  i += 4)
@@ -287,8 +287,7 @@ namespace WavConfigTool
                     if (pcs.Length > 0) control.Cs = pcs.Split(' ').Select(n => double.Parse(n)).ToList();
                 }
             }
-            File.WriteAllText("last", Path, Encoding.UTF8);
-            Title = $"WavConfig - {System.IO.Path.GetFileName(Path)} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
+            SetTitle();
             ProjectLoaded();
         }
 
@@ -306,14 +305,16 @@ namespace WavConfigTool
 
         void SetFade(WavConfigPoint point, int value)
         {
-            if (point == WavConfigPoint.V) WavControl.VFade = value;
-            else if (point == WavConfigPoint.C) WavControl.CFade = value;
-            else if (point == WavConfigPoint.D) WavControl.DFade = value;
+            if (point == WavConfigPoint.V) Settings.FadeV = value;
+            else if (point == WavConfigPoint.C) Settings.FadeC = value;
+            else if (point == WavConfigPoint.D) Settings.FadeD = value;
             DrawPage();
         }
         
         void ClearTemp()
         {
+            WaveControlStackPanel.Children.Clear();
+            WaveControlStackPanel.Children.Capacity = 0;
             foreach (string filename in Directory.GetFiles("Temp"))
                 File.Delete(filename);
 
@@ -344,10 +345,10 @@ namespace WavConfigTool
             {
                 PageCurrent = page;
                 DrawPage(manual:false);
-                if (LabelPage.Text != (page + 1).ToString())
-                    LabelPage.Text = (page + 1).ToString();
+                if (TextBoxPage.Text != (page + 1).ToString())
+                    TextBoxPage.Text = (page + 1).ToString();
             }
-            //else LabelPage.Text = PageCurrent.ToString();
+            //else TextBoxPage.Text = PageCurrent.ToString();
         }
 
         void GotoWav(WavControl control)
@@ -372,14 +373,14 @@ namespace WavConfigTool
                 GotoWav(WavControls[current]);
                 LabelPageTotal.Content = (PageTotal - 1).ToString();
             }
-            //else LabelItemsOnPage.Text = ItemsOnPage.ToString();
+            //else TextBoxItemsOnPage.Text = ItemsOnPage.ToString();
         }
 
         void SetWaveformAmplitudeMultiplayer(float value)
         {
             if (value > 0 && value < 50f)
             {
-                WavControl.WaveformAmplitudeMultiplayer = value;
+                Settings.WAM = value;
                 foreach (var control in WavControls) control.Undraw();
                 ClearTemp();
                 GenerateWaveforms(force: true);
@@ -431,9 +432,9 @@ namespace WavConfigTool
         {
             if (DoEvenIfUnsaved())
                 if ((sender as MenuItem).Tag.ToString() == "New")
-                    OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path);
+                    OpenProjectWindow(Reclist.VoicebankPath, Settings.WavSettings, Settings.ProjectFile);
                 else
-                    OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path, true);
+                    OpenProjectWindow(Reclist.VoicebankPath, Settings.WavSettings, Settings.ProjectFile, true);
         }
 
         private void NextPage(object sender, RoutedEventArgs e)
@@ -496,11 +497,11 @@ namespace WavConfigTool
                 }
                 if (Keyboard.IsKeyDown(Key.N))
                     if (DoEvenIfUnsaved())
-                        OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path);
+                        OpenProjectWindow(Reclist.VoicebankPath, Settings.WavSettings, Settings.ProjectFile);
 
                 if (Keyboard.IsKeyDown(Key.O))
                     if (DoEvenIfUnsaved())
-                        OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path, true);
+                        OpenProjectWindow(Reclist.VoicebankPath, Settings.WavSettings, Settings.ProjectFile, true);
 
                 if (Keyboard.IsKeyDown(Key.G))
                     Generate();
@@ -539,6 +540,8 @@ namespace WavConfigTool
         {
             if (!DoEvenIfUnsaved())
                 e.Cancel = true;
+            else
+                Properties.Settings.Default.Save();
         }
 
         private void AliasChanged(object sender, RoutedEventArgs e)
@@ -597,7 +600,7 @@ namespace WavConfigTool
             if (!IsLoaded) return;
             if (float.TryParse(TextBoxMultiplier.Text, out float value))
                 SetWaveformAmplitudeMultiplayer(value);
-            TextBoxMultiplier.Text = WavControl.WaveformAmplitudeMultiplayer.ToString("f2");
+            TextBoxMultiplier.Text = Settings.WAM.ToString("f2");
 
         }
 
@@ -620,18 +623,18 @@ namespace WavConfigTool
             Close();
         }
 
-        private void LabelPage_LostFocus(object sender, RoutedEventArgs e)
+        private void TextBoxPage_LostFocus(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
-            if (int.TryParse(LabelPage.Text, out int page)) SetPage(page);
-            else LabelPage.Text = PageCurrent.ToString();
+            if (int.TryParse(TextBoxPage.Text, out int page)) SetPage(page);
+            else TextBoxPage.Text = PageCurrent.ToString();
         }
 
-        private void LabelItemsOnPage_LostFocus(object sender, RoutedEventArgs e)
+        private void TextBoxItemsOnPage_LostFocus(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
-            if (byte.TryParse(LabelItemsOnPage.Text, out byte items)) SetItemsOnPage(items);
-            else LabelItemsOnPage.Text = ItemsOnPage.ToString();
+            if (byte.TryParse(TextBoxItemsOnPage.Text, out byte items)) SetItemsOnPage(items);
+            else TextBoxItemsOnPage.Text = ItemsOnPage.ToString();
         }
 
         private void MenuFindUncompleted_Click(object sender, RoutedEventArgs e)
