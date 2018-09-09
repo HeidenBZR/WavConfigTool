@@ -359,10 +359,12 @@ namespace WavConfigTool
         {
             if (items <= 100 && items > 0)
             {
+                int current = PageCurrent * ItemsOnPage;
                 ItemsOnPage = items;
                 PageTotal = WavControls.Count / ItemsOnPage;
                 if (PageCurrent > PageTotal) PageCurrent = PageTotal;
-                DrawPage(manual:false);
+                GotoWav(WavControls[current]);
+                LabelPageTotal.Content = (PageTotal - 1).ToString();
             }
             //else LabelItemsOnPage.Text = ItemsOnPage.ToString();
         }
