@@ -197,6 +197,7 @@ namespace WavConfigTool
             Settings.ProjectFile = TempPath;
             DrawPage();
             SetTitle();
+            if (Settings.ProjectFile != TempPath && File.Exists(TempPath)) File.Delete(TempPath);
             ProjectLoaded();
         }
 
@@ -209,6 +210,7 @@ namespace WavConfigTool
                 ReadProject(project);
                 DrawPage();
                 SetTitle();
+                if (Settings.ProjectFile != TempPath && File.Exists(TempPath)) File.Delete(TempPath);
                 return true;
             }
             else MessageBox.Show("Ошибка при открытии файла проекта", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);

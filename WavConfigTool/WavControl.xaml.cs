@@ -53,7 +53,7 @@ namespace WavConfigTool
         public int Length;
         public bool IsCompleted;
 
-        SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(90, 200, 100, 100));
+        SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(250, 2, 20, 4));
         SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 200, 50));
         SolidColorBrush CZoneBrush = new SolidColorBrush(Color.FromArgb(250, 50, 250, 250));
         SolidColorBrush FillVowelZoneBrush = new SolidColorBrush(Color.FromArgb(50, 200, 200, 50));
@@ -417,6 +417,7 @@ namespace WavConfigTool
                         new Point((Vs[i + 1] - Settings.FadeV) * ScaleX, 70),
                         new Point((Vs[i] + Settings.FadeV) * ScaleX, 70)
                     },
+                    Name = $"VZone{i / 2}{(i % 2 == 0? "In":"Out")}",
                     Fill = FillVowelZoneBrush
                 };
                 AreasCanvas.Children.Add(Zone);
@@ -438,6 +439,7 @@ namespace WavConfigTool
                     new Point(x,100),
                     new Point(0,100)
                 },
+                Name = "DZoneIn",
                 Opacity = 0.5
             };
             AreasCanvas.Children.Add(ZoneIn);
@@ -448,13 +450,14 @@ namespace WavConfigTool
                 Fill = CutZoneBrush,
                 Points = new PointCollection()
                 {
-                    new Point(Width,0),
+                    new Point(Length * ScaleX,0),
                     new Point(x,0),
                     new Point(x,0),
                     new Point(x + Settings.FadeD * ScaleX,50),
                     new Point(x,100),
-                    new Point(Width,100)
+                    new Point(Length * ScaleX,100)
                 },
+                Name = "DZoneOut",
                 Opacity = 0.5
             };
             AreasCanvas.Children.Add(ZoneOut);
@@ -476,6 +479,7 @@ namespace WavConfigTool
                         new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 60),
                         new Point((Cs[i] + Settings.FadeC) * ScaleX, 60)
                     },
+                    Name = $"CZone{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
                     Fill = FillCZoneBrush
                 };
                 AreasCanvas.Children.Add(Zone);

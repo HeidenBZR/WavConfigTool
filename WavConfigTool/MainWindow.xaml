@@ -14,14 +14,13 @@
     MouseMove="Window_MouseMove"
     WindowState="Maximized"
     mc:Ignorable="d">
-    <Grid>
+    <Grid Background="#FF15191D">
         <Grid.RowDefinitions>
             <RowDefinition Height="21" />
             <RowDefinition Name="ToolsPanel" Height="80" />
             <RowDefinition Height="12" />
             <RowDefinition Height="337*" />
         </Grid.RowDefinitions>
-        <Rectangle Grid.RowSpan="4" Fill="#101030" />
         <Menu HorizontalAlignment="Stretch" VerticalAlignment="Top">
             <MenuItem Name="MenuFile" Header="File">
                 <MenuItem
@@ -471,6 +470,7 @@
         </ScrollViewer>
         <Grid
             Name="CanvasLoading"
+            Visibility="Hidden"
             Grid.Row="3"
             Margin="5"
             HorizontalAlignment="Stretch"
