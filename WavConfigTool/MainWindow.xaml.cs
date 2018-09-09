@@ -140,9 +140,9 @@ namespace WavConfigTool
             WavControls.Add(control);
         }
 
-        void OpenProjectWindow(string voicebank = "", string wavsettings = "", string path = "")
+        void OpenProjectWindow(string voicebank = "", string wavsettings = "", string path = "", bool open = false)
         {
-            Project project = new Project(voicebank, wavsettings, path);
+            Project project = new Project(voicebank, wavsettings, path, open);
             while (true)
             { 
                 project.ShowDialog();
@@ -429,7 +429,10 @@ namespace WavConfigTool
         private void MenuNew_Click(object sender, RoutedEventArgs e)
         {
             if (DoEvenIfUnsaved())
-                OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path);
+                if ((sender as MenuItem).Tag.ToString() == "New")
+                    OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path);
+                else
+                    OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path, true);
         }
 
         private void NextPage(object sender, RoutedEventArgs e)
@@ -490,9 +493,13 @@ namespace WavConfigTool
                     else
                         Save();
                 }
-                if (Keyboard.IsKeyDown(Key.N) || Keyboard.IsKeyDown(Key.O))
+                if (Keyboard.IsKeyDown(Key.N))
                     if (DoEvenIfUnsaved())
                         OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path);
+
+                if (Keyboard.IsKeyDown(Key.O))
+                    if (DoEvenIfUnsaved())
+                        OpenProjectWindow(Reclist.VoicebankPath, WavSettings, Path, true);
 
                 if (Keyboard.IsKeyDown(Key.G))
                     Generate();

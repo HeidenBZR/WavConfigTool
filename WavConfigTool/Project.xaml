@@ -25,26 +25,6 @@
                 <Button Click="ButtonSettings" Content="Обзор..." />
             </StackPanel>
             <TabControl SelectionChanged="TabControl_SelectionChanged">
-                <TabItem Name="TabOpen" Header="Открыть проект">
-                    <StackPanel
-                        Margin="5"
-                        HorizontalAlignment="Right"
-                        Orientation="Horizontal">
-                        <Label Content="Проект:" />
-                        <TextBox
-                            Name="TextBoxPath"
-                            Width="250"
-                            Text="" />
-                        <Button
-                            Width="60"
-                            Click="ButtonProject"
-                            Content="Обзор..." />
-                        <Button
-                            Width="60"
-                            Click="ButtonOpen"
-                            Content="Открыть" />
-                    </StackPanel>
-                </TabItem>
                 <TabItem Name="TabNew" Header="Новый проект">
                     <StackPanel
                         Margin="5"
@@ -63,6 +43,26 @@
                             Width="60"
                             Click="ButtonNew"
                             Content="Создать" />
+                    </StackPanel>
+                </TabItem>
+                <TabItem Name="TabOpen" Header="Открыть проект">
+                    <StackPanel
+                        Margin="5"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <Label Content="Проект:" />
+                        <TextBox
+                            Name="TextBoxPath"
+                            Width="250"
+                            Text="" />
+                        <Button
+                            Width="60"
+                            Click="ButtonProject"
+                            Content="Обзор..." />
+                        <Button
+                            Width="60"
+                            Click="ButtonOpen"
+                            Content="Открыть" />
                     </StackPanel>
                 </TabItem>
             </TabControl>

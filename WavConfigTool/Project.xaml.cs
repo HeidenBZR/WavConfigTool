@@ -34,12 +34,13 @@ namespace WavConfigTool
         public string Settings;
         public string Path;
 
-        public Project()
+        public Project(bool open = false)
         {
             InitializeComponent();
             Result = Result.Cancel;
+            if (open) TabOpen.IsSelected = true;
         }
-        public Project(string vb, string ws, string path)
+        public Project(string vb, string ws, string path, bool open = false) : this(open)
         {
             InitializeComponent();
             Voicebank = vb;
@@ -48,7 +49,6 @@ namespace WavConfigTool
             TextBoxVB.Text = vb;
             TextBoxWS.Text = ws;
             TextBoxPath.Text = path;
-            Result = Result.Cancel;
         }
 
         private void ButtonSettings(object sender, RoutedEventArgs e)

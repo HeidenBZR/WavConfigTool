@@ -27,13 +27,13 @@
                 <MenuItem
                     Name="MenuNew"
                     Click="MenuNew_Click"
-                    Header="New/Open WavConfig..."
+                    Header="_New WavConfig..."
                     InputGestureText="Ctrl+N"
                     Tag="New" />
                 <MenuItem
                     Name="MenuOpen"
                     Click="MenuNew_Click"
-                    Header="New/Open WavConfig..."
+                    Header="_Open WavConfig..."
                     InputGestureText="Ctrl+O"
                     Tag="Open" />
                 <Separator />
