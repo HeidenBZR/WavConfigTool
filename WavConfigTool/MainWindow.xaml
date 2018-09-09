@@ -27,45 +27,84 @@
                 <MenuItem
                     Name="MenuNew"
                     Click="MenuNew_Click"
-                    Header="New/Open WavConfig... (Ctrl+N, Ctrl+O)" />
+                    Header="New/Open WavConfig..."
+                    InputGestureText="Ctrl+N"
+                    Tag="New" />
+                <MenuItem
+                    Name="MenuOpen"
+                    Click="MenuNew_Click"
+                    Header="New/Open WavConfig..."
+                    InputGestureText="Ctrl+O"
+                    Tag="Open" />
                 <Separator />
                 <MenuItem
                     Name="MenuSave"
                     Click="MenuSave_Click"
-                    Header="Save WavConfig (Ctrl+S)" />
+                    Header="Save WavConfig"
+                    InputGestureText="Ctrl+S" />
                 <MenuItem
                     Name="MenuSaveAs"
                     Click="MenuSaveAs_Click"
-                    Header="Save WavConfig As New... (Shift+Ctrl+S)" />
+                    Header="Save WavConfig As New..."
+                    InputGestureText="Shift+Ctrl+S" />
                 <Separator />
                 <MenuItem
                     Name="MenuFindWav"
                     Click="MenuFindWav_Click"
-                    Header="Find Wav (Ctrl+F)" />
+                    Header="Find Wav"
+                    InputGestureText="Ctrl+F" />
                 <MenuItem
                     Name="MenuFindUncompleted"
                     Click="MenuFindUncompleted_Click"
-                    Header="Find Uncompleted (Ctrl+U)" />
+                    Header="Find Uncompleted"
+                    InputGestureText="Ctrl+U" />
                 <Separator />
                 <MenuItem
                     Name="MenuGenerate"
                     Click="MenuGenerate_Click"
-                    Header="Generate Oto.ini (Ctrl+G)" />
+                    Header="Generate Oto.ini"
+                    InputGestureText="Ctrl+G" />
                 <Separator />
                 <MenuItem Click="MenuExit_Click" Header="Exit" />
             </MenuItem>
             <MenuItem Header="View">
-                <MenuItem Click="ToggleWaveform_Click" Header="Toggle Waveform (Ctrl+Q)" />
-                <MenuItem Click="ToggleSpectrum_Click" Header="Toggle Spectrum (Ctrl+W)" />
-                <MenuItem Click="TogglePitch_Click" Header="Toggle Pitch (Ctrl+E)" />
+                <MenuItem
+                    Click="ToggleWaveform_Click"
+                    Header="Toggle Waveform"
+                    InputGestureText="Ctrl+Q" />
+                <MenuItem
+                    Click="ToggleSpectrum_Click"
+                    Header="Toggle Spectrum"
+                    InputGestureText="Ctrl+W"
+                    IsEnabled="False" />
+                <MenuItem
+                    Click="TogglePitch_Click"
+                    Header="Toggle Pitch"
+                    InputGestureText="Ctrl+E"
+                    IsEnabled="False" />
                 <Separator />
-                <MenuItem Click="PrevPage_Click" Header="Предыдущая страница ( ] )" />
-                <MenuItem Click="NextPage_Click" Header="Следующая страница ( [ )" />
+                <MenuItem
+                    Click="PrevPage_Click"
+                    Header="Предыдущая страница"
+                    InputGestureText="]" />
+                <MenuItem
+                    Click="NextPage_Click"
+                    Header="Следующая страница"
+                    InputGestureText="[" />
                 <Separator />
-                <MenuItem Click="MoreItems_Click" Header="Больше строк на странице (+)" />
-                <MenuItem Click="LessItems_Click" Header="Меньше строк на странице (-)" />
+                <MenuItem
+                    Click="MoreItems_Click"
+                    Header="Больше элементов на странице"
+                    InputGestureText="+" />
+                <MenuItem
+                    Click="LessItems_Click"
+                    Header="Меньше элементов на странице"
+                    InputGestureText="-" />
                 <Separator />
-                <MenuItem Click="ToggleToolsPanel_Click" Header="Toggle Tools Panel (Backspace)" />
+                <MenuItem
+                    Click="ToggleToolsPanel_Click"
+                    Header="Toggle Tools Panel"
+                    InputGestureText="Backspace" />
             </MenuItem>
         </Menu>
         <StackPanel Grid.Row="1" Orientation="Horizontal">

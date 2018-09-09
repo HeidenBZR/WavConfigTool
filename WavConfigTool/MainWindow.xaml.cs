@@ -98,12 +98,17 @@ namespace WavConfigTool
                 LabelPage.Text = (PageCurrent + 1).ToString();
                 LabelPageTotal.Content = (PageTotal - 1).ToString();
             }
-            ScrollViewer.ScrollToHorizontalOffset(WavControl.MostLeft - 100 * WavControl.ScaleX);
-            foreach (WavControl control in WavControls)
-            {
-                control.LabelName.Margin = new Thickness(WavControl.MostLeft - 100 * WavControl.ScaleX, 0, 0, 0);
-                control.OtoPreviewButton.Margin = new Thickness(WavControl.MostLeft - 100 * WavControl.ScaleX, 0, 0, 0);
-            }
+            double offset = WavControl.MostLeft - 100 * WavControl.ScaleX;
+            ScrollViewer.ScrollToHorizontalOffset(offset);
+            ScrollContent(offset);
+        }
+
+        void ScrollContent(double offset = -1)
+        {
+            if (offset == -1)
+                offset = ScrollViewer.HorizontalOffset;
+            for (int i = PageCurrent * ItemsOnPage; i <  (PageCurrent+1) * ItemsOnPage; i++)
+                WavControls[i].LabelName.Margin = new Thickness(offset, 0, 0, 0);
         }
 
         void GenerateWaveforms(bool force = false)
@@ -442,11 +447,7 @@ namespace WavConfigTool
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             if (!IsLoaded) return;
-            foreach (WavControl control in WavControls)
-            {
-                control.LabelName.Margin = new Thickness(e.HorizontalOffset, 0, 0, 0);
-                control.OtoPreviewButton.Margin = new Thickness(e.HorizontalOffset, 0, 0, 0);
-            }
+            ScrollContent();
         }
 
         private void MenuSaveAs_Click(object sender, RoutedEventArgs e)

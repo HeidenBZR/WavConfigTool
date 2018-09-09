@@ -32,6 +32,8 @@
                     Click="WavControl_Reset"
                     Header="Сбросить все маркеры области данных (D) в текущем аудио"
                     Tag="D" />
+                <Separator />
+                <MenuItem Click="WavControl_OtoPreview" Header="Предпросмотр oto.ini" />
             </ContextMenu>
         </Grid.ContextMenu>
         <Label
@@ -66,26 +68,5 @@
             Name="AreasCanvas"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" />
-        <Button
-            Name="OtoPreviewButton"
-            Padding="5,3"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Bottom"
-            Click="OtoPreview_Click"
-            Content="Oto preview">
-            <!--<Button.Template>
-                <ControlTemplate>
-                    <Grid>
-                        <Grid.Background>
-                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                                <GradientStop Offset="0.575" Color="#FF2A4F53" />
-                                <GradientStop Color="#FF2FBD83" />
-                            </LinearGradientBrush>
-                        </Grid.Background>
-                        <Label Content="OTO Preview" Foreground="Black" />
-                    </Grid>
-                </ControlTemplate>
-            </Button.Template>-->
-        </Button>
     </Grid>
 </UserControl>

@@ -515,7 +515,7 @@ namespace WavConfigTool
             }
         }
 
-        private void OtoPreview_Click(object sender, RoutedEventArgs e)
+        private void WavControl_OtoPreview(object sender, RoutedEventArgs e)
         {
             DrawOtoPreview();
         }
