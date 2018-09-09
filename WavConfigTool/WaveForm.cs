@@ -7,18 +7,70 @@ using System.Drawing;
 using System.Windows.Media;
 using System.IO;
 using System.Windows.Media.Imaging;
+using NAudio.Wave;
 
 namespace WavConfigTool
 {
     class WaveForm
     {
+        public static int PointSkip = 5;
         static SolidBrush WavZoneBrush = new SolidBrush(System.Drawing.Color.FromArgb(250, 100, 200, 100));
 
+        public string Path;
+        public int SampleRate;
+        public List<double> Ds = new List<double>();
+        public double MostLeft;
 
+        public long Length;
+        public float[] Data;
 
-        public static void PointsToImage(object data)
+        public WaveForm(string path)
         {
-            (System.Windows.Point[] points, int w, int h, WavControl control) = ((System.Windows.Point[] points, int w, int h, WavControl control))data;
+            Path = path;
+            AudioFileReader reader = new AudioFileReader(Path);
+
+            SampleRate = reader.WaveFormat.SampleRate;
+            Length = reader.Length;
+            Data = new float[Length];
+            reader.Read(Data, 0, (int)Length);
+            reader.Close();
+        }
+
+        public System.Windows.Point[] GetAudioPoints()
+        {
+            List<System.Windows.Point> points = new List<System.Windows.Point>();
+            long lastpoint = 0;
+            var max = Data.Max();
+            long i = 0;
+            for (; i < Length / 4; i += PointSkip)
+            {
+                if (Math.Abs(Data[i]) > 0.001)
+                    points.Add(new System.Windows.Point(i * WavControl.ScaleX / SampleRate * 1000, Data[i] * WavControl.ScaleY * Settings.WAM + 50));
+                else
+                {
+                    points.Add(new System.Windows.Point((i * WavControl.ScaleX / SampleRate * 1000), 50));
+                }
+                if (Data[i] >= max * 0.05)
+                {
+                    if (Ds.Count == 0)
+                    {
+                        Ds.Add((double)i / SampleRate * 1000 - 20);
+                    }
+                    else
+                    {
+                        if (Ds[0] * WavControl.ScaleX < MostLeft) MostLeft = Ds[0] * WavControl.ScaleX;
+                        lastpoint = i;
+                    }
+                }
+            }
+            if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate * 1000 + 20);
+            return points.ToArray();
+        }
+
+
+        public void PointsToImage(object Data)
+        {
+            (System.Windows.Point[] points, int w, int h, WavControl control) = ((System.Windows.Point[] points, int w, int h, WavControl control))Data;
 
             Console.WriteLine($"Started generating {control.ImagePath}");
             Bitmap image = new Bitmap(w, h);

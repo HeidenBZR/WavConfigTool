@@ -14,8 +14,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using NAudio;
-using NAudio.Wave;
 
 namespace WavConfigTool
 {
@@ -42,9 +40,7 @@ namespace WavConfigTool
         public string ImagePath { get { return System.IO.Path.Combine("Temp", $"{AudioCode}_{Recline.Filename}.png"); } }
 
         public static double ScaleX = 0.7f;
-        public static int SampleRate = 44100;
         public static double ScaleY = 60f;
-        public static int PointSkip = 5;
         public static double MostLeft = 9999;
 
         public static string Prefix;
@@ -239,7 +235,13 @@ namespace WavConfigTool
         public void GenerateWaveform(bool force = false)
         {
             if (!force && File.Exists(ImagePath)) return;
-            var points = GetAudioPoints();
+            WaveForm wave = new WaveForm(Recline.Path);
+            var points = wave.GetAudioPoints();
+            if (Ds == null || Ds.Count == 0)
+                Ds = wave.Ds;
+            MostLeft = wave.MostLeft;
+            Length = (int) (wave.Length * 1000 / wave.SampleRate);
+            
             int width = (int) points.Last().X;
             Dispatcher.BeginInvoke((ThreadStart)delegate
             {
@@ -248,7 +250,7 @@ namespace WavConfigTool
             });
 
 
-            Thread thread = new Thread(WaveForm.PointsToImage);
+            Thread thread = new Thread(wave.PointsToImage);
             thread.IsBackground = true;
             thread.Name = Recline.Filename;
             thread.Start((points, width, 100, this));
@@ -291,43 +293,6 @@ namespace WavConfigTool
             });
         }
 
-        Point[] GetAudioPoints()
-        {
-            AudioFileReader reader = new AudioFileReader(Recline.Path);
-            SampleRate = reader.WaveFormat.SampleRate;
-            var l = reader.Length;
-            float[] data = new float[l];
-            reader.Read(data, 0, (int)l);
-            List<Point> points = new List<Point>();
-            long lastpoint = 0;
-            var max = data.Max();
-            long i = 0;
-            for ( ; i < l / 4; i += PointSkip)
-            {
-                if (Math.Abs(data[i]) > 0.001)
-                    points.Add(new Point(i * ScaleX / SampleRate * 1000, data[i] * ScaleY * Settings.WAM + 50));
-                else
-                {
-                    points.Add(new Point(i * ScaleX / SampleRate * 1000, 50));
-                }
-                if (data[i] >= max * 0.05)
-                {
-                    if (Ds.Count == 0)
-                    {
-                        Ds.Add((double)i / SampleRate * 1000 - 20);
-                    }
-                    else
-                    {
-                        if (Ds[0] * ScaleX < MostLeft) MostLeft = Ds[0] * ScaleX;
-                        lastpoint = i;
-                    }
-                }
-            }
-            Length = (int)(i * 1000 / SampleRate);
-            if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate * 1000 + 20);
-            reader.Close();
-            return points.ToArray();
-        }
 
         void Draw(WavConfigPoint point, double x)
         {
@@ -472,7 +437,6 @@ namespace WavConfigTool
                 {
                     new Point(0,0),
                     new Point(x,0),
-                    new Point(x,0),
                     new Point(x - Settings.FadeD * ScaleX,50),
                     new Point(x,100),
                     new Point(0,100)
@@ -489,7 +453,6 @@ namespace WavConfigTool
                 Points = new PointCollection()
                 {
                     new Point(Length * ScaleX,0),
-                    new Point(x,0),
                     new Point(x,0),
                     new Point(x + Settings.FadeD * ScaleX,50),
                     new Point(x,100),
