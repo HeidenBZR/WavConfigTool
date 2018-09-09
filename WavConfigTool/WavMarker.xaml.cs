@@ -28,6 +28,7 @@ namespace WavConfigTool
         public event WavMarkerMoveEventHandler WavMarkerDelete;
         public event WavMarkerMoveEventHandler WavMarkerCreated;
         bool IsClosed = false;
+        bool IsIn;
 
         public WavMarker(Phoneme phoneme, double x, int i)
         {
@@ -36,7 +37,9 @@ namespace WavConfigTool
             Margin = new Thickness(x * WavControl.ScaleX, 0, 0, 0);
             Phoneme = phoneme;
             WavMarkerCreated = delegate { };
-            if (i == 0)
+            IsIn = i == 0;
+            SetToolTip();
+            if (IsIn)
             {
                 TypeLabel.Content = Phoneme.Alias;
                 Phoneme.Zone.In = this;
@@ -58,7 +61,7 @@ namespace WavConfigTool
             VerticalAlignment = VerticalAlignment.Bottom;
             MarkerController.VerticalAlignment = VerticalAlignment.Top;
             TypeLabel.VerticalAlignment = VerticalAlignment.Top;
-            if (i == 0) SetRight();
+            if (IsIn) SetRight();
             else SetLeft();
             WavMarkerCreated(Position);
         }
@@ -72,7 +75,7 @@ namespace WavConfigTool
             VerticalAlignment = VerticalAlignment.Top;
             MarkerController.VerticalAlignment = VerticalAlignment.Bottom;
             TypeLabel.VerticalAlignment = VerticalAlignment.Bottom;
-            if (i == 0) SetLeft();
+            if (IsIn) SetLeft();
             else SetRight();
             WavMarkerCreated(Position);
         }
@@ -86,7 +89,7 @@ namespace WavConfigTool
             VerticalAlignment = VerticalAlignment.Top;
             MarkerController.VerticalAlignment = VerticalAlignment.Bottom;
             TypeLabel.VerticalAlignment = VerticalAlignment.Bottom;
-            if (i == 0) SetLeft();
+            if (IsIn) SetLeft();
             else SetRight();
             WavMarkerCreated(Position);
         }
@@ -105,6 +108,14 @@ namespace WavConfigTool
             IsClosed = false;
         }
 
+        void SetToolTip()
+        {
+            MarkerController.ToolTip = $"{Phoneme.Alias} " +
+                    $"[{(IsIn ? "IN" : "OUT")}]: " +
+                    $"{ Position.ToString("f0")}";
+
+        }
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
 
@@ -120,6 +131,7 @@ namespace WavConfigTool
 
         private void MarkerController_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
+            SetToolTip();
             WavMarkerMoved(Position);
         }
 

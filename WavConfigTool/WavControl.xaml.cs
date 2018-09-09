@@ -503,7 +503,7 @@ namespace WavConfigTool
 
         private void WavCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!WavContextMenu.IsOpen)
+            if (!WavContextMenu.IsVisible)
             {
                 double x = e.GetPosition(this).X;
                 Draw(MainWindow.Mode, x);

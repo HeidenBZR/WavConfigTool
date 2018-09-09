@@ -43,10 +43,10 @@
             BorderBrush="{DynamicResource BorderBrush}"
             BorderThickness="2"
             Cursor="Hand"
-            MouseRightButtonUp="MarkerController_MouseRightButton"
             DragCompleted="MarkerController_DragCompleted"
             DragDelta="MarkerController_DragDelta"
             DragStarted="MarkerController_DragStarted"
+            MouseRightButtonUp="MarkerController_MouseRightButton"
             Style="{DynamicResource WavMarkerControllerStyle}" />
         <Label
             Name="TypeLabel"
