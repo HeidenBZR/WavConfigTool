@@ -34,6 +34,8 @@ namespace WavConfigTool
         public List<Phoneme> Vowels { get { return Phonemes.Where(n => n.IsVowel).ToList(); } }
         public List<Phoneme> Consonants { get { return Phonemes.Where(n => n.IsConsonant).ToList(); } }
         public Reclist Reclist;
+
+        public List<Phoneme> Data;
         public string Path { get { return System.IO.Path.Combine(Reclist.VoicebankPath, Filename); } }
         public string Name
         {

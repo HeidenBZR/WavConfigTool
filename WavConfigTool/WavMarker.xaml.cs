@@ -42,12 +42,12 @@ namespace WavConfigTool
             if (IsIn)
             {
                 TypeLabel.Content = Phoneme.Alias;
-                Phoneme.Zone.In = this;
+                Phoneme.Zone.In = Position;
             }
             else
             {
                 TypeLabel.Visibility = Visibility.Hidden;
-                Phoneme.Zone.Out = this;
+                Phoneme.Zone.Out = Position;
             }
         }
 

@@ -15,22 +15,47 @@ namespace WavConfigTool
 
     public struct Zone
     {
-        public WavMarker In;
-        public WavMarker Out;
+        public double In;
+        public double Out;
     }
 
     public abstract class Phoneme
     {
         public double Preutterance;
         public double Overlap;
-        public double Length { get { return (Zone.Out).Position - (Zone.In).Position; } }
+        public double Length { get { return Zone.Out - Zone.In; } }
         public double Fade;
 
         public string Alias;
         public string Letter;
         public PhonemeType Type;
         public Zone Zone;
-        public bool HasZone { get { return Zone.In != null && Zone.Out != null; } }
+        public int GlobalIndex
+        {
+            get
+            {
+                return Recline.Phonemes.IndexOf(this);
+            }
+        }
+        public int LocalIndex
+        {
+            get
+            {
+                if (IsConsonant)
+                    return Recline.Consonants.IndexOf(this);
+                else if (IsVowel)
+                    return Recline.Vowels.IndexOf(this);
+                else
+                    return Recline.Data.IndexOf(this);
+            }
+        }
+        public bool HasZone
+        {
+            get
+            {
+                return Zone.In != 0 && Zone.Out != 0;
+            }
+        }
         public Recline Recline;
 
         public bool IsConsonant { get { return Type == PhonemeType.Consonant; } }
@@ -66,9 +91,9 @@ namespace WavConfigTool
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double of = Zone.In.Position + Fade;
+            double of = Zone.In + Fade;
             double con = Fade;
-            double cut = -(Zone.Out.Position - of - Fade) / 1.5;
+            double cut = -(Zone.Out - of - Fade) / 1.5;
             double pre = Preutterance;
             double ov = Overlap;
             con = -cut / 3;
@@ -91,20 +116,20 @@ namespace WavConfigTool
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double prevp = prev.Zone.Out.Position - prev.Fade;
-            if (prev.IsRest) prevp = prev.Zone.Out.Position;
-            double dist = Zone.In.Position - prevp;
+            double prevp = prev.Zone.Out - prev.Fade;
+            if (prev.IsRest) prevp = prev.Zone.Out;
+            double dist = Zone.In - prevp;
 
             double of = prevp - prev.Overlap;
             double con = prev.Overlap + dist + Fade;
-            double cut = -(Zone.Out.Position - of - Fade);
-            if (IsVowel) cut = -(Zone.Out.Position - of - Fade) / 1.5;
-            double pre = IsConsonant && prev.IsVowel ? prevp - of + prev.Fade : Zone.In.Position - of;
+            double cut = -(Zone.Out - of - Fade);
+            if (IsVowel) cut = -(Zone.Out - of - Fade) / 1.5;
+            double pre = IsConsonant && prev.IsVowel ? prevp - of + prev.Fade : Zone.In - of;
             double ov = prev.Overlap;
             if (IsRest)
             {
                 con = pre + prev.Fade;
-                cut = -(Zone.Out.Position - of + Fade);
+                cut = -(Zone.Out - of + Fade);
             }
             if (IsVowel)
                 con -= cut / 3;
@@ -118,13 +143,13 @@ namespace WavConfigTool
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double prevp = prev.Zone.Out.Position;
-            double dist = Zone.In.Position - prevp;
+            double prevp = prev.Zone.Out;
+            double dist = Zone.In - prevp;
 
             double of = prevp - prev.Overlap;
-            double con = Zone.Out.Position - of + Fade;
-            double cut = -(Zone.Out.Position - of + Fade);
-            double pre = Zone.Out.Position - of;
+            double con = Zone.Out - of + Fade;
+            double cut = -(Zone.Out - of + Fade);
+            double pre = Zone.Out - of;
             double ov = prev.Overlap;
             cut -= 50;
             string oto = Oto(of, con, cut, pre, ov);
@@ -137,13 +162,13 @@ namespace WavConfigTool
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double prevp = prev.Zone.In.Position;
-            double dist = Zone.In.Position - prevp;
+            double prevp = prev.Zone.In;
+            double dist = Zone.In - prevp;
 
             double of = prevp + prev.Fade;
-            double con = Zone.Out.Position - of + Fade;
-            double cut = -(Zone.Out.Position - of + Fade);
-            double pre = prev.Zone.Out.Position - of;
+            double con = Zone.Out - of + Fade;
+            double cut = -(Zone.Out - of + Fade);
+            double pre = prev.Zone.Out - of;
             double ov = prev.Overlap;
             cut -= 50;
             string oto = Oto(of, con, cut, pre, ov);
@@ -157,29 +182,29 @@ namespace WavConfigTool
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double prevp = preprev.Zone.Out.Position;
+            double prevp = preprev.Zone.Out;
             double preprevoffset = prevp;
-            double prevoffset = prev.Zone.In.Position;
-            double offset = Zone.In.Position;
+            double prevoffset = prev.Zone.In;
+            double offset = Zone.In;
             double dist = offset - preprevoffset;
 
             double of = preprevoffset - Preutterance;
             double con = Preutterance + dist + Fade;
-            double cut = -(Zone.Out.Position - of - Fade);
+            double cut = -(Zone.Out - of - Fade);
             double pre = dist + Preutterance;
             double ov = preprev.Overlap;
             if (IsRest)
             {
                 of = prevp - preprev.Overlap - preprev.Fade;
-                pre = prev.Zone.In.Position + prev.Fade - of;
-                cut = -(Zone.In.Position - of + Fade);
+                pre = prev.Zone.In + prev.Fade - of;
+                cut = -(Zone.In - of + Fade);
             }
             else
             {
                 of = prevp;
-                pre = Zone.In.Position - of + Fade;
+                pre = Zone.In - of + Fade;
                 ov = Overlap;
-                cut = -(Zone.Out.Position - of - Fade) / 1.5;
+                cut = -(Zone.Out - of - Fade) / 1.5;
             }
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
@@ -226,10 +251,10 @@ namespace WavConfigTool
             Type = PhonemeType.Rest;
             Fade = Settings.FadeD;
         }
-        public Rest(string l, WavMarker marker, Recline recline, string letter = "") : this(l, letter)
+        public Rest(string l, double position, Recline recline, string letter = "") : this(l, letter)
         {
-            Zone.In = marker;
-            Zone.Out = marker;
+            Zone.In = position;
+            Zone.Out = position;
             Recline = recline;
         }
         public override bool NeedAlias() { return false; }

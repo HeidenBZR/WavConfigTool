@@ -34,9 +34,9 @@ namespace WavConfigTool
         List<double> _cs = new List<double>();
         List<double> _vs = new List<double>();
         List<double> _ds = new List<double>();
-        public List<double> Cs { get { return _cs; } set { _cs = value; CheckCompleted(); } }
-        public List<double> Vs { get { return _vs; } set { _vs = value; CheckCompleted(); } }
-        public List<double> Ds { get { return _ds; } set { _ds = value; CheckCompleted(); } }
+        public List<double> Cs { get { return _cs; } set { _cs = value; ApplyPoints(WavConfigPoint.C); CheckCompleted(); } }
+        public List<double> Vs { get { return _vs; } set { _vs = value; ApplyPoints(WavConfigPoint.V); CheckCompleted(); } }
+        public List<double> Ds { get { return _ds; } set { _ds = value; ApplyPoints(WavConfigPoint.D); CheckCompleted(); } }
 
         public WavMarker[] Data = new WavMarker[2];
         public string ImagePath { get { return System.IO.Path.Combine("Temp", $"{AudioCode}_{Recline.Filename}.png"); } }
@@ -111,19 +111,16 @@ namespace WavConfigTool
 
         public string Generate()
         {
-            DrawConfig();
             ApplyFade();
             Normalize();
             List<WavMarker> markers = MarkerCanvas.Children.OfType<WavMarker>().ToList();
             markers.OrderBy(n => n.Position);
             string text = "";
             var phonemes = Recline.Phonemes;
-            Phoneme In = new Rest("-", Data[0], Recline);
-            Phoneme Out = new Rest("-", Data[1], Recline);
             text += phonemes[0].GetMonophone(Recline.Filename);
-            if (phonemes.Count > 1) text += phonemes[0].GetDiphone(Recline.Filename, In);
+            if (phonemes.Count > 1) text += phonemes[0].GetDiphone(Recline.Filename, Recline.Data[0]);
             if (phonemes.Count > 1) text += phonemes[1].GetDiphone(Recline.Filename, phonemes[0]);
-            if (phonemes.Count > 2) text += phonemes[1].GetTriphone(Recline.Filename, phonemes[0], In);
+            if (phonemes.Count > 2) text += phonemes[1].GetTriphone(Recline.Filename, phonemes[0], Recline.Data[0]);
             int i;
             for (i = 2; i < Recline.Phonemes.Count; i++)
             {
@@ -131,9 +128,9 @@ namespace WavConfigTool
                 text += phonemes[i].GetDiphone(Recline.Filename, phonemes[i - 1]);
                 text += phonemes[i].GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
             }
-            text += Out.GetMonophone(Recline.Filename);
-            text += Out.GetDiphone(Recline.Filename, phonemes[i - 1]);
-            text += Out.GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
+            text += Recline.Data[1].GetMonophone(Recline.Filename);
+            text += Recline.Data[1].GetDiphone(Recline.Filename, phonemes[i - 1]);
+            text += Recline.Data[1].GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
             return text;
         }
 
@@ -157,7 +154,41 @@ namespace WavConfigTool
             // Check that all Vowels ans Consonants are inside Data; and Vowels & Consonants doesn't intersect
             if (Cs.Count > 0) { }
         }
-        
+
+        void ApplyPoints(WavConfigPoint point)
+        {
+            if (point == WavConfigPoint.C)
+            {
+                for (int i = 0; i < Cs.Count; i++)
+                {
+                    if (i % 2 == 0)
+                        Recline.Consonants[i / 2].Zone.In = Cs[i];
+                    else
+                        Recline.Consonants[i / 2].Zone.Out = Cs[i];
+                }
+            }
+            if (point == WavConfigPoint.V)
+            {
+                for (int i = 0; i < Vs.Count; i++)
+                {
+                    if (i % 2 == 0)
+                        Recline.Vowels[i / 2].Zone.In = Vs[i];
+                    else
+                        Recline.Vowels[i / 2].Zone.Out = Vs[i];
+                }
+            }
+            if (point == WavConfigPoint.D)
+            {
+                Recline.Data = new List<Phoneme>();
+                foreach (var d in Ds)
+                {
+                    Phoneme phoneme = new Rest("-", d, Recline);
+                    Recline.Data.Add(phoneme);
+                }
+            }
+        }
+
+
         void DrawOtoPreview()
         {
             Recline.Reclist.Aliases = new List<string>();
