@@ -111,8 +111,9 @@ namespace WavConfigTool
 
         public string Generate()
         {
-            ApplyFade();
             Normalize();
+            ApplyPoints();
+            ApplyFade();
             List<WavMarker> markers = MarkerCanvas.Children.OfType<WavMarker>().ToList();
             markers.OrderBy(n => n.Position);
             string text = "";
@@ -155,6 +156,12 @@ namespace WavConfigTool
             if (Cs.Count > 0) { }
         }
 
+        void ApplyPoints()
+        {
+            ApplyPoints(WavConfigPoint.C);
+            ApplyPoints(WavConfigPoint.V);
+            ApplyPoints(WavConfigPoint.D);
+        }
         void ApplyPoints(WavConfigPoint point)
         {
             if (point == WavConfigPoint.C)
