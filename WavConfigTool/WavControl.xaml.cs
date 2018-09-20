@@ -117,14 +117,14 @@ namespace WavConfigTool
             markers.OrderBy(n => n.Position);
             string text = "";
             var phonemes = Recline.Phonemes;
-            text += phonemes[0].GetMonophone(Recline.Filename);
+            //if (Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[0].GetMonophone(Recline.Filename);
             if (phonemes.Count > 1) text += phonemes[0].GetDiphone(Recline.Filename, Recline.Data[0]);
-            if (phonemes.Count > 1) text += phonemes[1].GetDiphone(Recline.Filename, phonemes[0]);
+            if (phonemes.Count > 1 && Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[1].GetDiphone(Recline.Filename, phonemes[0]);
             if (phonemes.Count > 2) text += phonemes[1].GetTriphone(Recline.Filename, phonemes[0], Recline.Data[0]);
             int i;
             for (i = 2; i < Recline.Phonemes.Count; i++)
             {
-                text += phonemes[i].GetMonophone(Recline.Filename);
+                if (Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[i].GetMonophone(Recline.Filename);
                 text += phonemes[i].GetDiphone(Recline.Filename, phonemes[i - 1]);
                 text += phonemes[i].GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
             }
@@ -511,15 +511,19 @@ namespace WavConfigTool
 
         private void WavCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!WavContextMenu.IsVisible && Keyboard.IsKeyUp(Key.Space))
+            if (e.ClickCount == 2)
+                DrawOtoPreview();
+            else
             {
-                double x = e.GetPosition(this).X;
-                Draw(MainWindow.Mode, x);
-                WavControlChanged();
+                if (!WavContextMenu.IsVisible && Keyboard.IsKeyUp(Key.Space))
+                {
+                    double x = e.GetPosition(this).X;
+                    Draw(MainWindow.Mode, x);
+                    WavControlChanged();
+                }
             }
         }
 
         #endregion
-
     }
 }

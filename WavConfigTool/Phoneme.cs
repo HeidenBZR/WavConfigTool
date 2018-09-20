@@ -97,6 +97,8 @@ namespace WavConfigTool
             double pre = Preutterance;
             double ov = Overlap;
             con = -cut / 3;
+            con = pre + Fade * 5;
+            cut = -(Zone.Out - of - Fade * 5);
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
         }
@@ -128,11 +130,16 @@ namespace WavConfigTool
             double ov = prev.Overlap;
             if (IsRest)
             {
+                pre = prev.Zone.Out - of;
                 con = pre + prev.Fade;
                 cut = -(Zone.Out - of + Fade);
+                cut = 10;
             }
             if (IsVowel)
-                con -= cut / 3;
+            {
+                con = pre + Fade * 5;
+                cut = -(Zone.Out - of - Fade * 5);
+            }
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
         }
@@ -147,11 +154,11 @@ namespace WavConfigTool
             double dist = Zone.In - prevp;
 
             double of = prevp - prev.Overlap;
-            double con = Zone.Out - of + Fade;
             double cut = -(Zone.Out - of + Fade);
-            double pre = Zone.Out - of;
+            double pre = Zone.Out - of - Fade;
             double ov = prev.Overlap;
-            cut -= 50;
+            cut -= 10;
+            double con = -cut - 10;
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
         }
@@ -170,7 +177,7 @@ namespace WavConfigTool
             double cut = -(Zone.Out - of + Fade);
             double pre = prev.Zone.Out - of;
             double ov = prev.Overlap;
-            cut -= 50;
+            cut = 10;
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
         }
@@ -195,16 +202,20 @@ namespace WavConfigTool
             double ov = preprev.Overlap;
             if (IsRest)
             {
-                of = prevp - preprev.Overlap - preprev.Fade;
-                pre = prev.Zone.In + prev.Fade - of;
+                ov = preprev.Zone.Out;
+                of = ov - preprev.Overlap;
+                ov -= of;
+                pre = ov + 50 + of < prev.Zone.Out? ov + 50: prev.Zone.Out - of;
                 cut = -(Zone.In - of + Fade);
+                cut = 10;
             }
             else
             {
                 of = prevp;
-                pre = Zone.In - of + Fade;
+                pre = Zone.In - of;
+                con = pre + Fade * 5;
                 ov = Overlap;
-                cut = -(Zone.Out - of - Fade) / 1.5;
+                cut = -(Zone.Out - of - Fade * 5);
             }
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";

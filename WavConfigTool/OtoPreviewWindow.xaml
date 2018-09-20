@@ -10,7 +10,19 @@
     Height="450"
     WindowState="Maximized"
     mc:Ignorable="d">
-    <ScrollViewer Name="ScrollViewer" ScrollChanged="ScrollViewer_ScrollChanged" HorizontalScrollBarVisibility="Visible">
-        <ListView Name="OtoPreviewView"/>
+    <ScrollViewer
+        Name="ScrollViewer"
+        HorizontalScrollBarVisibility="Visible"
+        ScrollChanged="ScrollViewer_ScrollChanged">
+        <ListView Name="OtoPreviewView">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFDAEEF5" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Black" />
+                    </Style.Resources>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
     </ScrollViewer>
 </Window>

@@ -26,6 +26,10 @@ namespace WavConfigTool
             InitializeComponent();
             Controls = new List<OtoPreviewControl>();
             Title = $"Oto Preview [{filename}]";
+            Loaded += delegate
+            {
+                InitScroll();
+            };
         }
 
         public void Add(OtoPreviewControl control)
@@ -34,12 +38,31 @@ namespace WavConfigTool
             OtoPreviewView.Items.Add(control);
         }
 
+        void InitScroll()
+        {
+            var offset = ScrollViewer.ScrollableWidth / 2 - ScrollViewer.ActualWidth / 2;
+            if (offset < 0) offset = 0;
+            ScrollViewer.ScrollToHorizontalOffset(offset);
+            ScrollContent(offset);
+        }
+
+        void ScrollContent()
+        {
+            foreach (var control in Controls)
+                control.Filename.Margin = new Thickness(ScrollViewer.HorizontalOffset, 0, 0, 0);
+        }
+        void ScrollContent(double offset)
+        {
+            foreach (var control in Controls)
+                control.Filename.Margin = new Thickness(offset, 0, 0, 0);
+        }
+
+
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            foreach(var control in Controls)
-            {
-                control.Filename.Margin = new Thickness(e.HorizontalOffset,0,0,0);
-            }
+            ScrollContent();
         }
+
+
     }
 }

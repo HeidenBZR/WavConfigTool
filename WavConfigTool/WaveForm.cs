@@ -42,7 +42,8 @@ namespace WavConfigTool
             long lastpoint = 0;
             var max = Data.Max();
             long i = 0;
-            for (; i < Length / 4; i += PointSkip)
+            Length /= 4;
+            for (; i < Length; i += PointSkip)
             {
                 if (Math.Abs(Data[i]) > 0.001)
                     points.Add(new System.Windows.Point(i * WavControl.ScaleX / SampleRate * 1000, Data[i] * WavControl.ScaleY * Settings.WAM + 50));
