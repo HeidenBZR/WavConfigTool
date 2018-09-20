@@ -20,6 +20,7 @@ namespace WavConfigTool
     public partial class OtoPreviewWindow : Window
     {
         List<OtoPreviewControl> Controls;
+        double MostLeft = 99999;
 
         public OtoPreviewWindow(string filename)
         {
@@ -36,12 +37,14 @@ namespace WavConfigTool
         {
             Controls.Add(control);
             OtoPreviewView.Items.Add(control);
+            if (control.Left < MostLeft) MostLeft = control.Left;
         }
 
         void InitScroll()
         {
             var offset = ScrollViewer.ScrollableWidth / 2 - ScrollViewer.ActualWidth / 2;
             if (offset < 0) offset = 0;
+            offset = MostLeft - 20;
             ScrollViewer.ScrollToHorizontalOffset(offset);
             ScrollContent(offset);
         }

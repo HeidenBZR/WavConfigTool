@@ -21,6 +21,7 @@ namespace WavConfigTool
     public partial class OtoPreviewControl : UserControl
     {
         public static double ScaleX { get { return WavControl.ScaleX; } }
+        public double Left;
 
         public OtoPreviewControl(ImageSource source, string description, int[] ops, int length)
         {
@@ -35,6 +36,7 @@ namespace WavConfigTool
             if (ops[2] >= 0) Cutoff.Width = ops[2] * ScaleX;
             Preutterance.Margin = new Thickness(Offset.Width + ops[3] * ScaleX, 0, 0, 0);
             Overlap.Margin = new Thickness(Offset.Width + ops[4] * ScaleX, 0, 0, 0);
+            Left = Offset.Width;
         }
     }
 }
