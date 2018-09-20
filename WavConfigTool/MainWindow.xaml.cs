@@ -110,6 +110,7 @@ namespace WavConfigTool
                 LabelPageTotal.Content = (PageTotal - 1).ToString();
             }
             double offset = WavControl.MostLeft - 100 * WavControl.ScaleX;
+            if (offset < 0) offset = 0;
             ScrollViewer.ScrollToHorizontalOffset(offset);
             ScrollContent(offset);
         }

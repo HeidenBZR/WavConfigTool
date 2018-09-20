@@ -84,8 +84,11 @@ namespace WavConfigTool
             IsCompleted = Ds.Count == 2 &&
                 Vs.Count / 2 >= Recline.Vowels.Count &&
                 Cs.Count / 2 >= Recline.Consonants.Count;
-            if (IsCompleted) WavCompleted.Opacity = 1;
-            else WavCompleted.Opacity = 0;
+            Dispatcher.BeginInvoke((ThreadStart)delegate
+           {
+               if (IsCompleted) WavCompleted.Opacity = 1;
+               else WavCompleted.Opacity = 0;
+           });
         }
 
         void Reset()

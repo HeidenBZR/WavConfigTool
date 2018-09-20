@@ -24,6 +24,14 @@
             Margin="0,0,0,0"
             Foreground="#BBBBFF" />
         <Canvas
+            Name="GridCanvas"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" />
+        <Canvas
+            Name="AreasCanvas"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" />
+        <Canvas
             Name="WavCanvas"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
@@ -57,15 +65,7 @@
                 HorizontalAlignment="Stretch" />
         </Canvas>
         <Canvas
-            Name="GridCanvas"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch" />
-        <Canvas
             Name="MarkerCanvas"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch" />
-        <Canvas
-            Name="AreasCanvas"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" />
     </Grid>

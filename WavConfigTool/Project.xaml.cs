@@ -57,7 +57,8 @@ namespace WavConfigTool
             openFileDialog.InitialDirectory = TextBoxWS.Text;
             openFileDialog.Filter = "WavConfig Settings files (*.wsettings)|*.wsettings|All files (*.*)|*.*";
             openFileDialog.FilterIndex = 1;
-            openFileDialog.RestoreDirectory = true;
+            openFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+            openFileDialog.RestoreDirectory = false;
             openFileDialog.ShowDialog();
             if (openFileDialog.FileName == "") return;
             TextBoxWS.Text = openFileDialog.FileName;
