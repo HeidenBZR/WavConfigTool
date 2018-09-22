@@ -24,6 +24,9 @@ namespace WavConfigTool
         public long Length;
         public float[] Data;
 
+        public double Threshold = 0.001;
+        public double DataThreshold = 0.05;
+
         public WaveForm(string path)
         {
             Path = path;
@@ -36,6 +39,14 @@ namespace WavConfigTool
             reader.Close();
         }
 
+        double Truncate(double value)
+        {
+            if (value > 50) return 50;
+            else if (value < -50) return -50;
+            else if (Math.Abs(value) < Threshold) return 0;
+            else return value;
+        }
+
         public System.Windows.Point[] GetAudioPoints()
         {
             List<System.Windows.Point> points = new List<System.Windows.Point>();
@@ -45,12 +56,9 @@ namespace WavConfigTool
             Length /= 4;
             for (; i < Length; i += PointSkip)
             {
-                if (Math.Abs(Data[i]) > 0.001)
-                    points.Add(new System.Windows.Point(i * WavControl.ScaleX / SampleRate * 1000, Data[i] * WavControl.ScaleY * Settings.WAM + 50));
-                else
-                {
-                    points.Add(new System.Windows.Point((i * WavControl.ScaleX / SampleRate * 1000), 50));
-                }
+                var x = i * WavControl.ScaleX / SampleRate * 1000;
+                var y = Truncate(Data[i] * WavControl.ScaleY * Settings.WAM) + 50;
+                points.Add(new System.Windows.Point(x, y));
                 if (Data[i] >= max * 0.05)
                 {
                     if (Ds.Count == 0)
