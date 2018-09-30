@@ -95,20 +95,20 @@ namespace WavConfigTool
             if (!IsInitialized) return;
             WaveControlStackPanel.Children.Clear();
             WaveControlStackPanel.Children.Capacity = 0;
-            PageTotal = WavControls.Count / ItemsOnPage;
+            SetPageTotal();
             int count = ItemsOnPage;
-            if (ItemsOnPage * PageCurrent + count > WavControls.Count) count = WavControls.Count - ItemsOnPage * PageCurrent;
+            while (ItemsOnPage * PageCurrent + count > WavControls.Count)
+                count--;
             foreach (WavControl control in WavControls.GetRange(ItemsOnPage * PageCurrent, count))
             {
                 WaveControlStackPanel.Children.Add(control);
                 control.Draw();
             }
-            if (manual)
-            {
-                TextBoxItemsOnPage.Text = ItemsOnPage.ToString();
-                TextBoxPage.Text = (PageCurrent + 1).ToString();
-                LabelPageTotal.Content = (PageTotal - 1).ToString();
-            }
+            //if (manual)
+            //{
+            //    TextBoxItemsOnPage.Text = ItemsOnPage.ToString();
+            //    TextBoxPage.Text = (PageCurrent + 1).ToString();
+            //}
             double offset = WavControl.MostLeft - 100 * WavControl.ScaleX;
             if (offset < 0) offset = 0;
             ScrollViewer.ScrollToHorizontalOffset(offset);
@@ -120,7 +120,8 @@ namespace WavConfigTool
             if (offset == -1)
                 offset = ScrollViewer.HorizontalOffset;
             for (int i = PageCurrent * ItemsOnPage; i <  (PageCurrent+1) * ItemsOnPage; i++)
-                WavControls[i].LabelName.Margin = new Thickness(offset, 0, 0, 0);
+                if (i < WavControls.Count)
+                    WavControls[i].LabelName.Margin = new Thickness(offset, 0, 0, 0);
         }
 
         void GenerateWaveforms(bool force = false)
@@ -323,20 +324,30 @@ namespace WavConfigTool
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.Filter = "oto.ini file (oto.ini)|*oto*.ini";
             dialog.InitialDirectory = Reclist.VoicebankPath;
-            dialog.ShowDialog();
+            dialog.FileName = "oto.ini";
+            var result = dialog.ShowDialog();
+            if (!result.HasValue || !result.Value) return "";
             return dialog.FileName;
         }
 
         void Generate()
         {
-            string text = "";
-            Reclist.Aliases = new List<string>();
-            foreach (WavControl control in WavControls)
+            try
             {
-                text += control.Generate();
+                string text = "";
+                Reclist.Aliases = new List<string>();
+                foreach (WavControl control in WavControls)
+                {
+                    text += control.Generate();
+                }
+                string filename = SaveOto();
+                if (filename != "")
+                    File.WriteAllText(System.IO.Path.Combine(Reclist.VoicebankPath, filename), text, Encoding.ASCII);
             }
-            if (SaveOto() != "")
-                File.WriteAllText(System.IO.Path.Combine(Reclist.VoicebankPath, "oto.ini"), text, Encoding.ASCII);
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error on oto.ini", $"{ex.Message}\r\n{ex.StackTrace}", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         void SetFade(WavConfigPoint point, int value)
@@ -379,10 +390,10 @@ namespace WavConfigTool
 
         void SetPage(int page)
         {
-            if (page <= PageTotal && page > 0)
+            if (page < PageTotal && page >= 0)
             {
                 PageCurrent = page;
-                DrawPage(manual:false);
+                DrawPage(manual:true);
                 if (TextBoxPage.Text != (page + 1).ToString())
                     TextBoxPage.Text = (page + 1).ToString();
             }
@@ -406,12 +417,20 @@ namespace WavConfigTool
             {
                 int current = PageCurrent * ItemsOnPage;
                 ItemsOnPage = items;
-                PageTotal = WavControls.Count / ItemsOnPage;
                 if (PageCurrent > PageTotal) PageCurrent = PageTotal;
+                SetPageTotal();
                 GotoWav(WavControls[current]);
-                LabelPageTotal.Content = (PageTotal - 1).ToString();
             }
             //else TextBoxItemsOnPage.Text = ItemsOnPage.ToString();
+        }
+
+        void SetPageTotal()
+        {
+            double temp = (double)WavControls.Count / ItemsOnPage;
+            PageTotal = temp % 1 > 0? (int)(temp + 1) : (int)(temp);
+            LabelPageTotal.Content = (PageTotal).ToString();
+            if (PageCurrent >= PageTotal)
+                SetPage(PageTotal - 1);
         }
 
         void SetWaveformAmplitudeMultiplayer(float value)
@@ -476,14 +495,12 @@ namespace WavConfigTool
 
         private void NextPage(object sender, RoutedEventArgs e)
         {
-            if (PageCurrent < PageTotal) PageCurrent++;
-            DrawPage();
+            SetPage(PageCurrent + 1);
         }
 
         private void PrevPage(object sender, RoutedEventArgs e)
         {
-            if (PageCurrent > 0) PageCurrent--;
-            DrawPage();
+            SetPage(PageCurrent - 1);
         }
         
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -668,14 +685,16 @@ namespace WavConfigTool
         private void TextBoxPage_LostFocus(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
-            if (int.TryParse(TextBoxPage.Text, out int page)) SetPage(page);
+            if (int.TryParse(TextBoxPage.Text, out int page))
+                SetPage(page - 1);
             else TextBoxPage.Text = PageCurrent.ToString();
         }
 
         private void TextBoxItemsOnPage_LostFocus(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
-            if (byte.TryParse(TextBoxItemsOnPage.Text, out byte items)) SetItemsOnPage(items);
+            if (byte.TryParse(TextBoxItemsOnPage.Text, out byte items))
+                SetItemsOnPage( (byte)(items) );
             else TextBoxItemsOnPage.Text = ItemsOnPage.ToString();
         }
 
