@@ -43,21 +43,29 @@ namespace WavConfigTool
 
         public MainWindow()
         {
-            InitializeComponent();
-            Width = Settings.WindowSize.X;
-            Height = Settings.WindowSize.Y;
-            Left = Settings.WindowPosition.X;
-            Top = Settings.WindowPosition.Y;
-            WindowState = Settings.IsMaximized ? WindowState.Maximized : WindowState.Normal;
-            ClearTemp();
-            InitTextBoxes();
-            PrevMousePosition = Mouse.GetPosition(this);
-            ProjectLoaded += delegate 
+            try
             {
-                GenerateWaveforms();
-            };
-            if (CheckSettings() && CheckLast()) { DrawPage(); }
-            else OpenProjectWindow();
+                InitializeComponent();
+                Width = Settings.WindowSize.X;
+                Height = Settings.WindowSize.Y;
+                Left = Settings.WindowPosition.X;
+                Top = Settings.WindowPosition.Y;
+                WindowState = Settings.IsMaximized ? WindowState.Maximized : WindowState.Normal;
+                ClearTemp();
+                InitTextBoxes();
+                PrevMousePosition = Mouse.GetPosition(this);
+                ProjectLoaded += delegate
+                {
+                    GenerateWaveforms();
+                };
+                if (CheckSettings() && CheckLast()) { DrawPage(); }
+                else OpenProjectWindow();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on Init", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         void InitTextBoxes()
@@ -84,8 +92,8 @@ namespace WavConfigTool
         {
             if (Settings.ProjectFile != "" && File.Exists(Settings.ProjectFile))
             {
-                ReadProject(Settings.ProjectFile);
-                return true;
+                bool result = ReadProject(Settings.ProjectFile);
+                return result;
             }
             return false;
         }
@@ -205,7 +213,8 @@ namespace WavConfigTool
             ReadSettings(settings);
             if (File.Exists(project))
             {
-                ReadProject(project);
+                bool result = ReadProject(project);
+                if (!result) return false;
                 DrawPage();
                 SetTitle();
                 if (Settings.ProjectFile != TempPath && File.Exists(TempPath)) File.Delete(TempPath);
@@ -296,7 +305,7 @@ namespace WavConfigTool
             Settings.WavSettings = settings;
         }
 
-        void ReadProject(string project)
+        bool ReadProject(string project)
         {
             Settings.ProjectFile = project;
             string[] lines = File.ReadAllLines(project);
@@ -310,6 +319,12 @@ namespace WavConfigTool
                 WavControl control = WavControls.Find(n => n.Recline.Filename == filename);
                 if (control != null)
                 {
+                    if (!File.Exists(control.Recline.Path))
+                    {
+                        MessageBox.Show($"Some sample missing: \r\n{control.Recline.Path}\r\nAbort reading.", "Error on project reading", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                        return false;
+                    }
                     if (pds.Length > 0) control.Ds = pds.Split(' ').Select(n => double.Parse(n)).ToList();
                     if (pvs.Length > 0) control.Vs = pvs.Split(' ').Select(n => double.Parse(n)).ToList();
                     if (pcs.Length > 0) control.Cs = pcs.Split(' ').Select(n => double.Parse(n)).ToList();
@@ -317,6 +332,7 @@ namespace WavConfigTool
             }
             SetTitle();
             ProjectLoaded();
+            return true;
         }
 
         string SaveOto()
@@ -346,7 +362,7 @@ namespace WavConfigTool
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error on oto.ini", $"{ex.Message}\r\n{ex.StackTrace}", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on oto.ini", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

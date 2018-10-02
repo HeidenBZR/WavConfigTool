@@ -238,6 +238,7 @@ namespace WavConfigTool
 
         public void GenerateWaveform(bool force = false)
         {
+            if (!File.Exists(Recline.Path)) return;
             if (!force && File.Exists(ImagePath)) return;
             WaveForm wave = new WaveForm(Recline.Path);
             var points = wave.GetAudioPoints();
