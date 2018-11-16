@@ -202,10 +202,11 @@ namespace WavConfigTool
             double ov = preprev.Overlap;
             if (IsRest)
             {
-                ov = preprev.Zone.Out;
+                ov = preprev.Zone.Out - 10;
                 of = ov - preprev.Overlap;
                 ov -= of;
                 pre = ov + 50 + of < prev.Zone.Out? ov + 50: prev.Zone.Out - of;
+                pre = prev.Zone.Out - 5 - of;
                 cut = -(Zone.In - of + Fade);
                 cut = 10;
             }

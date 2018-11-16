@@ -73,6 +73,10 @@ namespace WavConfigTool
                 }
             }
             if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate * 1000 + 20);
+            if (Ds[0] < 0)
+                Ds[0] = 40;
+            if (Ds[1] > Length - 40)
+                Ds[1] = Length - 40;
             return points.ToArray();
         }
 
