@@ -281,8 +281,13 @@ namespace WavConfigTool
         {
             if (prev.IsVowel)
                 return $"{WavControl.Prefix}{prev.Alias}{Alias}{WavControl.Suffix}"; // v-
-            else
-                return $"{WavControl.Prefix}{prev.Alias}{WavControl.Suffix}"; // c
+            else // c 
+            {
+                string alias = $"{WavControl.Prefix}{prev.Alias}{WavControl.Suffix}";
+                if (alias == "r") return "rr";
+                else return alias;
+            }
+
         }
     };
 }

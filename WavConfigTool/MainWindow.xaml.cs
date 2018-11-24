@@ -385,10 +385,10 @@ namespace WavConfigTool
                 File.Delete(filename);
         }
 
-        bool DoEvenIfUnsaved()
+        bool DoEvenIfUnsaved(string message = "Продолжить?")
         {
             if (!IsUnsaved) return true;
-            var result = MessageBox.Show("Имеются несохраненные изменения. Продолжить?", "Несохраненные изменения", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            var result = MessageBox.Show("Имеются несохраненные изменения. " + message, "Предупреждение", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
                 File.Delete(TempPath);
@@ -608,7 +608,7 @@ namespace WavConfigTool
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (!DoEvenIfUnsaved())
+            if (!DoEvenIfUnsaved("Все равно выйти?"))
                 e.Cancel = true;
             else
             {
