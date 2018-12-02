@@ -37,7 +37,9 @@ namespace WavConfigTool
         public List<double> Ds { get { return _ds; } set { _ds = value; ApplyPoints(WavConfigPoint.D); CheckCompleted(); } }
 
         public WavMarker[] Data = new WavMarker[2];
-        public string ImagePath { get { return System.IO.Path.Combine("Temp", $"{AudioCode}_{Recline.Filename}.png"); } }
+        public string ImagePath { get {
+                var c = AudioCode;
+                return System.IO.Path.Combine("Temp", $"{c}_{Recline.Filename}.png"); } }
 
         public static double ScaleX = 0.7f;
         public static double ScaleY = 60f;
@@ -218,6 +220,8 @@ namespace WavConfigTool
 
         public void Draw()
         {
+            if (Recline.Reclist.VoicebankPath == "")
+                return;
             if (!File.Exists(ImagePath)) GenerateWaveform();
             Display();
             DrawConfig();

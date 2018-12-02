@@ -49,6 +49,7 @@ namespace WavConfigTool
             TextBoxVB.Text = vb;
             TextBoxWS.Text = ws;
             TextBoxPath.Text = path;
+            Result = Result.Close;
         }
 
         private void ButtonSettings(object sender, RoutedEventArgs e)

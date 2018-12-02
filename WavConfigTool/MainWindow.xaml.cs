@@ -41,6 +41,8 @@ namespace WavConfigTool
 
         bool IsUnsaved = false;
 
+        bool loaded = false;
+
         public MainWindow()
         {
             try
@@ -58,11 +60,21 @@ namespace WavConfigTool
                 {
                     GenerateWaveforms();
                 };
-                if (CheckSettings() && CheckLast()) { DrawPage(); }
-                else OpenProjectWindow();
-
+                do
+                {
+                    loaded = false;
+                    bool result = OpenProjectWindow();
+                    if (!result && !loaded)
+                    {
+                        Close();
+                        return;
+                    }
+                    if (result) loaded = true;
+                }
+                while (!(CheckSettings() && CheckLast()));
+                DrawPage();
             }
-            catch (Exception ex)
+            catch (EntryPointNotFoundException ex)
             {
                 MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on Init", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -167,7 +179,7 @@ namespace WavConfigTool
             WavControls.Add(control);
         }
 
-        void OpenProjectWindow(string voicebank = "", string wavsettings = "", string path = "", bool open = false)
+        bool OpenProjectWindow(string voicebank = "", string wavsettings = "", string path = "", bool open = false)
         {
             Dispatcher.Invoke((ThreadStart)delegate
             {
@@ -181,18 +193,19 @@ namespace WavConfigTool
                 if (project.Result == Result.Cancel)
                 {
                     DrawPage();
-                    return;
+                    return true;
                 }
                 ClearTemp();
-                if (project.Result == Result.Close) { Close(); return; }
+                if (project.Result == Result.Close)
+                    return false;
                 else if (project.Result == Result.Open)
                     if (Open(project.Settings, project.Path))
-                        return;
+                        return true ;
                     else { }
                 else
                 {
                     NewProject(project.Settings, project.Voicebank);
-                    return;
+                    return true;
                 }
             }
         }
@@ -376,6 +389,8 @@ namespace WavConfigTool
         
         void ClearTemp()
         {
+            if (!Directory.Exists("Temp"))
+                Directory.CreateDirectory("Temp");
             Dispatcher.Invoke((ThreadStart)delegate
             {
                 WaveControlStackPanel.Children.Clear();

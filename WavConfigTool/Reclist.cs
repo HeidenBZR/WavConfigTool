@@ -12,7 +12,7 @@ namespace WavConfigTool
     {
         public static List<Phoneme> Phonemes;
         public List<Recline> Reclines;
-        public string VoicebankPath;
+        public string VoicebankPath = "";
         public List<Phoneme> Vowels { get { return Phonemes.Where(n => n.IsVowel).ToList(); } }
         public List<Phoneme> Consonants { get { return Phonemes.Where(n => n.IsConsonant).ToList(); } }
         public List<string> Aliases;
