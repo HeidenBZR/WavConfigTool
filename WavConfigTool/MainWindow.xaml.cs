@@ -60,7 +60,11 @@ namespace WavConfigTool
                 {
                     GenerateWaveforms();
                 };
-                do
+                if (CheckSettings() && CheckLast())
+                {
+                    loaded = true;
+                }
+                else
                 {
                     loaded = false;
                     bool result = OpenProjectWindow();
@@ -71,7 +75,6 @@ namespace WavConfigTool
                     }
                     if (result) loaded = true;
                 }
-                while (!(CheckSettings() && CheckLast()));
                 DrawPage();
             }
             catch (EntryPointNotFoundException ex)
