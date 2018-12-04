@@ -177,6 +177,7 @@ namespace WavConfigTool
             double cut = -(Zone.Out - of + Fade);
             double pre = prev.Zone.Out - of;
             double ov = prev.Overlap;
+            if (ov > pre) ov = pre;
             cut = 10;
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
