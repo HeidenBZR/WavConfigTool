@@ -39,7 +39,7 @@ namespace WavConfigTool
         public WavMarker[] Data = new WavMarker[2];
         public string ImagePath { get {
                 var c = AudioCode;
-                return System.IO.Path.Combine("Temp", $"{c}_{Recline.Filename}.png"); } }
+                return System.IO.Path.Combine(MainWindow.TempDir, $"{c}_{Recline.Filename}.png"); } }
 
         public static double ScaleX = 0.7f;
         public static double ScaleY = 60f;

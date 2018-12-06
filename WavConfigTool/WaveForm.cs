@@ -100,7 +100,6 @@ namespace WavConfigTool
             PointF[] ps = points.Select(n => new PointF((float)n.X, (float)n.Y)).ToArray();
             waveform.DrawCurve(pen, ps);
             waveform.Save();
-            if (!Directory.Exists("Temp")) Directory.CreateDirectory("Temp");
             image.Save(control.ImagePath);
             Console.WriteLine($"Finished {control.ImagePath}");
         }

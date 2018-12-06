@@ -36,6 +36,21 @@ namespace WavConfigTool
         int PageTotal = 0;
         byte ItemsOnPage = 4;
 
+        public static string TempDir
+        {
+            get
+            {
+                var tempdir = System.IO.Path.GetTempPath();
+                tempdir = System.IO.Path.Combine(tempdir, "WavConfigTool");
+                if (!Directory.Exists(tempdir))
+                    Directory.CreateDirectory(tempdir);
+                tempdir = System.IO.Path.Combine(tempdir, "waveform");
+                if (!Directory.Exists(tempdir))
+                    Directory.CreateDirectory(tempdir);
+                return tempdir;
+            }
+        }
+
         Point PrevMousePosition;
 
         public delegate void ProjectLoadedEventHandler();
@@ -398,14 +413,12 @@ namespace WavConfigTool
         
         void ClearTemp()
         {
-            if (!Directory.Exists("Temp"))
-                Directory.CreateDirectory("Temp");
             Dispatcher.Invoke((ThreadStart)delegate
             {
                 WaveControlStackPanel.Children.Clear();
                 WaveControlStackPanel.Children.Capacity = 0;
             });
-            foreach (string filename in Directory.GetFiles("Temp"))
+            foreach (string filename in Directory.GetFiles(TempDir))
                 File.Delete(filename);
         }
 
