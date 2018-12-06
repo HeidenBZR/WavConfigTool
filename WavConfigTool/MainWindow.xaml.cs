@@ -26,7 +26,19 @@ namespace WavConfigTool
     public partial class MainWindow : Window
     {
         Reclist Reclist;
-        string TempPath = "temp.wconfig";
+        string TempPath
+        {
+            get
+            {
+                var tempdir = System.IO.Path.GetTempPath();
+                tempdir = System.IO.Path.Combine(tempdir, "WavConfigTool");
+                if (!Directory.Exists(tempdir))
+                    Directory.CreateDirectory(tempdir);
+                tempdir = System.IO.Path.Combine(tempdir, @"temp.wconfig");
+                return tempdir;
+                
+            }
+        }
         List<WavControl> WavControls;
         public static WavConfigPoint Mode = WavConfigPoint.V;
 
