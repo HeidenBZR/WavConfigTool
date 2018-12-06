@@ -109,7 +109,7 @@ namespace WavConfigTool.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("D:\\Github\\WavConfigTool\\WavConfigTool\\bin\\Debug\\cvc_rus.wsettings")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Heiden\\AppData\\Roaming\\WavConfigTool\\WavSettings\\arpasing_rus.wsettings")]
         public string WavSettings {
             get {
                 return ((string)(this["WavSettings"]));

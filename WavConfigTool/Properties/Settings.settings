@@ -24,7 +24,7 @@
       <Value Profile="(Default)">D:\Github\WavConfigTool\WavConfigTool\bin\Debug\minto_power.wconfig</Value>
     </Setting>
     <Setting Name="WavSettings" Type="System.String" Scope="User">
-      <Value Profile="(Default)">D:\Github\WavConfigTool\WavConfigTool\bin\Debug\cvc_rus.wsettings</Value>
+      <Value Profile="(Default)">C:\Users\Heiden\AppData\Roaming\WavConfigTool\WavSettings\arpasing_rus.wsettings</Value>
     </Setting>
     <Setting Name="IsMaximized" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

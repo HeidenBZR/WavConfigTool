@@ -30,6 +30,8 @@ namespace WavConfigTool
         List<WavControl> WavControls;
         public static WavConfigPoint Mode = WavConfigPoint.V;
 
+        public readonly Version Version = new Version(0, 1, 4, 0);
+
         int PageCurrent = 0;
         int PageTotal = 0;
         byte ItemsOnPage = 4;
@@ -285,7 +287,7 @@ namespace WavConfigTool
 
         void SetTitle(bool unsaved = false)
         {
-            Title = $"WavConfig - {System.IO.Path.GetFileName(Settings.ProjectFile)}{(unsaved? "*" : "")} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
+            Title = $"WavConfig v.{Version.ToString()} - {System.IO.Path.GetFileName(Settings.ProjectFile)}{(unsaved? "*" : "")} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
         }
 
         void SaveBackup()
@@ -314,8 +316,12 @@ namespace WavConfigTool
             WavControls = new List<WavControl>();
             for (int i = 2; i < lines.Length; i++)
             {
+                if (i == 8)
+                    Console.WriteLine();
+
                 string[] items = lines[i].Split('\t');
-                if (items.Length != 3) continue;
+                if (items.Length != 3)
+                    continue;
                 AddFile(items[0], items[1], items[2]);
             }
             Settings.WavSettings = settings;

@@ -27,9 +27,16 @@ namespace WavConfigTool
         public double Threshold = 0.001;
         public double DataThreshold = 0.05;
 
+        public bool IsEnabled = false;
+
         public WaveForm(string path)
         {
             Path = path;
+            if (!File.Exists(path))
+                return;
+            else
+                IsEnabled = true;
+
             AudioFileReader reader = new AudioFileReader(Path);
 
             SampleRate = reader.WaveFormat.SampleRate;

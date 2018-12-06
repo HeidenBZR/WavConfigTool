@@ -17,12 +17,26 @@ namespace WavConfigTool
         public List<Phoneme> Consonants { get { return Phonemes.Where(n => n.IsConsonant).ToList(); } }
         public List<string> Aliases;
 
+        public static Reclist Current;
+
         public Reclist(string[] vs, string[] cs)
         {
             Phonemes = new List<Phoneme>();
             foreach (string v in vs) Phonemes.Add(new Vowel(v));
             foreach (string c in cs) Phonemes.Add(new Consonant(c));
             Reclines = new List<Recline>();
+            Current = this;
+        }
+
+        public Phoneme GetPhoneme(string alias)
+        {
+            var phoneme = Phonemes.Find(n => n.Alias == alias);
+            if (phoneme is null)
+            {
+                Phonemes.Add(new Consonant(alias));
+                phoneme = Phonemes.Find(n => n.Alias == alias);
+            }
+            return phoneme.Clone();
         }
     }
 
@@ -53,7 +67,7 @@ namespace WavConfigTool
             Phonemes = new List<Phoneme>();
             foreach (string ph in phonemes.Split(' '))
             {
-                Phoneme phoneme = Reclist.Phonemes.Find(n => n.Alias == ph).Clone();
+                Phoneme phoneme = Reclist.Current.GetPhoneme(ph);
                 phoneme.Recline = this;
                 Phonemes.Add(phoneme);
             }

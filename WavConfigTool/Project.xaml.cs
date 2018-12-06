@@ -34,15 +34,36 @@ namespace WavConfigTool
         public string Settings;
         public string Path;
 
+        string GetTempPath(string path)
+        {
+            return  System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                path);
+        }
+
         public Project(bool open = false)
         {
             InitializeComponent();
             Result = Result.Cancel;
             if (open) TabOpen.IsSelected = true;
         }
+
+        void CheckPath()
+        {
+            if (!Directory.Exists(GetTempPath(@"WavConfigTool")))
+                Directory.CreateDirectory(GetTempPath(@"WavConfigTool"));
+            if (!Directory.Exists(GetTempPath(@"WavConfigTool\WavSettings\")))
+                Directory.CreateDirectory(GetTempPath(@"WavConfigTool\WavSettings\"));
+        }
+
+
         public Project(string vb, string ws, string path, bool open = false) : this(open)
         {
             InitializeComponent();
+            if (ws == "")
+                ws = WavConfigTool.Settings.WavSettings;
+            if (path == "")
+                path = WavConfigTool.Settings.ProjectFile;
             Voicebank = vb;
             Settings = ws;
             Path = path;
@@ -50,15 +71,17 @@ namespace WavConfigTool
             TextBoxWS.Text = ws;
             TextBoxPath.Text = path;
             Result = Result.Close;
+
+            //TextBoxVB.Text = @"D:\DISCS\YandexDisk\Heiden\UTAU\_voicebanks\() Minto Arpasing RUS";
         }
 
         private void ButtonSettings(object sender, RoutedEventArgs e)
         {
+            CheckPath();
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = TextBoxWS.Text;
+            openFileDialog.InitialDirectory = GetTempPath(@"WavConfigTool\WavSettings\");
             openFileDialog.Filter = "WavConfig Settings files (*.wsettings)|*.wsettings|All files (*.*)|*.*";
             openFileDialog.FilterIndex = 1;
-            openFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
             openFileDialog.RestoreDirectory = false;
             openFileDialog.ShowDialog();
             if (openFileDialog.FileName == "") return;
@@ -71,7 +94,7 @@ namespace WavConfigTool
             openFileDialog.InitialDirectory = TextBoxVB.Text;
             openFileDialog.Filter = "Voicebank samples (*.wav)|*.wav";
             openFileDialog.FilterIndex = 1;
-            openFileDialog.RestoreDirectory = true;
+            openFileDialog.RestoreDirectory = false;
             openFileDialog.ShowDialog();
             if (openFileDialog.FileName == "") return;
             TextBoxVB.Text = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
