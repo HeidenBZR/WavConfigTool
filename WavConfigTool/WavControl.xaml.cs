@@ -118,21 +118,25 @@ namespace WavConfigTool
             List<WavMarker> markers = MarkerCanvas.Children.OfType<WavMarker>().ToList();
             markers.OrderBy(n => n.Position);
             string text = "";
+            string[] iy = new[] { "iy", "yi" };
             var phonemes = Recline.Phonemes;
             if (Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[0].GetMonophone(Recline.Filename);
-            if (phonemes.Count > 0) text += phonemes[0].GetDiphone(Recline.Filename, Recline.Data[0]);
+            if ((phonemes.Count > 1 && phonemes[0].IsVowel) 
+                || (phonemes.Count > 2 && phonemes[1].Alias == "a"))
+                text += phonemes[0].GetDiphone(Recline.Filename, Recline.Data[0]);
+            if (phonemes.Count > 2 && phonemes[1].Alias == "a") text += Recline.Data[1].GetDiphone(Recline.Filename, phonemes.Last());
             if (phonemes.Count > 1 && Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[1].GetDiphone(Recline.Filename, phonemes[0]);
-            if (phonemes.Count > 1) text += phonemes[1].GetTriphone(Recline.Filename, phonemes[0], Recline.Data[0]);
+            if (phonemes.Count > 1 && !(phonemes.Count > 3 && iy.Contains(phonemes[1] + phonemes[3]))) text += phonemes[1].GetTriphone(Recline.Filename, phonemes[0], Recline.Data[0]);
             int i;
             for (i = 2; i < Recline.Phonemes.Count; i++)
             {
                 if (Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[i].GetMonophone(Recline.Filename);
-                text += phonemes[i].GetDiphone(Recline.Filename, phonemes[i - 1]);
+                if ( i != 4) text += phonemes[i].GetDiphone(Recline.Filename, phonemes[i - 1]);
                 text += phonemes[i].GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
             }
             if (phonemes.Count == 1) i = 1;
             //text += Recline.Data[1].GetMonophone(Recline.Filename);
-            if (phonemes.Count > 0) text += Recline.Data[1].GetDiphone(Recline.Filename, phonemes[i - 1]);
+            if (phonemes.First().IsVowel) text += Recline.Data[1].GetDiphone(Recline.Filename, phonemes.Last());
             if (phonemes.Count > 1) text += Recline.Data[1].GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
             return text;
         }
