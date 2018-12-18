@@ -154,5 +154,17 @@ namespace WavConfigTool.Properties {
                 this["WindowPosition"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsUnsaved {
+            get {
+                return ((bool)(this["IsUnsaved"]));
+            }
+            set {
+                this["IsUnsaved"] = value;
+            }
+        }
     }
 }

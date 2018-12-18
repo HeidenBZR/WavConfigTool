@@ -17,6 +17,8 @@ namespace WavConfigTool
         public List<Phoneme> Consonants { get { return Phonemes.Where(n => n.IsConsonant).ToList(); } }
         public List<string> Aliases;
 
+        public string Name = "";
+
         public static Reclist Current;
 
         public Reclist(string[] vs, string[] cs)

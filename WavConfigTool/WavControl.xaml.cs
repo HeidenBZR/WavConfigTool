@@ -131,7 +131,8 @@ namespace WavConfigTool
             for (i = 2; i < Recline.Phonemes.Count; i++)
             {
                 if (Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[i].GetMonophone(Recline.Filename);
-                if ( i != 4) text += phonemes[i].GetDiphone(Recline.Filename, phonemes[i - 1]);
+                if ( i != 4 || !Reclist.Current.Name.ToLower().Contains("cvc"))
+                    text += phonemes[i].GetDiphone(Recline.Filename, phonemes[i - 1]);
                 text += phonemes[i].GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
             }
             if (phonemes.Count == 1) i = 1;
@@ -395,6 +396,13 @@ namespace WavConfigTool
         }
         void DrawD()
         {
+            if (Ds != null && Ds.Count == 2)
+            {
+                if (Ds[0] < 0)
+                    Ds[0] = 50;
+                if (Ds[1] > Length)
+                    Ds[1] = Length - 50;
+            }
             for (int i = 0; i < Ds.Count; i++)
             {
                 double pos = Ds[i];

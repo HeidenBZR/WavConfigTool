@@ -42,7 +42,7 @@ namespace WavConfigTool
         List<WavControl> WavControls;
         public static WavConfigPoint Mode = WavConfigPoint.V;
 
-        public readonly Version Version = new Version(0, 1, 4, 0);
+        public readonly Version Version = new Version(0, 1, 4, 2);
 
         int PageCurrent = 0;
         int PageTotal = 0;
@@ -68,7 +68,7 @@ namespace WavConfigTool
         public delegate void ProjectLoadedEventHandler();
         public event ProjectLoadedEventHandler ProjectLoaded;
 
-        bool IsUnsaved = false;
+        bool IsUnsaved { get => Settings.IsUnsaved; set => Settings.IsUnsaved = value; }
 
         bool loaded = false;
 
@@ -77,6 +77,8 @@ namespace WavConfigTool
             try
             {
                 InitializeComponent();
+                if (File.Exists("icon.bmp"))
+                    Icon =  new BitmapImage(new Uri("icon.bmp", UriKind.Relative));
                 Width = Settings.WindowSize.X;
                 Height = Settings.WindowSize.Y;
                 Left = Settings.WindowPosition.X;
@@ -89,6 +91,12 @@ namespace WavConfigTool
                 {
                     GenerateWaveforms();
                 };
+                if (IsUnsaved && File.Exists(TempPath))
+                {
+                    MessageBox.Show("Найдены несохраненные изменения. Пересохраните проект.");
+                    Settings.ProjectFile = TempPath;
+                }
+
                 if (CheckSettings() && CheckLast())
                 {
                     loaded = true;
@@ -105,6 +113,7 @@ namespace WavConfigTool
                     if (result) loaded = true;
                 }
                 DrawPage();
+                SetTitle();
             }
             catch (EntryPointNotFoundException ex)
             {
@@ -314,7 +323,7 @@ namespace WavConfigTool
 
         void SetTitle(bool unsaved = false)
         {
-            Title = $"WavConfig v.{Version.ToString()} - {System.IO.Path.GetFileName(Settings.ProjectFile)}{(unsaved? "*" : "")} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
+            Title = $"WavConfig v.{Version.ToString()} - {System.IO.Path.GetFileName(Settings.ProjectFile)}{(IsUnsaved? "*" : "")} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
         }
 
         void SaveBackup()
@@ -351,6 +360,8 @@ namespace WavConfigTool
                     continue;
                 AddFile(items[0], items[1], items[2]);
             }
+            var name = System.IO.Path.GetFileNameWithoutExtension(settings);
+            Reclist.Name = name;
             Settings.WavSettings = settings;
         }
 

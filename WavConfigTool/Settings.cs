@@ -152,5 +152,18 @@ namespace WavConfigTool
                 Properties.Settings.Default.Save();
             }
         }
+
+        public static bool IsUnsaved
+        {
+            get
+            {
+                return Properties.Settings.Default.IsUnsaved;
+            }
+            set
+            {
+                Properties.Settings.Default.IsUnsaved = value;
+                Properties.Settings.Default.Save();
+            }
+        }
     }
 }

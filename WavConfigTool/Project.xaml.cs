@@ -91,7 +91,12 @@ namespace WavConfigTool
         private void ButtonVoicebank(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = TextBoxVB.Text;
+            try
+            {
+                if (TextBoxVB.Text != "")
+                    openFileDialog.InitialDirectory = System.IO.Path.GetDirectoryName(TextBoxVB.Text);
+            }
+            catch { }
             openFileDialog.Filter = "Voicebank samples (*.wav)|*.wav";
             openFileDialog.FilterIndex = 1;
             openFileDialog.RestoreDirectory = false;
@@ -124,7 +129,13 @@ namespace WavConfigTool
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "WavConfig Project (*.wconfig)|*.wconfig";
-            openFileDialog.RestoreDirectory = true;
+            openFileDialog.RestoreDirectory = false;
+            try
+            {
+                if (TextBoxPath.Text != "")
+                    openFileDialog.InitialDirectory = System.IO.Path.GetDirectoryName(TextBoxPath.Text);
+            }
+            catch { }
             openFileDialog.ShowDialog();
             if (openFileDialog.FileName == "") return;
             TextBoxPath.Text = openFileDialog.FileName;
