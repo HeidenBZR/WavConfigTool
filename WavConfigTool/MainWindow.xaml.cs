@@ -79,6 +79,7 @@ namespace WavConfigTool
                 InitializeComponent();
                 if (File.Exists("icon.bmp"))
                     Icon =  new BitmapImage(new Uri("icon.bmp", UriKind.Relative));
+
                 Width = Settings.WindowSize.X;
                 Height = Settings.WindowSize.Y;
                 Left = Settings.WindowPosition.X;
