@@ -42,7 +42,7 @@ namespace WavConfigTool
         List<WavControl> WavControls;
         public static WavConfigPoint Mode = WavConfigPoint.V;
 
-        public readonly Version Version = new Version(0, 1, 4, 4);
+        public readonly Version Version = new Version(0, 1, 4, 5);
 
         int PageCurrent = 0;
         int PageTotal = 0;
@@ -218,7 +218,11 @@ namespace WavConfigTool
         {
             WavControl control = new WavControl(recline);
             control.WavControlChanged += SaveBackup;
-            control.WavControlChanged += Save;
+            control.WavControlChanged += () =>
+            {
+                if (Settings.ProjectFile != TempPath)
+                    Save();
+            };
             WavControls.Add(control);
         }
 
