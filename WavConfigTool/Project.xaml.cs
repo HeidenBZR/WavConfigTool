@@ -34,7 +34,7 @@ namespace WavConfigTool
         public string Settings;
         public string Path;
 
-        string GetTempPath(string path)
+        static string GetTempPath(string path)
         {
             return  System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -75,34 +75,104 @@ namespace WavConfigTool
             //TextBoxVB.Text = @"D:\DISCS\YandexDisk\Heiden\UTAU\_voicebanks\() Minto Arpasing RUS";
         }
 
-        private void ButtonSettings(object sender, RoutedEventArgs e)
-        {
-            CheckPath();
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = GetTempPath(@"WavConfigTool\WavSettings\");
-            openFileDialog.Filter = "WavConfig Settings files (*.wsettings)|*.wsettings|All files (*.*)|*.*";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.RestoreDirectory = false;
-            openFileDialog.ShowDialog();
-            if (openFileDialog.FileName == "") return;
-            TextBoxWS.Text = openFileDialog.FileName;
-        }
-
-        private void ButtonVoicebank(object sender, RoutedEventArgs e)
+        public static string VoicebankDialog(string initialFile = "")
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             try
             {
-                if (TextBoxVB.Text != "")
-                    openFileDialog.InitialDirectory = System.IO.Path.GetDirectoryName(TextBoxVB.Text);
+                if (initialFile != null && initialFile != "")
+                    if (Directory.Exists(System.IO.Path.GetDirectoryName(initialFile)))
+                        openFileDialog.InitialDirectory = System.IO.Path.GetDirectoryName(initialFile);
+                openFileDialog.Filter = "Voicebank samples (*.wav)|*.wav";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = false;
+                var result = openFileDialog.ShowDialog();
+                if (result == null || !result.Value || openFileDialog.FileName == "")
+                    return null;
+                else
+                    return System.IO.Path.GetDirectoryName(openFileDialog.FileName);
             }
-            catch { }
-            openFileDialog.Filter = "Voicebank samples (*.wav)|*.wav";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.RestoreDirectory = false;
-            openFileDialog.ShowDialog();
-            if (openFileDialog.FileName == "") return;
-            TextBoxVB.Text = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on Voicebank openfile dialog");
+                return null;
+            }
+
+        }
+
+        public static string SettingsDialog()
+        {
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.InitialDirectory = GetTempPath(@"WavConfigTool\WavSettings\");
+                openFileDialog.Filter = "WavConfig Settings files (*.wsettings)|*.wsettings|All files (*.*)|*.*";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = false;
+                var result = openFileDialog.ShowDialog();
+                if (result == null || !result.Value || openFileDialog.FileName == "")
+                    return null;
+                else
+                    return openFileDialog.FileName;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on wsettings openfile dialog");
+                return null;
+            }
+        }
+
+        public static string ProjectDialog(string initialFile = "")
+        {
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "WavConfig Project (*.wconfig)|*.wconfig";
+                openFileDialog.RestoreDirectory = false;
+                if (initialFile != null && initialFile != "")
+                    if (Directory.Exists(System.IO.Path.GetDirectoryName(initialFile)))
+                        openFileDialog.InitialDirectory = System.IO.Path.GetDirectoryName(initialFile);
+                var result = openFileDialog.ShowDialog();
+                if (result == null || !result.Value || openFileDialog.FileName == "")
+                    return null;
+                else
+                    return openFileDialog.FileName;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on project openfile dialog");
+                return null;
+            }
+
+        }
+
+        private void ButtonSettings(object sender, RoutedEventArgs e)
+        {
+            CheckPath();
+            string s = SettingsDialog();
+            if (s != null)
+                TextBoxWS.Text = s;
+            else
+                MessageBox.Show("Не удалось выбрать wsettings");
+
+        }
+
+        private void ButtonVoicebank(object sender, RoutedEventArgs e)
+        {
+            string vb = VoicebankDialog(TextBoxVB.Text);
+            if (vb != null)
+                TextBoxVB.Text = vb;
+            else
+                MessageBox.Show("Не удалось выбрать голосовой банк");
+        }
+
+        private void ButtonProject(object sender, RoutedEventArgs e)
+        {
+            string pr = ProjectDialog(TextBoxPath.Text);
+            if (pr != null)
+                TextBoxPath.Text = pr;
+            else
+                MessageBox.Show("Не удалось выбрать файл проекта");
         }
 
         bool CheckSettings()
@@ -123,22 +193,6 @@ namespace WavConfigTool
         {
             Result = Result.Cancel;
             Close();
-        }
-
-        private void ButtonProject(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "WavConfig Project (*.wconfig)|*.wconfig";
-            openFileDialog.RestoreDirectory = false;
-            try
-            {
-                if (TextBoxPath.Text != "")
-                    openFileDialog.InitialDirectory = System.IO.Path.GetDirectoryName(TextBoxPath.Text);
-            }
-            catch { }
-            openFileDialog.ShowDialog();
-            if (openFileDialog.FileName == "") return;
-            TextBoxPath.Text = openFileDialog.FileName;
         }
 
 

@@ -42,7 +42,7 @@ namespace WavConfigTool
         List<WavControl> WavControls;
         public static WavConfigPoint Mode = WavConfigPoint.V;
 
-        public readonly Version Version = new Version(0, 1, 4, 5);
+        public readonly Version Version = new Version(0, 1, 5, 0);
 
         int PageCurrent = 0;
         int PageTotal = 0;
@@ -90,6 +90,9 @@ namespace WavConfigTool
                 PrevMousePosition = Mouse.GetPosition(this);
                 ProjectLoaded += delegate
                 {
+                    SetTitle();
+                    LabelCurrentVoicebank.Content = System.IO.Path.GetFileName(Reclist.VoicebankPath);
+                    LabelCurrentSettings.Content = System.IO.Path.GetFileName(Settings.WavSettings);
                     GenerateWaveforms();
                 };
                 if (IsUnsaved && File.Exists(TempPath))
@@ -101,25 +104,62 @@ namespace WavConfigTool
                 if (CheckSettings() && CheckLast())
                 {
                     loaded = true;
+                    DrawPage();
                 }
-                else
-                {
-                    loaded = false;
-                    bool result = OpenProjectWindow();
-                    if (!result && !loaded)
-                    {
-                        Close();
-                        return;
-                    }
-                    if (result) loaded = true;
-                }
-                DrawPage();
-                SetTitle();
             }
             catch (EntryPointNotFoundException ex)
             {
                 MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on Init", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        void ChangeVoicebank()
+        {
+            string old_vb = Reclist.VoicebankPath;
+            SaveBackup();
+            var vb = Project.VoicebankDialog(Reclist.VoicebankPath);
+            if (vb != null)
+                if (Directory.Exists(vb))
+                {
+                    Reclist.VoicebankPath = vb;
+                    Save();
+                    ClearTemp();
+                    ClearWavcontrols();
+                    if (CheckSettings() && CheckLast())
+                        DrawPage();
+                    else
+                    {
+                        Reclist.VoicebankPath = old_vb;
+                        Save();
+                        ClearTemp();
+                        ClearWavcontrols();
+                        DrawPage();
+                        MessageBox.Show("Voicebank changing failed");
+                    }
+                }
+        }
+
+        void ChangeSettings()
+        {
+            string old_s = Settings.WavSettings;
+            var s = Project.SettingsDialog();
+            if (s != null)
+                if (File.Exists(s))
+                {
+                    Settings.WavSettings = s;
+                    ClearTemp();
+                    ClearWavcontrols();
+                    if (CheckSettings() && CheckLast())
+                        DrawPage();
+                    else
+                    {
+                        Settings.WavSettings = old_s;
+                        ClearTemp();
+                        ClearWavcontrols();
+                        DrawPage();
+                        MessageBox.Show("WavSettings changing failed");
+                    }
+                }
         }
 
         void InitTextBoxes()
@@ -163,8 +203,11 @@ namespace WavConfigTool
                 count--;
             foreach (WavControl control in WavControls.GetRange(ItemsOnPage * PageCurrent, count))
             {
-                WaveControlStackPanel.Children.Add(control);
-                control.Draw();
+                if (control.IsEnabled)
+                {
+                    WaveControlStackPanel.Children.Add(control);
+                    control.Draw();
+                }
             }
             //if (manual)
             //{
@@ -191,11 +234,19 @@ namespace WavConfigTool
             if (!IsLoaded) return;
             GenerateWaveformsAsync(force);
         }
+
+        Thread Thread;
+
         async void GenerateWaveformsAsync(bool force)
         {
-            foreach (WavControl control in WavControls)
-                await Task.Run(() => { control.GenerateWaveform(force); });
-
+            if (Thread != null && Thread.IsAlive)
+                Thread.Abort();
+            await Task.Run(() =>
+            {
+                Thread = Thread.CurrentThread;
+                foreach (WavControl control in WavControls)
+                    control.GenerateWaveformAsync(force);
+            });
         }
 
 
@@ -226,35 +277,38 @@ namespace WavConfigTool
             WavControls.Add(control);
         }
 
-        bool OpenProjectWindow(string voicebank = "", string wavsettings = "", string path = "", bool open = false)
+        void ClearWavcontrols()
         {
             Dispatcher.Invoke((ThreadStart)delegate
             {
                 WaveControlStackPanel.Children.Clear();
                 WaveControlStackPanel.Children.Capacity = 0;
             });
+        }
+
+        bool OpenProjectWindow(string voicebank = "", string wavsettings = "", string path = "", bool open = false)
+        {
+            ClearWavcontrols();
             Project project = new Project(voicebank, wavsettings, path, open);
-            while (true)
-            { 
-                project.ShowDialog();
-                if (project.Result == Result.Cancel)
-                {
-                    DrawPage();
-                    return true;
-                }
-                ClearTemp();
-                if (project.Result == Result.Close)
-                    return false;
-                else if (project.Result == Result.Open)
-                    if (Open(project.Settings, project.Path))
-                        return true ;
-                    else { }
-                else
-                {
-                    NewProject(project.Settings, project.Voicebank);
-                    return true;
-                }
+            project.ShowDialog();
+            if (project.Result == Result.Cancel)
+            {
+                DrawPage();
+                return true;
             }
+            ClearTemp();
+            if (project.Result == Result.Close)
+                return false;
+            else if (project.Result == Result.Open)
+                if (Open(project.Settings, project.Path))
+                    return true;
+                else { }
+            else
+            {
+                NewProject(project.Settings, project.Voicebank);
+                return true;
+            }
+            return false;
         }
 
         void NewProject(string settings, string voicebank)
@@ -385,12 +439,9 @@ namespace WavConfigTool
                 WavControl control = WavControls.Find(n => n.Recline.Filename == filename);
                 if (control != null)
                 {
-                    if (!File.Exists(control.Recline.Path))
-                    {
-                        MessageBox.Show($"Some sample missing: \r\n{control.Recline.Path}\r\nAbort reading.", "Error on project reading", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                        return false;
-                    }
+                    control.IsEnabled = File.Exists(control.Recline.Path);
+                        //MessageBox.Show($"Some sample missing: \r\n{control.Recline.Path}", "Error on project reading", MessageBoxButton.OK, MessageBoxImage.Error);
+                    
                     if (pds.Length > 0) control.Ds = pds.Split(' ').Select(n => double.Parse(n)).ToList();
                     if (pvs.Length > 0) control.Vs = pvs.Split(' ').Select(n => double.Parse(n)).ToList();
                     if (pcs.Length > 0) control.Cs = pcs.Split(' ').Select(n => double.Parse(n)).ToList();
@@ -790,7 +841,18 @@ namespace WavConfigTool
             FindWav();
         }
 
+        private void ButtonLoadVoicebank_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeVoicebank();
+        }
+
+        private void ButtonLoadSettings_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeSettings();
+        }
+
         #endregion
+
 
     }
 }

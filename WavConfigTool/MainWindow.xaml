@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:WavConfigTool"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="WavConfigTool"
-    Width="1300"
+    Width="1500"
     Height="700"
     Closing="Window_Closing"
     KeyDown="Window_KeyDown"
@@ -359,6 +359,54 @@
                 Margin="4"
                 BorderBrush="DarkBlue"
                 BorderThickness="1">
+                <StackPanel Height="60" HorizontalAlignment="Center">
+                    <StackPanel
+                        Height="25"
+                        Margin="15,5"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Label
+                            Width="70"
+                            VerticalAlignment="Center"
+                            Content="Voicebank: " />
+                        <Label
+                            Name="LabelCurrentVoicebank"
+                            VerticalAlignment="Center"
+                            Content="" />
+                        <Button
+                            Name="ButtonLoadVoicebank"
+                            Width="40"
+                            Margin="5,0"
+                            Click="ButtonLoadVoicebank_Click"
+                            Content="Edit" />
+                    </StackPanel>
+                    <StackPanel
+                        Height="25"
+                        Margin="15,0"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Label
+                            Width="70"
+                            VerticalAlignment="Center"
+                            Content="Settings: " />
+                        <Label
+                            Name="LabelCurrentSettings"
+                            VerticalAlignment="Center"
+                            Content="" />
+                        <Button
+                            Name="ButtonLoadSettings"
+                            Width="40"
+                            Margin="5,0"
+                            Click="ButtonLoadSettings_Click"
+                            Content="Edit" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <Border
+                Margin="4"
+                BorderBrush="DarkBlue"
+                BorderThickness="1"
+                Visibility="Hidden">
                 <StackPanel
                     Height="60"
                     HorizontalAlignment="Center"

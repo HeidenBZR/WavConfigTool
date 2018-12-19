@@ -28,6 +28,9 @@ namespace WavConfigTool
     /// </summary>
     public partial class WavControl : UserControl
     {
+        Task GeneratingTask;
+        CancellationTokenSource CancellationToken = new CancellationTokenSource();
+
         public Recline Recline;
         List<double> _cs = new List<double>();
         List<double> _vs = new List<double>();
@@ -50,6 +53,8 @@ namespace WavConfigTool
 
         public int Length;
         public bool IsCompleted;
+        public bool IsGenerating = false;
+        public bool IsEnabled = false;
 
         SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(250, 2, 20, 4));
         SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 200, 50));
@@ -79,6 +84,8 @@ namespace WavConfigTool
             Ds = new List<double>();
             LabelName.Content = recline.Name;
             WavControlChanged += delegate { CheckCompleted(); };
+            IsEnabled = File.Exists(Recline.Path);
+                
         }
 
         void CheckCompleted()
@@ -225,10 +232,10 @@ namespace WavConfigTool
 
         public void Draw()
         {
-            if (Recline.Reclist.VoicebankPath == "")
+            if (!IsEnabled)
                 return;
-            if (!File.Exists(ImagePath)) GenerateWaveform();
-            Display();
+            Opacity = 0.2;
+            OpenImageAsync();
             DrawConfig();
             CheckCompleted();
         }
@@ -240,19 +247,23 @@ namespace WavConfigTool
             MarkerCanvas.Children.Clear();
         }
 
-        void Display()
+        public bool GenerateWaveform(bool force = false)
         {
-            OpenImage();
-        }
-
-        public void GenerateWaveform(bool force = false)
-        {
-            if (!File.Exists(Recline.Path)) return;
-            if (!force && File.Exists(ImagePath)) return;
+            if (!File.Exists(Recline.Path))
+                return false;
+            if (!force && File.Exists(ImagePath))
+                return true;
+            while (IsGenerating)
+            {
+                // Wait for previous generating end;
+                Thread.Sleep(10);
+            }
+            IsGenerating = true;
             WaveForm wave = new WaveForm(Recline.Path);
             var points = wave.GetAudioPoints();
             if (Ds == null || Ds.Count == 0)
-                Ds = wave.Ds;
+                Ds = new List<double>();
+                //Ds = wave.Ds;
             MostLeft = wave.MostLeft;
             Length = (int) (wave.Length * 1000 / wave.SampleRate);
             
@@ -263,37 +274,61 @@ namespace WavConfigTool
                 Height = 100;
             });
 
-
-            Thread thread = new Thread(wave.PointsToImage);
-            thread.IsBackground = true;
-            thread.Name = Recline.Filename;
-            thread.Start((points, width, 100, this));
-        }
-
-
-        void OpenImage()
-        {
-            //Thread thread = new Thread(OpenImageThread);
-            //thread.Start(Recline.Path);
-            ThreadPool.QueueUserWorkItem(OpenImageThread);
-        }
-
-        void LoadImage()
-        {
-            var uri = new Uri(ImagePath, UriKind.Relative);
-            WavImage.Source = new BitmapImage(uri);
-            //Width = WavImage.Width;
-        }
-
-        public void OpenImageThread(object path)
-        {
-            bool isAlowed = false;
-            for (int i = 0; !isAlowed; i++)
+            if (!wave.IsEnabled)
+                return false;
+            wave.PointsToImage((object)(points, width, 100, this));
+            IsGenerating = false;
+            if (!wave.IsGenerated)
             {
-                if (i > 100000) throw new Exception();
-                try { var f = File.Open(ImagePath, FileMode.Open); isAlowed = true; f.Close(); }
-                catch (IOException) { isAlowed = false; }
+                MessageBox.Show($"{wave.GeneratingException.Message}\r\n\r\n{wave.GeneratingException.StackTrace}", 
+                    "Error on image generation", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
+            return true;
+        }
+
+
+        public async void GenerateWaveformAsync(bool force)
+        {
+            if (!IsEnabled)
+                return;
+            GeneratingTask = new Task(delegate() {
+                IsEnabled = GenerateWaveform(force);
+            });
+            GeneratingTask.Start();
+            await GeneratingTask;
+        } 
+
+        public async void OpenImageAsync()
+        {
+            if (!IsEnabled)
+                return;
+
+            int i = 0;
+
+            await Task.Run(() =>
+            {
+
+
+                while (!File.Exists(ImagePath) || IsGenerating)
+                {
+                    // Wait for previous generating end;
+                    Thread.Sleep(100);
+                    i++;
+                    if (i > 100)
+                        return;
+                }
+
+                OpenImage();
+                Dispatcher.Invoke(() =>
+                {
+                    Opacity = 1;
+                });
+            });
+        }
+
+        public void OpenImage()
+        {
             BitmapImage src = new BitmapImage();
             src.BeginInit();
             src.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
@@ -305,6 +340,8 @@ namespace WavConfigTool
             {
                 WavImage.Source = src;
             });
+            //var uri = new Uri(ImagePath, UriKind.Relative);
+            //WavImage.Source = new BitmapImage(uri);
         }
 
 
