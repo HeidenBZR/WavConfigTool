@@ -29,7 +29,7 @@ namespace WavConfigTool
     public partial class WavControl : UserControl
     {
         Task GeneratingTask;
-        CancellationTokenSource CancellationToken = new CancellationTokenSource();
+        Thread Thread;
 
         public Recline Recline;
         List<double> _cs = new List<double>();
@@ -54,7 +54,13 @@ namespace WavConfigTool
         public int Length;
         public bool IsCompleted;
         public bool IsGenerating = false;
-        public bool IsEnabled = false;
+        public bool IsEnabled
+        {
+            get
+            {
+                return Recline != null && Recline.Reclist != null && Recline.Reclist.VoicebankEnabled && File.Exists(Recline.Path);
+            }
+        }
 
         SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(250, 2, 20, 4));
         SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 200, 50));
@@ -84,8 +90,7 @@ namespace WavConfigTool
             Ds = new List<double>();
             LabelName.Content = recline.Name;
             WavControlChanged += delegate { CheckCompleted(); };
-            IsEnabled = File.Exists(Recline.Path);
-                
+            //IsEnabled = ;
         }
 
         void CheckCompleted()
@@ -182,20 +187,27 @@ namespace WavConfigTool
             {
                 for (int i = 0; i < Cs.Count; i++)
                 {
-                    if (i % 2 == 0)
-                        Recline.Consonants[i / 2].Zone.In = Cs[i];
-                    else
-                        Recline.Consonants[i / 2].Zone.Out = Cs[i];
+                    if (i / 2 < Recline.Consonants.Count)
+                    {
+                        if (i % 2 == 0)
+                            Recline.Consonants[i / 2].Zone.In = Cs[i];
+                        else
+                            Recline.Consonants[i / 2].Zone.Out = Cs[i];
+                    }
                 }
             }
             if (point == WavConfigPoint.V)
             {
                 for (int i = 0; i < Vs.Count; i++)
                 {
-                    if (i % 2 == 0)
-                        Recline.Vowels[i / 2].Zone.In = Vs[i];
-                    else
-                        Recline.Vowels[i / 2].Zone.Out = Vs[i];
+                    if (i / 2 < Recline.Vowels.Count)
+                    {
+                        if (i % 2 == 0)
+                            Recline.Vowels[i / 2].Zone.In = Vs[i];
+                        else
+                            Recline.Vowels[i / 2].Zone.Out = Vs[i];
+
+                    }
                 }
             }
             if (point == WavConfigPoint.D)
@@ -293,7 +305,15 @@ namespace WavConfigTool
             if (!IsEnabled)
                 return;
             GeneratingTask = new Task(delegate() {
-                IsEnabled = GenerateWaveform(force);
+                try
+                {
+                    GenerateWaveform(force);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on GenerateWaveformsAsync",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             });
             GeneratingTask.Start();
             await GeneratingTask;
@@ -308,22 +328,29 @@ namespace WavConfigTool
 
             await Task.Run(() =>
             {
-
-
-                while (!File.Exists(ImagePath) || IsGenerating)
+                try
                 {
-                    // Wait for previous generating end;
-                    Thread.Sleep(100);
-                    i++;
-                    if (i > 100)
-                        return;
+
+                    while (!File.Exists(ImagePath) || IsGenerating)
+                    {
+                        // Wait for previous generating end;
+                        Thread.Sleep(100);
+                        i++;
+                        if (i > 100)
+                            return;
+                    }
+
+                    OpenImage();
+                    Dispatcher.Invoke(() =>
+                    {
+                        Opacity = 1;
+                    });
+
                 }
-
-                OpenImage();
-                Dispatcher.Invoke(() =>
+                catch (Exception ex)
                 {
-                    Opacity = 1;
-                });
+                    MainWindow.MessageBoxError(ex, "OpenImageAsync");
+                }
             });
         }
 

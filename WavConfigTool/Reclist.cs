@@ -12,22 +12,43 @@ namespace WavConfigTool
     {
         public static List<Phoneme> Phonemes;
         public List<Recline> Reclines;
-        public string VoicebankPath = "";
         public List<Phoneme> Vowels { get { return Phonemes.Where(n => n.IsVowel).ToList(); } }
         public List<Phoneme> Consonants { get { return Phonemes.Where(n => n.IsConsonant).ToList(); } }
+
+        public string VoicebankPath { get; private set; } = "";
+
+        public bool VoicebankEnabled
+        {
+            get
+            {
+                return System.IO.Directory.Exists(VoicebankPath);
+            }
+        }
+
         public List<string> Aliases;
 
         public string Name = "";
 
         public static Reclist Current;
 
+        public bool IsLoaded = false;
+
         public Reclist(string[] vs, string[] cs)
         {
-            Phonemes = new List<Phoneme>();
-            foreach (string v in vs) Phonemes.Add(new Vowel(v));
-            foreach (string c in cs) Phonemes.Add(new Consonant(c));
-            Reclines = new List<Recline>();
-            Current = this;
+            try
+            {
+                Phonemes = new List<Phoneme>();
+                foreach (string v in vs) Phonemes.Add(new Vowel(v));
+                foreach (string c in cs) Phonemes.Add(new Consonant(c));
+                Reclines = new List<Recline>();
+                Current = this;
+                IsLoaded = true;
+            }
+            catch (Exception ex)
+            {
+                MainWindow.MessageBoxError(ex, "Error on reclist init");
+                IsLoaded = false;
+            }
         }
 
         public Phoneme GetPhoneme(string alias)
@@ -39,6 +60,13 @@ namespace WavConfigTool
                 phoneme = Phonemes.Find(n => n.Alias == alias);
             }
             return phoneme.Clone();
+        }
+
+        public void SetVoicebank(string voicebankPath)
+        {
+            VoicebankPath = voicebankPath;
+            if (!VoicebankEnabled)
+                MainWindow.MessageBoxError(new Exception("Voicebank folder cannot be found"), "Voicebank error");
         }
     }
 
@@ -52,7 +80,13 @@ namespace WavConfigTool
         public Reclist Reclist;
 
         public List<Phoneme> Data;
-        public string Path { get { return System.IO.Path.Combine(Reclist.VoicebankPath, Filename); } }
+        public string Path
+        {
+            get
+            {
+                return System.IO.Path.Combine(Reclist.VoicebankPath, Filename);
+            }
+        }
         public string Name
         {
             get

@@ -26,7 +26,7 @@ namespace WavConfigTool
     public partial class MainWindow : Window
     {
         Reclist Reclist;
-        string TempPath
+        string TempProject
         {
             get
             {
@@ -42,7 +42,7 @@ namespace WavConfigTool
         List<WavControl> WavControls;
         public static WavConfigPoint Mode = WavConfigPoint.V;
 
-        public readonly Version Version = new Version(0, 1, 5, 0);
+        public readonly Version Version = new Version(0, 1, 5, 1);
 
         int PageCurrent = 0;
         int PageTotal = 0;
@@ -65,51 +65,116 @@ namespace WavConfigTool
 
         Point PrevMousePosition;
 
+        public static MainWindow Current;
+
         public delegate void ProjectLoadedEventHandler();
         public event ProjectLoadedEventHandler ProjectLoaded;
 
         bool IsUnsaved { get => Settings.IsUnsaved; set => Settings.IsUnsaved = value; }
 
-        bool loaded = false;
+        public bool loaded = false;
 
         public MainWindow()
         {
             try
             {
+
                 InitializeComponent();
+                Current = this;
+                ClearTemp();
+                Init();
+                if (OpenBackup())
+                    return;
+                if (OpenLast())
+                    return;
+            }
+            catch (Exception ex)
+            {
+                MessageBoxError(ex, "Error on MainWindow");
+            }
+        }
+
+        public static void MessageBoxError(Exception ex, string name)
+        {
+            Current.Dispatcher.Invoke(() =>
+            {
+                MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", name,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            });
+        }
+
+        bool OpenBackup()
+        {
+            try
+            {
+                if (IsUnsaved && File.Exists(TempProject))
+                {
+                    if (!CheckSettings())
+                        return false;
+                    if (!ReadProject(TempProject))
+                        return false;
+                    MessageBox.Show("Найдены несохраненные изменения. Пересохраните проект.");
+                    loaded = true;
+                    return true;
+                }
+                return false;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on openbackup", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+        bool OpenLast()
+        {
+            try
+            {
+                if (CheckSettings() && CheckLast())
+                {
+                    loaded = true;
+                    DrawPage();
+                    return loaded;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on open last",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+        void Init()
+        {
+            try
+            {
                 if (File.Exists("icon.bmp"))
-                    Icon =  new BitmapImage(new Uri("icon.bmp", UriKind.Relative));
+                    Icon = new BitmapImage(new Uri("icon.bmp", UriKind.Relative));
 
                 Width = Settings.WindowSize.X;
                 Height = Settings.WindowSize.Y;
                 Left = Settings.WindowPosition.X;
                 Top = Settings.WindowPosition.Y;
                 WindowState = Settings.IsMaximized ? WindowState.Maximized : WindowState.Normal;
-                ClearTemp();
-                InitTextBoxes();
                 PrevMousePosition = Mouse.GetPosition(this);
+                InitTextBoxes();
                 ProjectLoaded += delegate
                 {
                     SetTitle();
-                    LabelCurrentVoicebank.Content = System.IO.Path.GetFileName(Reclist.VoicebankPath);
+                    if (Reclist != null && Reclist.IsLoaded)
+                        LabelCurrentVoicebank.Content = System.IO.Path.GetFileName(Reclist.VoicebankPath);
                     LabelCurrentSettings.Content = System.IO.Path.GetFileName(Settings.WavSettings);
                     GenerateWaveforms();
                 };
-                if (IsUnsaved && File.Exists(TempPath))
-                {
-                    MessageBox.Show("Найдены несохраненные изменения. Пересохраните проект.");
-                    Settings.ProjectFile = TempPath;
-                }
-
-                if (CheckSettings() && CheckLast())
-                {
-                    loaded = true;
-                    DrawPage();
-                }
             }
-            catch (EntryPointNotFoundException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on Init", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on init",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -121,16 +186,23 @@ namespace WavConfigTool
             if (vb != null)
                 if (Directory.Exists(vb))
                 {
-                    Reclist.VoicebankPath = vb;
-                    Save();
+                    Reclist.SetVoicebank(vb);
+                    if (Settings.IsUnsaved)
+                        SaveBackup();
+                    else
+                        Save();
                     ClearTemp();
                     ClearWavcontrols();
-                    if (CheckSettings() && CheckLast())
+                    if (CheckSettings() && (Settings.IsUnsaved && ReadProject(TempProject)
+                        || ReadProject(Settings.ProjectFile)))
                         DrawPage();
                     else
                     {
-                        Reclist.VoicebankPath = old_vb;
-                        Save();
+                        Reclist.SetVoicebank(old_vb);
+                        if (Settings.IsUnsaved)
+                            SaveBackup();
+                        else
+                            Save();
                         ClearTemp();
                         ClearWavcontrols();
                         DrawPage();
@@ -149,7 +221,8 @@ namespace WavConfigTool
                     Settings.WavSettings = s;
                     ClearTemp();
                     ClearWavcontrols();
-                    if (CheckSettings() && CheckLast())
+                    if (CheckSettings() && (Settings.IsUnsaved && OpenBackup()
+                        || ReadProject(Settings.ProjectFile)))
                         DrawPage();
                     else
                     {
@@ -239,14 +312,31 @@ namespace WavConfigTool
 
         async void GenerateWaveformsAsync(bool force)
         {
-            if (Thread != null && Thread.IsAlive)
-                Thread.Abort();
-            await Task.Run(() =>
+            if (WavControls is null)
+                return;
+            try
             {
-                Thread = Thread.CurrentThread;
-                foreach (WavControl control in WavControls)
-                    control.GenerateWaveformAsync(force);
-            });
+                Dispatcher.Invoke(() => { CanvasLoading.Visibility = Visibility.Visible; });
+                await Task.Run(() =>
+                {
+                    if (Thread != null && Thread.IsAlive)
+                        Thread.Join();
+                    Dispatcher.Invoke(() => { CanvasLoading.Visibility = Visibility.Hidden; });
+                    Thread = Thread.CurrentThread;
+                    foreach (WavControl control in WavControls)
+                    {
+                        control.GenerateWaveformAsync(force);
+                        control.OpenImageAsync();
+                    }
+                });
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on GenerateWaveformsAsync",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Dispatcher.Invoke(() => { CanvasLoading.Visibility = Visibility.Hidden; });
+            }
         }
 
 
@@ -271,7 +361,7 @@ namespace WavConfigTool
             control.WavControlChanged += SaveBackup;
             control.WavControlChanged += () =>
             {
-                if (Settings.ProjectFile != TempPath)
+                if (Settings.ProjectFile != TempProject)
                     Save();
             };
             WavControls.Add(control);
@@ -288,38 +378,53 @@ namespace WavConfigTool
 
         bool OpenProjectWindow(string voicebank = "", string wavsettings = "", string path = "", bool open = false)
         {
-            ClearWavcontrols();
-            Project project = new Project(voicebank, wavsettings, path, open);
-            project.ShowDialog();
-            if (project.Result == Result.Cancel)
+            try
             {
-                DrawPage();
-                return true;
-            }
-            ClearTemp();
-            if (project.Result == Result.Close)
-                return false;
-            else if (project.Result == Result.Open)
-                if (Open(project.Settings, project.Path))
+                ClearWavcontrols();
+                Project project = new Project(voicebank, wavsettings, path, open);
+                project.ShowDialog();
+                if (project.Result == Result.Cancel)
+                {
+                    DrawPage();
                     return true;
-                else { }
-            else
-            {
-                NewProject(project.Settings, project.Voicebank);
-                return true;
+                }
+                ClearTemp();
+                if (project.Result == Result.Close)
+                    return false;
+                else if (project.Result == Result.Open)
+                    if (Open(project.Settings, project.Path))
+                        return true;
+                    else { }
+                else
+                {
+                    NewProject(project.Settings, project.Voicebank);
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch (Exception ex)
+            {
+                MessageBoxError(ex, "Error on open project window");
+                return false;
+            }
         }
 
         void NewProject(string settings, string voicebank)
         {
-            ReadSettings(settings);
-            Reclist.VoicebankPath = voicebank;
-            Settings.ProjectFile = TempPath;
-            DrawPage();
-            SetTitle();
-            if (Settings.ProjectFile != TempPath && File.Exists(TempPath)) File.Delete(TempPath);
-            ProjectLoaded();
+            try
+            {
+                ReadSettings(settings);
+                Reclist.SetVoicebank(voicebank);
+                Settings.ProjectFile = TempProject;
+                DrawPage();
+                SetTitle();
+                if (Settings.ProjectFile != TempProject && File.Exists(TempProject)) File.Delete(TempProject);
+                ProjectLoaded();
+            }
+            catch (Exception ex)
+            {
+                MessageBoxError(ex, "Error on new project");
+            }
         }
 
         bool Open(string settings, string project)
@@ -331,7 +436,7 @@ namespace WavConfigTool
                 if (!result) return false;
                 DrawPage();
                 SetTitle();
-                if (Settings.ProjectFile != TempPath && File.Exists(TempPath)) File.Delete(TempPath);
+                if (Settings.ProjectFile != TempProject && File.Exists(TempProject)) File.Delete(TempProject);
                 return true;
             }
             else MessageBox.Show("Ошибка при открытии файла проекта", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -346,44 +451,67 @@ namespace WavConfigTool
 
         void Save()
         {
-            if (Settings.ProjectFile == TempPath)
+            try
             {
-                SaveAs();
+
+                if (Settings.ProjectFile == TempProject)
+                {
+                    SaveAs();
+                    return;
+                }
+                string text = "";
+                text += $"{Reclist.VoicebankPath}\r\n";
+
+                foreach (WavControl control in WavControls)
+                {
+                    text += $"{control.Recline.Filename}\r\n";
+                    text += $"{String.Join(" ", control.Ds.Select(n => n.ToString("f0")))}\r\n";
+                    text += $"{ String.Join(" ", control.Vs.Select(n => n.ToString("f0"))) }\r\n";
+                    text += $"{String.Join(" ", control.Cs.Select(n => n.ToString("f0")))}\r\n";
+                }
+                File.WriteAllText(Settings.ProjectFile, text, Encoding.UTF8);
+                IsUnsaved = false;
+                SetTitle();
+                if (File.Exists(TempProject))
+                    File.Delete(TempProject);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on save project");
                 return;
             }
-            string text = "";
-            text += $"{Reclist.VoicebankPath}\r\n";
-
-            foreach (WavControl control in WavControls)
-            {
-                text += $"{control.Recline.Filename}\r\n";
-                text += $"{String.Join(" ", control.Ds.Select(n => n.ToString("f0")))}\r\n";
-                text += $"{ String.Join(" ", control.Vs.Select(n => n.ToString("f0"))) }\r\n";
-                text += $"{String.Join(" ", control.Cs.Select(n => n.ToString("f0")))}\r\n";
-            }
-            File.WriteAllText(Settings.ProjectFile, text, Encoding.UTF8);
-            IsUnsaved = false;
-            SetTitle();
-            if (File.Exists(TempPath)) File.Delete(TempPath);
         }
 
         void SaveAs()
         {
-            string lastpath = Settings.ProjectFile;
-            SaveFileDialog openFileDialog = new SaveFileDialog();
-            openFileDialog.Filter = "WavConfig Project (*.wconfig)|*.wconfig";
-            openFileDialog.RestoreDirectory = true;
-            openFileDialog.ShowDialog();
-            if (openFileDialog.FileName == "") return;
-            Settings.ProjectFile = openFileDialog.FileName;
-            Save();
-            File.Delete(lastpath);
-            IsUnsaved = false;
+            try
+            {
+                string lastpath = Settings.ProjectFile;
+                SaveFileDialog openFileDialog = new SaveFileDialog();
+                openFileDialog.Filter = "WavConfig Project (*.wconfig)|*.wconfig";
+                openFileDialog.RestoreDirectory = true;
+                openFileDialog.ShowDialog();
+                if (openFileDialog.FileName == "") return;
+                Settings.ProjectFile = openFileDialog.FileName;
+                Save();
+                File.Delete(lastpath);
+                IsUnsaved = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on save as");
+                return;
+            }
         }
 
         void SetTitle(bool unsaved = false)
         {
-            Title = $"WavConfig v.{Version.ToString()} - {System.IO.Path.GetFileName(Settings.ProjectFile)}{(IsUnsaved? "*" : "")} [{new DirectoryInfo(Reclist.VoicebankPath).Name}]";
+            Title = $"WavConfig v.{Version.ToString()} - {System.IO.Path.GetFileName(Settings.ProjectFile)}{(IsUnsaved? "*" : "")}";
+            if (Reclist is null || !Reclist.IsLoaded)
+                return;
+            try { Title += $" [{new DirectoryInfo(Reclist.VoicebankPath).Name}]"; }
+            catch { }
         }
 
         void SaveBackup()
@@ -398,69 +526,91 @@ namespace WavConfigTool
                 text += $"{ String.Join(" ", control.Vs.Select(n => n.ToString("f0"))) }\r\n";
                 text += $"{String.Join(" ", control.Cs.Select(n => n.ToString("f0")))}\r\n";
             }
-            File.WriteAllText(TempPath, text, Encoding.UTF8);
+            File.WriteAllText(TempProject, text, Encoding.UTF8);
             SetTitle(true);
             IsUnsaved = true;
         }
 
         void ReadSettings(string settings)
         {
-            string[] lines = File.ReadAllLines(settings);
-            var vs = lines[0].Split(' ');
-            var cs = lines[1].Split(' ');
-            Reclist = new Reclist(vs, cs);
-            WavControls = new List<WavControl>();
-            for (int i = 2; i < lines.Length; i++)
+            try
             {
-                if (i == 8)
-                    Console.WriteLine();
 
-                string[] items = lines[i].Split('\t');
-                if (items.Length != 3)
-                    continue;
-                AddFile(items[0], items[1], items[2]);
+                string[] lines = File.ReadAllLines(settings);
+                var vs = lines[0].Split(' ');
+                var cs = lines[1].Split(' ');
+                Reclist = new Reclist(vs, cs);
+                WavControls = new List<WavControl>();
+                for (int i = 2; i < lines.Length; i++)
+                {
+                    string[] items = lines[i].Split('\t');
+                    if (items.Length != 3)
+                        continue;
+                    AddFile(items[0], items[1], items[2]);
+                }
+                var name = System.IO.Path.GetFileNameWithoutExtension(settings);
+                Reclist.Name = name;
+                Settings.WavSettings = settings;
             }
-            var name = System.IO.Path.GetFileNameWithoutExtension(settings);
-            Reclist.Name = name;
-            Settings.WavSettings = settings;
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on wavsettings reading");
+            }
         }
 
         bool ReadProject(string project)
         {
-            Settings.ProjectFile = project;
-            string[] lines = File.ReadAllLines(project);
-            Reclist.VoicebankPath = lines[0];
-            for (int i = 1; i + 3 < lines.Length;  i += 4)
+            try
             {
-                string filename = lines[i];
-                string pds = lines[i + 1];
-                string pvs = lines[i + 2];
-                string pcs = lines[i + 3];
-                WavControl control = WavControls.Find(n => n.Recline.Filename == filename);
-                if (control != null)
+
+                Settings.ProjectFile = project;
+                string[] lines = File.ReadAllLines(project);
+                Reclist.SetVoicebank(lines[0]);
+                for (int i = 1; i + 3 < lines.Length; i += 4)
                 {
-                    control.IsEnabled = File.Exists(control.Recline.Path);
+                    string filename = lines[i];
+                    string pds = lines[i + 1];
+                    string pvs = lines[i + 2];
+                    string pcs = lines[i + 3];
+                    WavControl control = WavControls.Find(n => n.Recline.Filename == filename);
+                    if (control != null)
+                    {
                         //MessageBox.Show($"Some sample missing: \r\n{control.Recline.Path}", "Error on project reading", MessageBoxButton.OK, MessageBoxImage.Error);
-                    
-                    if (pds.Length > 0) control.Ds = pds.Split(' ').Select(n => double.Parse(n)).ToList();
-                    if (pvs.Length > 0) control.Vs = pvs.Split(' ').Select(n => double.Parse(n)).ToList();
-                    if (pcs.Length > 0) control.Cs = pcs.Split(' ').Select(n => double.Parse(n)).ToList();
+
+                        if (pds.Length > 0) control.Ds = pds.Split(' ').Select(n => double.Parse(n)).ToList();
+                        if (pvs.Length > 0) control.Vs = pvs.Split(' ').Select(n => double.Parse(n)).ToList();
+                        if (pcs.Length > 0) control.Cs = pcs.Split(' ').Select(n => double.Parse(n)).ToList();
+                    }
                 }
+                SetTitle();
+                ProjectLoaded();
+                return true;
             }
-            SetTitle();
-            ProjectLoaded();
-            return true;
+            catch (Exception ex)
+            {
+                MessageBoxError(ex, "Error on project reading");
+                return false;
+            }
         }
 
-        string SaveOto()
+        string SaveOtoDialog()
         {
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filter = "oto.ini file (oto.ini)|*oto*.ini";
-            dialog.InitialDirectory = Reclist.VoicebankPath;
-            dialog.FileName = "oto.ini";
-            var result = dialog.ShowDialog();
-            if (!result.HasValue || !result.Value) return "";
-            return dialog.FileName;
+            try
+            {
+
+                SaveFileDialog dialog = new SaveFileDialog();
+                dialog.Filter = "oto.ini file (oto.ini)|*oto*.ini";
+                dialog.InitialDirectory = Reclist.VoicebankPath;
+                dialog.FileName = "oto.ini";
+                var result = dialog.ShowDialog();
+                if (!result.HasValue || !result.Value) return "";
+                return dialog.FileName;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on save oto dialog");
+                return "";
+            }
         }
 
         void Generate()
@@ -473,7 +623,7 @@ namespace WavConfigTool
                 {
                     text += control.Generate();
                 }
-                string filename = SaveOto();
+                string filename = SaveOtoDialog();
                 if (filename != "")
                     File.WriteAllText(System.IO.Path.Combine(Reclist.VoicebankPath, filename), text, Encoding.ASCII);
             }
@@ -493,13 +643,21 @@ namespace WavConfigTool
         
         void ClearTemp()
         {
-            Dispatcher.Invoke((ThreadStart)delegate
+            try
             {
-                WaveControlStackPanel.Children.Clear();
-                WaveControlStackPanel.Children.Capacity = 0;
-            });
-            foreach (string filename in Directory.GetFiles(TempDir))
-                File.Delete(filename);
+                Dispatcher.Invoke((ThreadStart)delegate
+                {
+                    WaveControlStackPanel.Children.Clear();
+                    WaveControlStackPanel.Children.Capacity = 0;
+                });
+                foreach (string filename in Directory.GetFiles(TempDir))
+                    File.Delete(filename);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on clear cache",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         bool DoEvenIfUnsaved(string message = "Продолжить?")
@@ -508,7 +666,7 @@ namespace WavConfigTool
             var result = MessageBox.Show("Имеются несохраненные изменения. " + message, "Предупреждение", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
-                File.Delete(TempPath);
+                File.Delete(TempProject);
                 ClearTemp();
                 return true;
             }
@@ -619,11 +777,12 @@ namespace WavConfigTool
 
         private void MenuNew_Click(object sender, RoutedEventArgs e)
         {
-            if (DoEvenIfUnsaved())
+            string reclist = Reclist is null || Reclist.VoicebankPath is null ? "" : Reclist.VoicebankPath;
+            if (!loaded || DoEvenIfUnsaved())
                 if ((sender as MenuItem).Tag.ToString() == "New")
-                    OpenProjectWindow(Reclist.VoicebankPath, Settings.WavSettings, Settings.ProjectFile);
+                    OpenProjectWindow(reclist, Settings.WavSettings, Settings.ProjectFile);
                 else
-                    OpenProjectWindow(Reclist.VoicebankPath, Settings.WavSettings, Settings.ProjectFile, true);
+                    OpenProjectWindow(reclist, Settings.WavSettings, Settings.ProjectFile, true);
         }
 
         private void NextPage(object sender, RoutedEventArgs e)
@@ -725,7 +884,7 @@ namespace WavConfigTool
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (!DoEvenIfUnsaved("Все равно выйти?"))
+            if (loaded && !DoEvenIfUnsaved("Все равно выйти?"))
                 e.Cancel = true;
             else
             {

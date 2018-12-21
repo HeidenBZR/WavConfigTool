@@ -97,7 +97,7 @@ namespace WavConfigTool.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("D:\\Github\\WavConfigTool\\WavConfigTool\\bin\\Debug\\minto_power.wconfig")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ProjectFile {
             get {
                 return ((string)(this["ProjectFile"]));
@@ -109,7 +109,7 @@ namespace WavConfigTool.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Heiden\\AppData\\Roaming\\WavConfigTool\\WavSettings\\arpasing_rus.wsettings")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string WavSettings {
             get {
                 return ((string)(this["WavSettings"]));
