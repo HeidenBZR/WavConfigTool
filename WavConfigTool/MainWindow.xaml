@@ -167,6 +167,7 @@
                         <Label
                             Name="LabelMode"
                             Margin="0"
+                            Width="25"
                             Content="V"
                             FontWeight="Bold" />
                         <!--<Button
@@ -510,6 +511,7 @@
         <ScrollViewer
             Name="ScrollViewer"
             Grid.Row="3"
+            Focusable="True"
             Margin="5"
             HorizontalScrollBarVisibility="Auto"
             ScrollChanged="ScrollViewer_ScrollChanged"

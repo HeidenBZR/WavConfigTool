@@ -171,7 +171,7 @@ namespace WavConfigTool
                     FindWav();
             }
             else if (Keyboard.IsKeyDown(Key.Enter))
-                Focus();
+                ScrollViewer.Focus();
         }
 
         private void FadeChanged(object sender, RoutedEventArgs e)
@@ -204,6 +204,7 @@ namespace WavConfigTool
                 Settings.WindowPosition = new System.Drawing.Point((int)Left, (int)Top);
                 Settings.IsMaximized = WindowState == WindowState.Maximized;
                 Properties.Settings.Default.Save();
+                ClearTemp();
             }
         }
 

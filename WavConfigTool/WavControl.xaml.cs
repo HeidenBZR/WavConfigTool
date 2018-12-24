@@ -40,9 +40,15 @@ namespace WavConfigTool
         public List<double> Ds { get { return _ds; } set { _ds = value; ApplyPoints(WavConfigPoint.D); CheckCompleted(); } }
 
         public WavMarker[] Data = new WavMarker[2];
-        public string ImagePath { get {
-                var c = AudioCode;
-                return System.IO.Path.Combine(MainWindow.TempDir, $"{c}_{Recline.Filename}.png"); } }
+        public string ImagePath;
+
+        public string GetImagePath()
+        {
+            var c = AudioCode;
+            var to_hash = $"{c};{Recline.Filename};{Settings.WAM}";
+            var hex = $"{to_hash.GetHashCode():X}";
+            return System.IO.Path.Combine(MainWindow.TempDir, $"{hex}.png");
+        }
 
         public static double ScaleX = 0.7f;
         public static double ScaleY = 60f;
@@ -51,7 +57,7 @@ namespace WavConfigTool
         public static string Prefix;
         public static string Suffix;
 
-        public static int WaitingLimit = 1000;
+        public static int WaitingLimit = 10;
 
         public WaveForm WaveForm;
 
@@ -99,13 +105,18 @@ namespace WavConfigTool
             Ds = new List<double>();
             LabelName.Content = recline.Name;
             WavControlChanged += delegate { CheckCompleted(); };
+            OnImageLoaded += delegate {
+                SetLoaded();
+                DrawConfig();
+                CheckCompleted();
+            };
         }
 
         public bool InitWave()
         {
             try
             {
-                if (Recline is null || !File.Exists(Recline.Path))
+                if (Recline is null)
                     return false;
 
                 WaveForm = new WaveForm(Recline.Path);

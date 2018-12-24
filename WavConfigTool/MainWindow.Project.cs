@@ -34,13 +34,11 @@ namespace WavConfigTool
                         SaveBackup();
                     else
                         Save();
-                    ClearTemp();
                     ClearWavcontrols();
                     loaded = (CheckSettings() && (Settings.IsUnsaved && ReadProject(TempProject)
                         || ReadProject(Settings.ProjectFile)));
                     if (!loaded)
                     {
-                        ClearTemp();
                         ClearWavcontrols();
                         Reclist.SetVoicebank(old_vb);
                         if (Settings.IsUnsaved)
@@ -62,14 +60,12 @@ namespace WavConfigTool
                 if (File.Exists(s))
                 {
                     Settings.WavSettings = s;
-                    ClearTemp();
                     ClearWavcontrols();
                     loaded = (CheckSettings() && (Settings.IsUnsaved && OpenBackup()
                         || ReadProject(Settings.ProjectFile)));
                     if (!loaded)
                     {
                         Settings.WavSettings = old_s;
-                        ClearTemp();
                         ClearWavcontrols();
                         loaded = (CheckSettings() && (Settings.IsUnsaved && OpenBackup()
                             || ReadProject(Settings.ProjectFile)));
@@ -139,7 +135,7 @@ namespace WavConfigTool
             return false;
         }
 
-        void InitWavcontrols (bool force)
+        async void InitWavcontrols (bool force)
         {
             if (WavControls is null)
                 return;
@@ -147,7 +143,9 @@ namespace WavConfigTool
             {
                 //WavControls[0].GenerateWaveformAsync(force);
                 foreach (WavControl control in WavControls)
+                {
                     control.Init();
+                }
 
             }
             catch (Exception ex)

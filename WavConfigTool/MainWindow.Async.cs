@@ -58,7 +58,8 @@ namespace WavConfigTool
                 int count = ItemsOnPage;
                 while (ItemsOnPage * PageCurrent + count > WavControls.Count)
                     count--;
-                await Task.Run(() => { DrawPage(count); });
+                DrawPage(count);
+                //await Task.Run(() => { DrawPage(count); });
                 //CanvasLoading.Visibility = Visibility.Hidden;
             }
             catch (Exception ex)

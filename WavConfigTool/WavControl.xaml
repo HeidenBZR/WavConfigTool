@@ -6,9 +6,8 @@
     xmlns:local="clr-namespace:WavConfigTool"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Height="100"
-    Width="600"
     Margin="0,10,0,10"
-    HorizontalAlignment="Left"
+    HorizontalAlignment="Stretch"
     Background="#1555CCCC"
     Focusable="True"
     mc:Ignorable="d">
@@ -17,7 +16,7 @@
             Name="WavCompleted"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Background="#3010FF22"
+            Background="#1510FF22"
             BorderBrush="#FF159B00"
             BorderThickness="0,3,0,3"
             Opacity="0" />
@@ -25,6 +24,10 @@
             Name="LabelName"
             Margin="0,0,0,0"
             Foreground="#BBBBFF" />
+        <local:CanvasLoading
+            x:Name="CanvasLoading"
+            HorizontalAlignment="Stretch"
+            Visibility="Hidden" />
         <Canvas
             Name="GridCanvas"
             HorizontalAlignment="Stretch"
@@ -70,6 +73,5 @@
             Name="MarkerCanvas"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" />
-        <local:CanvasLoading x:Name="CanvasLoading" Visibility="Hidden" />
     </Grid>
 </UserControl>

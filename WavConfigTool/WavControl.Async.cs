@@ -12,14 +12,18 @@ namespace WavConfigTool
 {
     public partial class WavControl
     {
+        public delegate void ImageLoadedHandler();
+        public ImageLoadedHandler OnImageLoaded;
 
-
-        public void Init()
+        public async void Init()
         {
+            IsToDraw = true;
+            await Task.Run(delegate { Dispatcher.Invoke(delegate { SetUnloaded(); }); });
             if (InitWave())
             {
-                IsToDraw = true;
-                GenerateWaveformAsync(true);
+                if (await GenerateWaveform_Before())
+                    await GenerateWaveformAsync(true);
+                GenerateWaveform_After();
             }
         }
 
@@ -32,31 +36,69 @@ namespace WavConfigTool
                 //});
                 if (!IsEnabled || !IsToDraw)
                     return;
-                Dispatcher.Invoke(() => {
-                    Visibility = Visibility.Visible;
-                });
                 int i = 0;
-                while (!IsImageGenerated && i < WaitingLimit)
+                while ((ImagePath is null || !IsImageGenerated) && i < WaitingLimit)
                 {
-                    await Task.Run(() => { Thread.Sleep(100); });
-                    i += 100;
+                    await Task.Run(() => { Thread.Sleep(1000); });
+                    i += 1;
                 }
                 if (!IsImageGenerated)
                     throw new Exception("Waveform generation timeout exceeded");
                 bool hasImage = false;
                 Dispatcher.Invoke(delegate { hasImage = WavImage.Source != null; });
-                if (!hasImage)
-                    await OpenImageAsync();
-                Dispatcher.Invoke(delegate
-                {
-                    Height = 100;
-                    DrawConfig();
-                    SetLoaded();
-                });
+                if (hasImage || await OpenImageAsync())
+                    OnImageLoaded();
+
             }
             catch (Exception ex)
             {
                 MainWindow.MessageBoxError(ex, "error on Draw");
+            }
+        }
+
+        public Task<bool> GenerateWaveform_Before()
+        {
+            return Task.Run(delegate
+            {
+                try
+                {
+                    Dispatcher.Invoke(delegate { SetUnloaded(); });
+                    string filename = GetImagePath();
+                    if (File.Exists(filename))
+                    {
+                        ImagePath = filename;
+                        return false;
+                    }
+                    else
+                    {
+                        Dispatcher.Invoke(delegate {
+                            if (File.Exists(ImagePath))
+                                File.Delete(ImagePath);
+                            ImagePath = filename;
+                        });
+                    }
+                    
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    MainWindow.MessageBoxError(ex, "Error on Before Generate Waveform");
+                }
+                return false;
+            });
+        }
+
+        public async void GenerateWaveform_After()
+        {
+            try
+            {
+                if (await OpenImageAsync())
+                    OnImageLoaded();
+            }
+            catch (Exception ex)
+            {
+                MainWindow.MessageBoxError(ex, "Error on After Generate Waveform");
             }
         }
 
@@ -65,72 +107,23 @@ namespace WavConfigTool
         {
             if (!IsEnabled)
                 return false;
-            try
-            {
-
-                if (await Task.Run<bool>(delegate ()
-                {
-                    try
-                    {
-
-                        Dispatcher.Invoke(() => { SetUnloaded(); });
-                        if (Thread != null && Thread.IsAlive)
-                            Thread.Join();
-
-                        //Thread = Thread.CurrentThread;
-                        if (!GenerateWaveform(force))
-                            return false;
-                        return true;
-                    }
-                    catch (ThreadAbortException) { return false; }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on GenerateWaveformsAsync",
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                        return false;
-                    }
-                }))
-                    return true;
-            }
-            catch (ThreadAbortException) { return false; }
-            if (await OpenImageAsync())
-                    return true;
-            return false;
-        }
-
-
-        public async Task<bool> OpenImageAsync()
-        {
-            if (!IsEnabled)
-                return false;
-
-            int i = 0;
-
-            return await Task.Run(() =>
+            return await Task.Run<bool>(delegate ()
             {
                 try
                 {
-                    //while (Thread == null ) { }
-                    //while (Thread.IsAlive) { }
-                    //Thread = Thread.CurrentThread;
-                    if (!IsImageGenerated && !IsGenerating)
-                    {
-                        //Dispatcher.Invoke(() => { SetLoaded(); });
-                        Undraw();
-                        return false;
-                    }
-                    while(IsGenerating)
-                    { }
 
-                    Dispatcher.Invoke(() => {
-                        if (OpenImage())
-                            SetLoaded();
-                    }); 
+                    if (Thread != null && Thread.IsAlive)
+                        Thread.Join();
+
+                    //Thread = Thread.CurrentThread;
+                    if (!GenerateWaveform(force))
+                        return false;
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    MainWindow.MessageBoxError(ex, "Error on Open Image Async");
+                    MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on GenerateWaveformsAsync",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                     return false;
                 }
             });
@@ -153,7 +146,7 @@ namespace WavConfigTool
                 Thread = new Thread(WaveForm.PointsToImage);
                 Thread.IsBackground = true;
                 Thread.Name = Recline.Filename;
-                Thread.Start((object)(points, width, 100, this));
+                Thread.Start((object)(points, width, 100, ImagePath));
 
 
 
@@ -172,6 +165,44 @@ namespace WavConfigTool
                 MainWindow.MessageBoxError(ex, "Error on Generate Waveform");
             }
             return false;
+        }
+
+
+        public async Task<bool> OpenImageAsync()
+        {
+            if (!IsEnabled)
+                return false;
+
+            int i = 0;
+
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    //while (Thread == null ) { }
+                    //while (Thread.IsAlive) { }
+                    //Thread = Thread.CurrentThread;
+                    if (!IsImageGenerated && !IsGenerating)
+                    {
+                        Dispatcher.Invoke(() => { Undraw(); });
+
+                        return false;
+                    }
+                    while (IsGenerating)
+                    { }
+
+                    Dispatcher.Invoke(() => {
+                        if (OpenImage())
+                            OnImageLoaded();
+                    });
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    MainWindow.MessageBoxError(ex, "Error on Open Image Async");
+                    return false;
+                }
+            });
         }
 
         public bool OpenImage()

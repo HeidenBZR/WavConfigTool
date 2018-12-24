@@ -18,10 +18,8 @@ namespace WavConfigTool
 
         public void Undraw()
         {
-            AreasCanvas.Children.Clear();
             GridCanvas.Children.Clear();
-            MarkerCanvas.Children.Clear();
-            Visibility = Visibility.Hidden;
+            ClearWavconfig();
         }
 
 
@@ -46,8 +44,16 @@ namespace WavConfigTool
                     else return;
                     break;
             }
+            ClearWavconfig();
             Draw();
             WavControlChanged();
+        }
+
+        void ClearWavconfig()
+        {
+            AreasCanvas.Children.Clear();
+            MarkerCanvas.Children.Clear();
+
         }
 
         void DrawConfig()
@@ -55,8 +61,11 @@ namespace WavConfigTool
             Ds.Sort();
             Vs.Sort();
             Cs.Sort();
-            AreasCanvas.Children.Clear();
-            MarkerCanvas.Children.Clear();
+
+            ClearWavconfig();
+
+            CheckCompleted();
+
             DrawD();
             DrawV();
             DrawC();
@@ -275,9 +284,13 @@ namespace WavConfigTool
 
         public void SetUnloaded()
         {
+            Undraw();
+            SetUncompleted();
             HorizontalAlignment = HorizontalAlignment.Stretch;
             //Opacity = 0.2;
+            WavImage.Source = null;
             CanvasLoading.Visibility = Visibility.Visible;
+            CanvasLoading.HorizontalAlignment = HorizontalAlignment.Stretch;
         }
 
         public void SetLoaded()

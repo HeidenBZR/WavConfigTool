@@ -30,7 +30,7 @@ namespace WavConfigTool
         public bool IsEnabled = false;
         public bool IsGenerating = false;
         public bool IsGenerated = false;
-
+        
         public Exception GeneratingException;
 
         public WaveForm(string path)
@@ -112,7 +112,7 @@ namespace WavConfigTool
             try
             {
                 IsGenerated = false;
-                (System.Windows.Point[] points, int w, int h, WavControl control) = ((System.Windows.Point[] points, int w, int h, WavControl control))Data;
+                (System.Windows.Point[] points, int w, int h, string imagePath ) = ((System.Windows.Point[] points, int w, int h, string imagePath))Data;
 
                 //Console.WriteLine($"Started generating {control.ImagePath}");
                 Bitmap image = new Bitmap(w, h);
@@ -122,7 +122,7 @@ namespace WavConfigTool
                 PointF[] ps = points.Select(n => new PointF((float)n.X, (float)n.Y)).ToArray();
                 waveform.DrawCurve(pen, ps);
                 waveform.Save();
-                image.Save(control.ImagePath);
+                image.Save(imagePath);
                 //Console.WriteLine($"Finished {control.ImagePath}");
                 IsGenerating = false;
                 IsGenerated = true;

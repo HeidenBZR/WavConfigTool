@@ -28,7 +28,6 @@ namespace WavConfigTool
 
                 InitializeComponent();
                 Current = this;
-                ClearTemp();
                 Init();
                 if (OpenBackup())
                     return;
@@ -159,7 +158,6 @@ namespace WavConfigTool
                     DrawPageAsync();
                     return true;
                 }
-                ClearTemp();
                 if (project.Result == Result.Close)
                     return false;
                 else if (project.Result == Result.Open)
@@ -227,17 +225,27 @@ namespace WavConfigTool
         {
             try
             {
-                Dispatcher.Invoke((ThreadStart)delegate
-                {
-                    WaveControlStackPanel.Children.Clear();
-                    WaveControlStackPanel.Children.Capacity = 0;
-                });
                 foreach (string filename in Directory.GetFiles(TempDir))
                     File.Delete(filename);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on clear cache",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+
+        async void ClearTempAsync()
+        {
+            try
+            {
+                foreach (string filename in Directory.GetFiles(TempDir))
+                    await Task.Run(delegate { File.Delete(filename); });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on clear cache async",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -249,7 +257,6 @@ namespace WavConfigTool
             if (result == MessageBoxResult.Yes)
             {
                 File.Delete(TempProject);
-                ClearTemp();
                 return true;
             }
             else return false;
@@ -311,7 +318,6 @@ namespace WavConfigTool
             if (value > 0 && value < 50f)
             {
                 Settings.WAM = value;
-                ClearTemp();
                 InitWavcontrols(force: true);
                 DrawPageAsync();
             }
