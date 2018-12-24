@@ -5,9 +5,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WavConfigTool"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Width="{Binding Width, ElementName=WavImage}"
+    Width="{Binding Width, ElementName=WavImage, NotifyOnSourceUpdated=True, Mode=TwoWay}"
     Height="100"
     Margin="0,10,0,10"
+    Focusable="True"
+    
     HorizontalAlignment="Left"
     Background="#1555CCCC"
     mc:Ignorable="d">
@@ -18,7 +20,8 @@
             VerticalAlignment="Stretch"
             Background="#3010FF22"
             BorderBrush="#FF159B00"
-            BorderThickness="0,3,0,3" />
+            BorderThickness="0,3,0,3"
+            Opacity="0" />
         <Label
             Name="LabelName"
             Margin="0,0,0,0"

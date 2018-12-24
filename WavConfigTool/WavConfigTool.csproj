@@ -91,6 +91,9 @@
     <Compile Include="FindWavDialog.xaml.cs">
       <DependentUpon>FindWavDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainWindow.Async.cs" />
+    <Compile Include="MainWindow.Control.cs" />
+    <Compile Include="MainWindow.Project.cs" />
     <Compile Include="MusicMath.cs" />
     <Compile Include="OtoPreviewControl.xaml.cs">
       <DependentUpon>OtoPreviewControl.xaml</DependentUpon>
@@ -104,6 +107,8 @@
     </Compile>
     <Compile Include="Reclist.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="WavControl.Async.cs" />
+    <Compile Include="WavControl.Draw.cs" />
     <Compile Include="WavControl.xaml.cs">
       <DependentUpon>WavControl.xaml</DependentUpon>
     </Compile>

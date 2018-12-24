@@ -11,7 +11,7 @@ using NAudio.Wave;
 
 namespace WavConfigTool
 {
-    class WaveForm
+    public class WaveForm
     {
         public static int PointSkip = 5;
         static SolidBrush WavZoneBrush = new SolidBrush(System.Drawing.Color.FromArgb(250, 100, 200, 100));

@@ -46,11 +46,16 @@ namespace WavConfigTool
 
         public static double ScaleX = 0.7f;
         public static double ScaleY = 60f;
-        public static double MostLeft = 9999;
+        public static double MostLeft = 0;
 
         public static string Prefix;
         public static string Suffix;
 
+        public static int WaitingLimit = 1000;
+
+        public WaveForm WaveForm;
+
+        public bool IsToDraw = false;
         public int Length;
         public bool IsCompleted;
         public bool IsGenerating = false;
@@ -85,6 +90,7 @@ namespace WavConfigTool
         {
             Recline = recline;
             InitializeComponent();
+            Visibility = Visibility.Hidden;
             Cs = new List<double>();
             Vs = new List<double>();
             Ds = new List<double>();
@@ -93,24 +99,13 @@ namespace WavConfigTool
             //IsEnabled = ;
         }
 
-        void CheckCompleted()
-        {
-            IsCompleted = Ds.Count == 2 &&
-                Vs.Count / 2 >= Recline.Vowels.Count &&
-                Cs.Count / 2 >= Recline.Consonants.Count;
-            Dispatcher.BeginInvoke((ThreadStart)delegate
-           {
-               if (IsCompleted) WavCompleted.Opacity = 1;
-               else WavCompleted.Opacity = 0;
-           });
-        }
 
         void Reset()
         {
             Ds = new List<double>();
             Vs = new List<double>();
             Cs = new List<double>();
-            DrawConfig();
+            Draw();
             WavControlChanged();
         }
         void Reset(WavConfigPoint point)
@@ -118,11 +113,11 @@ namespace WavConfigTool
             if (point == WavConfigPoint.C) Cs = new List<double>();
             if (point == WavConfigPoint.V) Vs = new List<double>();
             if (point == WavConfigPoint.D) Ds = new List<double>();
-            DrawConfig();
+            Draw();
             WavControlChanged();
         }
 
-        public string Generate()
+        public string GenerateOto()
         {
             Normalize();
             ApplyPoints();
@@ -225,7 +220,7 @@ namespace WavConfigTool
         void DrawOtoPreview()
         {
             Recline.Reclist.Aliases = new List<string>();
-            string oto = Generate();
+            string oto = GenerateOto();
             OtoPreviewWindow window = new OtoPreviewWindow(Recline.Filename);
             foreach (string line in oto.Split(new[] { '\r', '\n' }))
             {
@@ -239,341 +234,6 @@ namespace WavConfigTool
             }
             window.ShowDialog();
         }
-
-        #region Draw
-
-        public void Draw()
-        {
-            if (!IsEnabled)
-                return;
-            Opacity = 0.2;
-            OpenImageAsync();
-            DrawConfig();
-            CheckCompleted();
-        }
-
-        public void Undraw()
-        {
-            AreasCanvas.Children.Clear();
-            GridCanvas.Children.Clear();
-            MarkerCanvas.Children.Clear();
-        }
-
-        public bool GenerateWaveform(bool force = false)
-        {
-            if (!File.Exists(Recline.Path))
-                return false;
-            if (!force && File.Exists(ImagePath))
-                return true;
-            while (IsGenerating)
-            {
-                // Wait for previous generating end;
-                Thread.Sleep(10);
-            }
-            IsGenerating = true;
-            WaveForm wave = new WaveForm(Recline.Path);
-            var points = wave.GetAudioPoints();
-            if (Ds == null || Ds.Count == 0)
-                Ds = new List<double>();
-                //Ds = wave.Ds;
-            MostLeft = wave.MostLeft;
-            Length = (int) (wave.Length * 1000 / wave.SampleRate);
-            
-            int width = (int) points.Last().X;
-            Dispatcher.BeginInvoke((ThreadStart)delegate
-            {
-                Width = width;
-                Height = 100;
-            });
-
-            if (!wave.IsEnabled)
-                return false;
-            wave.PointsToImage((object)(points, width, 100, this));
-            IsGenerating = false;
-            if (!wave.IsGenerated)
-            {
-                MessageBox.Show($"{wave.GeneratingException.Message}\r\n\r\n{wave.GeneratingException.StackTrace}", 
-                    "Error on image generation", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
-            return true;
-        }
-
-
-        public async void GenerateWaveformAsync(bool force)
-        {
-            if (!IsEnabled)
-                return;
-            GeneratingTask = new Task(delegate() {
-                try
-                {
-                    GenerateWaveform(force);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on GenerateWaveformsAsync",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            });
-            GeneratingTask.Start();
-            await GeneratingTask;
-        } 
-
-        public async void OpenImageAsync()
-        {
-            if (!IsEnabled)
-                return;
-
-            int i = 0;
-
-            await Task.Run(() =>
-            {
-                try
-                {
-
-                    while (!File.Exists(ImagePath) || IsGenerating)
-                    {
-                        // Wait for previous generating end;
-                        Thread.Sleep(100);
-                        i++;
-                        if (i > 100)
-                            return;
-                    }
-
-                    OpenImage();
-                    Dispatcher.Invoke(() =>
-                    {
-                        Opacity = 1;
-                    });
-
-                }
-                catch (Exception ex)
-                {
-                    MainWindow.MessageBoxError(ex, "OpenImageAsync");
-                }
-            });
-        }
-
-        public void OpenImage()
-        {
-            BitmapImage src = new BitmapImage();
-            src.BeginInit();
-            src.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-            src.UriSource = new Uri(ImagePath, UriKind.Relative);
-            src.CacheOption = BitmapCacheOption.OnLoad;
-            src.EndInit();
-            src.Freeze();
-            Dispatcher.BeginInvoke((ThreadStart)delegate
-            {
-                WavImage.Source = src;
-            });
-            //var uri = new Uri(ImagePath, UriKind.Relative);
-            //WavImage.Source = new BitmapImage(uri);
-        }
-
-
-        void Draw(WavConfigPoint point, double x)
-        {
-            switch (point)
-            {
-                case WavConfigPoint.C:
-                    if (Cs.Count < Recline.Consonants.Count * 2)
-                        Cs.Add(x / ScaleX);
-                    break;
-                case WavConfigPoint.V:
-                    if (Vs.Count < Recline.Vowels.Count * 2)
-                        Vs.Add(x / ScaleX);
-                    break;
-                case WavConfigPoint.D:
-                    if (Ds.Count < 2)
-                        Ds.Add(x / ScaleX);
-                    break;
-            }
-            DrawConfig();
-        }
-
-        void DrawConfig()
-        {
-            Ds.Sort();
-            Vs.Sort();
-            Cs.Sort();
-            AreasCanvas.Children.Clear();
-            MarkerCanvas.Children.Clear();
-            DrawD();
-            DrawV();
-            DrawC();
-
-            DrawVZone();
-            DrawCZone();
-            DrawDZone();
-        }
-
-        void DrawV()
-        {
-            for (int i = 0; i < Vs.Count; i++)
-            {
-                WavMarker line;
-                double pos = Vs[i];
-                if (i / 2 < Recline.Vowels.Count)
-                    line = new WavMarker((Vowel)Recline.Vowels[i / 2], pos, i % 2);
-                else line = new WavMarker(new Vowel("{V}"), pos, i % 2);
-                MarkerCanvas.Children.Add(line);
-                line.WavMarkerDelete += delegate
-                {
-                    MarkerCanvas.Children.Remove(line);
-                    Vs.Remove(pos);
-                    DrawConfig();
-                    WavControlChanged();
-                };
-                line.WavMarkerMoved += delegate (double newpos)
-                {
-                    Vs[Vs.IndexOf(pos)] = Math.Truncate(newpos);
-                    DrawConfig();
-                    WavControlChanged();
-                };
-            }
-        }
-        void DrawC()
-        {
-            for (int i = 0; i < Cs.Count; i++)
-            {
-                double pos = Cs[i];
-                WavMarker line;
-                if (i / 2 < Recline.Consonants.Count)
-                    line = new WavMarker((Consonant)Recline.Consonants[i / 2], pos, i % 2);
-                else line = new WavMarker(new Consonant("{Cf}"), pos, i % 2);
-                MarkerCanvas.Children.Add(line);
-                line.WavMarkerDelete += delegate
-                {
-                    MarkerCanvas.Children.Remove(line);
-                    Cs.Remove(pos);
-                    DrawConfig();
-                    WavControlChanged();
-                };
-                line.WavMarkerMoved += delegate (double newpos)
-                {
-                    Cs[Cs.IndexOf(pos)] = Math.Truncate(newpos);
-                    DrawConfig();
-                    WavControlChanged();
-                };
-            }
-        }
-        void DrawD()
-        {
-            if (Ds != null && Ds.Count == 2)
-            {
-                if (Ds[0] < 0)
-                    Ds[0] = 50;
-                if (Ds[1] > Length)
-                    Ds[1] = Length - 50;
-            }
-            for (int i = 0; i < Ds.Count; i++)
-            {
-                double pos = Ds[i];
-                WavMarker line = new WavMarker(pos, i);
-                Data[i] = line;
-                MarkerCanvas.Children.Add(line);
-                line.WavMarkerDelete += delegate
-                {
-                    MarkerCanvas.Children.Remove(line);
-                    Ds.Remove(pos);
-                    DrawConfig();
-                    WavControlChanged();
-                };
-                line.WavMarkerMoved += delegate (double newpos)
-                {
-                    Ds[Ds.IndexOf(pos)] = Math.Truncate(newpos);
-                    DrawConfig();
-                    WavControlChanged();
-                };
-            }
-        }
-
-        void DrawVZone()
-        {
-            for (int i = 0; i + 1 < Vs.Count; i += 2)
-            {
-                Polygon Zone = new Polygon()
-                {
-                    Stroke = VowelZoneBrush,
-                    Points = new PointCollection
-                    {
-                        new Point((Vs[i]) * ScaleX, 50),
-                        new Point((Vs[i] + Settings.FadeV) * ScaleX, 30),
-                        new Point((Vs[i + 1] - Settings.FadeV) * ScaleX, 30),
-                        new Point((Vs[i + 1]) * ScaleX, 50),
-                        new Point((Vs[i + 1] - Settings.FadeV) * ScaleX, 70),
-                        new Point((Vs[i] + Settings.FadeV) * ScaleX, 70)
-                    },
-                    Name = $"VZone{i / 2}{(i % 2 == 0? "In":"Out")}",
-                    Fill = FillVowelZoneBrush
-                };
-                AreasCanvas.Children.Add(Zone);
-            }
-        }
-        void DrawDZone()
-        {
-            if (Ds.Count == 0) return;
-            var x = Ds[0] * ScaleX;
-            Polygon ZoneIn = new Polygon()
-            {
-                Fill = CutZoneBrush,
-                Points = new PointCollection()
-                {
-                    new Point(0,0),
-                    new Point(x,0),
-                    new Point(x - Settings.FadeD * ScaleX,50),
-                    new Point(x,100),
-                    new Point(0,100)
-                },
-                Name = "DZoneIn",
-                Opacity = 0.5
-            };
-            AreasCanvas.Children.Add(ZoneIn);
-            if (Ds.Count == 1) return;
-            x = Ds[1] * ScaleX;
-            Polygon ZoneOut = new Polygon()
-            {
-                Fill = CutZoneBrush,
-                Points = new PointCollection()
-                {
-                    new Point(Length * ScaleX,0),
-                    new Point(x,0),
-                    new Point(x + Settings.FadeD * ScaleX,50),
-                    new Point(x,100),
-                    new Point(Length * ScaleX,100)
-                },
-                Name = "DZoneOut",
-                Opacity = 0.5
-            };
-            AreasCanvas.Children.Add(ZoneOut);
-        }
-        void DrawCZone()
-        {
-
-            for (int i = 0; i + 1 < Cs.Count; i += 2)
-            {
-                Polygon Zone = new Polygon()
-                {
-                    Stroke = CZoneBrush,
-                    Points = new PointCollection
-                    {
-                        new Point((Cs[i]) * ScaleX, 50),
-                        new Point((Cs[i] + Settings.FadeC) * ScaleX, 40),
-                        new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 40),
-                        new Point((Cs[i + 1]) * ScaleX, 50),
-                        new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 60),
-                        new Point((Cs[i] + Settings.FadeC) * ScaleX, 60)
-                    },
-                    Name = $"CZone{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
-                    Fill = FillCZoneBrush
-                };
-                AreasCanvas.Children.Add(Zone);
-            }
-        }
-
-
-        #endregion
 
         #region Events
 
@@ -601,7 +261,6 @@ namespace WavConfigTool
                 {
                     double x = e.GetPosition(this).X;
                     Draw(MainWindow.Mode, x);
-                    WavControlChanged();
                 }
             }
         }
