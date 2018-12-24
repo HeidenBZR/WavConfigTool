@@ -32,7 +32,7 @@ namespace WavConfigTool
             Consonant.Margin = new Thickness(Offset.Width, 0, 0, 0);
             Consonant.Width = ops[1] * ScaleX;
             Cutoff.Margin = new Thickness(Offset.Width - ops[2] * ScaleX, 0, 0, 0);
-            Cutoff.Width = length * ScaleX - Offset.Width + ops[2] * ScaleX;
+            Cutoff.Width = length * ScaleX / 4 - Offset.Width + ops[2] * ScaleX;
             if (ops[2] >= 0) Cutoff.Width = ops[2] * ScaleX;
             Preutterance.Margin = new Thickness(Offset.Width + ops[3] * ScaleX, 0, 0, 0);
             Overlap.Margin = new Thickness(Offset.Width + ops[4] * ScaleX, 0, 0, 0);

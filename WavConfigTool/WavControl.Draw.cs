@@ -225,12 +225,16 @@ namespace WavConfigTool
                     Stroke = CZoneBrush,
                     Points = new PointCollection
                     {
-                        new Point((Cs[i]) * ScaleX, 50),
-                        new Point((Cs[i] + Settings.FadeC) * ScaleX, 40),
-                        new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 40),
-                        new Point((Cs[i + 1]) * ScaleX, 50),
-                        new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 60),
-                        new Point((Cs[i] + Settings.FadeC) * ScaleX, 60)
+                        //new Point((Cs[i]) * ScaleX, 50),
+                        //new Point((Cs[i] + Settings.FadeC) * ScaleX, 40),
+                        //new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 40),
+                        //new Point((Cs[i + 1]) * ScaleX, 50),
+                        //new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 60),
+                        //new Point((Cs[i] + Settings.FadeC) * ScaleX, 60)
+                        new Point((Cs[i]) * ScaleX, 40),
+                        new Point((Cs[i + 1]) * ScaleX, 40),
+                        new Point((Cs[i + 1]) * ScaleX, 60),
+                        new Point((Cs[i]) * ScaleX, 60),
                     },
                     Name = $"CZone{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
                     Fill = FillCZoneBrush
@@ -286,7 +290,7 @@ namespace WavConfigTool
         {
             Undraw();
             SetUncompleted();
-            HorizontalAlignment = HorizontalAlignment.Stretch;
+            //HorizontalAlignment = HorizontalAlignment.Stretch;
             //Opacity = 0.2;
             WavImage.Source = null;
             CanvasLoading.Visibility = Visibility.Visible;

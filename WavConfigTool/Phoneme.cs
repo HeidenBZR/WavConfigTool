@@ -122,12 +122,20 @@ namespace WavConfigTool
             if (prev.IsRest) prevp = prev.Zone.Out;
             double dist = Zone.In - prevp;
 
-            double of = prevp - prev.Overlap;
+            double of = prevp;
+            if (prev.IsVowel)
+                of -= prev.Overlap;
             double con = prev.Overlap + dist + Fade;
-            double cut = -(Zone.Out - of - Fade);
-            if (IsVowel) cut = -(Zone.Out - of - Fade) / 1.5;
-            double pre = IsConsonant && prev.IsVowel ? prevp - of + prev.Fade : Zone.In - of;
-            double ov = prev.Overlap;
+            double cut = -(Zone.Out - of);
+            if (IsVowel) cut = -(Zone.Out - of - Fade);
+            double pre = Zone.In - of;
+            double ov = prev.Zone.Out - of;
+            if (IsConsonant)
+            {
+                pre = prev.Zone.Out - of;
+                con = Zone.In - of;
+                ov = prev.Overlap;
+            }
             if (IsRest)
             {
                 pre = prev.Zone.Out - of;
@@ -137,8 +145,8 @@ namespace WavConfigTool
             }
             if (IsVowel)
             {
-                con = pre + Fade * 5;
-                cut = -(Zone.Out - of - Fade * 5);
+                con = pre + Fade;
+                cut = -(Zone.Out - of - Fade);
             }
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
@@ -153,10 +161,10 @@ namespace WavConfigTool
             double prevp = prev.Zone.Out;
             double dist = Zone.In - prevp;
 
-            double of = prevp - prev.Overlap;
+            double of = prevp;
             double cut = -(Zone.Out - of + Fade);
-            double pre = Zone.Out - of - Fade;
-            double ov = prev.Overlap;
+            double pre = Zone.Out - of;
+            double ov = Zone.In - of;
             cut -= 10;
             double con = -cut - 10;
             string oto = Oto(of, con, cut, pre, ov);
@@ -172,8 +180,8 @@ namespace WavConfigTool
             double prevp = prev.Zone.In;
             double dist = Zone.In - prevp;
 
-            double of = prevp + prev.Fade;
-            double con = Zone.Out - of + Fade;
+            double of = prev.Zone.In;
+            double con = Zone.Out - of;
             double cut = -(Zone.Out - of + Fade);
             double pre = prev.Zone.Out - of;
             double ov = prev.Overlap;
@@ -196,28 +204,29 @@ namespace WavConfigTool
             double offset = Zone.In;
             double dist = offset - preprevoffset;
 
-            double of = preprevoffset - Preutterance;
+            double of = preprev.Zone.Out - preprev.Overlap;
             double con = Preutterance + dist + Fade;
             double cut = -(Zone.Out - of - Fade);
             double pre = dist + Preutterance;
             double ov = preprev.Overlap;
-            if (IsRest)
+            if (preprev.IsVowel && IsRest)
             {
                 ov = preprev.Zone.Out - 10;
                 of = ov - preprev.Overlap;
                 ov -= of;
-                pre = ov + 50 + of < prev.Zone.Out? ov + 50: prev.Zone.Out - of;
+                pre = pre + 50 + of < prev.Zone.Out? pre + 50: prev.Zone.Out - of;
                 pre = prev.Zone.Out - 5 - of;
+                con = Zone.Out - of;
                 cut = -(Zone.In - of + Fade);
                 cut = 10;
             }
-            else
+            else if (preprev.IsRest)
             {
                 of = prevp;
                 pre = Zone.In - of;
-                con = pre + Fade * 5;
-                ov = Overlap;
-                cut = -(Zone.Out - of - Fade * 5);
+                con = pre + Fade;
+                ov = prev.Zone.In - of;
+                cut = -(Zone.Out - of - Fade);
             }
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
@@ -249,10 +258,8 @@ namespace WavConfigTool
         }
         // only V
         public override bool NeedAlias() { return IsVowel; }
-        // only CV & -V
-        public override bool NeedAlias(Phoneme prev) { return prev.IsConsonant || prev.IsRest; }
-        // only -CV
-        public override bool NeedAlias(Phoneme prev, Phoneme preprev) { return prev.IsConsonant && preprev.IsRest; }
+        // only -CV && VCV && CCV
+        public override bool NeedAlias(Phoneme prev, Phoneme preprev) { return prev.IsConsonant; }
         public override Phoneme Clone() { return new Vowel(Alias, Letter); }
     }
 

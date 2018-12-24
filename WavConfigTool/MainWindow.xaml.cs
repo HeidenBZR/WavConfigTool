@@ -42,7 +42,7 @@ namespace WavConfigTool
         List<WavControl> WavControls;
         public static WavConfigPoint Mode = WavConfigPoint.V;
 
-        public readonly Version Version = new Version(0, 1, 5, 1);
+        public readonly Version Version = new Version(0, 1, 5, 2);
 
         int PageCurrent = 0;
         int PageTotal = 0;

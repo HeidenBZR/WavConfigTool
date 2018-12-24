@@ -116,7 +116,7 @@ namespace WavConfigTool
         {
             try
             {
-                if (Recline is null)
+                if (Recline is null || !IsEnabled)
                     return false;
 
                 WaveForm = new WaveForm(Recline.Path);

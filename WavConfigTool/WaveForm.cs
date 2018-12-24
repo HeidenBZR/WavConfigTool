@@ -63,7 +63,7 @@ namespace WavConfigTool
             List<System.Windows.Point> points = new List<System.Windows.Point>();
             var max = Data.Max();
             long i = 0;
-            Length /= 4;
+            Length = Length / 4;
             for (; i < Length; i += PointSkip)
             {
                 var x = i * WavControl.ScaleX / SampleRate * 1000;
