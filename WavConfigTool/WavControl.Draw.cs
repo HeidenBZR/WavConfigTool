@@ -230,6 +230,25 @@ namespace WavConfigTool
             }
         }
 
+        void DrawOtoPreview()
+        {
+            Recline.Reclist.Aliases = new List<string>();
+            string oto = GenerateOto();
+            OtoPreviewWindow window = new OtoPreviewWindow(Recline.Filename);
+            foreach (string line in oto.Split(new[] { '\r', '\n' }))
+            {
+                if (line.Length == 0) continue;
+                var ops = line.Split('=');
+                var ops2 = ops[1].Split(',');
+                var ops3 = ops2.Skip(1);
+                int[] opsi = ops3.Select(n => int.Parse(n)).ToArray();
+                OtoPreviewControl control = new OtoPreviewControl(WavImage.Source, ops2[0], opsi, Length);
+                window.Add(control);
+            }
+            window.ShowDialog();
+        }
+
+
         void CheckCompleted()
         {
             if (!IsEnabled || !IsImageGenerated)
@@ -237,12 +256,15 @@ namespace WavConfigTool
             IsCompleted = Ds.Count == 2 &&
                 Vs.Count / 2 >= Recline.Vowels.Count &&
                 Cs.Count / 2 >= Recline.Consonants.Count;
-            if (IsCompleted) WavCompleted.Opacity = 1;
-            else WavCompleted.Opacity = 0;
+            if (IsCompleted)
+                SetCompleted();
+            else
+                SetUncompleted();
         }
 
         public void SetCompleted()
         {
+            WavCompleted.Visibility = Visibility.Visible;
             WavCompleted.Opacity = 1;
         }
 
@@ -253,13 +275,17 @@ namespace WavConfigTool
 
         public void SetUnloaded()
         {
-            Opacity = 0.2;
+            HorizontalAlignment = HorizontalAlignment.Stretch;
+            //Opacity = 0.2;
+            CanvasLoading.Visibility = Visibility.Visible;
         }
 
         public void SetLoaded()
         {
+            HorizontalAlignment = HorizontalAlignment.Left;
             Visibility = Visibility.Visible;
-            Opacity = 1;
+            CanvasLoading.Visibility = Visibility.Hidden;
+            //Opacity = 1;
         }
     }
 }

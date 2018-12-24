@@ -58,7 +58,10 @@ namespace WavConfigTool
         public bool IsToDraw = false;
         public int Length;
         public bool IsCompleted;
-        public bool IsGenerating = false;
+        public bool IsGenerating
+        {
+            get { return WaveForm is null ? false : WaveForm.IsGenerating; }
+        }
         public bool IsEnabled
         {
             get
@@ -90,13 +93,36 @@ namespace WavConfigTool
         {
             Recline = recline;
             InitializeComponent();
-            Visibility = Visibility.Hidden;
+            //Visibility = Visibility.Hidden;
             Cs = new List<double>();
             Vs = new List<double>();
             Ds = new List<double>();
             LabelName.Content = recline.Name;
             WavControlChanged += delegate { CheckCompleted(); };
-            //IsEnabled = ;
+        }
+
+        public bool InitWave()
+        {
+            try
+            {
+                if (Recline is null || !File.Exists(Recline.Path))
+                    return false;
+
+                WaveForm = new WaveForm(Recline.Path);
+                WaveForm.IsGenerated = true;
+                MostLeft = WaveForm.MostLeft;
+
+                Length = (int)(WaveForm.Length * 1000 / WaveForm.SampleRate);
+
+                if (!WaveForm.IsEnabled)
+                    return false;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MainWindow.MessageBoxError(ex, "Error on Init Wave");
+            }
+            return false;
         }
 
 
@@ -216,24 +242,6 @@ namespace WavConfigTool
             }
         }
 
-
-        void DrawOtoPreview()
-        {
-            Recline.Reclist.Aliases = new List<string>();
-            string oto = GenerateOto();
-            OtoPreviewWindow window = new OtoPreviewWindow(Recline.Filename);
-            foreach (string line in oto.Split(new[] { '\r', '\n' }))
-            {
-                if (line.Length == 0) continue;
-                var ops = line.Split('=');
-                var ops2 = ops[1].Split(',');
-                var ops3 = ops2.Skip(1);
-                int[] opsi = ops3.Select(n => int.Parse(n)).ToArray();
-                OtoPreviewControl control = new OtoPreviewControl(WavImage.Source, ops2[0], opsi, Length);
-                window.Add(control);
-            }
-            window.ShowDialog();
-        }
 
         #region Events
 

@@ -88,6 +88,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CanvasLoading.xaml.cs">
+      <DependentUpon>CanvasLoading.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FindWavDialog.xaml.cs">
       <DependentUpon>FindWavDialog.xaml</DependentUpon>
     </Compile>
@@ -116,6 +119,10 @@
     <Compile Include="WavMarker.xaml.cs">
       <DependentUpon>WavMarker.xaml</DependentUpon>
     </Compile>
+    <Page Include="CanvasLoading.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FindWavDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

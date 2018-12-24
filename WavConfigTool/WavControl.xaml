@@ -5,13 +5,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WavConfigTool"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Width="{Binding Width, ElementName=WavImage, NotifyOnSourceUpdated=True, Mode=TwoWay}"
     Height="100"
+    Width="600"
     Margin="0,10,0,10"
-    Focusable="True"
-    
     HorizontalAlignment="Left"
     Background="#1555CCCC"
+    Focusable="True"
     mc:Ignorable="d">
     <Grid Name="Main">
         <Border
@@ -71,5 +70,6 @@
             Name="MarkerCanvas"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" />
+        <local:CanvasLoading x:Name="CanvasLoading" Visibility="Hidden" />
     </Grid>
 </UserControl>

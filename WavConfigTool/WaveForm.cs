@@ -28,6 +28,7 @@ namespace WavConfigTool
         public double DataThreshold = 0.05;
 
         public bool IsEnabled = false;
+        public bool IsGenerating = false;
         public bool IsGenerated = false;
 
         public Exception GeneratingException;
@@ -123,6 +124,7 @@ namespace WavConfigTool
                 waveform.Save();
                 image.Save(control.ImagePath);
                 //Console.WriteLine($"Finished {control.ImagePath}");
+                IsGenerating = false;
                 IsGenerated = true;
             }
             catch (Exception ex)

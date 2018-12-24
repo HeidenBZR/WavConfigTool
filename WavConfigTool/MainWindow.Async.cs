@@ -40,7 +40,6 @@ namespace WavConfigTool
                 //    TextBoxPage.Text = (PageCurrent + 1).ToString();
                 //}
             }
-            catch (ThreadAbortException) { return; }
             catch (Exception ex)
             {
                 MessageBoxError(ex, "Error on draw page");

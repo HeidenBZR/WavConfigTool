@@ -289,6 +289,8 @@ namespace WavConfigTool
                 var cs = lines[1].Split(' ');
                 Reclist = new Reclist(vs, cs);
                 WavControls = new List<WavControl>();
+                var name = System.IO.Path.GetFileNameWithoutExtension(settings);
+                Reclist.Name = name;
                 for (int i = 2; i < lines.Length; i++)
                 {
                     string[] items = lines[i].Split('\t');
@@ -296,8 +298,6 @@ namespace WavConfigTool
                         continue;
                     AddFile(items[0], items[1], items[2]);
                 }
-                var name = System.IO.Path.GetFileNameWithoutExtension(settings);
-                Reclist.Name = name;
                 Settings.WavSettings = settings;
             }
             catch (Exception ex)

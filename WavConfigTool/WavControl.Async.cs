@@ -14,18 +14,27 @@ namespace WavConfigTool
     {
 
 
-        public async void Init()
+        public void Init()
         {
-            IsToDraw = true;
-            await GenerateWaveformAsync(true);
+            if (InitWave())
+            {
+                IsToDraw = true;
+                GenerateWaveformAsync(true);
+            }
         }
 
         public async void Draw()
         {
             try
             {
+                //Dispatcher.Invoke(() => {
+                //    Visibility = Visibility.Hidden;
+                //});
                 if (!IsEnabled || !IsToDraw)
                     return;
+                Dispatcher.Invoke(() => {
+                    Visibility = Visibility.Visible;
+                });
                 int i = 0;
                 while (!IsImageGenerated && i < WaitingLimit)
                 {
@@ -41,7 +50,6 @@ namespace WavConfigTool
                 Dispatcher.Invoke(delegate
                 {
                     Height = 100;
-                    Visibility = Visibility.Visible;
                     DrawConfig();
                     SetLoaded();
                 });
@@ -64,10 +72,12 @@ namespace WavConfigTool
                 {
                     try
                     {
+
                         Dispatcher.Invoke(() => { SetUnloaded(); });
                         if (Thread != null && Thread.IsAlive)
                             Thread.Join();
-                        Thread = Thread.CurrentThread;
+
+                        //Thread = Thread.CurrentThread;
                         if (!GenerateWaveform(force))
                             return false;
                         return true;
@@ -79,7 +89,8 @@ namespace WavConfigTool
                             MessageBoxButton.OK, MessageBoxImage.Error);
                         return false;
                     }
-                })) ;
+                }))
+                    return true;
             }
             catch (ThreadAbortException) { return false; }
             if (await OpenImageAsync())
@@ -117,7 +128,6 @@ namespace WavConfigTool
                     }); 
                     return true;
                 }
-                catch (ThreadAbortException) { return false; }
                 catch (Exception ex)
                 {
                     MainWindow.MessageBoxError(ex, "Error on Open Image Async");
@@ -126,48 +136,37 @@ namespace WavConfigTool
             });
         }
 
-
         public bool GenerateWaveform(bool force = false)
         {
+            if (WaveForm is null)
+                return false;
             try
             {
+                var points = WaveForm.GetAudioPoints();
+                int width = (int)points.Last().X;
 
-                if (!File.Exists(Recline.Path))
-                    return false;
-                if (!force && File.Exists(ImagePath))
-                    return true;
                 while (IsGenerating)
                 {
                     // Wait for previous generating end;
                     Thread.Sleep(10);
                 }
-                IsGenerating = true;
-                WaveForm = new WaveForm(Recline.Path);
-                var points = WaveForm.GetAudioPoints();
-                if (Ds == null || Ds.Count == 0)
-                    Ds = new List<double>();
-                //Ds = wave.Ds;
-                MostLeft = WaveForm.MostLeft;
+                Thread = new Thread(WaveForm.PointsToImage);
+                Thread.IsBackground = true;
+                Thread.Name = Recline.Filename;
+                Thread.Start((object)(points, width, 100, this));
 
-                int width = (int)points.Last().X;
 
-                if (!WaveForm.IsEnabled)
-                {
-                    IsGenerating = false;
-                    return false;
-                }
-                Length = (int)(WaveForm.Length * 1000 / WaveForm.SampleRate);
-                WaveForm.PointsToImage((object)(points, width, 100, this));
-                IsGenerating = false;
-                if (!WaveForm.IsGenerated)
-                {
-                    MessageBox.Show($"{WaveForm.GeneratingException.Message}\r\n\r\n{WaveForm.GeneratingException.StackTrace}",
-                        "Error on image generation", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return false;
-                }
+
+                //WaveForm.PointsToImage((object)(points, width, 100, this));
+                //IsGenerating = false;
+                //if (!WaveForm.IsGenerated)
+                //{
+                //    MessageBox.Show($"{WaveForm.GeneratingException.Message}\r\n\r\n{WaveForm.GeneratingException.StackTrace}",
+                //        "Error on image generation", MessageBoxButton.OK, MessageBoxImage.Error);
+                //    return false;
+                //}
                 return true;
             }
-            catch (ThreadAbortException) { return false; }
             catch (Exception ex)
             {
                 MainWindow.MessageBoxError(ex, "Error on Generate Waveform");
@@ -187,7 +186,7 @@ namespace WavConfigTool
                 src.EndInit();
                 src.Freeze();
                 WavImage.Source = src;
-                Width = Length * ScaleX;
+                Width = Length * ScaleX / 4;
                 return true;
             }
             catch (Exception ex)
