@@ -68,6 +68,39 @@ namespace WavConfigTool
             }
         }
 
+        async void InitWavcontrols(bool force)
+        {
+            if (WavControls is null)
+                return;
+            try
+            {
+                Parallel.ForEach(WavControls, delegate (WavControl wavControl) { wavControl.Init(); });
+                //foreach (WavControl control in WavControls)
+                //    control.Init();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on GenerateWaveformsAsync",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                CanvasLoading.Visibility = Visibility.Hidden;
+            }
+        }
+
+        async void InitWavcontrolsAsync(bool force = true)
+        {
+            //Dispatcher.Invoke(() => { CanvasLoading.Visibility = Visibility.Visible; });
+            //await Task.Run(() =>
+            //{
+            //    //if (Thread != null && Thread.IsAlive)
+            //    //    Thread.Join();
+            //    //Dispatcher.Invoke(() => { CanvasLoading.Visibility = Visibility.Hidden; });
+            //    Thread = Thread.CurrentThread;
+            //    GenerateWaveforms(force);
+            //});
+            InitWavcontrols(force);
+        }
+
 
     }
 }

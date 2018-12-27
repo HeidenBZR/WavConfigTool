@@ -165,17 +165,20 @@ namespace WavConfigTool
             string[] iy = new[] { "iy", "yi" };
             var phonemes = Recline.Phonemes;
             if (Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[0].GetMonophone(Recline.Filename);
-            if ((phonemes.Count > 1 && phonemes[0].IsVowel) 
-                || (phonemes.Count > 2 && phonemes[1].Alias == "a"))
+            if (Recline.Reclist.Name.Contains("cvc_rus") &&
+                    ((phonemes.Count > 1 && phonemes[0].IsVowel) 
+                    || (phonemes.Count > 2 && phonemes[1].Alias == "a")))
                 text += phonemes[0].GetDiphone(Recline.Filename, Recline.Data[0]);
-            if (phonemes.Count > 2 && phonemes[1].Alias == "a") text += Recline.Data[1].GetDiphone(Recline.Filename, phonemes.Last());
-            if (phonemes.Count > 1 && Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[1].GetDiphone(Recline.Filename, phonemes[0]);
-            if (phonemes.Count > 1 && !(phonemes.Count > 3 && iy.Contains(phonemes[1] + phonemes[3]))) text += phonemes[1].GetTriphone(Recline.Filename, phonemes[0], Recline.Data[0]);
+            else
+                text += phonemes[0].GetDiphone(Recline.Filename, Recline.Data[0]);
+            if (phonemes.Count > 2 && (!Recline.Reclist.Name.Contains("cvc_rus") || phonemes[1].Alias == "a")) text += Recline.Data[1].GetDiphone(Recline.Filename, phonemes.Last());
+            if (phonemes.Count > 1 && (!Recline.Reclist.Name.Contains("cvc_rus") || Recline.Consonants.Count < Recline.Vowels.Count)) text += phonemes[1].GetDiphone(Recline.Filename, phonemes[0]);
+            if (phonemes.Count > 1 && (!Recline.Reclist.Name.Contains("cvc_rus") || !(phonemes.Count > 3 && iy.Contains(phonemes[1] + phonemes[3])))) text += phonemes[1].GetTriphone(Recline.Filename, phonemes[0], Recline.Data[0]);
             int i;
             for (i = 2; i < Recline.Phonemes.Count; i++)
             {
                 if (Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[i].GetMonophone(Recline.Filename);
-                if ( i != 4 || !Reclist.Current.Name.ToLower().Contains("cvc"))
+                if ( i != 4 || !Reclist.Current.Name.ToLower().Contains("cvc_rus"))
                     text += phonemes[i].GetDiphone(Recline.Filename, phonemes[i - 1]);
                 text += phonemes[i].GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
             }

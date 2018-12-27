@@ -77,8 +77,7 @@ namespace WavConfigTool
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on init",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBoxError(ex, "Error on init");
             }
         }
 

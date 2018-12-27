@@ -135,41 +135,6 @@ namespace WavConfigTool
             return false;
         }
 
-        async void InitWavcontrols (bool force)
-        {
-            if (WavControls is null)
-                return;
-            try
-            {
-                //WavControls[0].GenerateWaveformAsync(force);
-                foreach (WavControl control in WavControls)
-                {
-                    control.Init();
-                }
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on GenerateWaveformsAsync",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                CanvasLoading.Visibility = Visibility.Hidden;
-            }
-        }
-
-        async void InitWavcontrolsAsync(bool force = true)
-        {
-            //Dispatcher.Invoke(() => { CanvasLoading.Visibility = Visibility.Visible; });
-            //await Task.Run(() =>
-            //{
-            //    //if (Thread != null && Thread.IsAlive)
-            //    //    Thread.Join();
-            //    //Dispatcher.Invoke(() => { CanvasLoading.Visibility = Visibility.Hidden; });
-            //    Thread = Thread.CurrentThread;
-            //    GenerateWaveforms(force);
-            //});
-            InitWavcontrols(force);
-        }
-
         void NewProject(string settings, string voicebank)
         {
             try

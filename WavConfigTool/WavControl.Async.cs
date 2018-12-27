@@ -94,7 +94,7 @@ namespace WavConfigTool
             try
             {
                 if (await OpenImageAsync())
-                    OnImageLoaded();
+                    Dispatcher.Invoke(delegate { OnImageLoaded(); });
             }
             catch (Exception ex)
             {
