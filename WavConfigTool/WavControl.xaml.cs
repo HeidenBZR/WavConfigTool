@@ -29,7 +29,7 @@ namespace WavConfigTool
     public partial class WavControl : UserControl
     {
         Task GeneratingTask;
-        Thread Thread;
+        public Thread Thread;
 
         public Recline Recline;
         List<double> _cs = new List<double>();
@@ -50,9 +50,10 @@ namespace WavConfigTool
             return System.IO.Path.Combine(MainWindow.TempDir, $"{hex}.png");
         }
 
-        public static double ScaleX = 0.7f;
-        public static double ScaleY = 60f;
+        public static double ScaleX = 0.7;
+        public static double ScaleY = 60;
         public static double MostLeft = 0;
+        public static double WavHeight = 100;
 
         public static string Prefix;
         public static string Suffix;

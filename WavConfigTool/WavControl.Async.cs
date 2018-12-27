@@ -15,7 +15,7 @@ namespace WavConfigTool
         public delegate void ImageLoadedHandler();
         public ImageLoadedHandler OnImageLoaded;
 
-        public async void Init()
+        public async void Init(bool draw = false)
         {
             IsToDraw = true;
             await Task.Run(delegate { Dispatcher.Invoke(delegate { SetUnloaded(); }); });
@@ -23,7 +23,8 @@ namespace WavConfigTool
             {
                 if (await GenerateWaveform_Before())
                     await GenerateWaveformAsync(true);
-                GenerateWaveform_After();
+                if (draw)
+                    GenerateWaveform_After();
             }
         }
 
@@ -137,6 +138,7 @@ namespace WavConfigTool
             {
                 var points = WaveForm.GetAudioPoints();
                 int width = (int)points.Last().X;
+                var pen = new System.Drawing.Pen(System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR));
 
                 while (IsGenerating)
                 {
@@ -146,7 +148,7 @@ namespace WavConfigTool
                 Thread = new Thread(WaveForm.PointsToImage);
                 Thread.IsBackground = true;
                 Thread.Name = Recline.Filename;
-                Thread.Start((object)(points, width, 100, ImagePath));
+                Thread.Start((object)(points, width, 100, ImagePath, pen));
 
 
 

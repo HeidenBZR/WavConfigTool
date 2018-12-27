@@ -27,42 +27,42 @@
                     Name="MenuNew"
                     Click="MenuNew_Click"
                     Header="_New WavConfig..."
-                    InputGestureText="Ctrl+N"
+                    InputGestureText="Ctrl N"
                     Tag="New" />
                 <MenuItem
                     Name="MenuOpen"
                     Click="MenuNew_Click"
                     Header="_Open WavConfig..."
-                    InputGestureText="Ctrl+O"
+                    InputGestureText="Ctrl O"
                     Tag="Open" />
                 <Separator />
                 <MenuItem
                     Name="MenuSave"
                     Click="MenuSave_Click"
                     Header="Save WavConfig"
-                    InputGestureText="Ctrl+S" />
+                    InputGestureText="Ctrl S" />
                 <MenuItem
                     Name="MenuSaveAs"
                     Click="MenuSaveAs_Click"
                     Header="Save WavConfig As New..."
-                    InputGestureText="Shift+Ctrl+S" />
+                    InputGestureText="Shift Ctrl S" />
                 <Separator />
                 <MenuItem
                     Name="MenuFindWav"
                     Click="MenuFindWav_Click"
                     Header="Find Wav"
-                    InputGestureText="Ctrl+F" />
+                    InputGestureText="Ctrl F" />
                 <MenuItem
                     Name="MenuFindUncompleted"
                     Click="MenuFindUncompleted_Click"
                     Header="Find Uncompleted"
-                    InputGestureText="Ctrl+U" />
+                    InputGestureText="Ctrl U" />
                 <Separator />
                 <MenuItem
                     Name="MenuGenerate"
                     Click="MenuGenerate_Click"
                     Header="Generate Oto.ini"
-                    InputGestureText="Ctrl+G" />
+                    InputGestureText="Ctrl G" />
                 <Separator />
                 <MenuItem Click="MenuExit_Click" Header="Exit" />
             </MenuItem>
@@ -70,16 +70,16 @@
                 <MenuItem
                     Click="ToggleWaveform_Click"
                     Header="Toggle Waveform"
-                    InputGestureText="Ctrl+Q" />
+                    InputGestureText="Ctrl Q" />
                 <MenuItem
                     Click="ToggleSpectrum_Click"
                     Header="Toggle Spectrum"
-                    InputGestureText="Ctrl+W"
+                    InputGestureText="Ctrl W"
                     IsEnabled="False" />
                 <MenuItem
                     Click="TogglePitch_Click"
                     Header="Toggle Pitch"
-                    InputGestureText="Ctrl+E"
+                    InputGestureText="Ctrl E"
                     IsEnabled="False" />
                 <Separator />
                 <MenuItem
@@ -94,16 +94,16 @@
                 <MenuItem
                     Click="MoreItems_Click"
                     Header="Больше элементов на странице"
-                    InputGestureText="+" />
+                    InputGestureText="Ctrl +" />
                 <MenuItem
                     Click="LessItems_Click"
                     Header="Меньше элементов на странице"
-                    InputGestureText="-" />
+                    InputGestureText="Ctrl -" />
                 <Separator />
                 <MenuItem
                     Click="ToggleToolsPanel_Click"
                     Header="Toggle Tools Panel"
-                    InputGestureText="Backspace" />
+                    InputGestureText="Ctrl Backspace" />
             </MenuItem>
         </Menu>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
@@ -166,8 +166,8 @@
                         <Label Margin="3,0,0,0" Content="Текущий режим:" />
                         <Label
                             Name="LabelMode"
-                            Margin="0"
                             Width="25"
+                            Margin="0"
                             Content="V"
                             FontWeight="Bold" />
                         <!--<Button
@@ -202,7 +202,7 @@
                         Orientation="Horizontal">
                         <Button
                             Margin="3,0"
-                            Click="PrevPage"
+                            Click="PrevPage_Click"
                             Content="˂" />
                         <TextBox
                             Name="TextBoxPage"
@@ -225,7 +225,7 @@
                             Content="00" />
                         <Button
                             Margin="3,0"
-                            Click="NextPage"
+                            Click="NextPage_Click"
                             Content="˃" />
                         <Label
                             Margin="3,0"
@@ -511,8 +511,8 @@
         <ScrollViewer
             Name="ScrollViewer"
             Grid.Row="3"
-            Focusable="True"
             Margin="5"
+            Focusable="True"
             HorizontalScrollBarVisibility="Auto"
             ScrollChanged="ScrollViewer_ScrollChanged"
             VerticalScrollBarVisibility="Auto">

@@ -22,16 +22,30 @@ namespace WavConfigTool
     public partial class MainWindow : Window
     {
 
-        void DrawPage(int count)
+        void UndrawPage()
         {
             try
             {
-                foreach (WavControl control in WavControls.GetRange(ItemsOnPage * PageCurrent, count))
+                for (int i = ItemsOnPage * PageCurrent; i < ItemsOnPage && i < WavControls.Count; i++)
+                    if (WavControls[i].IsEnabled)
+                        WavControls[i].Undraw();
+            }
+            catch (Exception ex)
+            {
+                MessageBoxError(ex, "Error on draw page");
+            }
+        }
+
+        void DrawPage()
+        {
+            try
+            {
+                for (int i = ItemsOnPage * PageCurrent; i < ItemsOnPage && i < WavControls.Count; i++)
                 {
-                    if (control.IsEnabled)
+                    if (WavControls[i].IsEnabled)
                     {
-                        Dispatcher.Invoke(() => { WaveControlStackPanel.Children.Add(control); });
-                        control.Draw();
+                        Dispatcher.Invoke(() => { WaveControlStackPanel.Children.Add(WavControls[i]); });
+                        WavControls[i].Draw();
                     }
                 }
                 //if (manual)
@@ -46,6 +60,7 @@ namespace WavConfigTool
             }
         }
 
+
         async void DrawPageAsync(bool manual = true)
         {
             try
@@ -55,10 +70,7 @@ namespace WavConfigTool
                 WaveControlStackPanel.Children.Clear();
                 WaveControlStackPanel.Children.Capacity = 0;
                 SetPageTotal();
-                int count = ItemsOnPage;
-                while (ItemsOnPage * PageCurrent + count > WavControls.Count)
-                    count--;
-                DrawPage(count);
+                DrawPage();
                 //await Task.Run(() => { DrawPage(count); });
                 //CanvasLoading.Visibility = Visibility.Hidden;
             }
@@ -74,15 +86,30 @@ namespace WavConfigTool
                 return;
             try
             {
-                Parallel.ForEach(WavControls, delegate (WavControl wavControl) { wavControl.Init(); });
-                //foreach (WavControl control in WavControls)
-                //    control.Init();
+                
+                var min = Settings.CurrentPage * Settings.ItemsOnPage;
+                var max = (Settings.CurrentPage + 1) * Settings.ItemsOnPage;
+                var count = WavControls.Count;
+
+
+                Parallel.For(min, max, delegate (int i)
+                {
+                    if (max < count)
+                        WavControls[i].Init(true);
+                });
+                await Task.Run(delegate
+                {
+                    Parallel.For(0, count, delegate (int i)
+                    {
+                        if (i < min || i >= max)
+                            WavControls[i].Init();
+                    });
+                });
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on GenerateWaveformsAsync",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBoxError(ex, "Error on GenerateWaveformsAsync");
                 CanvasLoading.Visibility = Visibility.Hidden;
             }
         }

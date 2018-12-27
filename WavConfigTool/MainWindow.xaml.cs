@@ -25,54 +25,6 @@ namespace WavConfigTool
     /// </summary>
     public partial class MainWindow : Window
     {
-        Reclist Reclist;
-        string TempProject
-        {
-            get
-            {
-                var tempdir = System.IO.Path.GetTempPath();
-                tempdir = System.IO.Path.Combine(tempdir, "WavConfigTool");
-                if (!Directory.Exists(tempdir))
-                    Directory.CreateDirectory(tempdir);
-                tempdir = System.IO.Path.Combine(tempdir, @"temp.wconfig");
-                return tempdir;
-                
-            }
-        }
-        List<WavControl> WavControls;
-        public static WavConfigPoint Mode = WavConfigPoint.V;
-
-        public readonly Version Version = new Version(0, 1, 5, 2);
-
-        int PageCurrent = 0;
-        int PageTotal = 0;
-        byte ItemsOnPage = 4;
-
-        public static string TempDir
-        {
-            get
-            {
-                var tempdir = System.IO.Path.GetTempPath();
-                tempdir = System.IO.Path.Combine(tempdir, "WavConfigTool");
-                if (!Directory.Exists(tempdir))
-                    Directory.CreateDirectory(tempdir);
-                tempdir = System.IO.Path.Combine(tempdir, "waveform");
-                if (!Directory.Exists(tempdir))
-                    Directory.CreateDirectory(tempdir);
-                return tempdir;
-            }
-        }
-
-        Point PrevMousePosition;
-
-        public static MainWindow Current;
-
-        public delegate void ProjectLoadedEventHandler();
-        public event ProjectLoadedEventHandler ProjectLoaded;
-
-        bool IsUnsaved { get => Settings.IsUnsaved; set => Settings.IsUnsaved = value; }
-
-        public bool loaded = false;
 
 
         #region Events
@@ -97,16 +49,6 @@ namespace WavConfigTool
                     OpenProjectWindow(reclist, Settings.WavSettings, Settings.ProjectFile, true);
         }
 
-        private void NextPage(object sender, RoutedEventArgs e)
-        {
-            SetPage(PageCurrent + 1);
-        }
-
-        private void PrevPage(object sender, RoutedEventArgs e)
-        {
-            SetPage(PageCurrent - 1);
-        }
-        
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             if (!IsLoaded) return;
@@ -135,15 +77,9 @@ namespace WavConfigTool
             else if (Keyboard.IsKeyDown(Key.D))
                 SetMode(WavConfigPoint.D);
             else if (Keyboard.IsKeyDown(Key.OemOpenBrackets))
-                PrevPage(new object(), new RoutedEventArgs());
+                SetPage(PageCurrent - 1);
             else if (Keyboard.IsKeyDown(Key.OemCloseBrackets))
-                NextPage(new object(), new RoutedEventArgs());
-            else if (Keyboard.IsKeyDown(Key.OemPlus))
-                SetItemsOnPage((byte)(ItemsOnPage + 1));
-            else if (Keyboard.IsKeyDown(Key.OemMinus))
-                SetItemsOnPage((byte)(ItemsOnPage - 1));
-            else if (Keyboard.IsKeyDown(Key.Back))
-                ToggleTools();
+                SetPage(PageCurrent + 1);
             else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
                 if (Keyboard.IsKeyDown(Key.S))
@@ -153,6 +89,12 @@ namespace WavConfigTool
                     else
                         Save();
                 }
+                else if (Keyboard.IsKeyDown(Key.OemPlus))
+                    SetItemsOnPage((byte)(ItemsOnPage + 1));
+                else if (Keyboard.IsKeyDown(Key.OemMinus))
+                    SetItemsOnPage((byte)(ItemsOnPage - 1));
+                else if (Keyboard.IsKeyDown(Key.Back))
+                    ToggleTools();
                 if (Keyboard.IsKeyDown(Key.N))
                     if (DoEvenIfUnsaved())
                         OpenProjectWindow(Reclist.VoicebankPath, Settings.WavSettings, Settings.ProjectFile);

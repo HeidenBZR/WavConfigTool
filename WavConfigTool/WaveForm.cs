@@ -14,7 +14,9 @@ namespace WavConfigTool
     public class WaveForm
     {
         public static int PointSkip = 5;
-        static SolidBrush WavZoneBrush = new SolidBrush(System.Drawing.Color.FromArgb(250, 100, 200, 100));
+        public const string WAV_ZONE_COLOR = "#64c864";
+        //public static SolidBrush WavZoneBrush = new SolidBrush(System.Drawing.Color.FromArgb(250, 100, 200, 100));
+        //public static System.Drawing.Pen PEN = new System.Drawing.Pen(WavZoneBrush);
 
         public string Path;
         public int SampleRate;
@@ -36,7 +38,12 @@ namespace WavConfigTool
         public WaveForm(string path)
         {
             Path = path;
-            if (!File.Exists(path))
+            Init();
+        }
+
+        void Init()
+        {
+            if (!File.Exists(Path))
                 return;
             else
                 IsEnabled = true;
@@ -48,9 +55,10 @@ namespace WavConfigTool
             Data = new float[Length];
             reader.Read(Data, 0, (int)Length);
             reader.Close();
+
         }
 
-        double Truncate(double value)
+        float Truncate(float value)
         {
             if (value > 50) return 50;
             else if (value < -50) return -50;
@@ -58,19 +66,37 @@ namespace WavConfigTool
             else return value;
         }
 
-        public System.Windows.Point[] GetAudioPoints()
+        public PointF[] GetAudioPoints()
         {
-            List<System.Windows.Point> points = new List<System.Windows.Point>();
-            var max = Data.Max();
-            long i = 0;
-            Length = Length / 4;
-            for (; i < Length; i += PointSkip)
+            try
             {
-                var x = i * WavControl.ScaleX / SampleRate * 1000;
-                var y = Truncate(Data[i] * WavControl.ScaleY * Settings.WAM) + 50;
-                points.Add(new System.Windows.Point(x, y));
+                if (Data is null)
+                    Init();
+                var points = new List<PointF>();
+                var max = Data.Max();
+                long i = 0;
+                Length = Length / 4;
+                float factorX = (float)(WavControl.ScaleX / SampleRate * 1000);
+                float factorY = (float)(WavControl.ScaleY * Settings.WAM);
+                float prev = 0;
+                float preprev = 0;
+                for (; i < Length; i += PointSkip)
+                {
+                    float x = i * factorX;
+                    float y = Truncate(Data[i] * factorY) + 50;
+                    if (i > 0 || y != prev && y != preprev)
+                        points.Add(new PointF(x, y));
+                    prev = y;
+                    preprev = prev;
+                }
+                Data = null;
+                return points.ToArray();
             }
-            return points.ToArray();
+            catch (Exception ex)
+            {
+                MainWindow.MessageBoxError(ex, "Error on GetAudioPoints");
+                return null;
+            }
         }
 
         //public System.Windows.Point[] GetAudioPoints()
@@ -107,28 +133,28 @@ namespace WavConfigTool
         //}
 
 
-        public void PointsToImage(object Data)
+        public void PointsToImage(object data)
         {
             try
             {
                 IsGenerated = false;
-                (System.Windows.Point[] points, int w, int h, string imagePath ) = ((System.Windows.Point[] points, int w, int h, string imagePath))Data;
+                (PointF[] points, int w, int h, string imagePath, System.Drawing.Pen pen ) = 
+                    ((PointF[] points, int w, int h, string imagePath, System.Drawing.Pen))data;
 
-                //Console.WriteLine($"Started generating {control.ImagePath}");
                 Bitmap image = new Bitmap(w, h);
                 Graphics waveform = Graphics.FromImage(image);
                 waveform.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                System.Drawing.Pen pen = new System.Drawing.Pen(WavZoneBrush);
-                PointF[] ps = points.Select(n => new PointF((float)n.X, (float)n.Y)).ToArray();
-                waveform.DrawCurve(pen, ps);
+                waveform.DrawCurve(pen, points);
                 waveform.Save();
                 image.Save(imagePath);
-                //Console.WriteLine($"Finished {control.ImagePath}");
+                waveform.Dispose();
+                image.Dispose();
                 IsGenerating = false;
                 IsGenerated = true;
             }
             catch (Exception ex)
             {
+                IsGenerating = false;
                 IsGenerated = false;
                 GeneratingException = ex;
             }

@@ -20,6 +20,54 @@ namespace WavConfigTool
 {
     public partial class MainWindow : Window
     {
+        Reclist Reclist;
+        string TempProject
+        {
+            get
+            {
+                var tempdir = System.IO.Path.GetTempPath();
+                tempdir = System.IO.Path.Combine(tempdir, "WavConfigTool");
+                if (!Directory.Exists(tempdir))
+                    Directory.CreateDirectory(tempdir);
+                tempdir = System.IO.Path.Combine(tempdir, @"temp.wconfig");
+                return tempdir;
+
+            }
+        }
+        List<WavControl> WavControls;
+        public static WavConfigPoint Mode = WavConfigPoint.V;
+
+        public readonly Version Version = new Version(0, 1, 5, 2);
+
+        int PageCurrent = 0;
+        int PageTotal = 0;
+        byte ItemsOnPage = 4;
+
+        public static string TempDir
+        {
+            get
+            {
+                var tempdir = System.IO.Path.GetTempPath();
+                tempdir = System.IO.Path.Combine(tempdir, "WavConfigTool");
+                if (!Directory.Exists(tempdir))
+                    Directory.CreateDirectory(tempdir);
+                tempdir = System.IO.Path.Combine(tempdir, "waveform");
+                if (!Directory.Exists(tempdir))
+                    Directory.CreateDirectory(tempdir);
+                return tempdir;
+            }
+        }
+
+        Point PrevMousePosition;
+
+        public static MainWindow Current;
+
+        public delegate void ProjectLoadedEventHandler();
+        public event ProjectLoadedEventHandler ProjectLoaded;
+
+        bool IsUnsaved { get => Settings.IsUnsaved; set => Settings.IsUnsaved = value; }
+
+        public bool loaded = false;
 
         public MainWindow()
         {
@@ -269,14 +317,21 @@ namespace WavConfigTool
 
         void SetPage(int page)
         {
-            if (page < PageTotal && page >= 0)
+            try
             {
-                PageCurrent = page;
-                DrawPageAsync(manual: true);
-                if (TextBoxPage.Text != (page + 1).ToString())
-                    TextBoxPage.Text = (page + 1).ToString();
+                if (page < PageTotal && page >= 0)
+                {
+                    UndrawPage();
+                    PageCurrent = page;
+                    DrawPageAsync(manual: true);
+                    if (TextBoxPage.Text != (page + 1).ToString())
+                        TextBoxPage.Text = (page + 1).ToString();
+                }
             }
-            //else TextBoxPage.Text = PageCurrent.ToString();
+            catch (Exception ex)
+            {
+                MessageBoxError(ex, "Error on SetPage");
+            }
         }
 
         void GotoWav(WavControl control)
