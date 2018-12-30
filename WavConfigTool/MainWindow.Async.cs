@@ -26,7 +26,11 @@ namespace WavConfigTool
         {
             try
             {
-                for (int i = ItemsOnPage * PageCurrent; i < ItemsOnPage && i < WavControls.Count; i++)
+                Dispatcher.Invoke(() => { WaveControlStackPanel.Children.Clear(); });
+                var min = Settings.ItemsOnPage * Settings.CurrentPage;
+                var max = min + Settings.ItemsOnPage;
+                var count = WavControls.Count;
+                for (int i = min; i < max && i < count; i++)
                     if (WavControls[i].IsEnabled)
                         WavControls[i].Undraw();
             }
@@ -40,7 +44,10 @@ namespace WavConfigTool
         {
             try
             {
-                for (int i = ItemsOnPage * PageCurrent; i < ItemsOnPage && i < WavControls.Count; i++)
+                var min = Settings.ItemsOnPage * Settings.CurrentPage;
+                var max = min + Settings.ItemsOnPage;
+                var count = WavControls.Count;
+                for (int i = min; i < max && i < count; i++)
                 {
                     if (WavControls[i].IsEnabled)
                     {
@@ -50,8 +57,8 @@ namespace WavConfigTool
                 }
                 //if (manual)
                 //{
-                //    TextBoxItemsOnPage.Text = ItemsOnPage.ToString();
-                //    TextBoxPage.Text = (PageCurrent + 1).ToString();
+                //    TextBoxItemsOnPage.Text = Settings.ItemsOnPage.ToString();
+                //    TextBoxPage.Text = (Settings.CurrentPage + 1).ToString();
                 //}
             }
             catch (Exception ex)

@@ -18,6 +18,7 @@ namespace WavConfigTool
 
         public void Undraw()
         {
+            WavImage.Source = null;
             GridCanvas.Children.Clear();
             ClearWavconfig();
         }

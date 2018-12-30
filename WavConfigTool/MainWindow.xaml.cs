@@ -77,9 +77,9 @@ namespace WavConfigTool
             else if (Keyboard.IsKeyDown(Key.D))
                 SetMode(WavConfigPoint.D);
             else if (Keyboard.IsKeyDown(Key.OemOpenBrackets))
-                SetPage(PageCurrent - 1);
+                SetPage(Settings.CurrentPage - 1);
             else if (Keyboard.IsKeyDown(Key.OemCloseBrackets))
-                SetPage(PageCurrent + 1);
+                SetPage(Settings.CurrentPage + 1);
             else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
                 if (Keyboard.IsKeyDown(Key.S))
@@ -90,9 +90,9 @@ namespace WavConfigTool
                         Save();
                 }
                 else if (Keyboard.IsKeyDown(Key.OemPlus))
-                    SetItemsOnPage((byte)(ItemsOnPage + 1));
+                    SetItemsOnPage((byte)(Settings.ItemsOnPage + 1));
                 else if (Keyboard.IsKeyDown(Key.OemMinus))
-                    SetItemsOnPage((byte)(ItemsOnPage - 1));
+                    SetItemsOnPage((byte)(Settings.ItemsOnPage - 1));
                 else if (Keyboard.IsKeyDown(Key.Back))
                     ToggleTools();
                 if (Keyboard.IsKeyDown(Key.N))
@@ -178,22 +178,22 @@ namespace WavConfigTool
 
         private void NextPage_Click(object sender, RoutedEventArgs e)
         {
-            SetPage(PageCurrent + 1);
+            SetPage(Settings.CurrentPage + 1);
         }
 
         private void PrevPage_Click(object sender, RoutedEventArgs e)
         {
-            SetPage(PageCurrent - 1);
+            SetPage(Settings.CurrentPage - 1);
         }
 
         private void MoreItems_Click(object sender, RoutedEventArgs e)
         {
-            SetItemsOnPage((byte)(ItemsOnPage + 1));
+            SetItemsOnPage((byte)(Settings.ItemsOnPage + 1));
         }
 
         private void LessItems_Click(object sender, RoutedEventArgs e)
         {
-            SetItemsOnPage((byte)(ItemsOnPage - 1));
+            SetItemsOnPage((byte)(Settings.ItemsOnPage - 1));
         }
 
         private void ToggleToolsPanel_Click(object sender, RoutedEventArgs e)
@@ -234,7 +234,7 @@ namespace WavConfigTool
             if (!IsLoaded) return;
             if (int.TryParse(TextBoxPage.Text, out int page))
                 SetPage(page - 1);
-            else TextBoxPage.Text = PageCurrent.ToString();
+            else TextBoxPage.Text = Settings.CurrentPage.ToString();
         }
 
         private void TextBoxItemsOnPage_LostFocus(object sender, RoutedEventArgs e)
@@ -242,7 +242,7 @@ namespace WavConfigTool
             if (!IsLoaded) return;
             if (byte.TryParse(TextBoxItemsOnPage.Text, out byte items))
                 SetItemsOnPage( (byte)(items) );
-            else TextBoxItemsOnPage.Text = ItemsOnPage.ToString();
+            else TextBoxItemsOnPage.Text = Settings.ItemsOnPage.ToString();
         }
 
         private void MenuFindUncompleted_Click(object sender, RoutedEventArgs e)

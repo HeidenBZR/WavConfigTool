@@ -39,10 +39,6 @@ namespace WavConfigTool
 
         public readonly Version Version = new Version(0, 1, 5, 2);
 
-        int PageCurrent = 0;
-        int PageTotal = 0;
-        byte ItemsOnPage = 4;
-
         public static string TempDir
         {
             get
@@ -65,6 +61,8 @@ namespace WavConfigTool
         public delegate void ProjectLoadedEventHandler();
         public event ProjectLoadedEventHandler ProjectLoaded;
 
+        public int PageTotal;
+
         bool IsUnsaved { get => Settings.IsUnsaved; set => Settings.IsUnsaved = value; }
 
         public bool loaded = false;
@@ -73,8 +71,9 @@ namespace WavConfigTool
         {
             try
             {
-
                 InitializeComponent();
+                if (Settings.ItemsOnPage == 0)
+                    Settings.ItemsOnPage = 4;
                 Current = this;
                 Init();
                 if (OpenBackup())
@@ -151,7 +150,7 @@ namespace WavConfigTool
         {
             if (offset == -1)
                 offset = ScrollViewer.HorizontalOffset;
-            for (int i = PageCurrent * ItemsOnPage; i < (PageCurrent + 1) * ItemsOnPage; i++)
+            for (int i = Settings.CurrentPage * Settings.ItemsOnPage; i < (Settings.CurrentPage + 1) * Settings.ItemsOnPage; i++)
                 if (i < WavControls.Count)
                     WavControls[i].LabelName.Margin = new Thickness(offset, 0, 0, 0);
         }
@@ -319,10 +318,10 @@ namespace WavConfigTool
         {
             try
             {
-                if (page < PageTotal && page >= 0)
+                if (page < PageTotal && page >= 0 && page != Settings.CurrentPage)
                 {
                     UndrawPage();
-                    PageCurrent = page;
+                    Settings.CurrentPage = page;
                     DrawPageAsync(manual: true);
                     if (TextBoxPage.Text != (page + 1).ToString())
                         TextBoxPage.Text = (page + 1).ToString();
@@ -341,7 +340,7 @@ namespace WavConfigTool
         void GotoWav(Recline recline)
         {
             int ind = Reclist.Reclines.IndexOf(recline);
-            int page = ind / ItemsOnPage;
+            int page = ind / Settings.ItemsOnPage;
             SetPage(page);
         }
 
@@ -349,21 +348,21 @@ namespace WavConfigTool
         {
             if (items <= 100 && items > 0)
             {
-                int current = PageCurrent * ItemsOnPage;
-                ItemsOnPage = items;
-                if (PageCurrent > PageTotal) PageCurrent = PageTotal;
+                int current = Settings.CurrentPage * Settings.ItemsOnPage;
+                Settings.ItemsOnPage = items;
+                if (Settings.CurrentPage > PageTotal) Settings.CurrentPage = PageTotal;
                 SetPageTotal();
                 GotoWav(WavControls[current]);
             }
-            //else TextBoxItemsOnPage.Text = ItemsOnPage.ToString();
+            //else TextBoxItemsOnPage.Text = Settings.ItemsOnPage.ToString();
         }
 
         void SetPageTotal()
         {
-            double temp = (double)WavControls.Count / ItemsOnPage;
+            double temp = (double)WavControls.Count / Settings.ItemsOnPage;
             PageTotal = temp % 1 > 0 ? (int)(temp + 1) : (int)(temp);
             LabelPageTotal.Content = (PageTotal).ToString();
-            if (PageCurrent >= PageTotal)
+            if (Settings.CurrentPage >= PageTotal)
                 SetPage(PageTotal - 1);
         }
 
@@ -372,6 +371,7 @@ namespace WavConfigTool
             if (value > 0 && value < 50f)
             {
                 Settings.WAM = value;
+                UndrawPage();
                 InitWavcontrols(force: true);
                 DrawPageAsync();
             }

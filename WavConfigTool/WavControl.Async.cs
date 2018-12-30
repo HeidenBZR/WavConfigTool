@@ -45,9 +45,7 @@ namespace WavConfigTool
                 }
                 if (!IsImageGenerated)
                     throw new Exception("Waveform generation timeout exceeded");
-                bool hasImage = false;
-                Dispatcher.Invoke(delegate { hasImage = WavImage.Source != null; });
-                if (hasImage || await OpenImageAsync())
+                if (await OpenImageAsync())
                     OnImageLoaded();
 
             }
@@ -137,6 +135,7 @@ namespace WavConfigTool
             try
             {
                 var points = WaveForm.GetAudioPoints();
+                WaveForm.Data = null;
                 int width = (int)points.Last().X;
                 var pen = new System.Drawing.Pen(System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR));
 
