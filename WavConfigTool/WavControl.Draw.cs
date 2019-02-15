@@ -265,7 +265,7 @@ namespace WavConfigTool
 
         void CheckCompleted()
         {
-            if (!IsEnabled || !IsImageGenerated)
+            if (!Recline.IsEnabled || !IsImageGenerated)
                 return;
             IsCompleted = Ds.Count == 2 &&
                 Vs.Count / 2 >= Recline.Vowels.Count &&

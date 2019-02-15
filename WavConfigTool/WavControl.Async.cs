@@ -35,7 +35,7 @@ namespace WavConfigTool
                 //Dispatcher.Invoke(() => {
                 //    Visibility = Visibility.Hidden;
                 //});
-                if (!IsEnabled || !IsToDraw)
+                if (!Recline.IsEnabled || !IsToDraw)
                     return;
                 int i = 0;
                 while ((ImagePath is null || !IsImageGenerated) && i < WaitingLimit)
@@ -104,7 +104,7 @@ namespace WavConfigTool
 
         public async Task<bool> GenerateWaveformAsync(bool force)
         {
-            if (!IsEnabled)
+            if (!Recline.IsEnabled)
                 return false;
             return await Task.Run<bool>(delegate ()
             {
@@ -171,7 +171,7 @@ namespace WavConfigTool
 
         public async Task<bool> OpenImageAsync()
         {
-            if (!IsEnabled)
+            if (!Recline.IsEnabled)
                 return false;
 
             int i = 0;

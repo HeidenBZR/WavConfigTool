@@ -79,6 +79,14 @@ namespace WavConfigTool
         public List<Phoneme> Consonants { get { return Phonemes.Where(n => n.IsConsonant).ToList(); } }
         public Reclist Reclist;
 
+        public bool IsEnabled
+        {
+            get
+            {
+                return Reclist != null && Reclist.VoicebankEnabled && System.IO.File.Exists(Path);
+            }
+        }
+
         public List<Phoneme> Data;
         public string Path
         {
@@ -112,6 +120,16 @@ namespace WavConfigTool
         public Recline(string filename, string phonemes, string description) : this(filename, phonemes)
         {
             Description = description;
+        }
+
+        public override string ToString()
+        {
+            if (Phonemes is null)
+                return "Recline: {undefined}";
+            else if (Description is null)
+                return $"Recline: [{String.Join(" ", Phonemes)}]";
+            else
+                return $"Recline: {Description} [{String.Join(" ", Phonemes.Select(n => n.Alias))}]";
         }
     }
 }

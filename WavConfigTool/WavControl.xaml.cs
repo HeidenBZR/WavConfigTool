@@ -69,13 +69,6 @@ namespace WavConfigTool
         {
             get { return WaveForm is null ? false : WaveForm.IsGenerating; }
         }
-        public bool IsEnabled
-        {
-            get
-            {
-                return Recline != null && Recline.Reclist != null && Recline.Reclist.VoicebankEnabled && File.Exists(Recline.Path);
-            }
-        }
 
         SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(250, 2, 20, 4));
         SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 200, 50));
@@ -117,7 +110,7 @@ namespace WavConfigTool
         {
             try
             {
-                if (Recline is null || !IsEnabled)
+                if (Recline is null || !Recline.IsEnabled)
                     return false;
 
                 WaveForm = new WaveForm(Recline.Path);
@@ -157,36 +150,54 @@ namespace WavConfigTool
 
         public string GenerateOto()
         {
+            if (!Recline.IsEnabled)
+                return "";
             Normalize();
             ApplyPoints();
             ApplyFade();
-            List<WavMarker> markers = MarkerCanvas.Children.OfType<WavMarker>().ToList();
-            markers.OrderBy(n => n.Position);
             string text = "";
-            string[] iy = new[] { "iy", "yi" };
-            var phonemes = Recline.Phonemes;
-            if (Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[0].GetMonophone(Recline.Filename);
-            if (Recline.Reclist.Name.Contains("cvc_rus") &&
-                    ((phonemes.Count > 1 && phonemes[0].IsVowel) 
-                    || (phonemes.Count > 2 && phonemes[1].Alias == "a")))
-                text += phonemes[0].GetDiphone(Recline.Filename, Recline.Data[0]);
-            else
-                text += phonemes[0].GetDiphone(Recline.Filename, Recline.Data[0]);
-            if (phonemes.Count > 2 && (!Recline.Reclist.Name.Contains("cvc_rus") || phonemes[1].Alias == "a")) text += Recline.Data[1].GetDiphone(Recline.Filename, phonemes.Last());
-            if (phonemes.Count > 1 && (!Recline.Reclist.Name.Contains("cvc_rus") || Recline.Consonants.Count < Recline.Vowels.Count)) text += phonemes[1].GetDiphone(Recline.Filename, phonemes[0]);
-            if (phonemes.Count > 1 && (!Recline.Reclist.Name.Contains("cvc_rus") || !(phonemes.Count > 3 && iy.Contains(phonemes[1] + phonemes[3])))) text += phonemes[1].GetTriphone(Recline.Filename, phonemes[0], Recline.Data[0]);
             int i;
-            for (i = 2; i < Recline.Phonemes.Count; i++)
+            try
             {
-                if (Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[i].GetMonophone(Recline.Filename);
-                if ( i != 4 || !Reclist.Current.Name.ToLower().Contains("cvc_rus"))
-                    text += phonemes[i].GetDiphone(Recline.Filename, phonemes[i - 1]);
-                text += phonemes[i].GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
+
+                List<WavMarker> markers = MarkerCanvas.Children.OfType<WavMarker>().ToList();
+                markers.OrderBy(n => n.Position);
+                string[] iy = new[] { "iy", "yi" };
+                var phonemes = Recline.Phonemes;
+                if (Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[0].GetMonophone(Recline.Filename);
+                if (Recline.Data.Count > 0)
+                {
+                    if (Recline.Reclist.Name.Contains("cvc_rus") &&
+                            ((phonemes.Count > 1 && phonemes[0].IsVowel)
+                            || (phonemes.Count > 2 && phonemes[1].Alias == "a")))
+                        text += phonemes[0].GetDiphone(Recline.Filename, Recline.Data[0]);
+                    else
+                        text += phonemes[0].GetDiphone(Recline.Filename, Recline.Data[0]);
+                }
+                if (phonemes.Count > 2 && (!Recline.Reclist.Name.Contains("cvc_rus") || phonemes[1].Alias == "a")) text += Recline.Data[1].GetDiphone(Recline.Filename, phonemes.Last());
+                if (phonemes.Count > 1 && (!Recline.Reclist.Name.Contains("cvc_rus") || Recline.Consonants.Count < Recline.Vowels.Count)) text += phonemes[1].GetDiphone(Recline.Filename, phonemes[0]);
+                if (Recline.Data.Count > 0)
+                    if (phonemes.Count > 1 && (!Recline.Reclist.Name.Contains("cvc_rus") || !(phonemes.Count > 3 && iy.Contains(phonemes[1] + phonemes[3]))))
+                        text += phonemes[1].GetTriphone(Recline.Filename, phonemes[0], Recline.Data[0]);
+                for (i = 2; i < Recline.Phonemes.Count; i++)
+                {
+                    if (Recline.Consonants.Count < Recline.Vowels.Count) text += phonemes[i].GetMonophone(Recline.Filename);
+                    if (i != 4 || !Reclist.Current.Name.ToLower().Contains("cvc_rus"))
+                        text += phonemes[i].GetDiphone(Recline.Filename, phonemes[i - 1]);
+                    text += phonemes[i].GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
+                }
+                if (phonemes.Count == 1) i = 1;
+                //text += Recline.Data[1].GetMonophone(Recline.Filename);
+                if (Recline.Data.Count > 1)
+                {
+                    if (phonemes.First().IsVowel) text += Recline.Data[1].GetDiphone(Recline.Filename, phonemes.Last());
+                    if (phonemes.Count > 1) text += Recline.Data[1].GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
+                }
             }
-            if (phonemes.Count == 1) i = 1;
-            //text += Recline.Data[1].GetMonophone(Recline.Filename);
-            if (phonemes.First().IsVowel) text += Recline.Data[1].GetDiphone(Recline.Filename, phonemes.Last());
-            if (phonemes.Count > 1) text += Recline.Data[1].GetTriphone(Recline.Filename, phonemes[i - 1], phonemes[i - 2]);
+            catch (Exception ex)
+            {
+                MainWindow.MessageBoxError(ex, "Error on draw page");
+            }
             return text;
         }
 

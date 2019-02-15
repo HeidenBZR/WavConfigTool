@@ -31,7 +31,7 @@ namespace WavConfigTool
                 var max = min + Settings.ItemsOnPage;
                 var count = WavControls.Count;
                 for (int i = min; i < max && i < count; i++)
-                    if (WavControls[i].IsEnabled)
+                    if (WavControls[i].Recline.IsEnabled)
                         WavControls[i].Undraw();
             }
             catch (Exception ex)
@@ -49,7 +49,7 @@ namespace WavConfigTool
                 var count = WavControls.Count;
                 for (int i = min; i < max && i < count; i++)
                 {
-                    if (WavControls[i].IsEnabled)
+                    if (WavControls[i].Recline.IsEnabled)
                     {
                         Dispatcher.Invoke(() => { WaveControlStackPanel.Children.Add(WavControls[i]); });
                         WavControls[i].Draw();
