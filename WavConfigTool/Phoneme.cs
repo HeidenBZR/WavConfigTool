@@ -99,6 +99,10 @@ namespace WavConfigTool
             con = -cut / 3;
             con = pre + Fade * 5;
             cut = -(Zone.Out - of - Fade * 5);
+            if (cut > 0)
+                cut = of - Zone.Out + Fade;
+            if (con > -cut)
+                con = -cut - 80;
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
         }
@@ -140,6 +144,7 @@ namespace WavConfigTool
             {
                 pre = prev.Zone.Out - of;
                 con = pre + prev.Fade;
+                ov = prev.Overlap;
                 cut = -(Zone.Out - of + Fade);
                 cut = 10;
             }
@@ -209,7 +214,11 @@ namespace WavConfigTool
             double cut = -(Zone.Out - of - Fade);
             double pre = dist + Preutterance;
             double ov = preprev.Overlap;
-            if (preprev.IsVowel && IsRest)
+            if (preprev.IsVowel) // VCV, VC-
+            {
+                of = preprev.Zone.Out - preprev.Fade - preprev.Overlap;
+            }
+            if (preprev.IsVowel && IsRest) // VC-
             {
                 ov = preprev.Zone.Out - 10;
                 of = ov - preprev.Overlap;
@@ -220,7 +229,12 @@ namespace WavConfigTool
                 cut = -(Zone.In - of + Fade);
                 cut = 10;
             }
-            else if (preprev.IsRest)
+            else if (preprev.IsVowel) // VCV
+            {
+                pre = Zone.In - of;
+                con = pre + Fade;
+            }
+            else if (preprev.IsRest) // -CV
             {
                 of = prevp;
                 pre = Zone.In - of;
