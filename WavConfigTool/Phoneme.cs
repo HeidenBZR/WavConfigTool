@@ -24,7 +24,7 @@ namespace WavConfigTool
         public double Preutterance;
         public double Overlap;
         public double Length { get { return Zone.Out - Zone.In; } }
-        public double Fade;
+        public double Release;
 
         public string Alias;
         public string Letter;
@@ -91,16 +91,16 @@ namespace WavConfigTool
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double of = Zone.In + Fade;
-            double con = Fade;
-            double cut = -(Zone.Out - of - Fade) / 1.5;
+            double of = Zone.In + Release;
+            double con = Release;
+            double cut = -(Zone.Out - of - Release) / 1.5;
             double pre = Preutterance;
             double ov = Overlap;
             con = -cut / 3;
-            con = pre + Fade * 5;
-            cut = -(Zone.Out - of - Fade * 5);
+            con = pre + Release * 5;
+            cut = -(Zone.Out - of - Release * 5);
             if (cut > 0)
-                cut = of - Zone.Out + Fade;
+                cut = of - Zone.Out + Release;
             if (con > -cut)
                 con = -cut - 80;
             string oto = Oto(of, con, cut, pre, ov);
@@ -116,42 +116,42 @@ namespace WavConfigTool
 
         }
 
-        string NormalDiphone(string filename, Phoneme prev)
+        string NormalDiphone(string filename, Phoneme p2)
         {
-            string alias = GetAlias(prev);
+            string alias = GetAlias(p2);
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double prevp = prev.Zone.Out - prev.Fade;
-            if (prev.IsRest) prevp = prev.Zone.Out;
+            double prevp = p2.Zone.Out - p2.Release;
+            if (p2.IsRest) prevp = p2.Zone.Out;
             double dist = Zone.In - prevp;
 
             double of = prevp;
-            if (prev.IsVowel)
-                of -= prev.Overlap;
-            double con = prev.Overlap + dist + Fade;
+            if (p2.IsVowel)
+                of -= p2.Overlap;
+            double con = p2.Overlap + dist + Release;
             double cut = -(Zone.Out - of);
-            if (IsVowel) cut = -(Zone.Out - of - Fade);
+            if (IsVowel) cut = -(Zone.Out - of - Release);
             double pre = Zone.In - of;
-            double ov = prev.Zone.Out - of;
+            double ov = p2.Zone.Out - of;
             if (IsConsonant)
             {
-                pre = prev.Zone.Out - of;
+                pre = p2.Zone.Out - of;
                 con = Zone.In - of;
-                ov = prev.Overlap;
+                ov = p2.Overlap;
             }
             if (IsRest)
             {
-                pre = prev.Zone.Out - of;
-                con = pre + prev.Fade;
-                ov = prev.Overlap;
-                cut = -(Zone.Out - of + Fade);
+                pre = p2.Zone.Out - of;
+                con = pre + p2.Release;
+                ov = p2.Overlap;
+                cut = -(Zone.Out - of + Release);
                 cut = 10;
             }
             if (IsVowel)
             {
-                con = pre + Fade;
-                cut = -(Zone.Out - of - Fade);
+                con = pre + Release;
+                cut = -(Zone.Out - of - Release);
             }
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
@@ -167,7 +167,7 @@ namespace WavConfigTool
             double dist = Zone.In - prevp;
 
             double of = prevp;
-            double cut = -(Zone.Out - of + Fade);
+            double cut = -(Zone.Out - of + Release);
             double pre = Zone.Out - of;
             double ov = Zone.In - of;
             cut -= 10;
@@ -187,7 +187,7 @@ namespace WavConfigTool
 
             double of = prev.Zone.In;
             double con = Zone.Out - of;
-            double cut = -(Zone.Out - of + Fade);
+            double cut = -(Zone.Out - of + Release);
             double pre = prev.Zone.Out - of;
             double ov = prev.Overlap;
             if (ov > pre) ov = pre;
@@ -210,13 +210,13 @@ namespace WavConfigTool
             double dist = offset - preprevoffset;
 
             double of = preprev.Zone.Out - preprev.Overlap;
-            double con = Preutterance + dist + Fade;
-            double cut = -(Zone.Out - of - Fade);
+            double con = Preutterance + dist + Release;
+            double cut = -(Zone.Out - of - Release);
             double pre = dist + Preutterance;
             double ov = preprev.Overlap;
             if (preprev.IsVowel) // VCV, VC-
             {
-                of = preprev.Zone.Out - preprev.Fade - preprev.Overlap;
+                of = preprev.Zone.Out - preprev.Release - preprev.Overlap;
             }
             if (preprev.IsVowel && IsRest) // VC-
             {
@@ -226,21 +226,21 @@ namespace WavConfigTool
                 pre = pre + 50 + of < prev.Zone.Out? pre + 50: prev.Zone.Out - of;
                 pre = prev.Zone.Out - 5 - of;
                 con = Zone.Out - of;
-                cut = -(Zone.In - of + Fade);
+                cut = -(Zone.In - of + Release);
                 cut = 10;
             }
             else if (preprev.IsVowel) // VCV
             {
                 pre = Zone.In - of;
-                con = pre + Fade;
+                con = pre + Release;
             }
             else if (preprev.IsRest) // -CV
             {
                 of = prevp;
                 pre = Zone.In - of;
-                con = pre + Fade;
+                con = pre + Release;
                 ov = prev.Zone.In - of;
-                cut = -(Zone.Out - of - Fade);
+                cut = -(Zone.Out - of - Release);
             }
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
@@ -283,7 +283,7 @@ namespace WavConfigTool
         public Rest(string l, string letter = "") : base(l, letter)
         {
             Type = PhonemeType.Rest;
-            Fade = Settings.FadeD;
+            Release = Settings.FadeD;
         }
         public Rest(string l, double position, Recline recline, string letter = "") : this(l, letter)
         {

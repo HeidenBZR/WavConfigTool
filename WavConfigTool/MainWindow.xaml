@@ -14,7 +14,7 @@
     MouseMove="Window_MouseMove"
     WindowState="Maximized"
     mc:Ignorable="d">
-    <Grid Background="#FF15191D">
+    <Grid Background="#FF181C1F">
         <Grid.RowDefinitions>
             <RowDefinition Height="21" />
             <RowDefinition Name="ToolsPanel" Height="80" />
@@ -251,7 +251,7 @@
                     <Label
                         Padding="0"
                         HorizontalAlignment="Center"
-                        Content="Fade" />
+                        Content="Release" />
                     <StackPanel
                         Height="25"
                         Margin="10"

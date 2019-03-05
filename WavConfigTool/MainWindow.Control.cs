@@ -20,7 +20,7 @@ namespace WavConfigTool
 {
     public partial class MainWindow : Window
     {
-        Reclist Reclist;
+        public Reclist Reclist { get; private set; }
         string TempProject
         {
             get

@@ -34,7 +34,7 @@ namespace WavConfigTool
         public string Settings;
         public string Path;
 
-        static string GetTempPath(string path)
+        public static string GetTempPath(string path)
         {
             return  System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),

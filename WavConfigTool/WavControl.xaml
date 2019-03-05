@@ -33,10 +33,6 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" />
         <Canvas
-            Name="AreasCanvas"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch" />
-        <Canvas
             Name="WavCanvas"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
@@ -69,6 +65,10 @@
                 Height="100"
                 HorizontalAlignment="Stretch" />
         </Canvas>
+        <Canvas
+            Name="AreasCanvas"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" />
         <Canvas
             Name="MarkerCanvas"
             HorizontalAlignment="Stretch"

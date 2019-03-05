@@ -161,24 +161,77 @@ namespace WavConfigTool
         {
             for (int i = 0; i + 1 < Vs.Count; i += 2)
             {
+                // Main
                 Polygon Zone = new Polygon()
                 {
                     Stroke = VowelZoneBrush,
                     Points = new PointCollection
                     {
-                        new Point((Vs[i]) * ScaleX, 50),
-                        new Point((Vs[i] + Settings.FadeV) * ScaleX, 30),
-                        new Point((Vs[i + 1] - Settings.FadeV) * ScaleX, 30),
-                        new Point((Vs[i + 1]) * ScaleX, 50),
-                        new Point((Vs[i + 1] - Settings.FadeV) * ScaleX, 70),
-                        new Point((Vs[i] + Settings.FadeV) * ScaleX, 70)
+                        new Point((Vs[i]) * ScaleX, 70),
+                        new Point((Vs[i + 1]) * ScaleX, 70),
+                        new Point((Vs[i + 1]) * ScaleX, 30),
+                        new Point((Vs[i]) * ScaleX, 30),
                     },
                     Name = $"VZone{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
                     Fill = FillVowelZoneBrush
                 };
                 AreasCanvas.Children.Add(Zone);
+
+                // Release
+                Polygon Release = new Polygon()
+                {
+                    Stroke = VowelZoneBrush,
+                    Points = new PointCollection
+                    {
+                        new Point((Vs[i + 1] - Settings.FadeV) * ScaleX, 70),
+                        new Point((Vs[i + 1]) * ScaleX, 70),
+                        new Point((Vs[i + 1]) * ScaleX, 30),
+                        new Point((Vs[i + 1] - Settings.FadeV) * ScaleX, 30),
+                    },
+                    Name = $"VRelease{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
+                    Fill = FillVowelReleaseBrush
+                };
+                AreasCanvas.Children.Add(Release);
             }
         }
+        void DrawCZone()
+        {
+
+            for (int i = 0; i + 1 < Cs.Count; i += 2)
+            {
+                Polygon Zone = new Polygon()
+                {
+                    Stroke = CZoneBrush,
+                    Points = new PointCollection
+                    {
+                        new Point((Cs[i]) * ScaleX, 40),
+                        new Point((Cs[i + 1]) * ScaleX, 40),
+                        new Point((Cs[i + 1]) * ScaleX, 60),
+                        new Point((Cs[i]) * ScaleX, 60),
+                    },
+                    Name = $"CZone{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
+                    Fill = FillCZoneBrush
+                };
+                AreasCanvas.Children.Add(Zone);
+
+
+                Polygon Release = new Polygon()
+                {
+                    Stroke = CZoneBrush,
+                    Points = new PointCollection
+                    {
+                        new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 60),
+                        new Point((Cs[i + 1]) * ScaleX, 60),
+                        new Point((Cs[i + 1]) * ScaleX, 40),
+                        new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 40),
+                    },
+                    Name = $"CRelease{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
+                    Fill = FillCReleaseBrush
+                };
+                AreasCanvas.Children.Add(Release);
+            }
+        }
+
         void DrawDZone()
         {
             if (Ds.Count == 0) return;
@@ -216,37 +269,11 @@ namespace WavConfigTool
             };
             AreasCanvas.Children.Add(ZoneOut);
         }
-        void DrawCZone()
-        {
-
-            for (int i = 0; i + 1 < Cs.Count; i += 2)
-            {
-                Polygon Zone = new Polygon()
-                {
-                    Stroke = CZoneBrush,
-                    Points = new PointCollection
-                    {
-                        //new Point((Cs[i]) * ScaleX, 50),
-                        //new Point((Cs[i] + Settings.FadeC) * ScaleX, 40),
-                        //new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 40),
-                        //new Point((Cs[i + 1]) * ScaleX, 50),
-                        //new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 60),
-                        //new Point((Cs[i] + Settings.FadeC) * ScaleX, 60)
-                        new Point((Cs[i]) * ScaleX, 40),
-                        new Point((Cs[i + 1]) * ScaleX, 40),
-                        new Point((Cs[i + 1]) * ScaleX, 60),
-                        new Point((Cs[i]) * ScaleX, 60),
-                    },
-                    Name = $"CZone{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
-                    Fill = FillCZoneBrush
-                };
-                AreasCanvas.Children.Add(Zone);
-            }
-        }
 
         void DrawOtoPreview()
         {
             Recline.Reclist.Aliases = new List<string>();
+            OtoGenerator.Init(Recline.Reclist.Name, true);
             string oto = GenerateOto();
             OtoPreviewWindow window = new OtoPreviewWindow(Recline.Filename);
             foreach (string line in oto.Split(new[] { '\r', '\n' }))

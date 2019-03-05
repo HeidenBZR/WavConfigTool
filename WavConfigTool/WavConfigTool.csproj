@@ -94,6 +94,7 @@
     <Compile Include="FindWavDialog.xaml.cs">
       <DependentUpon>FindWavDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OtoGenerator.cs" />
     <Compile Include="MainWindow.Async.cs" />
     <Compile Include="MainWindow.Control.cs" />
     <Compile Include="MainWindow.Project.cs" />

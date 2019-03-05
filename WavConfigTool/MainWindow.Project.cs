@@ -307,6 +307,7 @@ namespace WavConfigTool
         {
             try
             {
+                OtoGenerator.Init(Reclist.Name, true);
                 string text = "";
                 Reclist.Aliases = new List<string>();
                 foreach (WavControl control in WavControls)
