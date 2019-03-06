@@ -16,7 +16,7 @@
             Name="WavCompleted"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Background="#1510FF22"
+            Background="#0710FF22"
             BorderBrush="#FF159B00"
             BorderThickness="0,3,0,3"
             Opacity="0" />

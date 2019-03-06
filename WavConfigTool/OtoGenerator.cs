@@ -81,10 +81,36 @@ namespace WavConfigTool
             var alias = new StringBuilder(phonemes[0].Alias);
             for (int i = 1; i < phonemes.Length; i++)
             {
-                if (IsCvSeparated && GetAliasType(phonemes[i - 1], phonemes[i]) == "CV")
-                    alias.Append(" ");
-                else if (IsVcSeparated)
-                    alias.Append(" ");
+                var alias_type = GetAliasType(phonemes[i - 1], phonemes[i]);
+                var alias_type2 = i + 1 < phonemes.Length ? GetAliasType(phonemes[i - 1], phonemes[i], phonemes[i + 1]) : "";
+                switch (alias_type)
+                {
+                    case "VC":
+                        if (alias_type2 == "VCR")
+                        {
+                            if (IsCvSeparated)
+                                alias.Append(" ");
+                        }
+                        else
+                        {
+                            if (IsVcSeparated)
+                                alias.Append(" ");
+                        }
+                        break;
+                    case "RC":
+                    case "RV":
+                    case "CR":
+                    case "VR":
+                        if (IsVcSeparated)
+                            alias.Append(" ");
+                        break;
+
+                    default:
+                        if (IsCvSeparated)
+                            alias.Append(" ");
+                        break;
+
+                }
                 alias.Append(phonemes[i].Alias);
             }
 
@@ -103,37 +129,69 @@ namespace WavConfigTool
                 return "";
 
             double offset, consonant, cutoff, preutterance, overlap;
-            Phoneme p1 = phonemes.Length > 0 ? phonemes[0] : null;
-            Phoneme p2 = phonemes.Length > 1 ? phonemes[1] : null;
-            Phoneme p3 = phonemes.Length > 2 ? phonemes[2] : null;
+            Phoneme p1 = phonemes.First();
+            Phoneme p2 = phonemes.Last();
 
             switch (GetAliasType(phonemes))
             {
                 // Absolute values, relative ones are made in Oto()
+
+                // Ends with vowel
                 case "CV":
-                case "VC":
-                case "CC":
                 case "VV":
                 case "RV":
-                case "RC":
-                case "VR":
-                case "CR":
-                    offset = p1.Zone.Out - p1.Overlap;
+                case "VCV":
+                case "CCV":
+                    offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out - p2.Release;
+                    consonant = p2.Zone.Out - WavControl.Sustain - p2.Attack;
+                    cutoff = p2.Zone.Out - p2.Attack;
+                    break;
+
+                case "RCV":
+                    offset = p1.Zone.In;
+                    overlap = p1.Zone.Out;
+                    preutterance = p2.Zone.In;
+                    consonant = p2.Zone.Out - WavControl.Sustain - p2.Attack;
+                    cutoff = p2.Zone.Out - p2.Attack;
+                    break;
+
+                // Ends with Rest
+
+                case "VR":
+                case "VCR":
+                    offset = p1.Zone.Out - WavControl.Sustain - p1.Attack;
+                    overlap = p1.Zone.Out - WavControl.Sustain;
+                    preutterance = p2.Zone.In;
+                    consonant = p2.Zone.Out - p2.Attack;
                     cutoff = p2.Zone.Out;
                     break;
 
-                case "VCV":
-                case "CCV":
-                case "RCV":
-                case "VCR":
-                    offset = p1.Zone.Out - p1.Overlap;
+                case "CR":
+                    offset = p1.Zone.In;
                     overlap = p1.Zone.Out;
-                    preutterance = p3.Zone.In;
-                    consonant = p3.Zone.Out - p3.Release;
-                    cutoff = p3.Zone.Out;
+                    preutterance = p2.Zone.In;
+                    consonant = p2.Zone.Out - p2.Attack;
+                    cutoff = p2.Zone.Out;
+                    break;
+
+                // Ends with Consonant
+                case "VC":
+                case "CC":
+                    offset = p1.Zone.Out - p1.Attack;
+                    overlap = p1.Zone.Out;
+                    preutterance = p2.Zone.In;
+                    consonant = p2.Zone.Out - p2.Attack;
+                    cutoff = p2.Zone.Out;
+                    break;
+
+                case "RC":
+                    offset = p1.Zone.In;
+                    overlap = p1.Zone.Out;
+                    preutterance = p2.Zone.In;
+                    consonant = p2.Zone.Out - p2.Attack;
+                    cutoff = p2.Zone.Out;
                     break;
 
                 default:

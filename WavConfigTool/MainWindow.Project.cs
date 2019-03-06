@@ -85,6 +85,7 @@ namespace WavConfigTool
                     {
                         MessageBox.Show("Some unsaved project was restored. Please resave it.");
                         loaded = true;
+                        IsUnsaved = true;
                         return loaded;
                     }
                 }
@@ -184,6 +185,8 @@ namespace WavConfigTool
 
                 foreach (WavControl control in WavControls)
                 {
+                    if (control.Ds.Count == 0 && control.Vs.Count == 0 && control.Cs.Count == 0)
+                        continue;
                     text += $"{control.Recline.Filename}\r\n";
                     text += $"{String.Join(" ", control.Ds.Select(n => n.ToString("f0")))}\r\n";
                     text += $"{ String.Join(" ", control.Vs.Select(n => n.ToString("f0"))) }\r\n";
@@ -273,7 +276,7 @@ namespace WavConfigTool
         {
             try
             {
-
+                string missing = "";
                 Settings.ProjectFile = project;
                 string[] lines = File.ReadAllLines(project);
                 Reclist.SetVoicebank(lines[0]);
@@ -286,13 +289,18 @@ namespace WavConfigTool
                     WavControl control = WavControls.Find(n => n.Recline.Filename == filename);
                     if (control != null)
                     {
-                        //MessageBox.Show($"Some sample missing: \r\n{control.Recline.Path}", "Error on project reading", MessageBoxButton.OK, MessageBoxImage.Error);
 
                         if (pds.Length > 0) control.Ds = pds.Split(' ').Select(n => double.Parse(n)).ToList();
                         if (pvs.Length > 0) control.Vs = pvs.Split(' ').Select(n => double.Parse(n)).ToList();
                         if (pcs.Length > 0) control.Cs = pcs.Split(' ').Select(n => double.Parse(n)).ToList();
                     }
+                    else
+                    {
+                        //missing += $"{control.Recline.Path}\n";
+                    }
                 }
+                //if (missing != "")
+                   // MessageBox.Show("Some sample is missing: \n\n" + missing, "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 ProjectLoaded();
                 return true;
             }

@@ -33,7 +33,7 @@ namespace WavConfigTool
             }
         }
 
-        public static int FadeV
+        public static int VowelAttack
         {
             get
             {
@@ -46,7 +46,7 @@ namespace WavConfigTool
             }
         }
 
-        public static int FadeC
+        public static int ConsonantAttack
         {
             get
             {
@@ -59,7 +59,7 @@ namespace WavConfigTool
             }
         }
 
-        public static int FadeD
+        public static int RestAttack
         {
             get
             {

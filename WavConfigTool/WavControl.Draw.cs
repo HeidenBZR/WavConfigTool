@@ -168,8 +168,9 @@ namespace WavConfigTool
                     Points = new PointCollection
                     {
                         new Point((Vs[i]) * ScaleX, 70),
-                        new Point((Vs[i + 1]) * ScaleX, 70),
-                        new Point((Vs[i + 1]) * ScaleX, 30),
+                        new Point((Vs[i + 1] - Settings.VowelAttack) * ScaleX, 70),
+                        new Point((Vs[i + 1]) * ScaleX, 50),
+                        new Point((Vs[i + 1] - Settings.VowelAttack) * ScaleX, 30),
                         new Point((Vs[i]) * ScaleX, 30),
                     },
                     Name = $"VZone{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
@@ -183,13 +184,13 @@ namespace WavConfigTool
                     Stroke = VowelZoneBrush,
                     Points = new PointCollection
                     {
-                        new Point((Vs[i + 1] - Settings.FadeV) * ScaleX, 70),
-                        new Point((Vs[i + 1]) * ScaleX, 70),
-                        new Point((Vs[i + 1]) * ScaleX, 30),
-                        new Point((Vs[i + 1] - Settings.FadeV) * ScaleX, 30),
+                        new Point((Vs[i + 1] - Sustain - Settings.VowelAttack) * ScaleX, 70),
+                        new Point((Vs[i + 1] - Settings.VowelAttack) * ScaleX, 70),
+                        new Point((Vs[i + 1] - Settings.VowelAttack) * ScaleX, 30),
+                        new Point((Vs[i + 1] - Sustain - Settings.VowelAttack) * ScaleX, 30),
                     },
                     Name = $"VRelease{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
-                    Fill = FillVowelReleaseBrush
+                    Fill = FillVowelSustainBrush
                 };
                 AreasCanvas.Children.Add(Release);
             }
@@ -214,21 +215,6 @@ namespace WavConfigTool
                 };
                 AreasCanvas.Children.Add(Zone);
 
-
-                Polygon Release = new Polygon()
-                {
-                    Stroke = CZoneBrush,
-                    Points = new PointCollection
-                    {
-                        new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 60),
-                        new Point((Cs[i + 1]) * ScaleX, 60),
-                        new Point((Cs[i + 1]) * ScaleX, 40),
-                        new Point((Cs[i + 1] - Settings.FadeC) * ScaleX, 40),
-                    },
-                    Name = $"CRelease{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
-                    Fill = FillCReleaseBrush
-                };
-                AreasCanvas.Children.Add(Release);
             }
         }
 
@@ -238,12 +224,12 @@ namespace WavConfigTool
             var x = Ds[0] * ScaleX;
             Polygon ZoneIn = new Polygon()
             {
-                Fill = CutZoneBrush,
+                Fill = FillRestBrush,
                 Points = new PointCollection()
                 {
                     new Point(0,0),
                     new Point(x,0),
-                    new Point(x - Settings.FadeD * ScaleX,50),
+                    //new Point(x - Settings.RestAttack * ScaleX,50),
                     new Point(x,100),
                     new Point(0,100)
                 },
@@ -255,19 +241,33 @@ namespace WavConfigTool
             x = Ds[1] * ScaleX;
             Polygon ZoneOut = new Polygon()
             {
-                Fill = CutZoneBrush,
+                Fill = FillRestBrush,
                 Points = new PointCollection()
                 {
                     new Point(Length * ScaleX,0),
-                    new Point(x,0),
-                    new Point(x + Settings.FadeD * ScaleX,50),
-                    new Point(x,100),
+                    new Point(x + Sustain * ScaleX,0),
+                    new Point(x + Sustain * ScaleX,100),
                     new Point(Length * ScaleX,100)
                 },
                 Name = "DZoneOut",
                 Opacity = 0.5
             };
             AreasCanvas.Children.Add(ZoneOut);
+
+            Polygon ZoneOutSustain = new Polygon()
+            {
+                Fill = FillRestSustainBrush,
+                Points = new PointCollection()
+                {
+                    new Point(x,0),
+                    new Point(x + Sustain * ScaleX, 0),
+                    new Point(x + Sustain * ScaleX, 100),
+                    new Point(x,100),
+                },
+                Name = "DZoneOutSustain",
+                Opacity = 0.5
+            };
+            AreasCanvas.Children.Add(ZoneOutSustain);
         }
 
         void DrawOtoPreview()

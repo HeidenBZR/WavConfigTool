@@ -130,9 +130,9 @@ namespace WavConfigTool
 
         void InitTextBoxes()
         {
-            TextBoxFadeC.Text = Settings.FadeC.ToString();
-            TextBoxFadeV.Text = Settings.FadeV.ToString();
-            TextBoxFadeD.Text = Settings.FadeD.ToString();
+            TextBoxFadeC.Text = Settings.ConsonantAttack.ToString();
+            TextBoxFadeV.Text = Settings.VowelAttack.ToString();
+            TextBoxFadeD.Text = Settings.RestAttack.ToString();
             TextBoxItemsOnPage.Text = Settings.ItemsOnPage.ToString();
             TextBoxPage.Text = Settings.CurrentPage.ToString();
             TextBoxMultiplier.Text = Settings.WAM.ToString("f2");
@@ -261,9 +261,9 @@ namespace WavConfigTool
 
         void SetFade(WavConfigPoint point, int value)
         {
-            if (point == WavConfigPoint.V) Settings.FadeV = value;
-            else if (point == WavConfigPoint.C) Settings.FadeC = value;
-            else if (point == WavConfigPoint.D) Settings.FadeD = value;
+            if (point == WavConfigPoint.V) Settings.VowelAttack = value;
+            else if (point == WavConfigPoint.C) Settings.ConsonantAttack = value;
+            else if (point == WavConfigPoint.D) Settings.RestAttack = value;
             DrawPageAsync();
         }
 

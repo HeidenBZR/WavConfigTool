@@ -24,7 +24,7 @@ namespace WavConfigTool
         public double Preutterance;
         public double Overlap;
         public double Length { get { return Zone.Out - Zone.In; } }
-        public double Release;
+        public double Attack;
 
         public string Alias;
         public string Letter;
@@ -91,16 +91,16 @@ namespace WavConfigTool
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double of = Zone.In + Release;
-            double con = Release;
-            double cut = -(Zone.Out - of - Release) / 1.5;
+            double of = Zone.In + Attack;
+            double con = Attack;
+            double cut = -(Zone.Out - of - Attack) / 1.5;
             double pre = Preutterance;
             double ov = Overlap;
             con = -cut / 3;
-            con = pre + Release * 5;
-            cut = -(Zone.Out - of - Release * 5);
+            con = pre + Attack * 5;
+            cut = -(Zone.Out - of - Attack * 5);
             if (cut > 0)
-                cut = of - Zone.Out + Release;
+                cut = of - Zone.Out + Attack;
             if (con > -cut)
                 con = -cut - 80;
             string oto = Oto(of, con, cut, pre, ov);
@@ -122,16 +122,16 @@ namespace WavConfigTool
             if (Recline.Reclist.Aliases.Contains(alias)) return "";
             else Recline.Reclist.Aliases.Add(alias);
 
-            double prevp = p2.Zone.Out - p2.Release;
+            double prevp = p2.Zone.Out - p2.Attack;
             if (p2.IsRest) prevp = p2.Zone.Out;
             double dist = Zone.In - prevp;
 
             double of = prevp;
             if (p2.IsVowel)
                 of -= p2.Overlap;
-            double con = p2.Overlap + dist + Release;
+            double con = p2.Overlap + dist + Attack;
             double cut = -(Zone.Out - of);
-            if (IsVowel) cut = -(Zone.Out - of - Release);
+            if (IsVowel) cut = -(Zone.Out - of - Attack);
             double pre = Zone.In - of;
             double ov = p2.Zone.Out - of;
             if (IsConsonant)
@@ -143,15 +143,15 @@ namespace WavConfigTool
             if (IsRest)
             {
                 pre = p2.Zone.Out - of;
-                con = pre + p2.Release;
+                con = pre + p2.Attack;
                 ov = p2.Overlap;
-                cut = -(Zone.Out - of + Release);
+                cut = -(Zone.Out - of + Attack);
                 cut = 10;
             }
             if (IsVowel)
             {
-                con = pre + Release;
-                cut = -(Zone.Out - of - Release);
+                con = pre + Attack;
+                cut = -(Zone.Out - of - Attack);
             }
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
@@ -167,7 +167,7 @@ namespace WavConfigTool
             double dist = Zone.In - prevp;
 
             double of = prevp;
-            double cut = -(Zone.Out - of + Release);
+            double cut = -(Zone.Out - of + Attack);
             double pre = Zone.Out - of;
             double ov = Zone.In - of;
             cut -= 10;
@@ -187,7 +187,7 @@ namespace WavConfigTool
 
             double of = prev.Zone.In;
             double con = Zone.Out - of;
-            double cut = -(Zone.Out - of + Release);
+            double cut = -(Zone.Out - of + Attack);
             double pre = prev.Zone.Out - of;
             double ov = prev.Overlap;
             if (ov > pre) ov = pre;
@@ -210,13 +210,13 @@ namespace WavConfigTool
             double dist = offset - preprevoffset;
 
             double of = preprev.Zone.Out - preprev.Overlap;
-            double con = Preutterance + dist + Release;
-            double cut = -(Zone.Out - of - Release);
+            double con = Preutterance + dist + Attack;
+            double cut = -(Zone.Out - of - Attack);
             double pre = dist + Preutterance;
             double ov = preprev.Overlap;
             if (preprev.IsVowel) // VCV, VC-
             {
-                of = preprev.Zone.Out - preprev.Release - preprev.Overlap;
+                of = preprev.Zone.Out - preprev.Attack - preprev.Overlap;
             }
             if (preprev.IsVowel && IsRest) // VC-
             {
@@ -226,21 +226,21 @@ namespace WavConfigTool
                 pre = pre + 50 + of < prev.Zone.Out? pre + 50: prev.Zone.Out - of;
                 pre = prev.Zone.Out - 5 - of;
                 con = Zone.Out - of;
-                cut = -(Zone.In - of + Release);
+                cut = -(Zone.In - of + Attack);
                 cut = 10;
             }
             else if (preprev.IsVowel) // VCV
             {
                 pre = Zone.In - of;
-                con = pre + Release;
+                con = pre + Attack;
             }
             else if (preprev.IsRest) // -CV
             {
                 of = prevp;
                 pre = Zone.In - of;
-                con = pre + Release;
+                con = pre + Attack;
                 ov = prev.Zone.In - of;
-                cut = -(Zone.Out - of - Release);
+                cut = -(Zone.Out - of - Attack);
             }
             string oto = Oto(of, con, cut, pre, ov);
             return $"{filename}={alias},{oto}\r\n";
@@ -283,12 +283,12 @@ namespace WavConfigTool
         public Rest(string l, string letter = "") : base(l, letter)
         {
             Type = PhonemeType.Rest;
-            Release = Settings.FadeD;
+            Attack = Settings.RestAttack;
         }
-        public Rest(string l, double position, Recline recline, string letter = "") : this(l, letter)
+        public Rest(string l, double zoneIn, double zoneOut, Recline recline, string letter = "") : this(l, letter)
         {
-            Zone.In = position;
-            Zone.Out = position;
+            Zone.In = zoneIn;
+            Zone.Out = zoneOut;
             Recline = recline;
         }
         public override bool NeedAlias() { return false; }

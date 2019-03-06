@@ -57,6 +57,7 @@ namespace WavConfigTool
 
         public static string Prefix;
         public static string Suffix;
+        public static double Sustain = 200;
 
         public static int WaitingLimit = 100;
 
@@ -70,13 +71,13 @@ namespace WavConfigTool
             get { return WaveForm is null ? false : WaveForm.IsGenerating; }
         }
 
-        SolidColorBrush CutZoneBrush = new SolidColorBrush(Color.FromArgb(250, 2, 20, 4));
+        SolidColorBrush FillRestSustainBrush = new SolidColorBrush(Color.FromArgb(250, 2, 20, 4));
         SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 200, 50));
         SolidColorBrush CZoneBrush = new SolidColorBrush(Color.FromArgb(250, 50, 250, 250));
         SolidColorBrush FillVowelZoneBrush = new SolidColorBrush(Color.FromArgb(50, 200, 200, 50));
         SolidColorBrush FillCZoneBrush = new SolidColorBrush(Color.FromArgb(50, 50, 250, 250));
-        SolidColorBrush FillVowelReleaseBrush = new SolidColorBrush(Color.FromArgb(150, 170, 170, 30));
-        SolidColorBrush FillCReleaseBrush = new SolidColorBrush(Color.FromArgb(150, 30, 170, 170));
+        SolidColorBrush FillVowelSustainBrush = new SolidColorBrush(Color.FromArgb(150, 170, 170, 30));
+        SolidColorBrush FillRestBrush = new SolidColorBrush(Color.FromArgb(150, 170, 30, 30));
 
         public delegate void WavControlChangedHandler();
         public event WavControlChangedHandler WavControlChanged;
@@ -191,11 +192,11 @@ namespace WavConfigTool
         {
             foreach (var phoneme in Recline.Phonemes)
             {
-                int fade;
-                if (phoneme.Type == PhonemeType.Consonant) fade = Settings.FadeC;
-                else if (phoneme.Type == PhonemeType.Vowel) fade = Settings.FadeV;
-                else fade = Settings.FadeD;
-                phoneme.Release = fade;
+                int attack;
+                if (phoneme.Type == PhonemeType.Consonant) attack = Settings.ConsonantAttack;
+                else if (phoneme.Type == PhonemeType.Vowel) attack = Settings.VowelAttack;
+                else attack = Settings.RestAttack;
+                phoneme.Attack = attack;
             }
         }
         /// <summary>
@@ -245,9 +246,16 @@ namespace WavConfigTool
             if (point == WavConfigPoint.D)
             {
                 Recline.Data = new List<Phoneme>();
-                foreach (var d in Ds)
+                int i;
+                Phoneme phoneme;
+                for (i = 0; i < Ds.Count - 1; i++) 
                 {
-                    Phoneme phoneme = new Rest("-", d, Recline);
+                    phoneme = new Rest("-", Ds[i], Ds[i], Recline);
+                    Recline.Data.Add(phoneme);
+                }
+                if (Ds.Count > 0)
+                {
+                    phoneme = new Rest("-", Ds[i], Ds[i] + Sustain, Recline);
                     Recline.Data.Add(phoneme);
                 }
             }
