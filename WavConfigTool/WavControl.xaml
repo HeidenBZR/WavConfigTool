@@ -57,7 +57,10 @@
                         Header="Сбросить все маркеры области данных (D) в текущем аудио"
                         Tag="D" />
                     <Separator />
-                    <MenuItem Click="WavControl_OtoPreview" Header="Предпросмотр oto.ini" />
+                    <MenuItem
+                        Name="MenuItemPreview"
+                        Click="WavControl_OtoPreview"
+                        Header="Предпросмотр oto.ini" />
                 </ContextMenu>
             </Canvas.ContextMenu>
             <Image

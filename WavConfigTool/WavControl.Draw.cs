@@ -179,20 +179,20 @@ namespace WavConfigTool
                 AreasCanvas.Children.Add(Zone);
 
                 // Release
-                Polygon Release = new Polygon()
+                Polygon Sustain = new Polygon()
                 {
                     Stroke = VowelZoneBrush,
                     Points = new PointCollection
                     {
-                        new Point((Vs[i + 1] - Sustain - Settings.VowelAttack) * ScaleX, 70),
+                        new Point((Vs[i + 1] - VowelSustain - Settings.VowelAttack) * ScaleX, 70),
                         new Point((Vs[i + 1] - Settings.VowelAttack) * ScaleX, 70),
                         new Point((Vs[i + 1] - Settings.VowelAttack) * ScaleX, 30),
-                        new Point((Vs[i + 1] - Sustain - Settings.VowelAttack) * ScaleX, 30),
+                        new Point((Vs[i + 1] - VowelSustain - Settings.VowelAttack) * ScaleX, 30),
                     },
                     Name = $"VRelease{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
                     Fill = FillVowelSustainBrush
                 };
-                AreasCanvas.Children.Add(Release);
+                AreasCanvas.Children.Add(Sustain);
             }
         }
         void DrawCZone()
@@ -202,7 +202,7 @@ namespace WavConfigTool
             {
                 Polygon Zone = new Polygon()
                 {
-                    Stroke = CZoneBrush,
+                    Stroke = ConsonantZoneBrush,
                     Points = new PointCollection
                     {
                         new Point((Cs[i]) * ScaleX, 40),
@@ -211,9 +211,25 @@ namespace WavConfigTool
                         new Point((Cs[i]) * ScaleX, 60),
                     },
                     Name = $"CZone{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
-                    Fill = FillCZoneBrush
+                    Fill = FillConsonantZoneBrush
                 };
                 AreasCanvas.Children.Add(Zone);
+
+
+                Polygon Sustain = new Polygon()
+                {
+                    Stroke = FillConsonantZoneBrush,
+                    Points = new PointCollection
+                    {
+                        new Point((Cs[i + 1] - Settings.ConsonantAttack) * ScaleX, 40),
+                        new Point((Cs[i + 1]) * ScaleX, 40),
+                        new Point((Cs[i + 1]) * ScaleX, 60),
+                        new Point((Cs[i + 1] - Settings.ConsonantAttack) * ScaleX, 60),
+                    },
+                    Name = $"CZone{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
+                    Fill = FillConsonantSustainBrush 
+                };
+                AreasCanvas.Children.Add(Sustain);
 
             }
         }
@@ -229,7 +245,6 @@ namespace WavConfigTool
                 {
                     new Point(0,0),
                     new Point(x,0),
-                    //new Point(x - Settings.RestAttack * ScaleX,50),
                     new Point(x,100),
                     new Point(0,100)
                 },
@@ -237,56 +252,16 @@ namespace WavConfigTool
                 Opacity = 0.5
             };
             AreasCanvas.Children.Add(ZoneIn);
-            if (Ds.Count == 1) return;
-            x = Ds[1] * ScaleX;
-            Polygon ZoneOut = new Polygon()
-            {
-                Fill = FillRestBrush,
-                Points = new PointCollection()
-                {
-                    new Point(Length * ScaleX,0),
-                    new Point(x + Sustain * ScaleX,0),
-                    new Point(x + Sustain * ScaleX,100),
-                    new Point(Length * ScaleX,100)
-                },
-                Name = "DZoneOut",
-                Opacity = 0.5
-            };
-            AreasCanvas.Children.Add(ZoneOut);
-
-            Polygon ZoneOutSustain = new Polygon()
-            {
-                Fill = FillRestSustainBrush,
-                Points = new PointCollection()
-                {
-                    new Point(x,0),
-                    new Point(x + Sustain * ScaleX, 0),
-                    new Point(x + Sustain * ScaleX, 100),
-                    new Point(x,100),
-                },
-                Name = "DZoneOutSustain",
-                Opacity = 0.5
-            };
-            AreasCanvas.Children.Add(ZoneOutSustain);
         }
 
         void DrawOtoPreview()
         {
             Recline.Reclist.Aliases = new List<string>();
             OtoGenerator.Init(Recline.Reclist.Name, true);
-            string oto = GenerateOto();
             OtoPreviewWindow window = new OtoPreviewWindow(Recline.Filename);
-            foreach (string line in oto.Split(new[] { '\r', '\n' }))
-            {
-                if (line.Length == 0) continue;
-                var ops = line.Split('=');
-                var ops2 = ops[1].Split(',');
-                var ops3 = ops2.Skip(1);
-                int[] opsi = ops3.Select(n => int.Parse(n)).ToArray();
-                OtoPreviewControl control = new OtoPreviewControl(WavImage.Source, ops2[0], opsi, Length);
-                window.Add(control);
-            }
+            window.SetWavControl(this);
             window.ShowDialog();
+            Draw();
         }
 
 

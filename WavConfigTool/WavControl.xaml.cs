@@ -57,9 +57,10 @@ namespace WavConfigTool
 
         public static string Prefix;
         public static string Suffix;
-        public static double Sustain = 200;
+        public static double VowelSustain = 200;
 
         public static int WaitingLimit = 100;
+        public bool AllowOtoPreview { get; set; } = true;
 
         public WaveForm WaveForm;
 
@@ -71,13 +72,14 @@ namespace WavConfigTool
             get { return WaveForm is null ? false : WaveForm.IsGenerating; }
         }
 
-        SolidColorBrush FillRestSustainBrush = new SolidColorBrush(Color.FromArgb(250, 2, 20, 4));
-        SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(250, 200, 200, 50));
-        SolidColorBrush CZoneBrush = new SolidColorBrush(Color.FromArgb(250, 50, 250, 250));
+        SolidColorBrush FillRestSustainBrush = new SolidColorBrush(Color.FromArgb(255, 2, 20, 4));
+        SolidColorBrush VowelZoneBrush = new SolidColorBrush(Color.FromArgb(255, 200, 200, 50));
+        SolidColorBrush ConsonantZoneBrush = new SolidColorBrush(Color.FromArgb(255, 50, 250, 250));
         SolidColorBrush FillVowelZoneBrush = new SolidColorBrush(Color.FromArgb(50, 200, 200, 50));
-        SolidColorBrush FillCZoneBrush = new SolidColorBrush(Color.FromArgb(50, 50, 250, 250));
+        SolidColorBrush FillConsonantZoneBrush = new SolidColorBrush(Color.FromArgb(50, 50, 250, 250));
         SolidColorBrush FillVowelSustainBrush = new SolidColorBrush(Color.FromArgb(150, 170, 170, 30));
         SolidColorBrush FillRestBrush = new SolidColorBrush(Color.FromArgb(150, 170, 30, 30));
+        SolidColorBrush FillConsonantSustainBrush = new SolidColorBrush(Color.FromArgb(150, 30, 170, 170));
 
         public delegate void WavControlChangedHandler();
         public event WavControlChangedHandler WavControlChanged;
@@ -158,8 +160,6 @@ namespace WavConfigTool
             Normalize();
             ApplyPoints();
             ApplyFade();
-            if (Recline.Data.Count != 2 || Recline.Data.Any(n => n is null))
-                return "";
             string text = "";
             int i;
             try
@@ -168,9 +168,11 @@ namespace WavConfigTool
                 markers.OrderBy(n => n.Position);
 
                 List<Phoneme> phonemes = new List<Phoneme>();
-                phonemes.Add(Recline.Data[0]);
+                if (Recline.Data.Count > 0)
+                    phonemes.Add(Recline.Data[0]);
                 phonemes.AddRange(Recline.Phonemes);
-                phonemes.Add(Recline.Data[1]);
+                if (Recline.Data.Count > 1)
+                    phonemes.Add(Recline.Data[1]);
 
                 for (i = 0; i < phonemes.Count; i++)
                 {
@@ -210,6 +212,8 @@ namespace WavConfigTool
 
         void ApplyPoints()
         {
+            foreach (var phoneme in Recline.Phonemes) 
+                phoneme.Zone = new Zone() { In = 0, Out = 0 };
             ApplyPoints(WavConfigPoint.C);
             ApplyPoints(WavConfigPoint.V);
             ApplyPoints(WavConfigPoint.D);
@@ -253,9 +257,9 @@ namespace WavConfigTool
                     phoneme = new Rest("-", Ds[i], Ds[i], Recline);
                     Recline.Data.Add(phoneme);
                 }
-                if (Ds.Count > 0)
+                if (Ds.Count > 1)
                 {
-                    phoneme = new Rest("-", Ds[i], Ds[i] + Sustain, Recline);
+                    phoneme = new Rest("-", Ds[i], Ds[i] + VowelSustain, Recline);
                     Recline.Data.Add(phoneme);
                 }
             }
@@ -280,8 +284,11 @@ namespace WavConfigTool
 
         private void WavCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ClickCount == 2)
-                DrawOtoPreview();
+            if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
+            {
+                if (AllowOtoPreview)
+                    DrawOtoPreview();
+            }
             else
             {
                 if (!WavContextMenu.IsVisible && Keyboard.IsKeyUp(Key.Space))

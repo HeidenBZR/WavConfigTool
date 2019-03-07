@@ -25,19 +25,34 @@ namespace WavConfigTool
 
         public OtoPreviewControl(ImageSource source, string description, int[] ops, int length)
         {
-            InitializeComponent();
-            ImageWav.Source = source;
-            Filename.Content = description;
-            Offset.Width = ops[0] * ScaleX;
-            Consonant.Margin = new Thickness(Offset.Width, 0, 0, 0);
-            Consonant.Width = ops[1] * ScaleX;
-            Cutoff.Margin = new Thickness(Offset.Width - ops[2] * ScaleX, 0, 0, 0);
-            var cut = length * ScaleX / 4 - Offset.Width + ops[2] * ScaleX;
-            Cutoff.Width = cut > 0 ? cut : 0;
-            if (ops[2] >= 0) Cutoff.Width = ops[2] * ScaleX;
-            Preutterance.Margin = new Thickness(Offset.Width + ops[3] * ScaleX, 0, 0, 0);
-            Overlap.Margin = new Thickness(Offset.Width + ops[4] * ScaleX, 0, 0, 0);
-            Left = Offset.Width;
+            InitializeComponent(); 
+            try
+            {
+                ImageWav.Source = source;
+                Filename.Content = description;
+                Offset.Width = ops[0] * ScaleX;
+                Consonant.Margin = new Thickness(Offset.Width, 0, 0, 0);
+                Consonant.Width = ops[1] * ScaleX;
+                if (ops[2] < 0)
+                {
+                    Cutoff.Margin = new Thickness(Offset.Width - ops[2] * ScaleX, 0, 0, 0);
+                    Cutoff.Width = length * ScaleX / 4 - Offset.Width + ops[2] * ScaleX;
+                }
+                else
+                {
+                    Cutoff.Margin = new Thickness(0, 0, 0, 0);
+                    Cutoff.Width = length * ScaleX / 4;
+                    HorizontalAlignment = HorizontalAlignment.Right;
+                }
+                if (ops[2] >= 0) Cutoff.Width = ops[2] * ScaleX;
+                Preutterance.Margin = new Thickness(Offset.Width + ops[3] * ScaleX, 0, 0, 0);
+                Overlap.Margin = new Thickness(Offset.Width + ops[4] * ScaleX, 0, 0, 0);
+                Left = Offset.Width;
+            }
+            catch (Exception ex)
+            {
+                MainWindow.MessageBoxError(ex, $"Error on drawing oto preview for {description}");
+            }
         }
     }
 }

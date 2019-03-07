@@ -21,7 +21,7 @@ namespace WavConfigTool
     public partial class MainWindow : Window
     {
         public Reclist Reclist { get; private set; }
-        string TempProject
+        public string TempProject
         {
             get
             {
@@ -224,7 +224,7 @@ namespace WavConfigTool
             }
         }
 
-        void SetMode(WavConfigPoint mode)
+        public void SetMode(WavConfigPoint mode)
         {
             Mode = mode;
             LabelMode.Content = mode;

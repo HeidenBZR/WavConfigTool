@@ -62,7 +62,10 @@ namespace WavConfigTool
             ov -= of;
             pre -= of;
             con -= of;
-            cut = -(cut - of);
+            if (cut != 0)
+                cut = -(cut - of);
+            else
+                cut = 10;
 
             return $"{of.ToString(f)},{con.ToString(f)},{cut.ToString(f)},{pre.ToString(f)},{ov.ToString(f)}";
         }
@@ -131,6 +134,8 @@ namespace WavConfigTool
             double offset, consonant, cutoff, preutterance, overlap;
             Phoneme p1 = phonemes.First();
             Phoneme p2 = phonemes.Last();
+            if (p1.Zone.In == 0 || p1.Zone.Out == 0 || p2.Zone.In == 0 || p2.Zone.Out == 0)
+                return "";
 
             switch (GetAliasType(phonemes))
             {
@@ -145,49 +150,49 @@ namespace WavConfigTool
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out - WavControl.Sustain - p2.Attack;
+                    consonant = p2.Zone.Out - WavControl.VowelSustain - p2.Attack;
                     cutoff = p2.Zone.Out - p2.Attack;
                     break;
 
                 case "RCV":
                     offset = p1.Zone.In;
-                    overlap = p1.Zone.Out;
+                    overlap = p1.Zone.Out + p1.Attack;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out - WavControl.Sustain - p2.Attack;
+                    consonant = p2.Zone.Out - WavControl.VowelSustain - p2.Attack;
                     cutoff = p2.Zone.Out - p2.Attack;
+                    break;
+
+                case "RC":
+                    offset = p1.Zone.In;
+                    overlap = p1.Zone.Out + p1.Attack;
+                    preutterance = p2.Zone.In;
+                    consonant = p2.Zone.Out - p2.Attack;
+                    cutoff = p2.Zone.Out;
                     break;
 
                 // Ends with Rest
 
                 case "VR":
                 case "VCR":
-                    offset = p1.Zone.Out - WavControl.Sustain - p1.Attack;
-                    overlap = p1.Zone.Out - WavControl.Sustain;
+                    offset = p1.Zone.Out - p1.Attack;
+                    overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.Out - p2.Attack;
-                    cutoff = p2.Zone.Out;
+                    cutoff = 0;
                     break;
 
                 case "CR":
                     offset = p1.Zone.In;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out - p2.Attack;
-                    cutoff = p2.Zone.Out;
+                    consonant = p2.Zone.Out;
+                    cutoff = 0;
                     break;
 
                 // Ends with Consonant
                 case "VC":
                 case "CC":
                     offset = p1.Zone.Out - p1.Attack;
-                    overlap = p1.Zone.Out;
-                    preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out - p2.Attack;
-                    cutoff = p2.Zone.Out;
-                    break;
-
-                case "RC":
-                    offset = p1.Zone.In;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.Out - p2.Attack;

@@ -170,7 +170,7 @@ namespace WavConfigTool
             return false;
         }
 
-        void Save()
+        public void Save()
         {
             try
             {
@@ -206,7 +206,7 @@ namespace WavConfigTool
             }
         }
 
-        void SaveAs()
+        public void SaveAs()
         {
             try
             {
@@ -228,7 +228,7 @@ namespace WavConfigTool
             }
         }
 
-        void SaveBackup()
+        public void SaveBackup()
         {
             string text = "";
             text += $"{Reclist.VoicebankPath}\r\n";
@@ -311,7 +311,7 @@ namespace WavConfigTool
             }
         }
 
-        void GenerateOto()
+        public void GenerateOto()
         {
             try
             {
