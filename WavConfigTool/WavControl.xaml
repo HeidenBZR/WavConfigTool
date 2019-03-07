@@ -36,7 +36,7 @@
             Name="WavCanvas"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            MouseLeftButtonDown="WavCanvas_MouseLeftButtonDown">
+            MouseLeftButtonDown="Main_MouseLeftButtonDown">
             <Canvas.ContextMenu>
                 <ContextMenu Name="WavContextMenu">
                     <MenuItem
@@ -71,7 +71,8 @@
         <Canvas
             Name="AreasCanvas"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch" />
+            VerticalAlignment="Stretch"
+            MouseLeftButtonDown="Main_MouseLeftButtonDown" />
         <Canvas
             Name="MarkerCanvas"
             HorizontalAlignment="Stretch"

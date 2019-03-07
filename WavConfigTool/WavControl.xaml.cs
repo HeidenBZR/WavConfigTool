@@ -281,7 +281,7 @@ namespace WavConfigTool
             DrawOtoPreview();
         }
 
-        private void WavCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Main_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
             {
