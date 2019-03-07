@@ -250,16 +250,15 @@ namespace WavConfigTool
             if (point == WavConfigPoint.D)
             {
                 Recline.Data = new List<Phoneme>();
-                int i;
                 Phoneme phoneme;
-                for (i = 0; i < Ds.Count - 1; i++) 
+                if (Ds.Count > 0)
                 {
-                    phoneme = new Rest("-", Ds[i], Ds[i], Recline);
+                    phoneme = new Rest("-", Ds[0], Ds[0], Recline);
                     Recline.Data.Add(phoneme);
                 }
                 if (Ds.Count > 1)
                 {
-                    phoneme = new Rest("-", Ds[i], Ds[i] + VowelSustain, Recline);
+                    phoneme = new Rest("-", Ds[1], Ds[1] + VowelSustain, Recline);
                     Recline.Data.Add(phoneme);
                 }
             }
