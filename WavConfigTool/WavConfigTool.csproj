@@ -106,8 +106,8 @@
       <DependentUpon>OtoPreviewWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Phoneme.cs" />
-    <Compile Include="Project.xaml.cs">
-      <DependentUpon>Project.xaml</DependentUpon>
+    <Compile Include="ProjectWindow.xaml.cs">
+      <DependentUpon>ProjectWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Reclist.cs" />
     <Compile Include="Settings.cs" />
@@ -148,7 +148,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Project.xaml">
+    <Page Include="ProjectWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

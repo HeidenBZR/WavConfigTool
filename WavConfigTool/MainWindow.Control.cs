@@ -133,6 +133,7 @@ namespace WavConfigTool
             TextBoxFadeC.Text = Settings.ConsonantAttack.ToString();
             TextBoxFadeV.Text = Settings.VowelAttack.ToString();
             TextBoxFadeD.Text = Settings.RestAttack.ToString();
+            TextBoxSustain.Text = WavControl.VowelSustain.ToString();
             TextBoxItemsOnPage.Text = Settings.ItemsOnPage.ToString();
             TextBoxPage.Text = Settings.CurrentPage.ToString();
             TextBoxMultiplier.Text = Settings.WAM.ToString("f2");
@@ -197,7 +198,7 @@ namespace WavConfigTool
             try
             {
                 ClearWavcontrols();
-                Project project = new Project(voicebank, wavsettings, path, open);
+                ProjectWindow project = new ProjectWindow(voicebank, wavsettings, path, open);
                 project.ShowDialog();
                 if (project.Result == Result.Cancel)
                 {
@@ -333,6 +334,15 @@ namespace WavConfigTool
             }
         }
 
+        bool SetSustain(int sustain)
+        {
+            if (sustain <= 0)
+                return false;
+            WavControl.VowelSustain = sustain;
+            DrawPageAsync(manual: true);
+            return true;
+        }
+
         void GotoWav(WavControl control)
         {
             GotoWav(control.Recline);
@@ -346,15 +356,17 @@ namespace WavConfigTool
 
         void SetItemsOnPage(byte items)
         {
-            if (items <= 100 && items > 0)
+            if (items <= 1000 && items > 0)
             {
                 int current = Settings.CurrentPage * Settings.ItemsOnPage;
                 Settings.ItemsOnPage = items;
-                if (Settings.CurrentPage > PageTotal) Settings.CurrentPage = PageTotal;
+                if (Settings.CurrentPage > PageTotal)
+                    Settings.CurrentPage = PageTotal - 1;
                 SetPageTotal();
                 GotoWav(WavControls[current]);
+                DrawPageAsync(manual: true);
             }
-            //else TextBoxItemsOnPage.Text = Settings.ItemsOnPage.ToString();
+            else TextBoxItemsOnPage.Text = Settings.ItemsOnPage.ToString();
         }
 
         void SetPageTotal()

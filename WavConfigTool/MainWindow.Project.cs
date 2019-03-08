@@ -25,7 +25,7 @@ namespace WavConfigTool
         {
             string old_vb = Reclist.VoicebankPath;
             SaveBackup();
-            var vb = Project.VoicebankDialog(Reclist.VoicebankPath);
+            var vb = ProjectWindow.VoicebankDialog(Reclist.VoicebankPath);
             if (vb != null)
                 if (Directory.Exists(vb))
                 {
@@ -55,7 +55,7 @@ namespace WavConfigTool
         void ChangeSettings()
         {
             string old_s = Settings.WavSettings;
-            var s = Project.SettingsDialog();
+            var s = ProjectWindow.SettingsDialog();
             if (s != null)
                 if (File.Exists(s))
                 {
@@ -172,6 +172,7 @@ namespace WavConfigTool
 
         public void Save()
         {
+            // TODO: Сохранять в файл проекта параметры, связанные с проектом
             try
             {
 
@@ -265,6 +266,8 @@ namespace WavConfigTool
                     AddFile(items[0], items[1], items[2]);
                 }
                 Settings.WavSettings = settings;
+
+                OtoGenerator.Init(Reclist.Name);
             }
             catch (Exception ex)
             {
@@ -274,6 +277,7 @@ namespace WavConfigTool
 
         bool ReadProject(string project)
         {
+            // TODO: Создать класс ПРОЕКТ и перенести туда все параметры и функции, связанные с проектом
             try
             {
                 string missing = "";
@@ -315,7 +319,6 @@ namespace WavConfigTool
         {
             try
             {
-                OtoGenerator.Init(Reclist.Name, true);
                 string text = "";
                 Reclist.Aliases = new List<string>();
                 foreach (WavControl control in WavControls)

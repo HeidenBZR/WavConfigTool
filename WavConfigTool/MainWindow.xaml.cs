@@ -265,8 +265,13 @@ namespace WavConfigTool
             ChangeSettings();
         }
 
+        private void Sustain_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(TextBoxSustain.Text, out int sustain))
+                if (!SetSustain(sustain))
+                    TextBoxSustain.Text = WavControl.VowelSustain.ToString("f0");
+        }
+
         #endregion
-
-
     }
 }

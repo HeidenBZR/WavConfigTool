@@ -9,8 +9,6 @@ namespace WavConfigTool
 {
     public class OtoGenerator
     {
-        public bool IsVcSeparated { get; private set; }
-        public bool IsCvSeparated { get; private set; }
 
         public Dictionary<string, string> Replacement { get; private set; }
 
@@ -18,17 +16,13 @@ namespace WavConfigTool
 
         private OtoGenerator(string voicebankType)
         {
-            string path = Project.GetTempPath(@"WavConfigTool\WavSettings\" + voicebankType + ".txt");
+            string path = ProjectWindow.GetTempPath(@"WavConfigTool\WavSettings\" + voicebankType + ".txt");
             Replacement = ReadReplacementFile(path);
         }
 
-        public static void Init(string vocebankType, bool isVcSeparated = false, bool isCvSeparated = false)
+        public static void Init(string vocebankType)
         {
-            Current = new OtoGenerator(vocebankType)
-            {
-                IsVcSeparated = isVcSeparated,
-                IsCvSeparated = isCvSeparated
-            };
+            Current = new OtoGenerator(vocebankType);
         }
 
         public Dictionary<string, string> ReadReplacementFile(string path)
@@ -43,7 +37,9 @@ namespace WavConfigTool
                     if (line.Contains("="))
                     {
                         var pair = line.Split('=');
-                        replacement[pair[0].Trim()] = pair[1].Trim();
+                        pair[0] = pair[0].Replace("%V%", $"({(string.Join("|", Reclist.Current.Vowels.Select(n => n.Alias)))})");
+                        pair[0] = pair[0].Replace("%C%", $"({(string.Join("|", Reclist.Current.Consonants.Select(n => n.Alias)))})");
+                        replacement[pair[0].Trim().Replace("\\s", " ")] = pair[1].Trim().Replace("\\s", " ");
                     }
                 }
                 return replacement;
@@ -73,7 +69,20 @@ namespace WavConfigTool
         public string Replace(string alias)
         {
             if (Replacement is null)
-                return alias;
+                Replacement = new Dictionary<string, string>();
+
+            foreach (var alias_type in new[] { "VC", "CC", "RV", "RC", "VR", "CR", "VV" })
+            {
+                if (!Replacement.ContainsKey($"#{alias_type}#"))
+                    alias = alias.Replace($"#{alias_type}#", " ");
+            }
+            foreach (var alias_type in new[] { "CV"})
+            {
+                if (!Replacement.ContainsKey($"#{alias_type}#"))
+                    alias = alias.Replace($"#{alias_type}#", "");
+            }
+
+
             foreach (KeyValuePair<string, string> entry in Replacement)
                 alias = Regex.Replace(alias.ToString(), entry.Key, entry.Value);
             return alias;
@@ -89,28 +98,14 @@ namespace WavConfigTool
                 switch (alias_type)
                 {
                     case "VC":
-                        if (alias_type2 == "VCR")
-                        {
-                            if (IsCvSeparated)
-                                alias.Append(" ");
-                        }
-                        else
-                        {
-                            if (IsVcSeparated)
-                                alias.Append(" ");
-                        }
-                        break;
                     case "RC":
                     case "RV":
                     case "CR":
                     case "VR":
-                        if (IsVcSeparated)
-                            alias.Append(" ");
-                        break;
-
-                    default:
-                        if (IsCvSeparated)
-                            alias.Append(" ");
+                    case "CC":
+                    case "VV":
+                    case "CV":
+                        alias.Append($"#{alias_type}#");
                         break;
 
                 }
@@ -142,11 +137,15 @@ namespace WavConfigTool
                 // Absolute values, relative ones are made in Oto()
 
                 // Ends with vowel
-                case "CV":
                 case "VV":
                 case "RV":
-                case "VCV":
+                case "CV":
                 case "CCV":
+                case "CCCV":
+                case "CCCCV":
+                case "VCV":
+                case "VCCV":
+                case "VCCCV":
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
@@ -155,6 +154,8 @@ namespace WavConfigTool
                     break;
 
                 case "RCV":
+                case "RCCV":
+                case "RCCCV":
                     offset = p1.Zone.In;
                     overlap = p1.Zone.Out + p1.Attack;
                     preutterance = p2.Zone.In;
@@ -162,7 +163,7 @@ namespace WavConfigTool
                     cutoff = p2.Zone.Out - p2.Attack;
                     break;
 
-                case "RC":
+                case "RCCCC":
                     offset = p1.Zone.In;
                     overlap = p1.Zone.Out + p1.Attack;
                     preutterance = p2.Zone.In;
@@ -174,6 +175,8 @@ namespace WavConfigTool
 
                 case "VR":
                 case "VCR":
+                case "VCCR":
+                case "VCCCR":
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
@@ -182,6 +185,9 @@ namespace WavConfigTool
                     break;
 
                 case "CR":
+                case "CCR":
+                case "CCCR":
+                case "CCCCR":
                     offset = p1.Zone.In;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
@@ -191,7 +197,13 @@ namespace WavConfigTool
 
                 // Ends with Consonant
                 case "VC":
+                case "VCC":
+                case "VCCC":
+                case "VCCCC":
                 case "CC":
+                case "CCC":
+                case "CCCC":
+                case "CCCCC":
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;

@@ -180,6 +180,10 @@ namespace WavConfigTool
                         text += OtoGenerator.Current.Generate(Recline.Filename, phonemes[i], phonemes[i + 1]);
                     if (phonemes.Count > i + 2)
                         text += OtoGenerator.Current.Generate(Recline.Filename, phonemes[i], phonemes[i + 1], phonemes[i + 2]);
+                    if (phonemes.Count > i + 3)
+                        text += OtoGenerator.Current.Generate(Recline.Filename, phonemes[i], phonemes[i + 1], phonemes[i + 2], phonemes[i + 3]);
+                    if (phonemes.Count > i + 4)
+                        text += OtoGenerator.Current.Generate(Recline.Filename, phonemes[i], phonemes[i + 1], phonemes[i + 2], phonemes[i + 3], phonemes[i + 4]);
                 }
             }
             catch (Exception ex)

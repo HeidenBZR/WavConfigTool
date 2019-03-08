@@ -26,7 +26,7 @@ namespace WavConfigTool
         Close,
         Cancel
     }
-    public partial class Project : Window
+    public partial class ProjectWindow : Window
     {
 
         public Result Result = Result.Close;
@@ -41,7 +41,7 @@ namespace WavConfigTool
                 path);
         }
 
-        public Project(bool open = false)
+        public ProjectWindow(bool open = false)
         {
             InitializeComponent();
             Result = Result.Cancel;
@@ -57,7 +57,7 @@ namespace WavConfigTool
         }
 
 
-        public Project(string vb, string ws, string path, bool open = false) : this(open)
+        public ProjectWindow(string vb, string ws, string path, bool open = false) : this(open)
         {
             InitializeComponent();
             if (ws == "")

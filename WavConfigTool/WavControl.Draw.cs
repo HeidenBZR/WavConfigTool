@@ -257,7 +257,7 @@ namespace WavConfigTool
         void DrawOtoPreview()
         {
             Recline.Reclist.Aliases = new List<string>();
-            OtoGenerator.Init(Recline.Reclist.Name, true);
+            OtoGenerator.Init(Recline.Reclist.Name);
             OtoPreviewWindow window = new OtoPreviewWindow(Recline.Filename);
             window.SetWavControl(this);
             window.ShowDialog();

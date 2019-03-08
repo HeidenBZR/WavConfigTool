@@ -251,7 +251,7 @@
                     <Label
                         Padding="0"
                         HorizontalAlignment="Center"
-                        Content="Release" />
+                        Content="Attack" />
                     <StackPanel
                         Height="25"
                         Margin="10"
@@ -290,6 +290,31 @@
                 </StackPanel>
             </Border>
 
+            <Border
+                Margin="4"
+                BorderBrush="DarkBlue"
+                BorderThickness="1">
+                <StackPanel Height="60">
+                    <Label
+                        Padding="0"
+                        HorizontalAlignment="Center"
+                        Content="Sustain" />
+                    <StackPanel
+                        Height="25"
+                        Margin="10"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <TextBox
+                            Name="TextBoxSustain"
+                            Width="50"
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            LostFocus="Sustain_LostFocus"
+                            Text="" />
+
+                    </StackPanel>
+                </StackPanel>
+            </Border>
             <Border
                 Margin="4"
                 BorderBrush="DarkBlue"
