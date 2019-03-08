@@ -2,8 +2,12 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WavConfigTool.Classes;
+using WavConfigTool.Tools;
+using WavConfigTool.UserControls;
+using WavConfigTool.Windows;
 
-namespace WavConfigTool
+namespace WavConfigTool.Tools
 {
     public static class Settings
     {

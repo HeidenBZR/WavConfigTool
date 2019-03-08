@@ -16,8 +16,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WavConfigTool.Classes;
+using WavConfigTool.Tools;
+using WavConfigTool.UserControls;
+using WavConfigTool.Windows;
 
-namespace WavConfigTool
+namespace WavConfigTool.Windows
 {
     public partial class MainWindow : Window
     {

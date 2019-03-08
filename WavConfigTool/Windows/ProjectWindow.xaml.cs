@@ -13,8 +13,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WavConfigTool.Classes;
+using WavConfigTool.Tools;
+using WavConfigTool.UserControls;
+using WavConfigTool.Windows;
 
-namespace WavConfigTool
+namespace WavConfigTool.Windows
 {
     /// <summary>
     /// Логика взаимодействия для Project.xaml
@@ -61,9 +65,9 @@ namespace WavConfigTool
         {
             InitializeComponent();
             if (ws == "")
-                ws = WavConfigTool.Settings.WavSettings;
+                ws = Tools.Settings.WavSettings;
             if (path == "")
-                path = WavConfigTool.Settings.ProjectFile;
+                path = Tools.Settings.ProjectFile;
             Voicebank = vb;
             Settings = ws;
             Path = path;

@@ -88,47 +88,47 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CanvasLoading.xaml.cs">
+    <Compile Include="UserControls\CanvasLoading.xaml.cs">
       <DependentUpon>CanvasLoading.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FindWavDialog.xaml.cs">
+    <Compile Include="Windows\FindWavDialog.xaml.cs">
       <DependentUpon>FindWavDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="OtoGenerator.cs" />
-    <Compile Include="MainWindow.Async.cs" />
-    <Compile Include="MainWindow.Control.cs" />
-    <Compile Include="MainWindow.Project.cs" />
-    <Compile Include="MusicMath.cs" />
-    <Compile Include="OtoPreviewControl.xaml.cs">
+    <Compile Include="Classes\OtoGenerator.cs" />
+    <Compile Include="Windows\MainWindow.Async.cs" />
+    <Compile Include="Windows\MainWindow.Control.cs" />
+    <Compile Include="Windows\MainWindow.Project.cs" />
+    <Compile Include="Tools\MusicMath.cs" />
+    <Compile Include="UserControls\OtoPreviewControl.xaml.cs">
       <DependentUpon>OtoPreviewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="OtoPreviewWindow.xaml.cs">
+    <Compile Include="Windows\OtoPreviewWindow.xaml.cs">
       <DependentUpon>OtoPreviewWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Phoneme.cs" />
-    <Compile Include="ProjectWindow.xaml.cs">
+    <Compile Include="Classes\Phoneme.cs" />
+    <Compile Include="Windows\ProjectWindow.xaml.cs">
       <DependentUpon>ProjectWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Reclist.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="WavControl.Async.cs" />
-    <Compile Include="WavControl.Draw.cs" />
-    <Compile Include="WavControl.xaml.cs">
+    <Compile Include="Classes\Reclist.cs" />
+    <Compile Include="Tools\Settings.cs" />
+    <Compile Include="UserControls\WavControl.Async.cs" />
+    <Compile Include="UserControls\WavControl.Draw.cs" />
+    <Compile Include="UserControls\WavControl.xaml.cs">
       <DependentUpon>WavControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WaveForm.cs" />
-    <Compile Include="WavMarker.xaml.cs">
+    <Compile Include="Classes\WaveForm.cs" />
+    <Compile Include="UserControls\WavMarker.xaml.cs">
       <DependentUpon>WavMarker.xaml</DependentUpon>
     </Compile>
-    <Page Include="CanvasLoading.xaml">
+    <Page Include="UserControls\CanvasLoading.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FindWavDialog.xaml">
+    <Page Include="Windows\FindWavDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -136,27 +136,27 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="OtoPreviewControl.xaml">
+    <Page Include="UserControls\OtoPreviewControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="OtoPreviewWindow.xaml">
+    <Page Include="Windows\OtoPreviewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ProjectWindow.xaml">
+    <Page Include="Windows\ProjectWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WavControl.xaml">
+    <Page Include="UserControls\WavControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WavMarker.xaml">
+    <Page Include="UserControls\WavMarker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -200,12 +200,6 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="icon %281%29.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

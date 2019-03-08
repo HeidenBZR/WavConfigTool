@@ -7,8 +7,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using WavConfigTool.Classes;
+using WavConfigTool.Tools;
+using WavConfigTool.UserControls;
+using WavConfigTool.Windows;
 
-namespace WavConfigTool
+namespace WavConfigTool.UserControls
 {
     public partial class WavControl
     {

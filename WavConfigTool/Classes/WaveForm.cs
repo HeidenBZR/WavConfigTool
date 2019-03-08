@@ -8,8 +8,12 @@ using System.Windows.Media;
 using System.IO;
 using System.Windows.Media.Imaging;
 using NAudio.Wave;
+using WavConfigTool.Classes;
+using WavConfigTool.Tools;
+using WavConfigTool.UserControls;
+using WavConfigTool.Windows;
 
-namespace WavConfigTool
+namespace WavConfigTool.Classes
 {
     public class WaveForm
     {
