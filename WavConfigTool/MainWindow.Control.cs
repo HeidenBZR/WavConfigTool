@@ -37,7 +37,7 @@ namespace WavConfigTool
         List<WavControl> WavControls;
         public static WavConfigPoint Mode = WavConfigPoint.V;
 
-        public readonly Version Version = new Version(0, 1, 5, 2);
+        public readonly Version Version = new Version(0, 1, 6, 0);
 
         public static string TempDir
         {
