@@ -111,6 +111,12 @@
     <Compile Include="UserControls\DataPoint.xaml.cs">
       <DependentUpon>DataPoint.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\OtoPreviewControl.xaml.cs">
+      <DependentUpon>OtoPreviewControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\WavControl.Async.cs" />
+    <Compile Include="UserControls\WavControl.Draw.cs" />
+    <Compile Include="UserControls\WavControl.Old.cs" />
     <Compile Include="UserControls\WavControl.xaml.cs">
       <DependentUpon>WavControl.xaml</DependentUpon>
     </Compile>
@@ -130,9 +136,15 @@
     <Compile Include="ViewModels\WavControlViewModel.cs" />
     <Compile Include="ViewModels\WavPointViewModel.cs" />
     <Compile Include="ViewModels\WavZoneViewModel.cs" />
+    <Compile Include="Windows\FindWavDialog.xaml.cs">
+      <DependentUpon>FindWavDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\OtoPreviewWindow.xaml.cs">
+      <DependentUpon>OtoPreviewWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ProjectWindow.xaml.cs">
       <DependentUpon>ProjectWindow.xaml</DependentUpon>
@@ -184,6 +196,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\OtoPreviewControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UserControls\WavControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -196,9 +212,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\FindWavDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="Windows\OtoPreviewWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\ProjectWindow.xaml">
       <SubType>Designer</SubType>
@@ -223,6 +247,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="FodyWeavers.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
