@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
-using System.Windows.Media;
 using System.IO;
-using System.Windows.Media.Imaging;
 using NAudio.Wave;
-using WavConfigTool.Classes;
 using WavConfigTool.Tools;
-using WavConfigTool.UserControls;
-using WavConfigTool.Windows;
 
 namespace WavConfigTool.Classes
 {
@@ -24,6 +17,7 @@ namespace WavConfigTool.Classes
 
         public string Path;
         public int SampleRate;
+        public int BitRate;
         //public List<double> Ds = new List<double>();
         public double MostLeft;
 
@@ -45,7 +39,7 @@ namespace WavConfigTool.Classes
             Init();
         }
 
-        void Init()
+        public void Init()
         {
             if (!File.Exists(Path))
                 return;
@@ -55,7 +49,8 @@ namespace WavConfigTool.Classes
             AudioFileReader reader = new AudioFileReader(Path);
 
             SampleRate = reader.WaveFormat.SampleRate;
-            Length = reader.Length;
+            BitRate = reader.WaveFormat.BitsPerSample;
+            Length = reader.Length / 4;
             Data = new float[Length];
             reader.Read(Data, 0, (int)Length);
             reader.Close();
@@ -79,9 +74,8 @@ namespace WavConfigTool.Classes
                 var points = new List<PointF>();
                 var max = Data.Max();
                 long i = 0;
-                Length = Length / 4;
-                float factorX = (float)(WavControl.ScaleX / SampleRate * 1000);
-                float factorY = (float)(WavControl.ScaleY * Settings.WAM);
+                float factorX = (float)(Settings.ScaleX / SampleRate * 1000);
+                float factorY = (float)(Settings.ScaleY * Settings.WAM);
                 float prev = 0;
                 float preprev = 0;
                 for (; i < Length; i += PointSkip)
@@ -98,7 +92,6 @@ namespace WavConfigTool.Classes
             }
             catch (Exception ex)
             {
-                MainWindow.MessageBoxError(ex, "Error on GetAudioPoints");
                 return null;
             }
         }
@@ -136,6 +129,29 @@ namespace WavConfigTool.Classes
         //    return points.ToArray();
         //}
 
+        public void PointsToImage(PointF[] points, int w, int h, string imagePath, System.Drawing.Pen pen)
+        {
+            try
+            {
+                IsGenerated = false;
+                Bitmap image = new Bitmap(w, h);
+                Graphics waveform = Graphics.FromImage(image);
+                waveform.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                waveform.DrawCurve(pen, points);
+                waveform.Save();
+                image.Save(imagePath);
+                waveform.Dispose();
+                image.Dispose();
+                IsGenerating = false;
+                IsGenerated = true;
+            }
+            catch (Exception ex)
+            {
+                IsGenerating = false;
+                IsGenerated = false;
+                GeneratingException = ex;
+            }
+        }
 
         public void PointsToImage(object data)
         {

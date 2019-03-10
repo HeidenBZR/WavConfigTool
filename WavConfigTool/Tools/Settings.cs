@@ -1,16 +1,54 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WavConfigTool.Classes;
-using WavConfigTool.Tools;
-using WavConfigTool.UserControls;
-using WavConfigTool.Windows;
+using System.IO;
 
 namespace WavConfigTool.Tools
 {
     public static class Settings
     {
+        public static string TempProject
+        {
+            get
+            {
+                var tempdir = Path.GetTempPath();
+                tempdir = Path.Combine(tempdir, "WavConfigTool");
+                if (!Directory.Exists(tempdir))
+                    Directory.CreateDirectory(tempdir);
+                tempdir = Path.Combine(tempdir, @"temp.wconfig");
+                return tempdir;
+
+            }
+        }
+
+        public static string TempDir
+        {
+            get
+            {
+                var tempdir = Path.GetTempPath();
+                tempdir = Path.Combine(tempdir, "WavConfigTool");
+                if (!Directory.Exists(tempdir))
+                    Directory.CreateDirectory(tempdir);
+                tempdir = Path.Combine(tempdir, "waveform");
+                if (!Directory.Exists(tempdir))
+                    Directory.CreateDirectory(tempdir);
+                return tempdir;
+            }
+        }
+
+        public static void CheckPath()
+        {
+            if (!Directory.Exists(GetResoucesPath(@"WavConfigTool")))
+                Directory.CreateDirectory(GetResoucesPath(@"WavConfigTool"));
+            if (!Directory.Exists(GetResoucesPath(@"WavConfigTool\WavSettings\")))
+                Directory.CreateDirectory(GetResoucesPath(@"WavConfigTool\WavSettings\"));
+        }
+
+        public static string GetResoucesPath(string path)
+        {
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                path);
+        }
+
         public static int ItemsOnPage
         {
             get
@@ -37,44 +75,6 @@ namespace WavConfigTool.Tools
             }
         }
 
-        public static int VowelAttack
-        {
-            get
-            {
-                return Properties.Settings.Default.FadeV;
-            }
-            set
-            {
-                Properties.Settings.Default.FadeV = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static int ConsonantAttack
-        {
-            get
-            {
-                return Properties.Settings.Default.FadeC;
-            }
-            set
-            {
-                Properties.Settings.Default.FadeC = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static int RestAttack
-        {
-            get
-            {
-                return Properties.Settings.Default.FadeD;
-            }
-            set
-            {
-                Properties.Settings.Default.FadeD = value;
-                Properties.Settings.Default.Save();
-            }
-        }
 
         /// <summary>
         /// Waveform Amplitude Multiplayer
@@ -101,19 +101,6 @@ namespace WavConfigTool.Tools
             set
             {
                 Properties.Settings.Default.ProjectFile = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static string WavSettings
-        {
-            get
-            {
-                return Properties.Settings.Default.WavSettings;
-            }
-            set
-            {
-                Properties.Settings.Default.WavSettings = value;
                 Properties.Settings.Default.Save();
             }
         }
@@ -166,6 +153,32 @@ namespace WavConfigTool.Tools
             set
             {
                 Properties.Settings.Default.IsUnsaved = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static double ScaleX
+        {
+            get
+            {
+                return Properties.Settings.Default.ScaleX;
+            }
+            set
+            {
+                Properties.Settings.Default.ScaleX = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static double ScaleY
+        {
+            get
+            {
+                return Properties.Settings.Default.ScaleY;
+            }
+            set
+            {
+                Properties.Settings.Default.ScaleY = value;
                 Properties.Settings.Default.Save();
             }
         }

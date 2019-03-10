@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WavConfigTool.Classes;
-using WavConfigTool.Tools;
-using WavConfigTool.UserControls;
-using WavConfigTool.Windows;
 
 namespace WavConfigTool.Tools
 {

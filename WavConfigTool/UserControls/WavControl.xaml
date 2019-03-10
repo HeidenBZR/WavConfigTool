@@ -5,12 +5,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WavConfigTool.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
+    Width="{Binding Width, FallbackValue=1000}"
     Height="100"
     Margin="0,10,0,10"
     HorizontalAlignment="Stretch"
-    Background="#1555CCCC"
+    Background="{DynamicResource WavControlBackgroundBrush}"
     Focusable="True"
     mc:Ignorable="d">
+    <d:UserControl.DataContext>
+        <vm:WavControlViewModel />
+    </d:UserControl.DataContext>
     <Grid Name="Main">
         <Border
             Name="WavCompleted"
@@ -20,62 +25,114 @@
             BorderBrush="#FF159B00"
             BorderThickness="0,3,0,3"
             Opacity="0" />
-        <Label
-            Name="LabelName"
-            Margin="0,0,0,0"
-            Foreground="#BBBBFF" />
+
+        <Rectangle
+            Height="1"
+            HorizontalAlignment="Stretch"
+            Fill="{DynamicResource WaveformBrush}"
+            SnapsToDevicePixels="True"
+            Visibility="{Binding EnabledProperty}" />
         <local:CanvasLoading
             x:Name="CanvasLoading"
             HorizontalAlignment="Stretch"
-            Visibility="Hidden" />
+            Visibility="{Binding LoadingProperty}" />
         <Canvas
-            Name="GridCanvas"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch" />
-        <Canvas
-            Name="WavCanvas"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            MouseLeftButtonDown="Main_MouseLeftButtonDown">
+            Background="#22FF2222"
+            Visibility="{Binding DisabledProperty}">
+            <TextBlock
+                Margin="20,40"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Foreground="{DynamicResource RestBackBrush}"
+                Text="Sample is not avialable" />
+        </Canvas>
+        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Canvas.ContextMenu>
                 <ContextMenu Name="WavContextMenu">
-                    <MenuItem
-                        Click="WavControl_Reset"
-                        Header="Сбросить все маркеры в текущем аудио"
-                        Tag="All" />
+                    <MenuItem Header="Сбросить все маркеры в текущем аудио" Tag="All" />
                     <Separator />
-                    <MenuItem
-                        Click="WavControl_Reset"
-                        Header="Сбросить все маркеры гласных (V) в текущем аудио"
-                        Tag="V" />
-                    <MenuItem
-                        Click="WavControl_Reset"
-                        Header="Сбросить все маркеры согласных (C) в текущем аудио"
-                        Tag="C" />
-                    <MenuItem
-                        Click="WavControl_Reset"
-                        Header="Сбросить все маркеры области данных (D) в текущем аудио"
-                        Tag="D" />
+                    <MenuItem Header="Сбросить все маркеры гласных (V) в текущем аудио" Tag="V" />
+                    <MenuItem Header="Сбросить все маркеры согласных (C) в текущем аудио" Tag="C" />
+                    <MenuItem Header="Сбросить все маркеры области данных (D) в текущем аудио" Tag="D" />
                     <Separator />
-                    <MenuItem
-                        Name="MenuItemPreview"
-                        Click="WavControl_OtoPreview"
-                        Header="Предпросмотр oto.ini" />
+                    <MenuItem Header="Предпросмотр oto.ini" />
                 </ContextMenu>
             </Canvas.ContextMenu>
             <Image
                 Name="WavImage"
                 Height="100"
-                HorizontalAlignment="Stretch" />
+                HorizontalAlignment="Left"
+                Source="{Binding WavImage}" />
         </Canvas>
-        <Canvas
-            Name="AreasCanvas"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            MouseLeftButtonDown="Main_MouseLeftButtonDown" />
-        <Canvas
-            Name="MarkerCanvas"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch" />
+        <ItemsControl
+            Name="ConsonantZones"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            ItemTemplate="{DynamicResource WavZoneItemsConrolItem}"
+            ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+            ItemsSource="{Binding ConsonantZones}"
+            Visibility="{Binding EnabledProperty}" />
+        <ItemsControl
+            Name="VowelZones"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            ItemTemplate="{DynamicResource WavZoneItemsConrolItem}"
+            ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+            ItemsSource="{Binding VowelZones}"
+            Visibility="{Binding EnabledProperty}" />
+        <ItemsControl
+            Name="RestZones"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            ItemTemplate="{DynamicResource WavZoneItemsConrolItem}"
+            ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+            ItemsSource="{Binding RestZones}"
+            Visibility="{Binding EnabledProperty}" />
+        <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Rectangle
+                Fill="{DynamicResource BackgroundBrush}"
+                Opacity="0.8"
+                Stroke="{DynamicResource BorderBrush}" />
+            <StackPanel
+                Margin="5"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Orientation="Horizontal">
+                <TextBlock Margin="0,0,5,0" Text="{Binding Filename}" />
+                <ListView ItemsSource="{Binding Phonemes}" Style="{DynamicResource ListViewPhonemes}">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                </ListView>
+            </StackPanel>
+        </Grid>
+        <ItemsControl
+            Name="ConsonantPoints"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
+            ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+            ItemsSource="{Binding ConsonantPoints}"
+            Visibility="{Binding EnabledProperty}" />
+        <ItemsControl
+            Name="VowelPoints"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
+            ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+            ItemsSource="{Binding VowelPoints}"
+            Visibility="{Binding EnabledProperty}" />
+        <ItemsControl
+            Name="RestPoints"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
+            ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+            ItemsSource="{Binding RestPoints}"
+            Visibility="{Binding EnabledProperty}" />
     </Grid>
 </UserControl>

@@ -6,124 +6,105 @@
     xmlns:local="clr-namespace:WavConfigTool.Windows"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:WavConfigTool.UserControls"
-    Title="WavConfigTool"
+    xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
+    Title="{Binding Title}"
     Width="1500"
     Height="700"
-    Closing="Window_Closing"
-    KeyDown="Window_KeyDown"
-    Loaded="Window_Loaded"
-    MouseMove="Window_MouseMove"
+    Background="{DynamicResource BackgroundBrush}"
     WindowState="Maximized"
     mc:Ignorable="d">
-    <Grid Background="#FF181C1F">
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="21" />
             <RowDefinition Name="ToolsPanel" Height="80" />
             <RowDefinition Height="12" />
             <RowDefinition Height="337*" />
         </Grid.RowDefinitions>
-        <Menu HorizontalAlignment="Stretch" VerticalAlignment="Top">
+        <Menu
+            Name="MainMenu"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top">
             <MenuItem Name="MenuFile" Header="File">
-                <MenuItem
-                    Name="MenuNew"
-                    Click="MenuNew_Click"
-                    Header="_New WavConfig..."
-                    InputGestureText="Ctrl N"
-                    Tag="New" />
-                <MenuItem
-                    Name="MenuOpen"
-                    Click="MenuNew_Click"
-                    Header="_Open WavConfig..."
-                    InputGestureText="Ctrl O"
-                    Tag="Open" />
+                <MenuItem Header="_New WavConfig" InputGestureText="Ctrl N" />
+                <MenuItem Header="_Open WavConfig..." InputGestureText="Ctrl O" />
+                <Separator />
+                <MenuItem Header="Save WavConfig" InputGestureText="Ctrl S" />
+                <MenuItem Header="Save WavConfig As New..." InputGestureText="Shift Ctrl S" />
+                <Separator />
+                <MenuItem Header="Find Wav" InputGestureText="Ctrl F" />
+                <MenuItem Header="Find Uncompleted" InputGestureText="Ctrl U" />
                 <Separator />
                 <MenuItem
-                    Name="MenuSave"
-                    Click="MenuSave_Click"
-                    Header="Save WavConfig"
-                    InputGestureText="Ctrl S" />
-                <MenuItem
-                    Name="MenuSaveAs"
-                    Click="MenuSaveAs_Click"
-                    Header="Save WavConfig As New..."
-                    InputGestureText="Shift Ctrl S" />
+                    Command="{Binding CallProjectCommand}"
+                    CommandParameter=""
+                    CommandTarget="{Binding ElementName=_this}"
+                    Header="Project"
+                    InputGestureText="Ctrl P" />
+                <MenuItem Header="Generate Oto.ini" InputGestureText="Ctrl G" />
                 <Separator />
-                <MenuItem
-                    Name="MenuFindWav"
-                    Click="MenuFindWav_Click"
-                    Header="Find Wav"
-                    InputGestureText="Ctrl F" />
-                <MenuItem
-                    Name="MenuFindUncompleted"
-                    Click="MenuFindUncompleted_Click"
-                    Header="Find Uncompleted"
-                    InputGestureText="Ctrl U" />
-                <Separator />
-                <MenuItem
-                    Name="MenuGenerate"
-                    Click="MenuGenerate_Click"
-                    Header="Generate Oto.ini"
-                    InputGestureText="Ctrl G" />
-                <Separator />
-                <MenuItem Click="MenuExit_Click" Header="Exit" />
+                <MenuItem Header="Exit" />
             </MenuItem>
             <MenuItem Header="View">
+                <MenuItem Header="Toggle Waveform" InputGestureText="Ctrl Q" />
                 <MenuItem
-                    Click="ToggleWaveform_Click"
-                    Header="Toggle Waveform"
-                    InputGestureText="Ctrl Q" />
-                <MenuItem
-                    Click="ToggleSpectrum_Click"
                     Header="Toggle Spectrum"
                     InputGestureText="Ctrl W"
                     IsEnabled="False" />
                 <MenuItem
-                    Click="TogglePitch_Click"
                     Header="Toggle Pitch"
                     InputGestureText="Ctrl E"
                     IsEnabled="False" />
                 <Separator />
-                <MenuItem
-                    Click="PrevPage_Click"
-                    Header="Предыдущая страница"
-                    InputGestureText="]" />
-                <MenuItem
-                    Click="NextPage_Click"
-                    Header="Следующая страница"
-                    InputGestureText="[" />
+                <MenuItem Header="Предыдущая страница" InputGestureText="]" />
+                <MenuItem Header="Следующая страница" InputGestureText="[" />
                 <Separator />
-                <MenuItem
-                    Click="MoreItems_Click"
-                    Header="Больше элементов на странице"
-                    InputGestureText="Ctrl +" />
-                <MenuItem
-                    Click="LessItems_Click"
-                    Header="Меньше элементов на странице"
-                    InputGestureText="Ctrl -" />
+                <MenuItem Header="Больше элементов на странице" InputGestureText="Ctrl +" />
+                <MenuItem Header="Меньше элементов на странице" InputGestureText="Ctrl -" />
                 <Separator />
-                <MenuItem
-                    Click="ToggleToolsPanel_Click"
-                    Header="Toggle Tools Panel"
-                    InputGestureText="Ctrl Backspace" />
+                <MenuItem Header="Toggle Tools Panel" InputGestureText="Ctrl Backspace" />
             </MenuItem>
         </Menu>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <StackPanel.Background>
-                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                    <GradientStop Offset="0.006" Color="#FFCFD8D8" />
-                    <GradientStop Offset="0.771" Color="#FFFBFBFB" />
-                    <GradientStop Offset="1" Color="#FFEFEFEF" />
-                </LinearGradientBrush>
-            </StackPanel.Background>
+        <StackPanel
+            Grid.Row="1"
+            Background="{DynamicResource ToolsPanelBackgroundBrush}"
+            Orientation="Horizontal">
             <Border
-                Margin="4"
-                BorderBrush="DarkBlue"
+                Margin="4,4,0,4"
+                Padding="0"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1">
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Image Margin="0" Source="{Binding VoicebankImage}" />
+                    <StackPanel
+                        Margin="15,0"
+                        VerticalAlignment="Center"
+                        Orientation="Vertical">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Text="{Binding VoicebankName}" />
+                        <TextBlock VerticalAlignment="Center" Text="{Binding ReclistName}" />
+                        <Button
+                            Margin="0,5,0,0"
+                            Command="{Binding CallProjectCommand}"
+                            CommandParameter=""
+                            Content="PROJECT" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <Border
+                Margin="4,4,0,4"
+                BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="1">
                 <StackPanel Height="60">
-                    <Label
+                    <TextBlock
                         Padding="0"
                         HorizontalAlignment="Center"
-                        Content="Zones" />
+                        Text="Zones" />
                     <StackPanel
                         Height="25"
                         Margin="10"
@@ -131,46 +112,30 @@
                         <Button
                             Width="20"
                             Margin="3,0"
-                            Click="Button_SetMode"
-                            Content="D">
-                            <Button.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                    <GradientStop Offset="0.007" Color="Red" />
-                                    <GradientStop Offset="0.5" Color="#FFFFA9A9" />
-                                </LinearGradientBrush>
-                            </Button.Background>
-                        </Button>
+                            Background="{DynamicResource ButtonRestBrush}"
+                            Command="{Binding SetMode}"
+                            CommandParameter="{Binding ModeR}"
+                            Content="{Binding ModeR}" />
                         <Button
                             Width="20"
                             Margin="3,0"
-                            Click="Button_SetMode"
-                            Content="V">
-                            <Button.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                    <GradientStop Offset="0.5" Color="#FFF3EDC4" />
-                                    <GradientStop Color="#FFFFDD00" />
-                                </LinearGradientBrush>
-                            </Button.Background>
-                        </Button>
+                            Background="{DynamicResource ButtonVowelBrush}"
+                            Command="{Binding SetMode}"
+                            CommandParameter="{Binding ModeV}"
+                            Content="{Binding ModeV}" />
                         <Button
                             Width="20"
                             Margin="3,0"
-                            Click="Button_SetMode"
-                            Content="C">
-                            <Button.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                    <GradientStop Offset="0.5" Color="#FFA1E6EA" />
-                                    <GradientStop Color="#FF00F3FF" />
-                                </LinearGradientBrush>
-                            </Button.Background>
-                        </Button>
-                        <Label Margin="3,0,0,0" Content="Текущий режим:" />
-                        <Label
-                            Name="LabelMode"
-                            Width="25"
+                            Background="{DynamicResource ButtonConsonantBrush}"
+                            Command="{Binding SetMode}"
+                            CommandParameter="{Binding ModeC}"
+                            Content="{Binding ModeC}" />
+                        <TextBlock Margin="13,0,0,0" Text="Current: " />
+                        <TextBlock
+                            Width="20"
                             Margin="0"
-                            Content="V"
-                            FontWeight="Bold" />
+                            FontWeight="Bold"
+                            Text="{Binding Mode}" />
                         <!--<Button
                             Width="20"
                             Margin="20,0,3,0"
@@ -187,15 +152,15 @@
                 </StackPanel>
             </Border>
             <Border
-                Margin="4"
-                BorderBrush="DarkBlue"
+                Margin="4,4,0,4"
+                BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="1">
                 <StackPanel Height="60">
 
-                    <Label
+                    <TextBlock
                         Padding="0"
                         HorizontalAlignment="Center"
-                        Content="Pages" />
+                        Text="Pages" />
                     <StackPanel
                         Height="25"
                         Margin="10"
@@ -203,229 +168,154 @@
                         Orientation="Horizontal">
                         <Button
                             Margin="3,0"
-                            Click="PrevPage_Click"
-                            Content="˂" />
+                            Padding="3"
+                            Content="˂"
+                            Foreground="{DynamicResource DarkForeBrush}" />
                         <TextBox
-                            Name="TextBoxPage"
                             Width="30"
                             Margin="3,0"
                             Padding="0"
                             VerticalAlignment="Center"
                             HorizontalContentAlignment="Right"
-                            LostFocus="TextBoxPage_LostFocus"
-                            Text="00" />
-                        <Label
+                            Text="{Binding Page, Mode=TwoWay}" />
+                        <TextBlock
                             Padding="0"
                             VerticalAlignment="Center"
-                            Content="/" />
-                        <Label
-                            Name="LabelPageTotal"
+                            Text="/" />
+                        <TextBlock
                             Margin="3,0"
                             Padding="0"
                             VerticalAlignment="Center"
-                            Content="00" />
+                            Text="00" />
                         <Button
                             Margin="3,0"
-                            Click="NextPage_Click"
+                            Padding="3"
                             Content="˃" />
-                        <Label
+                        <TextBlock
                             Margin="3,0"
                             Padding="0"
                             VerticalAlignment="Center"
-                            Content="На странице: " />
+                            Text="On Page: " />
                         <TextBox
-                            Name="TextBoxItemsOnPage"
                             Width="25"
                             Margin="3,0"
                             Padding="1"
                             VerticalAlignment="Center"
-                            LostFocus="TextBoxItemsOnPage_LostFocus"
-                            Text="5" />
+                            Text="{Binding ItemsOnPage, Mode=TwoWay}" />
                     </StackPanel>
                 </StackPanel>
             </Border>
             <Border
-                Margin="4"
-                BorderBrush="DarkBlue"
+                Margin="4,4,0,4"
+                BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="1">
                 <StackPanel Height="60">
-                    <Label
+                    <TextBlock
                         Padding="0"
                         HorizontalAlignment="Center"
-                        Content="Attack" />
+                        Text="Attack" />
                     <StackPanel
                         Height="25"
                         Margin="10"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
-                        <Label Margin="3,0" Content="V:" />
+                        <TextBlock Margin="3,0" Text="V:" />
                         <TextBox
-                            Name="TextBoxFadeV"
                             Width="40"
                             Padding="0"
                             VerticalAlignment="Center"
-                            LostFocus="FadeChanged"
-                            Tag="V"
-                            Text="30" />
+                            Text="{Binding VowelAttack, Mode=TwoWay}" />
 
-                        <Label Margin="3,0" Content="C:" />
+                        <TextBlock Margin="3,0" Text="C:" />
                         <TextBox
-                            Name="TextBoxFadeC"
                             Width="40"
                             Padding="0"
                             VerticalAlignment="Center"
-                            LostFocus="FadeChanged"
-                            Tag="C"
-                            Text="10" />
+                            Text="{Binding ConsonantAttack, Mode=TwoWay}" />
 
-                        <Label Margin="3,0" Content="D:" />
-                        <TextBox
-                            Name="TextBoxFadeD"
-                            Width="40"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            LostFocus="FadeChanged"
-                            Tag="D"
-                            Text="200" />
                     </StackPanel>
                 </StackPanel>
             </Border>
 
             <Border
-                Margin="4"
-                BorderBrush="DarkBlue"
+                Margin="4,4,0,4"
+                BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="1">
                 <StackPanel Height="60">
-                    <Label
+                    <TextBlock
                         Padding="0"
                         HorizontalAlignment="Center"
-                        Content="Sustain" />
+                        Text="Sustain" />
                     <StackPanel
                         Height="25"
                         Margin="10"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
                         <TextBox
-                            Name="TextBoxSustain"
                             Width="50"
                             Padding="0"
                             VerticalAlignment="Center"
-                            LostFocus="Sustain_LostFocus"
-                            Text="" />
+                            Text="{Binding VowelSustain, Mode=TwoWay}" />
 
                     </StackPanel>
                 </StackPanel>
             </Border>
             <Border
-                Margin="4"
-                BorderBrush="DarkBlue"
+                Margin="4,4,0,4"
+                BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="1">
                 <StackPanel Height="60">
-                    <Label
+                    <TextBlock
                         Padding="0"
                         HorizontalAlignment="Center"
-                        Content="Alias" />
+                        Text="Alias" />
                     <StackPanel
                         Height="25"
                         Margin="10"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
-                        <Label Margin="3,0" Content="Prefix:" />
+                        <TextBlock Margin="3,0" Text="Prefix:" />
                         <TextBox
-                            Name="TextBoxPrefix"
                             Width="40"
                             Padding="0"
                             VerticalAlignment="Center"
-                            LostFocus="AliasChanged"
-                            Text="" />
+                            Text="{Binding Prefix, Mode=TwoWay}" />
 
-                        <Label Margin="3,0" Content="Suffix:" />
+                        <TextBlock Margin="3,0" Text="Suffix:" />
                         <TextBox
-                            Name="TextBoxSuffix"
                             Width="40"
                             Padding="0"
                             VerticalAlignment="Center"
-                            LostFocus="AliasChanged"
-                            Tag="C"
-                            Text="" />
+                            Text="{Binding Suffix, Mode=TwoWay}" />
 
                     </StackPanel>
                 </StackPanel>
             </Border>
             <Border
-                Margin="4"
-                BorderBrush="DarkBlue"
+                Margin="4,4,0,4"
+                BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="1">
                 <StackPanel Height="60">
-                    <Label
+                    <TextBlock
                         Padding="0"
                         HorizontalAlignment="Center"
-                        Content="View" />
+                        Text="View" />
                     <StackPanel
                         Height="25"
                         Margin="10"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
 
-                        <Label
+                        <TextBlock
                             Margin="3,0"
-                            Content="WAM:"
+                            Text="WAM:"
                             ToolTip="Waveform Amplitude Multiplayer" />
                         <TextBox
-                            Name="TextBoxMultiplier"
                             Width="30"
                             Padding="0"
                             VerticalAlignment="Center"
-                            LostFocus="TextBoxMultiplier_TextChanged"
-                            Text="1.00" />
+                            Text="{Binding WavAmplitudeMultiplayer, Mode=TwoWay}" />
 
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-            <Border
-                Margin="4"
-                BorderBrush="DarkBlue"
-                BorderThickness="1">
-                <StackPanel Height="60" HorizontalAlignment="Center">
-                    <StackPanel
-                        Height="25"
-                        Margin="15,5"
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal">
-                        <Label
-                            Width="70"
-                            VerticalAlignment="Center"
-                            Content="Voicebank: " />
-                        <Label
-                            Name="LabelCurrentVoicebank"
-                            VerticalAlignment="Center"
-                            Content="" />
-                        <Button
-                            Name="ButtonLoadVoicebank"
-                            Width="40"
-                            Margin="5,0"
-                            Click="ButtonLoadVoicebank_Click"
-                            Content="Edit" />
-                    </StackPanel>
-                    <StackPanel
-                        Height="25"
-                        Margin="15,0"
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal">
-                        <Label
-                            Width="70"
-                            VerticalAlignment="Center"
-                            Content="Settings: " />
-                        <Label
-                            Name="LabelCurrentSettings"
-                            VerticalAlignment="Center"
-                            Content="" />
-                        <Button
-                            Name="ButtonLoadSettings"
-                            Width="40"
-                            Margin="5,0"
-                            Click="ButtonLoadSettings_Click"
-                            Content="Edit" />
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -433,67 +323,13 @@
                 Margin="4"
                 BorderBrush="DarkBlue"
                 BorderThickness="1"
-                Visibility="Hidden">
-                <StackPanel
-                    Height="60"
-                    HorizontalAlignment="Center"
-                    Opacity="0.3">
-                    <Label
-                        Padding="0"
-                        HorizontalAlignment="Center"
-                        Content="BGM" />
-                    <StackPanel
-                        Height="25"
-                        Margin="10"
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal">
-                        <Label
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            Content="Tempo: " />
-                        <TextBox
-                            Name="TextBoxTempo"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            Text="120" />
-                        <TextBox
-                            Name="TextBoxBars"
-                            Margin="10,0,0,0"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            Text="3" />
-                        <Label
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            Content="/4" />
-                        <Label
-                            Margin="10,0,0,0"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            Content="Offset: " />
-                        <TextBox
-                            Name="TextBoxOffset"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            Text="100" />
-                        <Label
-                            Name="LabelShowGrid"
-                            Margin="15,0,0,0"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            Content="Grid"
-                            FontStyle="Italic"
-                            Foreground="Gray" />
-                    </StackPanel>
-                </StackPanel>
-            </Border>
+                Visibility="Hidden" />
         </StackPanel>
         <Button
             Grid.Row="2"
             Width="200"
             HorizontalAlignment="Center"
-            VerticalAlignment="Stretch"
-            Click="Button_HideTools">
+            VerticalAlignment="Stretch">
             <Button.Template>
                 <ControlTemplate>
                     <Border
@@ -534,16 +370,14 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <ScrollViewer
-            Name="ScrollViewer"
+        <ListView
+            Name="WavControlList"
             Grid.Row="3"
             Margin="5"
-            Focusable="True"
-            HorizontalScrollBarVisibility="Auto"
-            ScrollChanged="ScrollViewer_ScrollChanged"
-            VerticalScrollBarVisibility="Auto">
-            <StackPanel Name="WaveControlStackPanel" />
-        </ScrollViewer>
+            Background="Transparent"
+            BorderThickness="0"
+            ItemTemplate="{DynamicResource WavControlsListViewItem}"
+            ItemsSource="{Binding WavControlViewModels}" />
         <uc:CanvasLoading
             x:Name="CanvasLoading"
             Grid.Row="2"

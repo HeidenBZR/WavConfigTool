@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using WavConfigTool.Classes;
 using WavConfigTool.Tools;
-using WavConfigTool.UserControls;
-using WavConfigTool.Windows;
 
 namespace WavConfigTool.Classes
 {
@@ -15,44 +11,32 @@ namespace WavConfigTool.Classes
     {
 
         public Dictionary<string, string> Replacement { get; private set; }
+        public Reclist Reclist { get; set; }
+        public Project Project { get; set; }
 
-        public static OtoGenerator Current { get; private set; }
-
-        private OtoGenerator(string voicebankType)
+        public OtoGenerator(Reclist reclist)
         {
-            string path = ProjectWindow.GetTempPath(@"WavConfigTool\WavSettings\" + voicebankType + ".txt");
+            Reclist = reclist;
+            string path = Settings.GetResoucesPath(@"WavConfigTool\WavSettings\" + reclist.Name + ".txt");
             Replacement = ReadReplacementFile(path);
-        }
-
-        public static void Init(string vocebankType)
-        {
-            Current = new OtoGenerator(vocebankType);
         }
 
         public Dictionary<string, string> ReadReplacementFile(string path)
         {
             if (!System.IO.File.Exists(path))
                 return null;
-            try
+            var replacement = new Dictionary<string, string>();
+            foreach (string line in System.IO.File.ReadAllLines(path, Encoding.UTF8))
             {
-                var replacement = new Dictionary<string, string>();
-                foreach (string line in System.IO.File.ReadAllLines(path, Encoding.UTF8))
+                if (line.Contains("="))
                 {
-                    if (line.Contains("="))
-                    {
-                        var pair = line.Split('=');
-                        pair[0] = pair[0].Replace("%V%", $"({(string.Join("|", Reclist.Current.Vowels.Select(n => n.Alias)))})");
-                        pair[0] = pair[0].Replace("%C%", $"({(string.Join("|", Reclist.Current.Consonants.Select(n => n.Alias)))})");
-                        replacement[pair[0].Trim().Replace("\\s", " ")] = pair[1].Trim().Replace("\\s", " ");
-                    }
+                    var pair = line.Split('=');
+                    pair[0] = pair[0].Replace("%V%", $"({(string.Join("|", Reclist.Vowels.Select(n => n.Alias)))})");
+                    pair[0] = pair[0].Replace("%C%", $"({(string.Join("|", Reclist.Consonants.Select(n => n.Alias)))})");
+                    replacement[pair[0].Trim().Replace("\\s", " ")] = pair[1].Trim().Replace("\\s", " ");
                 }
-                return replacement;
             }
-            catch (Exception ex)
-            {
-                MainWindow.MessageBoxError(ex, "can't read replacement file");
-                return null;
-            }
+            return replacement;
         }
 
         public string Oto(double of, double con, double cut, double pre, double ov)
@@ -124,18 +108,36 @@ namespace WavConfigTool.Classes
             return String.Join("", phonemes.Select(n => n.Type.ToString().Substring(0, 1)));
         }
 
-        public string Generate(string filename, params Phoneme[] phonemes)
+        public string Generate(ProjectLine projectLine)
+        {
+            var text = new StringBuilder();
+            var phs = projectLine.Recline.Phonemes;
+            for (int i = 0; i < projectLine.Recline.Phonemes.Count; i++)
+            {
+                if (phs.Count > i + 1)
+                    text.AppendLine(Generate(projectLine, phs[i], phs[i + 1]));
+                if (phs.Count > i + 2)
+                    text.AppendLine(Generate(projectLine, phs[i], phs[i + 1], phs[i + 2]));
+                if (phs.Count > i + 3)
+                    text.AppendLine(Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3]));
+                if (phs.Count > i + 4)
+                    text.AppendLine(Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3], phs[i + 4]));
+            }
+            return text.ToString();
+        }
+
+        public string Generate(ProjectLine projectLine, params Phoneme[] phonemes)
         {
             string alias = GetAlias(phonemes);
-            if (MainWindow.Current.Reclist.Aliases.Contains(alias))
+            if (Reclist.Aliases.Contains(alias))
+                return "";
+
+            Phoneme p1 = phonemes.First();
+            Phoneme p2 = phonemes.Last();
+            if (!projectLine.ApplyZones(p1) || !projectLine.ApplyZones(p2))
                 return "";
 
             double offset, consonant, cutoff, preutterance, overlap;
-            Phoneme p1 = phonemes.First();
-            Phoneme p2 = phonemes.Last();
-            if (p1.Zone.In == 0 || p1.Zone.Out == 0 || p2.Zone.In == 0 || p2.Zone.Out == 0)
-                return "";
-
             switch (GetAliasType(phonemes))
             {
                 // Absolute values, relative ones are made in Oto()
@@ -153,7 +155,7 @@ namespace WavConfigTool.Classes
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out - WavControl.VowelSustain - p2.Attack;
+                    consonant = p2.Zone.Out - Project.VowelSustain - p2.Attack;
                     cutoff = p2.Zone.Out - p2.Attack;
                     break;
 
@@ -163,7 +165,7 @@ namespace WavConfigTool.Classes
                     offset = p1.Zone.In;
                     overlap = p1.Zone.Out + p1.Attack;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out - WavControl.VowelSustain - p2.Attack;
+                    consonant = p2.Zone.Out - Project.VowelSustain - p2.Attack;
                     cutoff = p2.Zone.Out - p2.Attack;
                     break;
 
@@ -218,8 +220,8 @@ namespace WavConfigTool.Classes
                 default:
                     return "";
             }
-            MainWindow.Current.Reclist.Aliases.Add(alias);
-            var oto = $"{filename}={WavControl.Prefix}{alias}{WavControl.Suffix},{Oto(offset, consonant, cutoff, preutterance, overlap)}\r\n";
+            Reclist.Aliases.Add(alias);
+            var oto = $"{projectLine.Recline.Filename}={Project.Prefix}{alias}{Project.Suffix},{Oto(offset, consonant, cutoff, preutterance, overlap)}\r\n";
             return oto;
         }
     }

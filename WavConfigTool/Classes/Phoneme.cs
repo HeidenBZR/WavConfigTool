@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WavConfigTool.Classes;
-using WavConfigTool.Tools;
-using WavConfigTool.UserControls;
-using WavConfigTool.Windows;
+﻿
 
 namespace WavConfigTool.Classes
 {
+    public enum WavConfigPoint
+    {
+        R,
+        V,
+        C
+    }
+
     public enum PhonemeType
     {
         Vowel,
@@ -21,6 +20,17 @@ namespace WavConfigTool.Classes
     {
         public double In;
         public double Out;
+
+        public Zone(double p_in, double p_out)
+        {
+            In = p_in;
+            Out = p_out;
+        }
+
+        public override string ToString()
+        {
+            return $"{In}:{Out}";
+        }
     }
 
     public abstract class Phoneme
@@ -50,7 +60,7 @@ namespace WavConfigTool.Classes
                 else if (IsVowel)
                     return Recline.Vowels.IndexOf(this);
                 else
-                    return Recline.Data.IndexOf(this);
+                    return Recline.Rests.IndexOf(this);
             }
         }
         public bool HasZone
@@ -71,6 +81,10 @@ namespace WavConfigTool.Classes
 
         public abstract Phoneme Clone();
 
+        public override string ToString()
+        {
+            return Alias is null ? "/PH/" : Alias;
+        }
 
         public static implicit operator string(Phoneme phoneme)
         {
@@ -105,7 +119,7 @@ namespace WavConfigTool.Classes
         public Rest(string l, string letter = "") : base(l, letter)
         {
             Type = PhonemeType.Rest;
-            Attack = Settings.RestAttack;
+            Attack = 0;
         }
         public Rest(string l, double zoneIn, double zoneOut, Recline recline, string letter = "") : this(l, letter)
         {

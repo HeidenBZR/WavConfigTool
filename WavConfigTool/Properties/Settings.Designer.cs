@@ -166,5 +166,29 @@ namespace WavConfigTool.Properties {
                 this["IsUnsaved"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.7")]
+        public double ScaleX {
+            get {
+                return ((double)(this["ScaleX"]));
+            }
+            set {
+                this["ScaleX"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        public double ScaleY {
+            get {
+                return ((double)(this["ScaleY"]));
+            }
+            set {
+                this["ScaleY"] = value;
+            }
+        }
     }
 }

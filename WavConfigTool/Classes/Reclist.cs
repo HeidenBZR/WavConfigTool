@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using WavConfigTool.Classes;
 using WavConfigTool.Tools;
-using WavConfigTool.UserControls;
-using WavConfigTool.Windows;
 
 namespace WavConfigTool.Classes
 {
@@ -19,40 +14,64 @@ namespace WavConfigTool.Classes
         public List<Phoneme> Vowels { get { return Phonemes.Where(n => n.IsVowel).ToList(); } }
         public List<Phoneme> Consonants { get { return Phonemes.Where(n => n.IsConsonant).ToList(); } }
 
-        public string VoicebankPath { get; private set; } = "";
+        public List<string> Aliases { get; private set; }
 
-        public bool VoicebankEnabled
+        public string Name { get; private set; } = "(Reclist is not avialable)";
+        public string Location { get; private set; }
+
+        private Dictionary<string, Recline> _reclineByFilename;
+
+        public bool IsLoaded { get; private set; } = false;
+
+        public Reclist(string location)
         {
-            get
-            {
-                return System.IO.Directory.Exists(VoicebankPath);
-            }
+            Location = Settings.GetResoucesPath(Path.Combine("WavConfigTool", "WavSettings", location + ".reclist"));
+            if (!File.Exists(Location))
+                Location = Settings.GetResoucesPath(Path.Combine("WavConfigTool", "WavSettings", location + ".wsettings"));
+            if (!File.Exists(Settings.GetResoucesPath(Path.Combine("WavConfigTool", "WavSettings", Location))))
+                return;
+
+            IsLoaded = Read();
+            Name = Path.GetFileNameWithoutExtension(Location);
         }
 
-        public List<string> Aliases;
-
-        public string Name = "";
-
-        public static Reclist Current;
-
-        public bool IsLoaded = false;
-
-        public Reclist(string[] vs, string[] cs)
+        public bool Read()
         {
-            try
+            string[] lines = File.ReadAllLines(Location, Encoding.GetEncoding(932));
+            if (lines.Length < 2)
             {
-                Phonemes = new List<Phoneme>();
-                foreach (string v in vs) Phonemes.Add(new Vowel(v));
-                foreach (string c in cs) Phonemes.Add(new Consonant(c));
-                Reclines = new List<Recline>();
-                Current = this;
-                IsLoaded = true;
-            }
-            catch (Exception ex)
-            {
-                MainWindow.MessageBoxError(ex, "Error on reclist init");
                 IsLoaded = false;
             }
+            var vs = lines[0].Split(' ');
+            var cs = lines[1].Split(' ');
+            Phonemes = new List<Phoneme>();
+            foreach (string v in vs) Phonemes.Add(new Vowel(v));
+            foreach (string c in cs) Phonemes.Add(new Consonant(c));
+
+            Reclines = new List<Recline>();
+            _reclineByFilename = new Dictionary<string, Recline>();
+            for (int i = 2; i < lines.Length; i++)
+            {
+                string[] items = lines[i].Split('\t');
+                if (items.Length != 3)
+                    continue;
+                AddRecline(new Recline(this, items[0], items[1], items[2]));
+            }
+
+            return true;
+        }
+
+        void AddRecline(Recline recline)
+        {
+            _reclineByFilename[recline.Filename] = recline;
+            Reclines.Add(recline);
+        }
+
+        Recline AddUnknownRecline(string filename)
+        {
+            var recline = new Recline(this, filename);
+            AddRecline(recline);
+            return recline;
         }
 
         public Phoneme GetPhoneme(string alias)
@@ -66,74 +85,18 @@ namespace WavConfigTool.Classes
             return phoneme.Clone();
         }
 
-        public void SetVoicebank(string voicebankPath)
+        public Recline GetRecline(string filename)
         {
-            VoicebankPath = voicebankPath;
-            if (!VoicebankEnabled)
-                MainWindow.MessageBoxError(new Exception("Voicebank folder cannot be found"), "Voicebank error");
-        }
-    }
-
-    public class Recline
-    {
-        public string Filename;
-        public string Description { get; set; }
-        public List<Phoneme> Phonemes;
-        public List<Phoneme> Vowels { get { return Phonemes.Where(n => n.IsVowel).ToList(); } }
-        public List<Phoneme> Consonants { get { return Phonemes.Where(n => n.IsConsonant).ToList(); } }
-        public Reclist Reclist;
-
-        public bool IsEnabled
-        {
-            get
-            {
-                return Reclist != null && Reclist.VoicebankEnabled && System.IO.File.Exists(Path);
-            }
-        }
-
-        public List<Phoneme> Data;
-        public string Path
-        {
-            get
-            {
-                return System.IO.Path.Combine(Reclist.VoicebankPath, Filename);
-            }
-        }
-        public string Name
-        {
-            get
-            {
-                int ind = Reclist.Reclines.IndexOf(this) + 1;
-                return $"{ind}. {Description} [{String.Join(" ", Phonemes.Select(n => n.Alias))}]";
-            }
-        }
-
-        public Recline(string filename, string phonemes)
-        {
-            Filename = filename;
-            Description = phonemes;
-            Phonemes = new List<Phoneme>();
-            foreach (string ph in phonemes.Split(' '))
-            {
-                Phoneme phoneme = Reclist.Current.GetPhoneme(ph);
-                phoneme.Recline = this;
-                Phonemes.Add(phoneme);
-            }
-        }
-
-        public Recline(string filename, string phonemes, string description) : this(filename, phonemes)
-        {
-            Description = description;
-        }
-
-        public override string ToString()
-        {
-            if (Phonemes is null)
-                return "Recline: {undefined}";
-            else if (Description is null)
-                return $"Recline: [{String.Join(" ", Phonemes)}]";
+            if (_reclineByFilename.TryGetValue(filename, out Recline recline))
+                return recline;
             else
-                return $"Recline: {Description} [{String.Join(" ", Phonemes.Select(n => n.Alias))}]";
+                return AddUnknownRecline(filename);
+        }
+
+        public void ResetAliases()
+        {
+            // TODO: Ввести параметр "максимальное количество дубликатов", чтобы можно было несколько дубликатов все же иметь
+            Aliases = new List<string>();
         }
     }
 }

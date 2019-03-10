@@ -1,0 +1,46 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:WavConfigTool.Styles">
+
+    <SolidColorBrush x:Key="VowelBorderBrush" Color="#808020" />
+    <SolidColorBrush x:Key="VowelBackBrush" Color="#FBFB20" />
+    <SolidColorBrush x:Key="VowelZoneBrush" Color="#22FBFB20" />
+    <SolidColorBrush x:Key="ConsonantBorderBrush" Color="#208080" />
+    <SolidColorBrush x:Key="ConsonantBackBrush" Color="#20FBFB" />
+    <SolidColorBrush x:Key="ConsonantZoneBrush" Color="#2220FBFB" />
+    <SolidColorBrush x:Key="RestBorderBrush" Color="#802020" />
+    <SolidColorBrush x:Key="RestBackBrush" Color="#FB2020" />
+    <SolidColorBrush x:Key="RestZoneBrush" Color="#22FB2020" />
+
+    <SolidColorBrush x:Key="WaveformBrush" Color="#64c864" />
+
+    <SolidColorBrush x:Key="WavControlBackgroundBrush" Color="#1555CCCC" />
+
+
+
+    <LinearGradientBrush x:Key="ButtonRestBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Offset="0.007" Color="Red" />
+        <GradientStop Offset="0.5" Color="#FF2C0000" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ButtonVowelBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Offset="0.5" Color="#FF443B00" />
+        <GradientStop Color="#FFFFDD00" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ButtonConsonantBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Offset="0.5" Color="#FF024246" />
+        <GradientStop Color="#FF00F3FF" />
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="BackgroundBrush" Color="#FF231F1F" />
+    <SolidColorBrush x:Key="TextBoxBackgroundBrush" Color="#FF1D2E40" />
+    <SolidColorBrush x:Key="ToolsPanelBackgroundBrush" Color="#FF232B34" />
+    <SolidColorBrush x:Key="ControlBrush" Color="#FF54A1FF" />
+    <SolidColorBrush x:Key="ForeDisabledBrush" Color="#FF5c848c" />
+    <SolidColorBrush x:Key="ControlHighlightBrush" Color="#FF597c7b" />
+    <SolidColorBrush x:Key="BorderBrush" Color="#FF404157" />
+    <SolidColorBrush x:Key="ForeBrush" Color="#FFA0BBD6" />
+    <SolidColorBrush x:Key="DarkForeBrush" Color="#FF0E2861" />
+
+
+</ResourceDictionary>
