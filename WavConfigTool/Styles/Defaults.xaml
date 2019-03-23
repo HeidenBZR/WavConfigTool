@@ -5,7 +5,10 @@
     xmlns:local="clr-namespace:WavConfigTool.Styles">
 
     <DataTemplate x:Key="ButtonDataTemplate">
-        <TextBlock Margin="1" Foreground="{DynamicResource DarkForeBrush}" Text="{Binding}"/>
+        <TextBlock
+            Margin="1"
+            Foreground="{DynamicResource DarkForeBrush}"
+            Text="{Binding}" />
     </DataTemplate>
     <Style x:Key="ButtonFocusVisual">
         <Setter Property="Control.Template">
@@ -70,7 +73,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <ControlTemplate x:Key="WindowTemplateKey" TargetType="{x:Type Window}">
         <Border
             Background="{TemplateBinding Background}"

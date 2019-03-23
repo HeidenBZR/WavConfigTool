@@ -82,6 +82,10 @@ namespace WavConfigTool.ViewModels
             ProjectLine = projectLine;
             if (ProjectLine.IsEnabled)
                 Width = (int)(ProjectLine.WaveForm.Length / ProjectLine.WaveForm.BitRate * Settings.ScaleX);
+        }
+
+        public void Load()
+        {
             LoadImageAsync();
             ApplyPoints();
             ApplyZones();
