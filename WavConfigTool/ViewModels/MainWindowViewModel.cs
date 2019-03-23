@@ -30,9 +30,7 @@ namespace WavConfigTool.ViewModels
                     RaisePropertiesChanged(
                         () => VoicebankName,
                         () => VoicebankImagePath,
-                        () => Page,
-                        () => PageTotal,
-                        () => ItemsOnPage);
+                        () => PagerViewModel);
 
                     RaisePropertiesChanged(
                         () => ConsonantAttack,
@@ -45,7 +43,8 @@ namespace WavConfigTool.ViewModels
                         () => WavAmplitudeMultiplayer,
                         () => Title,
                         () => ReclistName,
-                        () => VoicebankImage
+                        () => VoicebankImage,
+                        () => WavControlViewModels
                     );
                 };
             }
@@ -65,9 +64,7 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public int Page { get => _page + 1; set => _page = value - 1; }
-        public int PageTotal { get => _pageTotal + 1; set => _pageTotal = value - 1; }
-        public int ItemsOnPage { get => _itemsOnPage + 1; set => _itemsOnPage = value - 1; }
+        public PagerViewModel PagerViewModel { get; set; }
 
         public int ConsonantAttack { get => Project.ConsonantAttack; set => Project.ConsonantAttack = value; }
         public int VowelAttack { get => Project.VowelAttack; set => Project.VowelAttack = value; }
@@ -90,13 +87,11 @@ namespace WavConfigTool.ViewModels
             get => $"WavConfig v.{Version.ToString()} - {ProjectSavedString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
         }
 
-        public ObservableCollection<WavControlViewModel> WavControlViewModels { get; set; } = new ObservableCollection<WavControlViewModel>();
+        public ObservableCollection<WavControlViewModel> WavControlViewModels { get => PagerViewModel.Collection; }
+        public ObservableCollection<WavControlViewModel> WavControlViewModelsPage { get => PagerViewModel.PageContent;  }
 
 
         //Point PrevMousePosition;
-        private int _page;
-        private int _pageTotal;
-        private int _itemsOnPage;
         private Project _project;
 
         public MainWindowViewModel()
@@ -111,10 +106,10 @@ namespace WavConfigTool.ViewModels
         async void LoadProjectAsync()
         {
             await Task.Run(() => LoadProject());
-            WavControlViewModels = new ObservableCollection<WavControlViewModel>();
+            var wavControls = new ObservableCollection<WavControlViewModel>();
             foreach (var line in Project.ProjectLines)
-                WavControlViewModels.Add(new WavControlViewModel(line));
-            RaisePropertiesChanged("WavControlViewModels");
+                wavControls.Add(new WavControlViewModel(line));
+            PagerViewModel = new PagerViewModel(wavControls);
         }
 
         void LoadProject()

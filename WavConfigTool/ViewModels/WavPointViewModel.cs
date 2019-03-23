@@ -10,7 +10,7 @@ using WavConfigTool.Classes;
 
 namespace WavConfigTool.ViewModels
 {
-    class WavPointViewModel : ViewModelBase
+    public class WavPointViewModel : ViewModelBase
     {
         public string Text { get; set; } = "Text";
         public double Position { get; set; } = 0;

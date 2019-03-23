@@ -10,7 +10,7 @@ using WavConfigTool.Classes;
 
 namespace WavConfigTool.ViewModels
 {
-    class WavZoneViewModel : ViewModelBase
+    public class WavZoneViewModel : ViewModelBase
     {
         public double In { get; set; } = 0;
         public double Out { get; set; } = 100;

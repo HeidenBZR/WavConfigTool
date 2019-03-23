@@ -13,7 +13,7 @@ using WavConfigTool.Tools;
 
 namespace WavConfigTool.ViewModels
 {
-    class WavControlViewModel : ViewModelBase
+    public class WavControlViewModel : ViewModelBase
     {
         private ProjectLine _projectLine = new ProjectLine(new Recline(new Reclist("?"), "default.wav"));
 
@@ -79,7 +79,8 @@ namespace WavConfigTool.ViewModels
         public WavControlViewModel(ProjectLine projectLine)
         {
             ProjectLine = projectLine;
-            Width = (int)(ProjectLine.WaveForm.Length / ProjectLine.WaveForm.BitRate * Settings.ScaleX);
+            if (ProjectLine.IsEnabled)
+                Width = (int)(ProjectLine.WaveForm.Length / ProjectLine.WaveForm.BitRate * Settings.ScaleX);
             LoadImageAsync();
             ApplyPoints();
             ApplyZones();
@@ -191,6 +192,14 @@ namespace WavConfigTool.ViewModels
                 () => ConsonantZones,
                 () => RestZones
             );
+        }
+
+        public override string ToString()
+        {
+            if (ProjectLine == null || ProjectLine.Recline == null)
+                return "{WavControlViewModel}";
+            else 
+                return $"{ProjectLine.Recline.Name} : WavControlViewModel";
         }
     }
 }

@@ -14,6 +14,7 @@ namespace WavConfigTool.Classes
         private Voicebank _voicebank;
         private List<ProjectLine> _projectLines;
 
+
         public Reclist Reclist { get => _reclist; private set { _reclist = value; ProjectChanged(); } }
         public Voicebank Voicebank { get => _voicebank; private set { _voicebank = value; ProjectChanged(); } }
         public OtoGenerator OtoGenerator { get; private set; }
@@ -98,6 +99,7 @@ namespace WavConfigTool.Classes
         public void ChangeVoicebank(string voicebankLocation)
         {
             Voicebank = new Voicebank(voicebankLocation);
+            OpenLast();
             IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
             ProjectChanged();
         }
@@ -105,6 +107,7 @@ namespace WavConfigTool.Classes
         public void ChangeReclist(string reclist_location)
         {
             Reclist = new Reclist(reclist_location);
+            OpenLast();
             IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
             ProjectChanged();
         }
@@ -154,9 +157,9 @@ namespace WavConfigTool.Classes
             Settings.IsUnsaved = Settings.ProjectFile == Settings.TempProject;
         }
 
-        bool Read(string project)
+        bool Read(string location)
         {
-            string[] lines = File.ReadAllLines(project, Encoding.UTF8);
+            string[] lines = File.ReadAllLines(location, Encoding.UTF8);
             ProjectLines = new List<ProjectLine>();
             int i = 0;
             if (!lines[0].StartsWith("$"))
@@ -227,6 +230,7 @@ namespace WavConfigTool.Classes
                     projectLine.WavImageHash = $"{Voicebank.Location}{recline.Filename}{Reclist.Name}{Settings.WAM}".GetHashCode();
                 if (projectLine.IsEnabled)
                     projectLine.WaveForm = new WaveForm(Path.Combine(Voicebank.Location, recline.Filename));
+                
                 projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
                 ProjectLines.Add(projectLine);
             }

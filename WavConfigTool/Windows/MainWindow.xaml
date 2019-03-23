@@ -151,60 +151,7 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
-            <Border
-                Margin="4,4,0,4"
-                BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="1">
-                <StackPanel Height="60">
-
-                    <TextBlock
-                        Padding="0"
-                        HorizontalAlignment="Center"
-                        Text="Pages" />
-                    <StackPanel
-                        Height="25"
-                        Margin="10"
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal">
-                        <Button
-                            Margin="3,0"
-                            Padding="3"
-                            Content="˂"
-                            Foreground="{DynamicResource DarkForeBrush}" />
-                        <TextBox
-                            Width="30"
-                            Margin="3,0"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            HorizontalContentAlignment="Right"
-                            Text="{Binding Page, Mode=TwoWay}" />
-                        <TextBlock
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            Text="/" />
-                        <TextBlock
-                            Margin="3,0"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            Text="00" />
-                        <Button
-                            Margin="3,0"
-                            Padding="3"
-                            Content="˃" />
-                        <TextBlock
-                            Margin="3,0"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            Text="On Page: " />
-                        <TextBox
-                            Width="25"
-                            Margin="3,0"
-                            Padding="1"
-                            VerticalAlignment="Center"
-                            Text="{Binding ItemsOnPage, Mode=TwoWay}" />
-                    </StackPanel>
-                </StackPanel>
-            </Border>
+            <uc:Pager DataContext="{Binding PagerViewModel}" />
             <Border
                 Margin="4,4,0,4"
                 BorderBrush="{DynamicResource BorderBrush}"
@@ -370,6 +317,7 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
+
         <ListView
             Name="WavControlList"
             Grid.Row="3"
@@ -377,7 +325,7 @@
             Background="Transparent"
             BorderThickness="0"
             ItemTemplate="{DynamicResource WavControlsListViewItem}"
-            ItemsSource="{Binding WavControlViewModels}" />
+            ItemsSource="{Binding PagerViewModel.PageContent}" />
         <uc:CanvasLoading
             x:Name="CanvasLoading"
             Grid.Row="2"
