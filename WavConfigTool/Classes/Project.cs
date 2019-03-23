@@ -210,6 +210,7 @@ namespace WavConfigTool.Classes
                 }
             }
             ProjectLines = new List<ProjectLine>();
+            var usedReclines = new List<Recline>();
             for (; i + 3 < lines.Length; i += 4)
             {
                 string filename = lines[i];
@@ -218,6 +219,7 @@ namespace WavConfigTool.Classes
                 string pcs = lines[i + 3];
                 var recline = Reclist.GetRecline(filename);
                 var projectLine = new ProjectLine(recline);
+                usedReclines.Add(recline);
                 projectLine.IsEnabled = Voicebank.IsSampleEnabled(filename);
                 if (pds.Length > 0)
                     projectLine.RestPoints = pds.Split(' ').Select(n => int.Parse(n)).ToList();
@@ -233,6 +235,30 @@ namespace WavConfigTool.Classes
                 
                 projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
                 ProjectLines.Add(projectLine);
+            }
+            if (Reclist != null)
+            {
+                foreach (var recline in Reclist.Reclines)
+                {
+                    if (!usedReclines.Contains(recline))
+                    {
+                        var projectLine = new ProjectLine(recline)
+                        {
+                            RestPoints = new List<int>(),
+                            VowelPoints = new List<int>(),
+                            ConsonantPoints = new List<int>()
+                        };
+                        projectLine.IsEnabled = Voicebank.IsSampleEnabled(recline.Filename);
+                        projectLine.CalculateZones();
+                        if (projectLine.IsEnabled)
+                            projectLine.WavImageHash = $"{Voicebank.Location}{recline.Filename}{Reclist.Name}{Settings.WAM}".GetHashCode();
+                        if (projectLine.IsEnabled)
+                            projectLine.WaveForm = new WaveForm(Path.Combine(Voicebank.Location, recline.Filename));
+
+                        projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
+                        ProjectLines.Add(projectLine);
+                    }
+                }
             }
             return true;
         }

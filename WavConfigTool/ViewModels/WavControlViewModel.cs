@@ -60,6 +60,7 @@ namespace WavConfigTool.ViewModels
 
         public bool IsCompleted { get => ProjectLine.IsCompleted; }
         public bool IsLoading { get; set; } = false;
+        public int Number { get; set; }
 
         public int Width { get; set; } = 1000;
         public string WavImagePath { get; set; } = "";

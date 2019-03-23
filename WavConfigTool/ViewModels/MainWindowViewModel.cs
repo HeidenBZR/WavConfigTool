@@ -107,8 +107,8 @@ namespace WavConfigTool.ViewModels
         {
             await Task.Run(() => LoadProject());
             var wavControls = new ObservableCollection<WavControlViewModel>();
-            foreach (var line in Project.ProjectLines)
-                wavControls.Add(new WavControlViewModel(line));
+            for (int i = 0; i < Project.ProjectLines.Count; i++)
+                await Task.Run(() => wavControls.Add(new WavControlViewModel(Project.ProjectLines[i]) { Number = i } ));
             PagerViewModel = new PagerViewModel(wavControls);
         }
 
