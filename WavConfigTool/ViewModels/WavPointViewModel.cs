@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using DevExpress.Mvvm;
 using WavConfigTool.Classes;
@@ -50,6 +51,17 @@ namespace WavConfigTool.ViewModels
                 () => BorderBrush,
                 () => BackgroundBrush
             );
+        }
+
+        public ICommand DragDeltaCommand
+        {
+            get
+            {
+                return new DelegateCommand((x) => 
+                {
+
+                }, param => param != null);
+            }
         }
     }
 }

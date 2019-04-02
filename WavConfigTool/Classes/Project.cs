@@ -260,6 +260,7 @@ namespace WavConfigTool.Classes
                     }
                 }
             }
+            // TODO: сортировать по реклисту
             return true;
         }
 
