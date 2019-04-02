@@ -391,40 +391,26 @@
                         Margin="15,5"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
-                        <Label
-                            Width="70"
-                            VerticalAlignment="Center"
-                            Content="Voicebank: " />
-                        <Label
-                            Name="LabelCurrentVoicebank"
-                            VerticalAlignment="Center"
-                            Content="" />
                         <Button
                             Name="ButtonLoadVoicebank"
                             Width="40"
                             Margin="5,0"
                             Click="ButtonLoadVoicebank_Click"
-                            Content="Edit" />
+                            Content="VB"
+                            ToolTip="Change Voicebank" />
                     </StackPanel>
                     <StackPanel
                         Height="25"
                         Margin="15,0"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
-                        <Label
-                            Width="70"
-                            VerticalAlignment="Center"
-                            Content="Settings: " />
-                        <Label
-                            Name="LabelCurrentSettings"
-                            VerticalAlignment="Center"
-                            Content="" />
                         <Button
                             Name="ButtonLoadSettings"
                             Width="40"
                             Margin="5,0"
                             Click="ButtonLoadSettings_Click"
-                            Content="Edit" />
+                            Content="WS"
+                            ToolTip="Change WavSettings" />
                     </StackPanel>
                 </StackPanel>
             </Border>

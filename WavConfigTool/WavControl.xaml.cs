@@ -177,7 +177,8 @@ namespace WavConfigTool
                 for (i = 0; i < phonemes.Count; i++)
                 {
                     if (phonemes.Count > i + 1)
-                        text += OtoGenerator.Current.Generate(Recline.Filename, phonemes[i], phonemes[i + 1]);
+                        if (!(MainWindow.Current.Reclist.Name.Contains("cvc_rus") && i == 1 && phonemes[i].IsConsonant && phonemes[i + 1].IsVowel))
+                            text += OtoGenerator.Current.Generate(Recline.Filename, phonemes[i], phonemes[i + 1]);
                     if (phonemes.Count > i + 2)
                         text += OtoGenerator.Current.Generate(Recline.Filename, phonemes[i], phonemes[i + 1], phonemes[i + 2]);
                     if (phonemes.Count > i + 3)
