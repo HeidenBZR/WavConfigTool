@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Input;
 using WavConfigTool.Classes;
 using WavConfigTool.Tools;
+using WavConfigTool.ViewTools;
 
 namespace WavConfigTool.ViewModels
 {

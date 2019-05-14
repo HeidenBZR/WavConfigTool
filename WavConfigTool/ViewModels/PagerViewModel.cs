@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using WavConfigTool.ViewTools;
 
 namespace WavConfigTool.ViewModels
 {
@@ -62,7 +63,7 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommand((obj) =>
+                return new DelegateCommonCommand((obj) =>
                 {
                     CurrentPage = 0;
                     RaisePropertyChanged(() => CurrentPageView);
@@ -75,7 +76,7 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommand((obj) =>
+                return new DelegateCommonCommand((obj) =>
                 {
                     if (PagesTotal > 0)
                         CurrentPage = PagesTotal - 1;
@@ -90,7 +91,7 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommand((obj) =>
+                return new DelegateCommonCommand((obj) =>
                 {
                     CurrentPage++;
                     RaisePropertyChanged(() => CurrentPageView);
@@ -106,7 +107,7 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommand((obj) =>
+                return new DelegateCommonCommand((obj) =>
                 {
                     CurrentPage--;
                     RaisePropertyChanged(() => CurrentPageView);
@@ -122,7 +123,7 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommand((obj) =>
+                return new DelegateCommonCommand((obj) =>
                 {
                     _currentPage = (int)obj;
                     RaisePropertyChanged(() => CurrentPageView);
@@ -138,7 +139,7 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommand((obj) =>
+                return new DelegateCommonCommand((obj) =>
                 {
                     _pageSize = (int)obj;
                     // TODO: Проверка на допустимость страницы? 

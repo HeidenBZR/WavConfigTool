@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
 using System.Windows.Input;
+using WavConfigTool.UserControls;
+using WavConfigTool.ViewModels;
 
-namespace WavConfigTool.ViewModels
+namespace WavConfigTool.ViewTools
 {
-    class DelegateCommand : ICommand
+    class DelegateCommonCommand : ICommand
     {
         Action<object> execute;
         private Func<object, bool> canExecute;
@@ -22,7 +24,7 @@ namespace WavConfigTool.ViewModels
             remove { CommandManager.RequerySuggested -= value; }
         }
 
-        public DelegateCommand(Action<object> execute, Func<object, bool> canExecute = null)
+        public DelegateCommonCommand(Action<object> execute, Func<object, bool> canExecute = null)
         {
             this.execute = execute;
             this.canExecute = canExecute;

@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using DevExpress.Mvvm;
 using WavConfigTool.Classes;
+using WavConfigTool.ViewTools;
 
 namespace WavConfigTool.ViewModels
 {
@@ -19,9 +20,14 @@ namespace WavConfigTool.ViewModels
         public Brush BackgroundBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantBackBrush"];
         public WavConfigPoint Type { get; set; } = WavConfigPoint.V;
 
+        public delegate void WavPointChangedEventHandler();
+        public event WavPointChangedEventHandler WavPointChanged;
+
+        public bool IsLoaded { get; set; } = false;
+
         public WavPointViewModel()
         {
-             
+            WavPointChanged += delegate { };
         }
 
         public WavPointViewModel(double position, WavConfigPoint type, string text)
@@ -53,15 +59,26 @@ namespace WavConfigTool.ViewModels
             );
         }
 
-        public ICommand DragDeltaCommand
+        public ICommand PointMovedCommand
         {
             get
             {
-                return new DelegateCommand((x) => 
-                {
-
-                }, param => param != null);
+                return new DelegateCommand<Point>(PointMove, CanPointMove);
             }
+        }
+
+        public void PointMove(Point point)
+        {
+            if (point != null)
+            {
+                Position += point.X;
+                WavPointChanged();
+            }
+        }
+
+        public bool CanPointMove(Point point)
+        {
+            return point != null;
         }
     }
 }

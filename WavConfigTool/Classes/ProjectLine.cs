@@ -35,6 +35,11 @@ namespace WavConfigTool.Classes
             Recline = recline;
         }
 
+        public void CallChanged()
+        {
+            ProjectLineChanged();
+        }
+
         public static ProjectLine Read(Recline recline, string pds, string pvs, string pcs)
         {
             var projectLine = new ProjectLine(recline);

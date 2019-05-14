@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WavConfigTool.Classes;
 using WavConfigTool.Tools;
+using WavConfigTool.ViewTools;
 
 namespace WavConfigTool.ViewModels
 {
@@ -135,7 +136,7 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommand((obj) =>
+                return new DelegateCommonCommand((obj) =>
                 {
                     Mode = (WavConfigPoint)obj;
                 }, param => (param != null));
@@ -146,7 +147,7 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommand((obj) =>
+                return new DelegateCommonCommand((obj) =>
                 {
                     ViewManager.CallProject(new ProjectViewModel(Project));
                 }, (param) => (Project != null));

@@ -3,8 +3,10 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:local="clr-namespace:WavConfigTool.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vt="clr-namespace:WavConfigTool.ViewTools"
     Width="50"
     Height="100"
     d:DesignHeight="100"
@@ -28,7 +30,21 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Stretch"
                 Cursor="SizeWE"
-                Style="{DynamicResource WavPointControllerStyle}" />
+                Style="{DynamicResource WavPointControllerStyle}">
+
+                <dxmvvm:Interaction.Behaviors>
+                    <dxmvvm:EventToCommand
+                        Command="{Binding PointMovedCommand}"
+                        EventName="DragDelta"
+                        PassEventArgsToCommand="True">
+                        <dxmvvm:EventToCommand.EventArgsConverter>
+                            <vt:DragDeltaToPointArgsConverter />
+                        </dxmvvm:EventToCommand.EventArgsConverter>
+                    </dxmvvm:EventToCommand>
+                </dxmvvm:Interaction.Behaviors>
+
+
+            </Thumb>
             <Grid Height="100" VerticalAlignment="Stretch">
 
                 <TextBlock

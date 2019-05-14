@@ -125,7 +125,8 @@
       <DependentUpon>WavZone.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewManager.cs" />
-    <Compile Include="ViewModels\Command.cs" />
+    <Compile Include="ViewTools\Command.cs" />
+    <Compile Include="ViewTools\EventArgsConverters.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\PagerViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModel.cs" />

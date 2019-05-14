@@ -149,27 +149,42 @@ namespace WavConfigTool.ViewModels
             ConsonantPoints = new List<WavPointViewModel>();
             for (int i = 0; i < ProjectLine.ConsonantPoints.Count; i++)
             {
-                ConsonantPoints.Add(
-                    new WavPointViewModel(ProjectLine.ConsonantPoints[i] * Settings.ScaleX,
+                var point = new WavPointViewModel(ProjectLine.ConsonantPoints[i] * Settings.ScaleX,
                     WavConfigPoint.C,
-                   ProjectLine.Recline.Consonants.Count * 2 > i && i % 2 == 0 ? ProjectLine.Recline.Consonants[i / 2] : ""));
+                   ProjectLine.Recline.Consonants.Count * 2 > i && i % 2 == 0 ? ProjectLine.Recline.Consonants[i / 2] : "");
+                point.WavPointChanged += delegate
+                {
+                    // Пусть что-нибудь изменится аааа
+                };
+                ConsonantPoints.Add(point);
             }
 
             VowelPoints = new List<WavPointViewModel>();
             for (int i = 0; i < ProjectLine.VowelPoints.Count; i++)
             {
-                VowelPoints.Add(
-                    new WavPointViewModel(ProjectLine.VowelPoints[i] * Settings.ScaleX,
+                var point = new WavPointViewModel(
+                    ProjectLine.VowelPoints[i] * Settings.ScaleX,
                     WavConfigPoint.V,
-                   ProjectLine.Recline.Vowels.Count * 2 > i && i % 2 == 0 ? ProjectLine.Recline.Vowels[i / 2] : ""));
+                    ProjectLine.Recline.Vowels.Count * 2 > i && i % 2 == 0 ? ProjectLine.Recline.Vowels[i / 2] : "");
+                point.WavPointChanged += delegate
+                {
+                    
+                };
+                VowelPoints.Add(point);
             }
 
             RestPoints = new List<WavPointViewModel>();
             for (int i = 0; i < ProjectLine.RestPoints.Count; i++)
-                RestPoints.Add(
-                    new WavPointViewModel(ProjectLine.RestPoints[i] * Settings.ScaleX,
+            {
+                var point = new WavPointViewModel(ProjectLine.RestPoints[i] * Settings.ScaleX,
                     WavConfigPoint.R,
-                    ""));
+                    "");
+                point.WavPointChanged += delegate
+                {
+                    
+                };
+                RestPoints.Add(point);
+            }
 
             RaisePropertiesChanged(
                 () => ConsonantPoints,
