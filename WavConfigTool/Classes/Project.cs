@@ -157,104 +157,86 @@ namespace WavConfigTool.Classes
             Settings.IsUnsaved = Settings.ProjectFile == Settings.TempProject;
         }
 
+        void ReadOption(string line)
+        {
+            var pair = line.Split('=');
+            var option = pair[0].Substring(1);
+            var value = pair[1];
+            switch (option)
+            {
+                case "Voicebank":
+                    Voicebank = new Voicebank(value);
+                    break;
+
+                case "Reclist":
+                    Reclist = new Reclist(value);
+                    break;
+
+                case "Suffix":
+                    Suffix = value;
+                    break;
+
+                case "Prefix":
+                    Prefix = value;
+                    break;
+
+                case "VowelSustain":
+                    if (int.TryParse(value, out int vowelSustain))
+                        VowelSustain = vowelSustain;
+                    break;
+
+                case "VowelAttack":
+                    if (int.TryParse(value, out int vowelAttack))
+                        VowelAttack = vowelAttack;
+                    break;
+
+                case "ConsonantAttack":
+                    if (int.TryParse(value, out int consonantAttack))
+                        ConsonantAttack = consonantAttack;
+                    break;
+            }
+        }
+
         bool Read(string location)
         {
             string[] lines = File.ReadAllLines(location, Encoding.UTF8);
             ProjectLines = new List<ProjectLine>();
             int i = 0;
+            /// Совместимость со старыми сейвами без опций
             if (!lines[0].StartsWith("$"))
             {
-                // Совместимость со старыми сейвами
                 Voicebank = new Voicebank(lines[0]);
                 i++;
             }
+            /// Чтение опций
             for (; lines[i].StartsWith("$"); i++)
             {
                 if (!lines[i].Contains("="))
                     continue;
-                var pair = lines[i].Split('=');
-                var option = pair[0].Substring(1);
-                var value = pair[1];
-                switch (option)
-                {
-                    case "Voicebank":
-                        Voicebank = new Voicebank(value);
-                        break;
+                ReadOption(lines[i]);
 
-                    case "Reclist":
-                        Reclist = new Reclist(value);
-                        break;
-
-                    case "Suffix":
-                        Suffix = value;
-                        break;
-
-                    case "Prefix":
-                        Prefix = value;
-                        break;
-
-                    case "VowelSustain":
-                        if (int.TryParse(value, out int vowelSustain))
-                            VowelSustain = vowelSustain;
-                        break;
-
-                    case "VowelAttack":
-                        if (int.TryParse(value, out int vowelAttack))
-                            VowelAttack = vowelAttack;
-                        break;
-
-                    case "ConsonantAttack":
-                        if (int.TryParse(value, out int consonantAttack))
-                            ConsonantAttack = consonantAttack;
-                        break;
-                }
             }
             ProjectLines = new List<ProjectLine>();
             var usedReclines = new List<Recline>();
+            /// Чтение строк реклиста из проекта
             for (; i + 3 < lines.Length; i += 4)
             {
-                string filename = lines[i];
-                string pds = lines[i + 1];
-                string pvs = lines[i + 2];
-                string pcs = lines[i + 3];
-                var recline = Reclist.GetRecline(filename);
-                var projectLine = new ProjectLine(recline);
+                var recline = Reclist.GetRecline(lines[i]);
                 usedReclines.Add(recline);
-                projectLine.IsEnabled = Voicebank.IsSampleEnabled(filename);
-                if (pds.Length > 0)
-                    projectLine.RestPoints = pds.Split(' ').Select(n => int.Parse(n)).ToList();
-                if (pvs.Length > 0)
-                    projectLine.VowelPoints = pvs.Split(' ').Select(n => int.Parse(n)).ToList();
-                if (pcs.Length > 0)
-                    projectLine.ConsonantPoints = pcs.Split(' ').Select(n => int.Parse(n)).ToList();
-                projectLine.CalculateZones();
-                if (projectLine.IsEnabled)
-                    projectLine.WavImageHash = $"{Voicebank.Location}{recline.Filename}{Reclist.Name}{Settings.WAM}".GetHashCode();
-                if (projectLine.IsEnabled)
-                    projectLine.WaveForm = new WaveForm(Path.Combine(Voicebank.Location, recline.Filename));
-                
+                var projectLine = ProjectLine.Read(recline, lines[i + 1], lines[i + 2], lines[i + 3]);
+                projectLine.ReclistAndVoicebankCheck(Reclist, Voicebank);
                 projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
                 ProjectLines.Add(projectLine);
             }
+            /// Чтение строк реклиста, которых нет в проекте 
             if (Reclist != null)
             {
                 foreach (var recline in Reclist.Reclines)
                 {
                     if (!usedReclines.Contains(recline))
                     {
-                        var projectLine = new ProjectLine(recline)
-                        {
-                            RestPoints = new List<int>(),
-                            VowelPoints = new List<int>(),
-                            ConsonantPoints = new List<int>()
-                        };
-                        projectLine.IsEnabled = Voicebank.IsSampleEnabled(recline.Filename);
-                        projectLine.CalculateZones();
-                        if (projectLine.IsEnabled)
-                            projectLine.WavImageHash = $"{Voicebank.Location}{recline.Filename}{Reclist.Name}{Settings.WAM}".GetHashCode();
-                        if (projectLine.IsEnabled)
-                            projectLine.WaveForm = new WaveForm(Path.Combine(Voicebank.Location, recline.Filename));
-
+                        var projectLine = ProjectLine.CreateNewFromRecline(recline);
+                        projectLine.ReclistAndVoicebankCheck(Reclist, Voicebank);
                         projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
                         ProjectLines.Add(projectLine);
                     }

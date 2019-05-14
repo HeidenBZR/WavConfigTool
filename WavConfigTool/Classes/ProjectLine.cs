@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using WavConfigTool.Tools;
 
 namespace WavConfigTool.Classes
 {
@@ -31,6 +33,41 @@ namespace WavConfigTool.Classes
         {
             ProjectLineChanged += ProjectLine_OnProjectLineChanged;
             Recline = recline;
+        }
+
+        public static ProjectLine Read(Recline recline, string pds, string pvs, string pcs)
+        {
+            var projectLine = new ProjectLine(recline);
+            if (pds.Length > 0)
+                projectLine.RestPoints = pds.Split(' ').Select(n => int.Parse(n)).ToList();
+            if (pvs.Length > 0)
+                projectLine.VowelPoints = pvs.Split(' ').Select(n => int.Parse(n)).ToList();
+            if (pcs.Length > 0)
+                projectLine.ConsonantPoints = pcs.Split(' ').Select(n => int.Parse(n)).ToList();
+            projectLine.CalculateZones();
+
+            return projectLine;
+        }
+
+        public static ProjectLine CreateNewFromRecline(Recline recline)
+        {
+            var projectLine = new ProjectLine(recline)
+            {
+                RestPoints = new List<int>(),
+                VowelPoints = new List<int>(),
+                ConsonantPoints = new List<int>()
+            };
+            projectLine.CalculateZones();
+            return projectLine;
+        }
+
+        public void ReclistAndVoicebankCheck(Reclist reclist, Voicebank voicebank)
+        {
+            IsEnabled = voicebank.IsSampleEnabled(Recline.Filename);
+            if (IsEnabled)
+                WavImageHash = $"{voicebank.Location}{Recline.Filename}{reclist.Name}{Settings.WAM}".GetHashCode();
+            if (IsEnabled)
+                WaveForm = new WaveForm(Path.Combine(voicebank.Location, Recline.Filename));
         }
 
         public void ProjectLine_OnProjectLineChanged()

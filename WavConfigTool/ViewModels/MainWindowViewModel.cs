@@ -107,6 +107,10 @@ namespace WavConfigTool.ViewModels
         async void LoadProjectAsync()
         {
             await Task.Run(() => LoadProject());
+            if (!Project.IsLoaded)
+            {
+                CallProjectCommand.Execute(Project);
+            }
             var wavControls = new ObservableCollection<WavControlViewModel>();
             for (int i = 0; i < Project.ProjectLines.Count; i++ )
                 await Task.Run(() => { wavControls.Add(new WavControlViewModel(Project.ProjectLines[i]) { Number = i }); });
@@ -124,10 +128,6 @@ namespace WavConfigTool.ViewModels
                 Project = Project.OpenLast();
                 if (Project is null)
                     Project = new Project();
-            }
-            if (!Project.IsLoaded)
-            {
-                CallProjectCommand.Execute(Project);
             }
         }
 

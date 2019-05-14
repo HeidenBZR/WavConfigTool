@@ -25,6 +25,11 @@ namespace WavConfigTool.Classes
 
         public Reclist(string location)
         {
+            Phonemes = new List<Phoneme>();
+            Reclines = new List<Recline>();
+            _reclineByFilename = new Dictionary<string, Recline>();
+            IsLoaded = false;
+
             Location = Settings.GetResoucesPath(Path.Combine("WavConfigTool", "WavSettings", location + ".reclist"));
             if (!File.Exists(Location))
                 Location = Settings.GetResoucesPath(Path.Combine("WavConfigTool", "WavSettings", location + ".wsettings"));
