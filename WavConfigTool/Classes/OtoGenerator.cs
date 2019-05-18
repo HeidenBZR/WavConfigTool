@@ -110,6 +110,7 @@ namespace WavConfigTool.Classes
 
         public string Generate(ProjectLine projectLine)
         {
+            projectLine.CalculateZones();
             var text = new StringBuilder();
             var phs = projectLine.Recline.Phonemes;
             for (int i = 0; i < projectLine.Recline.Phonemes.Count; i++)

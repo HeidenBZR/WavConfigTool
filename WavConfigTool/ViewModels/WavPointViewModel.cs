@@ -80,5 +80,10 @@ namespace WavConfigTool.ViewModels
         {
             return point != null;
         }
+
+        public override string ToString()
+        {
+            return $"{{{Position}}} {Text}";
+        }
     }
 }

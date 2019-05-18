@@ -49,7 +49,6 @@ namespace WavConfigTool.Classes
                 projectLine.VowelPoints = pvs.Split(' ').Select(n => int.Parse(n)).ToList();
             if (pcs.Length > 0)
                 projectLine.ConsonantPoints = pcs.Split(' ').Select(n => int.Parse(n)).ToList();
-            projectLine.CalculateZones();
 
             return projectLine;
         }
@@ -62,7 +61,6 @@ namespace WavConfigTool.Classes
                 VowelPoints = new List<int>(),
                 ConsonantPoints = new List<int>()
             };
-            projectLine.CalculateZones();
             return projectLine;
         }
 
@@ -77,9 +75,9 @@ namespace WavConfigTool.Classes
 
         public void ProjectLine_OnProjectLineChanged()
         {
-            CalculateZones();
+
         }
-        
+
         public void CalculateZones()
         {
             VowelZones = new List<Zone>();

@@ -73,7 +73,7 @@
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavZoneItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding ConsonantZones}"
+            ItemsSource="{Binding ConsonantZones, Mode=OneWay}"
             Visibility="{Binding EnabledProperty}" />
         <ItemsControl
             Name="VowelZones"
@@ -81,7 +81,7 @@
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavZoneItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding VowelZones}"
+            ItemsSource="{Binding VowelZones, Mode=OneWay}"
             Visibility="{Binding EnabledProperty}" />
         <ItemsControl
             Name="RestZones"
@@ -89,7 +89,7 @@
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavZoneItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding RestZones}"
+            ItemsSource="{Binding RestZones, Mode=OneWay}"
             Visibility="{Binding EnabledProperty}" />
         <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
             <Rectangle
@@ -119,7 +119,7 @@
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding ConsonantPoints}"
+            ItemsSource="{Binding ConsonantPoints, Mode=TwoWay}"
             Visibility="{Binding EnabledProperty}" />
         <ItemsControl
             Name="VowelPoints"
@@ -127,7 +127,7 @@
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding VowelPoints}"
+            ItemsSource="{Binding VowelPoints, Mode=TwoWay}"
             Visibility="{Binding EnabledProperty}" />
         <ItemsControl
             Name="RestPoints"
@@ -135,7 +135,7 @@
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding RestPoints}"
+            ItemsSource="{Binding RestPoints, Mode=TwoWay}"
             Visibility="{Binding EnabledProperty}" />
     </Grid>
 </UserControl>
