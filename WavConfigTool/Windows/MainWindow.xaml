@@ -23,6 +23,12 @@
             <RowDefinition Height="12" />
             <RowDefinition Height="337*" />
         </Grid.RowDefinitions>
+        <uc:CanvasLoading
+            x:Name="CanvasLoading"
+            Grid.Row="0"
+            Grid.RowSpan="4"
+            Margin="5"
+            Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibility}}" />
         <Menu
             Name="MainMenu"
             HorizontalAlignment="Stretch"
@@ -326,11 +332,5 @@
             BorderThickness="0"
             ItemTemplate="{DynamicResource WavControlsListViewItem}"
             ItemsSource="{Binding PagerViewModel.PageContent}" />
-        <uc:CanvasLoading
-            x:Name="CanvasLoading"
-            Grid.Row="2"
-            Grid.RowSpan="2"
-            Margin="5"
-            Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibility}}" />
     </Grid>
 </Window>

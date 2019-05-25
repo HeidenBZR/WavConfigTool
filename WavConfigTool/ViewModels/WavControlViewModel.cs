@@ -71,10 +71,13 @@ namespace WavConfigTool.ViewModels
         public List<WavZoneViewModel> GetRestZones()
         {
             List<WavPointViewModel>  local = RestPoints.GetRange(0, RestPoints.Count);
-            var p = new WavPointViewModel(0, WavConfigPoint.R, "");
-            local = local.Prepend(p).ToList();
-            p = new WavPointViewModel(Length, WavConfigPoint.R, "");
-            local = local.Append(p).ToList();
+            if (local.Count > 1)
+            {
+                var p = new WavPointViewModel(0, WavConfigPoint.R, "");
+                local = local.Prepend(p).ToList();
+                p = new WavPointViewModel(Length, WavConfigPoint.R, "");
+                local = local.Append(p).ToList();
+            }
             return GetZones(WavConfigPoint.R, local);
         }
 

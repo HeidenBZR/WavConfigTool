@@ -13,7 +13,7 @@
     <SolidColorBrush x:Key="RestBackBrush" Color="#FB2020" />
     <SolidColorBrush x:Key="RestZoneBrush" Color="#22FB2020" />
 
-    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#222A72B9" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#122A72B9" />
     <SolidColorBrush x:Key="WaveformBrush" Color="#64c864" />
 
     <SolidColorBrush x:Key="WavControlBackgroundBrush" Color="#1555CCCC" />
