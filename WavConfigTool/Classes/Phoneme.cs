@@ -2,13 +2,6 @@
 
 namespace WavConfigTool.Classes
 {
-    public enum WavConfigPoint
-    {
-        R,
-        V,
-        C
-    }
-
     public enum PhonemeType
     {
         Vowel,

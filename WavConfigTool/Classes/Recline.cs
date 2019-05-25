@@ -53,6 +53,12 @@ namespace WavConfigTool.Classes
             Phonemes.Add(new Rest("-") { Recline = this });
             IsEnabled = true;
         }
+        
+        public List<Phoneme> PhonemesOfType(PhonemeType type)
+        {
+            return type == PhonemeType.Consonant ? Consonants :
+                (type == PhonemeType.Rest ? Rests : Vowels);
+        }
 
         public override string ToString()
         {

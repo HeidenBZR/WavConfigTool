@@ -77,11 +77,16 @@ namespace WavConfigTool.ViewModels
 
         public double WavAmplitudeMultiplayer { get; set; }
 
-        public WavConfigPoint Mode { get; set; } = WavConfigPoint.V;
+        public PhonemeType Mode { get => Settings.Mode; set => Settings.Mode = value; }
+        public string ModeSymbol { get => SymbolOfType(Mode); }
 
-        public WavConfigPoint ModeC { get; } = WavConfigPoint.C;
-        public WavConfigPoint ModeV { get; } = WavConfigPoint.V;
-        public WavConfigPoint ModeR { get; } = WavConfigPoint.R;
+        public PhonemeType ModeC { get => PhonemeType.Consonant; }
+        public PhonemeType ModeV { get => PhonemeType.Vowel; }
+        public PhonemeType ModeR { get => PhonemeType.Rest; }
+
+        public string ModeCSymbol { get => SymbolOfType(ModeC); }
+        public string ModeVSymbol { get => SymbolOfType(ModeV); }
+        public string ModeRSymbol { get => SymbolOfType(ModeR); }
 
         public bool IsLoading { get; set; } = false;
 
@@ -89,6 +94,11 @@ namespace WavConfigTool.ViewModels
         public string Title
         {
             get => $"WavConfig v.{Version.ToString()} - {ProjectSavedString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
+        }
+
+        public string SymbolOfType(PhonemeType type)
+        {
+            return type.ToString().Substring(0, 1);
         }
 
         public ObservableCollection<WavControlViewModel> WavControlViewModels { get => PagerViewModel.Collection; }
@@ -142,7 +152,7 @@ namespace WavConfigTool.ViewModels
             {
                 return new DelegateCommonCommand((obj) =>
                 {
-                    Mode = (WavConfigPoint)obj;
+                    Mode = (PhonemeType)obj;
                 }, param => (param != null));
             }
         }

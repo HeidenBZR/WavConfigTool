@@ -121,27 +121,27 @@
                             Background="{DynamicResource ButtonRestBrush}"
                             Command="{Binding SetMode}"
                             CommandParameter="{Binding ModeR}"
-                            Content="{Binding ModeR}" />
+                            Content="{Binding ModeRSymbol}" />
                         <Button
                             Width="20"
                             Margin="3,0"
                             Background="{DynamicResource ButtonVowelBrush}"
                             Command="{Binding SetMode}"
                             CommandParameter="{Binding ModeV}"
-                            Content="{Binding ModeV}" />
+                            Content="{Binding ModeVSymbol}" />
                         <Button
                             Width="20"
                             Margin="3,0"
                             Background="{DynamicResource ButtonConsonantBrush}"
                             Command="{Binding SetMode}"
                             CommandParameter="{Binding ModeC}"
-                            Content="{Binding ModeC}" />
+                            Content="{Binding ModeCSymbol}" />
                         <TextBlock Margin="13,0,0,0" Text="Current: " />
                         <TextBlock
                             Width="20"
                             Margin="0"
                             FontWeight="Bold"
-                            Text="{Binding Mode}" />
+                            Text="{Binding ModeSymbol}" />
                         <!--<Button
                             Width="20"
                             Margin="20,0,3,0"

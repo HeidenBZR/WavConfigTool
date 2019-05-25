@@ -14,12 +14,12 @@ namespace WavConfigTool.ViewModels
     {
         public double In { get; set; } = 0;
         public double Out { get; set; } = 100;
-        public WavConfigPoint Type { get; set; } = WavConfigPoint.C;
+        public PhonemeType Type { get; set; } = PhonemeType.Consonant;
         public Brush BackgroundBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantZoneBrush"];
 
         public WavZoneViewModel() { }
 
-        public WavZoneViewModel(WavConfigPoint type, double p_in, double p_out)
+        public WavZoneViewModel(PhonemeType type, double p_in, double p_out)
         {
             In = p_in;
             Out = p_out - p_in;
@@ -27,15 +27,15 @@ namespace WavConfigTool.ViewModels
             // TODO: Переделать на StyleSelector
             switch (type)
             {
-                case WavConfigPoint.V:
+                case PhonemeType.Vowel:
                     BackgroundBrush = (SolidColorBrush)Application.Current.Resources["VowelZoneBrush"];
                     break;
 
-                case WavConfigPoint.C:
+                case PhonemeType.Consonant:
                     BackgroundBrush = (SolidColorBrush)Application.Current.Resources["ConsonantZoneBrush"];
                     break;
 
-                case WavConfigPoint.R:
+                case PhonemeType.Rest:
                     BackgroundBrush = (SolidColorBrush)Application.Current.Resources["RestZoneBrush"];
                     break;
             }

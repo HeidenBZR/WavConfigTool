@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using WavConfigTool.Tools;
@@ -75,25 +76,38 @@ namespace WavConfigTool.Classes
 
         public void ProjectLine_OnProjectLineChanged()
         {
-
+            CalculateZones();
         }
 
         public void CalculateZones()
         {
+            Sort();
             VowelZones = new List<Zone>();
-            for (int i = 0; i + 1 < VowelPoints.Count; i += 2)
-                VowelZones.Add(new Zone(VowelPoints[i], VowelPoints[i + 1]));
-            ConsonantZones = new List<Zone>();
-            for (int i = 0; i + 1 < ConsonantPoints.Count; i += 2)
-                ConsonantZones.Add(new Zone(ConsonantPoints[i], ConsonantPoints[i + 1]));
+            foreach (PhonemeType type in new[] { PhonemeType.Consonant, PhonemeType.Vowel})
+            {
+                var points = PointsOfType(type);
+                var zones = ZonesOfType(type);
+                zones.Clear();
+                for (int i = 0; i + 1 < points.Count; i += 2)
+                {
+                    zones.Add(new Zone(points[i], points[i + 1]));
+                }
+            }
+            RestZones = CalculateRestZones();
+        }
+
+        public List<Zone> CalculateRestZones()
+        {
             // У первой и последней точки это не зона, а синглтоны, а в середине обычные зоны
-            RestZones = new List<Zone>();
-            if (RestPoints.Count > 0)
-                RestZones.Add(new Zone(RestPoints[0], RestPoints[0]));
-            for (int i = 1; i + 2 < RestPoints.Count; i += 2)
-                RestZones.Add(new Zone(RestPoints[i], RestPoints[i + 1]));
+            var zones = new List<Zone>();
+            var points = PointsOfType(PhonemeType.Rest);
+            if (zones.Count > 0)
+                zones.Add(new Zone(points[0], points[0]));
+            for (int i = 1; i + 2 < points.Count; i += 2)
+                zones.Add(new Zone(points[i], points[i + 1]));
             if (RestPoints.Count > 1)
-                RestZones.Add(new Zone(RestPoints.Last(), RestPoints.Last()));
+                zones.Add(new Zone(points.Last(), points.Last()));
+            return zones;
         }
 
         public override string ToString()
@@ -111,29 +125,11 @@ namespace WavConfigTool.Classes
             int i = Recline.Phonemes.IndexOf(phoneme);
             if (i < 0)
                 return false;
-            if (phoneme.IsVowel)
+            var zones = ZonesOfType(phoneme.Type);
+            if (zones.Count > i)
             {
-                if (VowelZones.Count > i)
-                {
-                    phoneme.Zone = VowelZones[i];
-                    return true;
-                }
-            }
-            if (phoneme.IsConsonant)
-            {
-                if (ConsonantZones.Count > i)
-                {
-                    phoneme.Zone = ConsonantZones[i];
-                    return true;
-                }
-            }
-            if (phoneme.IsRest)
-            {
-                if (RestZones.Count > i)
-                {
-                    phoneme.Zone = RestZones[i];
-                    return true;
-                }
+                phoneme.Zone = zones[i];
+                return true;
             }
             return false;
         }
@@ -145,5 +141,38 @@ namespace WavConfigTool.Classes
             ConsonantPoints.Sort();
         }
 
+        public List<int> PointsOfType(PhonemeType type)
+        {
+            return type == PhonemeType.Consonant ? ConsonantPoints :
+                (type == PhonemeType.Rest ? RestPoints : VowelPoints);
+        }
+
+        public List<Zone> ZonesOfType(PhonemeType type)
+        {
+            return type == PhonemeType.Consonant ? ConsonantZones :
+                (type == PhonemeType.Rest ? RestZones : VowelZones);
+        }
+
+        public void AddPoint(int position, PhonemeType type)
+        {
+            var points = PointsOfType(type);
+            points.Add(position);
+            ProjectLineChanged();
+        }
+
+        public void MovePoint(int position1, int position2, PhonemeType type)
+        {
+            var points = PointsOfType(type);
+            points.Remove(position1);
+            points.Add(position2);
+            ProjectLineChanged();
+        }
+
+        public void DeletePoint(int position, PhonemeType type)
+        {
+            var points = PointsOfType(type);
+            points.Remove(position);
+            ProjectLineChanged();
+        }
     }
 }

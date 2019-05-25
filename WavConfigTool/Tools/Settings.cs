@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using WavConfigTool.Classes;
 
 namespace WavConfigTool.Tools
 {
@@ -181,6 +182,38 @@ namespace WavConfigTool.Tools
                 Properties.Settings.Default.ScaleY = value;
                 Properties.Settings.Default.Save();
             }
+        }
+
+        public static PhonemeType Mode { get; set; } = PhonemeType.Rest;
+
+        public static double RealToViewX(int position)
+        {
+            return position * ScaleX;
+        }
+
+        public static double RealToViewX(double position)
+        {
+            return position * ScaleX;
+        }
+
+        public static int ViewToRealX(double position)
+        {
+            return (int)Math.Round(position / ScaleX);
+        }
+
+        public static double RealToViewY(int position)
+        {
+            return position * ScaleY;
+        }
+
+        public static double RealToViewY(double position)
+        {
+            return position * ScaleY;
+        }
+
+        public static int ViewToRealY(double position)
+        {
+            return (int)Math.Round(position / ScaleY);
         }
     }
 }

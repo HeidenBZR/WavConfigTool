@@ -10,6 +10,7 @@ using System.Windows.Input;
 using WavConfigTool.UserControls;
 using WavConfigTool.ViewModels;
 using WavConfigTool.Tools;
+using WavConfigTool.Classes;
 
 namespace WavConfigTool.ViewTools
 {
@@ -19,8 +20,20 @@ namespace WavConfigTool.ViewTools
         protected override object Convert(object sender, DragDeltaEventArgs args)
         {
             return new Point(
-                args.HorizontalChange / Settings.ScaleX,
-                args.VerticalChange / Settings.ScaleY
+                Settings.ViewToRealX(args.HorizontalChange),
+                Settings.ViewToRealY(args.VerticalChange)
+            );
+        }
+    }
+
+    public class MouseButtonEventArgsConverter : EventArgsConverterBase<MouseButtonEventArgs>
+    {
+        protected override object Convert(object sender, MouseButtonEventArgs args)
+        {
+            var ob = (UIElement)sender;
+            return new Point(
+                Settings.ViewToRealX(Mouse.GetPosition(ob).X),
+                Settings.ViewToRealX(Mouse.GetPosition(ob).Y)
             );
         }
     }

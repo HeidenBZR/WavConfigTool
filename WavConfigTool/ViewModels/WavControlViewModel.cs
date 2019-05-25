@@ -1,15 +1,17 @@
 ﻿using DevExpress.Mvvm;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using WavConfigTool.Classes;
 using WavConfigTool.Tools;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
+using WavConfigTool.ViewTools;
 
 namespace WavConfigTool.ViewModels
 {
@@ -54,11 +56,11 @@ namespace WavConfigTool.ViewModels
         public List<WavPointViewModel> VowelPoints { get; set; } = new List<WavPointViewModel>();
         public List<WavPointViewModel> RestPoints { get; set; } = new List<WavPointViewModel>();
 
-        public List<WavZoneViewModel> ConsonantZones { get { return GetZones(WavConfigPoint.C, ConsonantPoints); } }
-        public List<WavZoneViewModel> VowelZones { get { return GetZones(WavConfigPoint.V, VowelPoints); } }
+        public List<WavZoneViewModel> ConsonantZones { get { return GetZones(PhonemeType.Consonant, ConsonantPoints); } }
+        public List<WavZoneViewModel> VowelZones { get { return GetZones(PhonemeType.Vowel, VowelPoints); } }
         public List<WavZoneViewModel> RestZones { get { return GetRestZones(); } }
 
-        public List<WavZoneViewModel> GetZones(WavConfigPoint point, List<WavPointViewModel> points)
+        public List<WavZoneViewModel> GetZones(PhonemeType point, List<WavPointViewModel> points)
         {
             var zones = new List<WavZoneViewModel>();
             for (int i = 0; i + 1 < points.Count; i += 2)
@@ -73,12 +75,12 @@ namespace WavConfigTool.ViewModels
             List<WavPointViewModel>  local = RestPoints.GetRange(0, RestPoints.Count);
             if (local.Count > 1)
             {
-                var p = new WavPointViewModel(0, WavConfigPoint.R, "");
+                var p = new WavPointViewModel(0, PhonemeType.Rest, "");
                 local = local.Prepend(p).ToList();
-                p = new WavPointViewModel(Length, WavConfigPoint.R, "");
+                p = new WavPointViewModel(Length, PhonemeType.Rest, "");
                 local = local.Append(p).ToList();
             }
-            return GetZones(WavConfigPoint.R, local);
+            return GetZones(PhonemeType.Rest, local);
         }
 
         public string Filename { get => ProjectLine.Recline.Filename; }
@@ -111,7 +113,7 @@ namespace WavConfigTool.ViewModels
         {
             ProjectLine = projectLine;
             if (ProjectLine.IsEnabled)
-                Width = (int)(ProjectLine.WaveForm.Length / ProjectLine.WaveForm.BitRate * Settings.ScaleX);
+                Width = (int)(Settings.RealToViewX(ProjectLine.WaveForm.Length / ProjectLine.WaveForm.BitRate));
         }
 
         public void Load()
@@ -175,42 +177,86 @@ namespace WavConfigTool.ViewModels
 
         public void ApplyPoints()
         {
-            ConsonantPoints = new List<WavPointViewModel>();
-            for (int i = 0; i < ProjectLine.ConsonantPoints.Count; i++)
-            {
-                var point = new WavPointViewModel(ProjectLine.ConsonantPoints[i] * Settings.ScaleX,
-                    WavConfigPoint.C,
-                   ProjectLine.Recline.Consonants.Count * 2 > i && i % 2 == 0 ? ProjectLine.Recline.Consonants[i / 2] : "");
-                point.WavPointChanged += delegate { RaisePropertyChanged(() => ConsonantZones); };
-                ConsonantPoints.Add(point);
-            }
+            FillPoints(PhonemeType.Consonant);
+            FillPoints(PhonemeType.Rest);
+            FillPoints(PhonemeType.Vowel);
+            PointsChanged();
+        }
 
-            VowelPoints = new List<WavPointViewModel>();
-            for (int i = 0; i < ProjectLine.VowelPoints.Count; i++)
-            {
-                var point = new WavPointViewModel(
-                    ProjectLine.VowelPoints[i] * Settings.ScaleX,
-                    WavConfigPoint.V,
-                    ProjectLine.Recline.Vowels.Count * 2 > i && i % 2 == 0 ? ProjectLine.Recline.Vowels[i / 2] : "");
-                point.WavPointChanged += delegate { RaisePropertyChanged(() => VowelZones); };
-                VowelPoints.Add(point);
-            }
-
-            RestPoints = new List<WavPointViewModel>();
-            for (int i = 0; i < ProjectLine.RestPoints.Count; i++)
-            {
-                var point = new WavPointViewModel(ProjectLine.RestPoints[i] * Settings.ScaleX,
-                    WavConfigPoint.R,
-                    "");
-                point.WavPointChanged += delegate { RaisePropertyChanged(() => RestZones); };
-                RestPoints.Add(point);
-            }
-
+        public void PointsChanged()
+        {
             RaisePropertiesChanged(
                 () => ConsonantPoints,
                 () => VowelPoints,
                 () => RestPoints
             );
+            RaisePropertiesChanged(
+                () => ConsonantZones,
+                () => VowelZones,
+                () => RestZones
+            );
+        }
+
+        public List<WavPointViewModel> PointsOfType(PhonemeType type)
+        {
+            return type == PhonemeType.Consonant ? ConsonantPoints :
+                (type == PhonemeType.Rest ? RestPoints : VowelPoints);
+        }
+
+
+        public List<WavZoneViewModel> ZonesOfType(PhonemeType type)
+        {
+            return type == PhonemeType.Consonant ? ConsonantZones :
+                (type == PhonemeType.Rest ? RestZones : VowelZones);
+        }
+
+        public string GetPointLabel(PhonemeType type, int i)
+        {
+            var phonemes = ProjectLine.Recline.PhonemesOfType(type);
+            return type == PhonemeType.Rest ? "" : 
+                (phonemes.Count * 2 > i && i % 2 == 0 ? phonemes[i / 2] : "");
+        }
+
+        private void FillPoints(PhonemeType type)
+        {
+            var points = PointsOfType(type);
+            var projectPoints = ProjectLine.PointsOfType(type);
+            points.Clear();
+            for (int i = 0; i < projectPoints.Count; i++)
+            {
+                var point = new WavPointViewModel(
+                    Settings.RealToViewX(projectPoints[i]),
+                    type,
+                    GetPointLabel(type, i));
+                point.WavPointChanged += delegate (double position1, double position2)
+                {
+                    MovePoint(position1, position2, type);
+                };
+                point.WavPointDeleted += delegate (double position)
+                {
+                    DeletePoint(position, type);
+                };
+                points.Add(point);
+            }
+
+        }
+        
+        public void AddPoint(double position, PhonemeType type)
+        {
+            ProjectLine.AddPoint(Settings.ViewToRealX(position), type);
+            ApplyPoints();
+        }
+
+        public void MovePoint(double position1, double position2, PhonemeType type)
+        {
+            ProjectLine.MovePoint(Settings.ViewToRealX(position1), Settings.ViewToRealX(position2), type);
+            ApplyPoints();
+        }
+
+        public void DeletePoint(double position, PhonemeType type)
+        {
+            ProjectLine.DeletePoint(Settings.ViewToRealX(position), type);
+            ApplyPoints();
         }
         
         public override string ToString()
@@ -219,6 +265,25 @@ namespace WavConfigTool.ViewModels
                 return "{WavControlViewModel}";
             else 
                 return $"{ProjectLine.Recline.Name} : WavControlViewModel";
+        }
+
+
+        public ICommand WavControlClickCommand
+        {
+            get
+            {
+                return new DelegateCommand<Point>(WavControlClick, CanWavControlClick);
+            }
+        }
+
+        public void WavControlClick(Point point)
+        {
+            AddPoint((int)point.X, Settings.Mode);
+        }
+
+        public bool CanWavControlClick(Point point)
+        {
+            return ProjectLine.IsEnabled && !ProjectLine.IsCompleted;
         }
     }
 }

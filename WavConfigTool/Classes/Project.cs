@@ -226,7 +226,10 @@ namespace WavConfigTool.Classes
                 usedReclines.Add(recline);
                 var projectLine = ProjectLine.Read(recline, lines[i + 1], lines[i + 2], lines[i + 3]);
                 projectLine.ReclistAndVoicebankCheck(Reclist, Voicebank);
-                projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
+                projectLine.ProjectLineChanged += delegate 
+                {
+                    ProjectLinesChanged();
+                };
                 ProjectLines.Add(projectLine);
             }
             /// Чтение строк реклиста, которых нет в проекте 
@@ -238,7 +241,10 @@ namespace WavConfigTool.Classes
                     {
                         var projectLine = ProjectLine.CreateNewFromRecline(recline);
                         projectLine.ReclistAndVoicebankCheck(Reclist, Voicebank);
-                        projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
+                        projectLine.ProjectLineChanged += delegate 
+                        {
+                            ProjectLinesChanged();
+                        };
                         ProjectLines.Add(projectLine);
                     }
                 }

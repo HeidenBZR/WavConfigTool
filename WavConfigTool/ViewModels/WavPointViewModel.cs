@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using DevExpress.Mvvm;
 using WavConfigTool.Classes;
-using WavConfigTool.ViewTools;
+using WavConfigTool.Tools;
 
 namespace WavConfigTool.ViewModels
 {
@@ -18,19 +13,22 @@ namespace WavConfigTool.ViewModels
         public double Position { get; set; } = 0;
         public Brush BorderBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantBorderBrush"];
         public Brush BackgroundBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantBackBrush"];
-        public WavConfigPoint Type { get; set; } = WavConfigPoint.V;
+        public PhonemeType Type { get; set; } = PhonemeType.Vowel;
 
-        public delegate void WavPointChangedEventHandler();
+        public delegate void WavPointChangedEventHandler(double position1, double position2);
+        public delegate void WavPointDeletedEventHandler(double position1);
         public event WavPointChangedEventHandler WavPointChanged;
+        public event WavPointDeletedEventHandler WavPointDeleted;
 
         public bool IsLoaded { get; set; } = false;
 
         public WavPointViewModel()
         {
             WavPointChanged += delegate { };
+            WavPointDeleted += delegate { };
         }
 
-        public WavPointViewModel(double position, WavConfigPoint type, string text)
+        public WavPointViewModel(double position, PhonemeType type, string text)
         {
             Position = position;
             Type = type;
@@ -38,17 +36,17 @@ namespace WavConfigTool.ViewModels
             // TODO: Переделать на StyleSelector
             switch (type)
             {
-                case WavConfigPoint.V:
+                case PhonemeType.Vowel:
                     BorderBrush = (SolidColorBrush)Application.Current.Resources["VowelBorderBrush"];
                     BackgroundBrush = (SolidColorBrush)Application.Current.Resources["VowelBackBrush"];
                     break;
 
-                case WavConfigPoint.C:
+                case PhonemeType.Consonant:
                     BorderBrush = (SolidColorBrush)Application.Current.Resources["ConsonantBorderBrush"];
                     BackgroundBrush = (SolidColorBrush)Application.Current.Resources["ConsonantBackBrush"];
                     break;
 
-                case WavConfigPoint.R:
+                case PhonemeType.Rest:
                     BorderBrush = (SolidColorBrush)Application.Current.Resources["RestBorderBrush"];
                     BackgroundBrush = (SolidColorBrush)Application.Current.Resources["RestBackBrush"];
                     break;
@@ -71,14 +69,34 @@ namespace WavConfigTool.ViewModels
         {
             if (point != null)
             {
+                var oldValue = Position;
                 Position += point.X;
-                WavPointChanged();
+                WavPointChanged(oldValue, Position);
             }
         }
 
         public bool CanPointMove(Point point)
         {
             return point != null;
+        }
+
+
+        public ICommand DeletePointCommand
+        {
+            get
+            {
+                return new DelegateCommand(DeletePoint, CanDeletePoint);
+            }
+        }
+
+        public void DeletePoint()
+        {
+            WavPointDeleted(Position);
+        }
+
+        public bool CanDeletePoint()
+        {
+            return true;
         }
 
         public override string ToString()

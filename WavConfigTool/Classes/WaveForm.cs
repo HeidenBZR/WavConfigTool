@@ -74,8 +74,9 @@ namespace WavConfigTool.Classes
                 var points = new List<PointF>();
                 var max = Data.Max();
                 long i = 0;
-                float factorX = (float)(Settings.ScaleX / SampleRate * 1000);
-                float factorY = (float)(Settings.ScaleY * Settings.WAM);
+                float factorX = (float)(Settings.RealToViewX(1000 / (double)SampleRate));
+                float factorY = (float)(Settings.RealToViewY(Settings.WAM));
+
                 float prev = 0;
                 float preprev = 0;
                 for (; i < Length; i += PointSkip)

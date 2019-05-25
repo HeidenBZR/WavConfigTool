@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:WavConfigTool.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
+    xmlns:vt="clr-namespace:WavConfigTool.ViewTools"
     Width="{Binding Width, FallbackValue=1000}"
     Height="100"
     Margin="0,10,0,10"
@@ -14,6 +15,16 @@
     Background="{DynamicResource WavControlBackgroundBrush}"
     Focusable="False"
     mc:Ignorable="d">
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:EventToCommand
+            Command="{Binding WavControlClickCommand}"
+            EventName="MouseLeftButtonDown"
+            PassEventArgsToCommand="True">
+            <dxmvvm:EventToCommand.EventArgsConverter>
+                <vt:MouseButtonEventArgsConverter />
+            </dxmvvm:EventToCommand.EventArgsConverter>
+        </dxmvvm:EventToCommand>
+    </dxmvvm:Interaction.Behaviors>
     <d:UserControl.DataContext>
         <vm:WavControlViewModel />
     </d:UserControl.DataContext>
