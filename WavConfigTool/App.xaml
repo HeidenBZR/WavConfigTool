@@ -17,6 +17,7 @@
                 <ResourceDictionary Source="Styles/ContentControls.xaml" />
                 <ResourceDictionary Source="Styles/UserControls.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

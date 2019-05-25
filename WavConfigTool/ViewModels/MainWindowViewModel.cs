@@ -83,6 +83,8 @@ namespace WavConfigTool.ViewModels
         public WavConfigPoint ModeV { get; } = WavConfigPoint.V;
         public WavConfigPoint ModeR { get; } = WavConfigPoint.R;
 
+        public bool IsLoading { get; set; } = false;
+
         public string ProjectSavedString { get => Settings.IsUnsaved ? "*" : ""; }
         public string Title
         {
@@ -107,6 +109,7 @@ namespace WavConfigTool.ViewModels
 
         async void LoadProjectAsync()
         {
+            IsLoading = true;
             await Task.Run(() => LoadProject());
             if (!Project.IsLoaded)
             {
@@ -118,6 +121,7 @@ namespace WavConfigTool.ViewModels
 
             PagerViewModel = new PagerViewModel(wavControls);
             await Task.Run(() => Parallel.ForEach(PagerViewModel.Collection, (model) => { model.Load(); }));
+            IsLoading = false;
         }
 
         void LoadProject()

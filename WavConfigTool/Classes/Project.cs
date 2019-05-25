@@ -32,7 +32,8 @@ namespace WavConfigTool.Classes
         public string Suffix { get => _suffix; set { _suffix = value; ProjectChanged(); } }
 
         public List<ProjectLine> ProjectLines { get => _projectLines; set { _projectLines = value; ProjectChanged(); } }
-        public bool IsLoaded = false;
+        public bool IsLoaded { get; set; } = false;
+            
 
         #endregion
 
@@ -209,7 +210,7 @@ namespace WavConfigTool.Classes
                 i++;
             }
             /// Чтение опций
-            for (; lines[i].StartsWith("$"); i++)
+            for (; lines.Length > i && lines[i].StartsWith("$"); i++)
             {
                 if (!lines[i].Contains("="))
                     continue;
