@@ -17,7 +17,16 @@ namespace WavConfigTool.Classes
         public List<Zone> RestZones { get; private set; } = new List<Zone>();
 
         public Recline Recline { get; set; }
-        public bool IsCompleted { get; set; }
+        public bool IsCompleted
+        {
+            get
+            {
+                return RestPoints != null && VowelPoints != null && ConsonantPoints != null &&
+                    RestPoints.Count >= Recline.Rests.Count * 2 - 2 &&
+                    ConsonantPoints.Count >= Recline.Consonants.Count * 2 &&
+                    VowelPoints.Count >= Recline.Vowels.Count * 2;
+            }
+        }
 
         public int WavImageHash { get; set; }
         public WaveForm WaveForm { get; set; }
@@ -153,6 +162,10 @@ namespace WavConfigTool.Classes
         public int AddPoint(int position, PhonemeType type)
         {
             var points = PointsOfType(type);
+            var phonemes = Recline.PhonemesOfType(type);
+            var neededCount = type == PhonemeType.Rest ? phonemes.Count * 2 - 2 : phonemes.Count * 2;
+            if (points.Count >= neededCount)
+                return -1;
             points.Add(position);
             points.Sort();
             ProjectLinePointsChanged();

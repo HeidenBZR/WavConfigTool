@@ -192,7 +192,8 @@ namespace WavConfigTool.ViewModels
             RaisePropertiesChanged(
                 () => ConsonantPoints,
                 () => VowelPoints,
-                () => RestPoints
+                () => RestPoints,
+                () => IsCompleted
             );
             RaisePropertiesChanged(
                 () => ConsonantZones,
@@ -263,6 +264,8 @@ namespace WavConfigTool.ViewModels
         {
             position = CheckPosition(position);
             var i = ProjectLine.AddPoint(Settings.ViewToRealX(position), type);
+            if (i == -1)
+                return;
             var points = PointsOfType(type);
             points.Add(CreatePoint(position, type, i));
             PointsChanged();

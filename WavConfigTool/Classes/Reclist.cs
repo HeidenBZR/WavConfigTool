@@ -50,6 +50,7 @@ namespace WavConfigTool.Classes
             var vs = lines[0].Split(' ');
             var cs = lines[1].Split(' ');
             Phonemes = new List<Phoneme>();
+            Phonemes.Add(new Rest("-"));
             foreach (string v in vs) Phonemes.Add(new Vowel(v));
             foreach (string c in cs) Phonemes.Add(new Consonant(c));
 
