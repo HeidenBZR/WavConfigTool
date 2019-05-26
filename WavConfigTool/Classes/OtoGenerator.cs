@@ -177,6 +177,9 @@ namespace WavConfigTool.Classes
                     cutoff = p2.Zone.Out - p2.Attack;
                     break;
 
+                case "RC":
+                case "RCC":
+                case "RCCC":
                 case "RCCCC":
                     offset = p1.Zone.In;
                     overlap = p1.Zone.Out + p1.Attack;
@@ -224,7 +227,7 @@ namespace WavConfigTool.Classes
                     consonant = p2.Zone.Out - p2.Attack;
                     cutoff = p2.Zone.Out;
                     break;
-
+                    
                 default:
                     return "";
             }

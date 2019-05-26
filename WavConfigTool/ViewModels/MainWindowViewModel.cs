@@ -208,11 +208,11 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public ICommand SaveOtoCommand
+        public ICommand OpenProjectCommand
         {
             get
             {
-                return new SaveFileCommand((obj) =>
+                return new OpenFileCommand((obj) =>
                 {
                     string filename = (string)obj;
                     if (filename.Length > 0)
