@@ -61,17 +61,6 @@
                 Text="Sample is not avialable" />
         </Canvas>
         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <Canvas.ContextMenu>
-                <ContextMenu Name="WavContextMenu">
-                    <MenuItem Header="Сбросить все маркеры в текущем аудио" Tag="All" />
-                    <Separator />
-                    <MenuItem Header="Сбросить все маркеры гласных (V) в текущем аудио" Tag="V" />
-                    <MenuItem Header="Сбросить все маркеры согласных (C) в текущем аудио" Tag="C" />
-                    <MenuItem Header="Сбросить все маркеры области данных (D) в текущем аудио" Tag="D" />
-                    <Separator />
-                    <MenuItem Header="Предпросмотр oto.ini" />
-                </ContextMenu>
-            </Canvas.ContextMenu>
             <Image
                 Name="WavImage"
                 Height="100"
@@ -108,9 +97,9 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top">
                 <Rectangle
-                    Fill="{DynamicResource BackgroundBrush}"
+                    Fill="{DynamicResource {x:Static SystemColors.ControlBrush}}"
                     Opacity="0.8"
-                    Stroke="{DynamicResource BorderBrush}" />
+                    Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrush}}" />
                 <StackPanel
                     Margin="5"
                     HorizontalAlignment="Left"
@@ -118,7 +107,20 @@
                     Orientation="Horizontal">
                     <TextBlock Margin="0" Text="{Binding Number}" />
                     <TextBlock Margin="0" Text=". " />
-                    <TextBlock Margin="0,0,5,0" Text="{Binding Filename}" />
+                    <TextBlock Margin="0,0,5,0" Text="{Binding Filename}">
+
+                        <TextBlock.ContextMenu>
+                            <ContextMenu Name="WavContextMenu">
+                                <MenuItem Header="Сбросить все маркеры в текущем аудио" Tag="All" />
+                                <Separator />
+                                <MenuItem Header="Сбросить все маркеры гласных (V) в текущем аудио" Tag="V" />
+                                <MenuItem Header="Сбросить все маркеры согласных (C) в текущем аудио" Tag="C" />
+                                <MenuItem Header="Сбросить все маркеры области данных (D) в текущем аудио" Tag="D" />
+                                <Separator />
+                                <MenuItem Header="Предпросмотр oto.ini" />
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                    </TextBlock>
                     <ListView ItemsSource="{Binding Phonemes}" Style="{DynamicResource ListViewPhonemes}">
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>

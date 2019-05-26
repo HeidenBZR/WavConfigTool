@@ -20,8 +20,8 @@ namespace WavConfigTool.ViewTools
         protected override object Convert(object sender, DragDeltaEventArgs args)
         {
             return new Point(
-                Settings.ViewToRealX(args.HorizontalChange),
-                Settings.ViewToRealY(args.VerticalChange)
+                args.HorizontalChange,
+                args.VerticalChange
             );
         }
     }

@@ -157,14 +157,19 @@ namespace WavConfigTool.Classes
         {
             var points = PointsOfType(type);
             points.Add(position);
+            points.Sort();
             ProjectLineChanged();
         }
 
         public void MovePoint(int position1, int position2, PhonemeType type)
         {
             var points = PointsOfType(type);
-            points.Remove(position1);
-            points.Add(position2);
+            int i = points.IndexOf(position1);
+            if (i > -1)
+            {
+                points[i] = position2;
+            }
+            points.Sort();
             ProjectLineChanged();
         }
 
