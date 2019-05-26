@@ -15,10 +15,11 @@ namespace WavConfigTool
         public static ViewManager Instance { get { if (_instance is null) _instance = new ViewManager(); return _instance; } }
 
         public ProjectWindow ProjectWindow { get; set; }
-        public static void CallProject(ProjectViewModel projectViewModel)
+        public static bool CallProject(ProjectViewModel projectViewModel)
         {
             Instance.ProjectWindow = new ProjectWindow() { DataContext = projectViewModel };
-            Instance.ProjectWindow.ShowDialog();
+            var result = Instance.ProjectWindow.ShowDialog();
+            return result.HasValue && result.Value;
         }
     }
 }

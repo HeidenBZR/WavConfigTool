@@ -53,6 +53,10 @@
             Command="{Binding OpenProjectCommand}"
             CommandParameter=""
             KeyGesture="CTRL+O" />
+        <dxmvvm:KeyToCommand
+            Command="{Binding NewProjectCommand}"
+            CommandParameter=""
+            KeyGesture="CTRL+N" />
     </dxmvvm:Interaction.Behaviors>
     <Grid>
         <Grid.RowDefinitions>

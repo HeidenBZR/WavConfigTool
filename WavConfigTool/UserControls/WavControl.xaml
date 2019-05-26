@@ -11,10 +11,19 @@
     Width="{Binding Width, FallbackValue=1000}"
     Height="100"
     Margin="0,10,0,10"
-    HorizontalAlignment="Stretch"
+    HorizontalAlignment="Left"
     Background="{DynamicResource WavControlBackgroundBrush}"
     Focusable="False"
     mc:Ignorable="d">
+    <UserControl.Style>
+        <Style TargetType="UserControl">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DisabledProperty}" Value="True">
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Style>
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:EventToCommand
             Command="{Binding WavControlClickCommand}"
@@ -52,7 +61,7 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Background="#22FF2222"
-            Visibility="{Binding DisabledProperty}">
+            Visibility="{Binding DisabledProperty, TargetNullValue=Hidden}">
             <TextBlock
                 Margin="20,40"
                 HorizontalAlignment="Center"

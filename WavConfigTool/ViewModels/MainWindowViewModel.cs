@@ -140,6 +140,7 @@ namespace WavConfigTool.ViewModels
         async void LoadProjectAsync()
         {
             IsLoading = true;
+            RaisePropertyChanged(() => IsLoading);
             await Task.Run(() => LoadProject());
             if (!Project.IsLoaded)
             {
@@ -153,6 +154,7 @@ namespace WavConfigTool.ViewModels
             PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
             await Task.Run(() => Parallel.ForEach(PagerViewModel.Collection, (model) => { model.Load(); }));
             IsLoading = false;
+            RaisePropertyChanged(() => IsLoading);
         }
 
         void LoadProject()
@@ -172,6 +174,13 @@ namespace WavConfigTool.ViewModels
 
         }
 
+        public void ResetProject()
+        {
+            PagerViewModel.Clear();
+            Project = null;
+            IsLoading = true;
+        }
+
         public ICommand SetMode
         {
             get
@@ -180,6 +189,27 @@ namespace WavConfigTool.ViewModels
                 {
                     Mode = (PhonemeType)obj;
                 }, param => (param != null));
+            }
+        }
+
+        public ICommand NewProjectCommand
+        {
+            get
+            {
+                return new SaveFileCommand((obj) =>
+                {
+                    string filename = (string)obj;
+                    if (filename.Length > 0)
+                    {
+                        Settings.ProjectFile = (string)obj;
+                        ResetProject();
+                        LoadProjectAsync();
+                    }
+                },
+                "Save New Project",
+                "WavConfig Project Files|*.wconfig|*|*",
+                param => (param != null),
+                "voicebank");
             }
         }
 
@@ -193,13 +223,14 @@ namespace WavConfigTool.ViewModels
                     if (filename.Length > 0)
                     {
                         Settings.ProjectFile = (string)obj;
-                        PagerViewModel.Clear();
+                        ResetProject();
                         LoadProjectAsync();
                     }
                 },
                 "Open Project",
                 "WavConfig Project Files|*.wconfig|*|*",
-                param => (param != null));
+                param => (param != null),
+                "voicebank");
             }
         }
 
@@ -209,7 +240,9 @@ namespace WavConfigTool.ViewModels
             {
                 return new DelegateCommonCommand((obj) =>
                 {
-                    ViewManager.CallProject(new ProjectViewModel(Project));
+                    var projectViewModel = new ProjectViewModel(Project);
+                    projectViewModel.ProjectDataChanded += delegate { LoadProjectAsync(); };
+                    ViewManager.CallProject(projectViewModel);
                 }, (param) => (Project != null));
             }
         }

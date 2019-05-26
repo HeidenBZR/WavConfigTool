@@ -58,9 +58,10 @@ namespace WavConfigTool.Classes
             for (int i = 2; i < lines.Length; i++)
             {
                 string[] items = lines[i].Split('\t');
-                if (items.Length != 3)
+                if (items.Length < 2)
                     continue;
-                AddRecline(new Recline(this, items[0], items[1], items[2]));
+                string desc = items.Length >= 3 ? items[2] : $"{items[0]}" ;
+                AddRecline(new Recline(this, items[0], items[1], desc));
             }
 
             return true;
