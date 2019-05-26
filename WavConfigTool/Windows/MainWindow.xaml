@@ -48,6 +48,11 @@
         <dxmvvm:KeyToCommand Command="{Binding PagerViewModel.SetNextPageCommand}" KeyGesture="OemCloseBrackets" />
         <dxmvvm:KeyToCommand Command="{Binding PagerViewModel.SetFirstPageCommand}" KeyGesture="SHIFT+OemOpenBrackets" />
         <dxmvvm:KeyToCommand Command="{Binding PagerViewModel.SetLastPageCommand}" KeyGesture="SHIFT+OemCloseBrackets" />
+        <dxmvvm:KeyToCommand Command="{Binding CallProjectCommand}" KeyGesture="CTRL+P" />
+        <dxmvvm:KeyToCommand
+            Command="{Binding OpenProjectCommand}"
+            CommandParameter=""
+            KeyGesture="CTRL+O" />
     </dxmvvm:Interaction.Behaviors>
     <Grid>
         <Grid.RowDefinitions>
@@ -190,8 +195,8 @@
                                 VerticalAlignment="Center"
                                 FontSize="14"
                                 FontWeight="Bold"
-                                Text="{Binding VoicebankName}" />
-                            <TextBlock VerticalAlignment="Center" Text="{Binding ReclistName}" />
+                                Text="{Binding VoicebankName, TargetNullValue='[VOICEBANK]'}" />
+                            <TextBlock VerticalAlignment="Center" Text="{Binding ReclistName, TargetNullValue='[RECLIST]'}" />
                             <Button
                                 Margin="0,5,0,0"
                                 Command="{Binding CallProjectCommand}"
@@ -219,14 +224,14 @@
                                 Width="40"
                                 Padding="0"
                                 VerticalAlignment="Center"
-                                Text="{Binding VowelAttack, Mode=TwoWay}" />
+                                Text="{Binding VowelAttack, Mode=TwoWay, TargetNullValue=0}" />
 
                             <TextBlock Margin="3,0" Text="C:" />
                             <TextBox
                                 Width="40"
                                 Padding="0"
                                 VerticalAlignment="Center"
-                                Text="{Binding ConsonantAttack, Mode=TwoWay}" />
+                                Text="{Binding ConsonantAttack, Mode=TwoWay, TargetNullValue=0}" />
 
                         </StackPanel>
                     </StackPanel>
@@ -250,7 +255,7 @@
                                 Width="50"
                                 Padding="0"
                                 VerticalAlignment="Center"
-                                Text="{Binding VowelSustain, Mode=TwoWay}" />
+                                Text="{Binding VowelSustain, Mode=TwoWay, TargetNullValue=0}" />
 
                         </StackPanel>
                     </StackPanel>
@@ -310,7 +315,7 @@
                                 Padding="0"
                                 VerticalAlignment="Center"
                                 IsEnabled="{Binding IsNotLoading}"
-                                Text="{Binding WavAmplitudeMultiplayer, Mode=TwoWay, TargetNullValue=1, FallbackValue=1}" />
+                                Text="{Binding WavAmplitudeMultiplayer, Mode=TwoWay, TargetNullValue=1}" />
 
                         </StackPanel>
                     </StackPanel>

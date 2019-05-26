@@ -27,6 +27,8 @@ namespace WavConfigTool.ViewModels
             set
             {
                 _project = value;
+                if (_project == null)
+                    return;
                 _project.ProjectChanged += () =>
                 {
                     RaisePropertiesChanged(
@@ -52,15 +54,15 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public string ReclistName { get => Project.Reclist.Name; }
-        public string VoicebankName { get => Project.Voicebank.Name; }
+        public string ReclistName { get => Project == null || Project.Reclist == null ? null : Project.Reclist.Name; }
+        public string VoicebankName { get => Project == null || Project.Voicebank == null ? null : Project.Voicebank.Name; }
         public string VoicebankImagePath { get => Project.Voicebank.ImagePath; }
         public BitmapImage VoicebankImage
         {
             get
             {
-                if (VoicebankImagePath != "")
-                    return new BitmapImage(new Uri(VoicebankImagePath));
+                if (Project != null && Project.Voicebank != null && Project.Voicebank.ImagePath != "")
+                    return new BitmapImage(new Uri(Project.Voicebank.ImagePath));
                 else
                     return null;
             }
@@ -68,14 +70,14 @@ namespace WavConfigTool.ViewModels
 
         public PagerViewModel PagerViewModel { get; set; }
 
-        public int ConsonantAttack { get => Project.ConsonantAttack; set => Project.ConsonantAttack = value; }
-        public int VowelAttack { get => Project.VowelAttack; set => Project.VowelAttack = value; }
-        public int VowelSustain { get => Project.VowelSustain; set => Project.VowelSustain = value; }
+        public int ConsonantAttack { get => Project == null ? 0 : Project.ConsonantAttack; set => Project.ConsonantAttack = value; }
+        public int VowelAttack { get => Project == null ? 0 : Project.VowelAttack; set => Project.VowelAttack = value; }
+        public int VowelSustain { get => Project == null ? 0 : Project.VowelSustain; set => Project.VowelSustain = value; }
 
-        public string Prefix { get => Project.Prefix; set => Project.Prefix = value; }
-        public string Suffix { get => Project.Suffix; set => Project.Suffix = value; }
+        public string Prefix { get => Project == null ? "" : Project.Prefix; set => Project.Prefix = value; }
+        public string Suffix { get => Project == null ? "" : Project.Suffix; set => Project.Suffix = value; }
 
-        public double WavAmplitudeMultiplayer { get => Project.WavAmplitudeMultiplayer; set => Project.WavAmplitudeMultiplayer = value; }
+        public double WavAmplitudeMultiplayer { get => Project == null ? 1 : Project.WavAmplitudeMultiplayer; set => Project.WavAmplitudeMultiplayer = value; }
 
         public PhonemeType Mode { get => Settings.Mode; set => Settings.Mode = value; }
         public string ModeSymbol { get => SymbolOfType(Mode); }
@@ -99,7 +101,19 @@ namespace WavConfigTool.ViewModels
         public string ProjectSavedString { get => Settings.IsUnsaved ? "*" : ""; }
         public string Title
         {
-            get => $"WavConfig v.{Version.ToString()} - {ProjectSavedString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
+            get
+            {
+                if (Project == null)
+                    return $"WavConfig v.{Version.ToString()} - {ProjectSavedString}";
+                if (Project.Voicebank == null)
+                    return $"WavConfig v.{Version.ToString()} - {ProjectSavedString}  : {Project.Reclist.Name}";
+                if (Project.Reclist == null)
+                    return $"WavConfig v.{Version.ToString()} - {ProjectSavedString}  [{Project.Voicebank.Name}]";
+                if (PagerViewModel == null || PagerViewModel.PagesTotal == 0)
+                    return $"WavConfig v.{Version.ToString()} - {ProjectSavedString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
+                return $"WavConfig v.{Version.ToString()} - {ProjectSavedString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
+                    $"Page {PagerViewModel.CurrentPage + 1}/{PagerViewModel.PagesTotal}";
+            }
         }
 
         public string SymbolOfType(PhonemeType type)
@@ -136,6 +150,7 @@ namespace WavConfigTool.ViewModels
                 await Task.Run(() => { wavControls.Add(new WavControlViewModel(Project.ProjectLines[i]) { Number = i }); });
 
             PagerViewModel = new PagerViewModel(wavControls);
+            PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
             await Task.Run(() => Parallel.ForEach(PagerViewModel.Collection, (model) => { model.Load(); }));
             IsLoading = false;
         }
@@ -165,6 +180,26 @@ namespace WavConfigTool.ViewModels
                 {
                     Mode = (PhonemeType)obj;
                 }, param => (param != null));
+            }
+        }
+
+        public ICommand OpenProjectCommand
+        {
+            get
+            {
+                return new OpenFileCommand((obj) =>
+                {
+                    string filename = (string)obj;
+                    if (filename.Length > 0)
+                    {
+                        Settings.ProjectFile = (string)obj;
+                        PagerViewModel.Clear();
+                        LoadProjectAsync();
+                    }
+                },
+                "Open Project",
+                "WavConfig Project Files|*.wconfig|*|*",
+                param => (param != null));
             }
         }
 

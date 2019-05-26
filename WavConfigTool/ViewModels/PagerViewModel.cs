@@ -25,8 +25,10 @@ namespace WavConfigTool.ViewModels
         }
         public int CurrentPage { get => _currentPage; set => SetPageCommand.Execute(value); }
         public int PageSize { get => _pageSize; set => SetPageSizeCommand.Execute(value); }
+        public delegate void PagerChangedHandler();
+        public event PagerChangedHandler PagerChanged;
 
-
+        public bool IsHidden { get; set; } = false;
 
         public int CurrentPageView { get => CurrentPage + 1; set => CurrentPage = value - 1; }
 
@@ -35,6 +37,8 @@ namespace WavConfigTool.ViewModels
             get
             {
                 var pageContent = new ObservableCollection<WavControlViewModel>();
+                if (IsHidden)
+                    return pageContent;
                 for (int i = PageSize * CurrentPage; i < PageSize * CurrentPage + PageSize; i++)
                 {
                     if (i < Collection.Count)
@@ -46,7 +50,9 @@ namespace WavConfigTool.ViewModels
 
         public PagerViewModel()
         {
+            PagerChanged += delegate { };
             RaisePropertyChanged(() => PageContent);
+            IsHidden = false;
         }
 
         public PagerViewModel(ObservableCollection<WavControlViewModel> collection)
@@ -55,8 +61,17 @@ namespace WavConfigTool.ViewModels
             RaisePropertyChanged(() => PageContent);
             RaisePropertyChanged(() => CurrentPageView);
             RaisePropertyChanged(() => PagesTotal);
+            IsHidden = false;
 
-            
+            PagerChanged += delegate { };
+
+        }
+
+        public void Clear()
+        {
+            _currentPage = 0;
+            Collection.Clear();
+            IsHidden = true;
         }
 
         public ICommand SetFirstPageCommand
@@ -68,6 +83,7 @@ namespace WavConfigTool.ViewModels
                     CurrentPage = 0;
                     RaisePropertyChanged(() => CurrentPageView);
                     RaisePropertyChanged(() => PageContent);
+                    PagerChanged();
                 }, () => PagesTotal > 0);
             }
         }
@@ -84,6 +100,7 @@ namespace WavConfigTool.ViewModels
                         CurrentPage = 0;
                     RaisePropertyChanged(() => CurrentPageView);
                     RaisePropertyChanged(() => PageContent);
+                    PagerChanged();
                 }, () => PagesTotal > 0);
             }
         }
@@ -96,6 +113,7 @@ namespace WavConfigTool.ViewModels
                     CurrentPage++;
                     RaisePropertyChanged(() => CurrentPageView);
                     RaisePropertyChanged(() => PageContent);
+                    PagerChanged();
                 }, () =>  PagesTotal > 0 && CurrentPage < PagesTotal - 1 );
             }
         }
@@ -109,6 +127,7 @@ namespace WavConfigTool.ViewModels
                     CurrentPage--;
                     RaisePropertyChanged(() => CurrentPageView);
                     RaisePropertyChanged(() => PageContent);
+                    PagerChanged();
                 }, () => PagesTotal > 0 && CurrentPage > 0);
             }
         }
@@ -122,6 +141,7 @@ namespace WavConfigTool.ViewModels
                     _currentPage = (int)obj;
                     RaisePropertyChanged(() => CurrentPageView);
                     RaisePropertyChanged(() => PageContent);
+                    PagerChanged();
                 }, param => (
                     param is int &&
                     (int)param < PageSize &&
@@ -141,6 +161,7 @@ namespace WavConfigTool.ViewModels
                     RaisePropertyChanged(() => PageSize);
                     RaisePropertyChanged(() => PagesTotal);
                     RaisePropertyChanged(() => PageContent);
+                    PagerChanged();
                 }, param => (
                     param is int &&
                     (int)param > 0));
