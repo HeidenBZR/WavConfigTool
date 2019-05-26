@@ -24,6 +24,7 @@ namespace WavConfigTool.Classes
         private int _consonantAttack = 30;
         private string _prefix = "";
         private string _suffix = "";
+        private double _wavAmplitudeMultiplayer = 1;
 
         public int VowelSustain { get => _vowelSustain; set { _vowelSustain = value; ProjectChanged(); } }
         public int VowelAttack { get => _vowelAttack; set { _vowelAttack = value; ProjectChanged(); } }
@@ -33,7 +34,8 @@ namespace WavConfigTool.Classes
 
         public List<ProjectLine> ProjectLines { get => _projectLines; set { _projectLines = value; ProjectChanged(); } }
         public bool IsLoaded { get; set; } = false;
-            
+        public double WavAmplitudeMultiplayer { get => _wavAmplitudeMultiplayer; set { _wavAmplitudeMultiplayer = value; ProjectChanged(); Settings.WAM = _wavAmplitudeMultiplayer; } }
+
 
         #endregion
 
@@ -132,6 +134,7 @@ namespace WavConfigTool.Classes
             text.Append($"$VowelSustain={VowelSustain}\r\n");
             text.Append($"$VowelAttack={VowelAttack}\r\n");
             text.Append($"$ConsonantAttack={ConsonantAttack}\r\n");
+            text.Append($"$WavAmplitudeMultiplayer={WavAmplitudeMultiplayer.ToString("F2")}\r\n");
 
             foreach (var projectLine in ProjectLines)
             {
@@ -194,6 +197,11 @@ namespace WavConfigTool.Classes
                 case "ConsonantAttack":
                     if (int.TryParse(value, out int consonantAttack))
                         ConsonantAttack = consonantAttack;
+                    break;
+
+                case "WavAmplitudeMultiplayer":
+                    if (double.TryParse(value, out double wavAmplitudeMultiplayer))
+                        WavAmplitudeMultiplayer = wavAmplitudeMultiplayer;
                     break;
             }
         }

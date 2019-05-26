@@ -75,7 +75,7 @@ namespace WavConfigTool.ViewModels
         public string Prefix { get => Project.Prefix; set => Project.Prefix = value; }
         public string Suffix { get => Project.Suffix; set => Project.Suffix = value; }
 
-        public double WavAmplitudeMultiplayer { get; set; }
+        public double WavAmplitudeMultiplayer { get => Project.WavAmplitudeMultiplayer; set => Project.WavAmplitudeMultiplayer = value; }
 
         public PhonemeType Mode { get => Settings.Mode; set => Settings.Mode = value; }
         public string ModeSymbol { get => SymbolOfType(Mode); }

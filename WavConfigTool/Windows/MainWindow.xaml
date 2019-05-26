@@ -237,7 +237,7 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                            Text="{Binding Prefix, Mode=TwoWay}" />
+                            Text="{Binding Prefix, Mode=TwoWay, FallbackValue='', TargetNullValue=''}" />
 
                         <TextBlock Margin="3,0" Text="Suffix:" />
                         <TextBox
@@ -245,7 +245,7 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                            Text="{Binding Suffix, Mode=TwoWay}" />
+                            Text="{Binding Suffix, Mode=TwoWay, FallbackValue='', TargetNullValue=''}" />
 
                     </StackPanel>
                 </StackPanel>
@@ -274,7 +274,7 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                            Text="{Binding WavAmplitudeMultiplayer, Mode=TwoWay}" />
+                            Text="{Binding WavAmplitudeMultiplayer, Mode=TwoWay, TargetNullValue=1, FallbackValue=1}" />
 
                     </StackPanel>
                 </StackPanel>
