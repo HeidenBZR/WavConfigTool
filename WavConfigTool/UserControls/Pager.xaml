@@ -6,79 +6,67 @@
     xmlns:local="clr-namespace:WavConfigTool.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
-    d:DesignHeight="80"
+    d:DesignHeight="30"
     d:DesignWidth="300"
     mc:Ignorable="d">
     <d:UserControl.DataContext>
         <vm:PagerViewModel />
     </d:UserControl.DataContext>
-    <Border
-        Margin="4,4,0,4"
-        BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrush}}"
-        BorderThickness="1">
-        <StackPanel Height="60">
-            <TextBlock
-                Padding="0"
-                HorizontalAlignment="Center"
-                Text="Pages" />
-            <StackPanel
-                Height="25"
-                Margin="10"
-                VerticalAlignment="Center"
-                Orientation="Horizontal">
-                <Button
-                    Margin="3,0"
-                    Padding="3"
-                    Command="{Binding SetFirstPageCommand}"
-                    CommandParameter=""
-                    Content="◀◀" />
-                <Button
-                    Margin="3,0"
-                    Padding="3"
-                    Command="{Binding SetPreiousPageCommand}"
-                    CommandParameter=""
-                    Content="◀" />
-                <TextBox
-                    Width="30"
-                    Margin="3,0"
-                    Padding="0"
-                    VerticalAlignment="Center"
-                    HorizontalContentAlignment="Right"
-                    Text="{Binding CurrentPageView, Mode=TwoWay}" />
-                <TextBlock
-                    Padding="0"
-                    VerticalAlignment="Center"
-                    Text="/" />
-                <TextBlock
-                    Width="25"
-                    Margin="3,0"
-                    Padding="0"
-                    VerticalAlignment="Center"
-                    Text="{Binding PagesTotal}" />
-                <Button
-                    Margin="3,0"
-                    Padding="3"
-                    Command="{Binding SetNextPageCommand}"
-                    CommandParameter=""
-                    Content="▶" />
-                <Button
-                    Margin="3,0"
-                    Padding="3"
-                    Command="{Binding SetLastPageCommand}"
-                    CommandParameter=""
-                    Content="▶▶" />
-                <TextBlock
-                    Margin="3,0"
-                    Padding="0"
-                    VerticalAlignment="Center"
-                    Text="Page Size: " />
-                <TextBox
-                    Width="40"
-                    Margin="3,0"
-                    Padding="1"
-                    VerticalAlignment="Center"
-                    Text="{Binding PageSize, Mode=TwoWay}" />
-            </StackPanel>
-        </StackPanel>
-    </Border>
+    <StackPanel
+        Height="25"
+        VerticalAlignment="Center"
+        Orientation="Horizontal">
+        <Button
+            Margin="3,0"
+            Padding="3"
+            Command="{Binding SetFirstPageCommand}"
+            CommandParameter=""
+            Content="◀◀" />
+        <Button
+            Margin="3,0"
+            Padding="3"
+            Command="{Binding SetPreiousPageCommand}"
+            CommandParameter=""
+            Content="◀" />
+        <TextBox
+            Width="30"
+            Margin="3,0"
+            Padding="0"
+            VerticalAlignment="Center"
+            HorizontalContentAlignment="Right"
+            Text="{Binding CurrentPageView, Mode=TwoWay}" />
+        <TextBlock
+            Padding="0"
+            VerticalAlignment="Center"
+            Text="/" />
+        <TextBlock
+            Width="25"
+            Margin="3,0"
+            Padding="0"
+            VerticalAlignment="Center"
+            Text="{Binding PagesTotal}" />
+        <Button
+            Margin="3,0"
+            Padding="3"
+            Command="{Binding SetNextPageCommand}"
+            CommandParameter=""
+            Content="▶" />
+        <Button
+            Margin="3,0"
+            Padding="3"
+            Command="{Binding SetLastPageCommand}"
+            CommandParameter=""
+            Content="▶▶" />
+        <TextBlock
+            Margin="3,0"
+            Padding="0"
+            VerticalAlignment="Center"
+            Text="Page Size: " />
+        <TextBox
+            Width="40"
+            Margin="3,0"
+            Padding="1"
+            VerticalAlignment="Center"
+            Text="{Binding PageSize, Mode=TwoWay}" />
+    </StackPanel>
 </UserControl>

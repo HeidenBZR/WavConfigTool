@@ -59,5 +59,76 @@
     <DataTemplate x:Key="WavZoneItemsConrolItem">
         <uc:WavZone />
     </DataTemplate>
+    <Style x:Key="ToolsPanelButton" TargetType="{x:Type Button}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="ContentTemplate" Value="{DynamicResource ButtonDataTemplate}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border
+                        Width="200"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Stretch"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        Cursor="Hand">
+                        <Canvas Name="Bg" Background="{TemplateBinding Background}">
+                            <StackPanel
+                                Width="200"
+                                Height="10"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch">
+                                <Line
+                                    Name="L1"
+                                    Margin="0,4,0,2.5"
+                                    HorizontalAlignment="Center"
+                                    SnapsToDevicePixels="True"
+                                    Stroke="{TemplateBinding BorderBrush}"
+                                    StrokeEndLineCap="Triangle"
+                                    X1="0"
+                                    X2="190"
+                                    Y1="0"
+                                    Y2="0" />
+                                <Line
+                                    Name="L2"
+                                    HorizontalAlignment="Center"
+                                    SnapsToDevicePixels="True"
+                                    Stroke="{TemplateBinding BorderBrush}"
+                                    StrokeEndLineCap="Triangle"
+                                    X1="0"
+                                    X2="190"
+                                    Y1="0"
+                                    Y2="0" />
+                            </StackPanel>
+                        </Canvas>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="Bg" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="true" />
+                        <Trigger Property="IsDefaulted" Value="true" />
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
+                            <Setter TargetName="Bg" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="ToggleButton.IsChecked" Value="true" />
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

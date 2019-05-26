@@ -43,7 +43,10 @@
                 </dxmvvm:EventToCommand>
             </dxmvvm:Interaction.Behaviors>
         </Thumb>
-        <Grid Height="100" VerticalAlignment="Stretch">
+        <Grid
+            Canvas.Left="{Binding Position, FallbackValue=0}"
+            Height="100"
+            VerticalAlignment="Stretch">
 
             <TextBlock
                 Name="TypeLabel"

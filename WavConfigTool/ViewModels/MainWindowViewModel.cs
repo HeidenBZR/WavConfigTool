@@ -88,6 +88,11 @@ namespace WavConfigTool.ViewModels
         public string ModeVSymbol { get => SymbolOfType(ModeV); }
         public string ModeRSymbol { get => SymbolOfType(ModeR); }
 
+        public double ToolsPanelHeight { get; set; } = 80;
+        public const int TOOLS_PANEL_OPENED_HEIGHT = 80;
+        private bool _isToolsPanelShown = true;
+        public bool IsToolsPanelShown { get => _isToolsPanelShown; set { _isToolsPanelShown = value; RaisePropertyChanged(() => IsToolsPanelShown);  } }
+
         public bool IsLoading { get; set; } = false;
 
         public string ProjectSavedString { get => Settings.IsUnsaved ? "*" : ""; }
@@ -165,6 +170,24 @@ namespace WavConfigTool.ViewModels
                 {
                     ViewManager.CallProject(new ProjectViewModel(Project));
                 }, (param) => (Project != null));
+            }
+        }
+
+        public ICommand ToggleToolsPanelCommand
+        {
+            get
+            {
+                return new DelegateCommand(delegate
+                {
+                    IsToolsPanelShown = !IsToolsPanelShown;
+                //    if (ToolsPanelHeight == TOOLS_PANEL_OPENED_HEIGHT)
+                //        ToolsPanelHeight = 0;
+                //    else
+                //        ToolsPanelHeight = TOOLS_PANEL_OPENED_HEIGHT;
+                }, delegate
+                {
+                    return Project != null && Project.IsLoaded;
+                });
             }
         }
 

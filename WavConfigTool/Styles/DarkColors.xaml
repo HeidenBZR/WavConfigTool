@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:WavConfigTool.Styles">
 
-    <SolidColorBrush x:Key="{x:Static SystemColors.ActiveBorderBrushKey}" Color="#FFA0BBD6" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.ActiveBorderBrushKey}" Color="#FF476C8D" />
     <SolidColorBrush x:Key="{x:Static SystemColors.ActiveCaptionBrushKey}" Color="Red" />
     <SolidColorBrush x:Key="{x:Static SystemColors.ActiveCaptionTextBrushKey}" Color="Red" />
     <SolidColorBrush x:Key="{x:Static SystemColors.AppWorkspaceBrushKey}" Color="Red" />
@@ -52,14 +52,14 @@
 
     <LinearGradientBrush x:Key="ButtonRestBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Offset="0.007" Color="Red" />
-        <GradientStop Offset="0.5" Color="#FF2C0000" />
+        <GradientStop Offset="0.5" Color="#FFDC1313" />
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="ButtonVowelBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Offset="0.5" Color="#FF443B00" />
+        <GradientStop Offset="0.5" Color="#FFD8BE15" />
         <GradientStop Color="#FFFFDD00" />
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="ButtonConsonantBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Offset="0.5" Color="#FF024246" />
+        <GradientStop Offset="0.5" Color="#FF16DEE8" />
         <GradientStop Color="#FF00F3FF" />
     </LinearGradientBrush>
 
