@@ -26,7 +26,7 @@
                 </LinearGradientBrush>
             </Ellipse.Stroke>
         </Ellipse>
-        <TextBlock   Text="Loading..."  />
+        <TextBlock Text="Loading..." />
     </StackPanel>
 
 </UserControl>

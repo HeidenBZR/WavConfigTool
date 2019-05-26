@@ -17,55 +17,44 @@
         <local:WavPoint />
     </d:UserControl.DataContext>-->
     <Canvas>
-        <Canvas
-            Name="Grid"
+        <Thumb
             Canvas.Left="{Binding Position, FallbackValue=0}"
-            Height="100"
-            VerticalAlignment="Stretch">
-            <Canvas.Effect>
-                <DropShadowEffect BlurRadius="1" ShadowDepth="1" />
-            </Canvas.Effect>
-            <Thumb
-                Canvas.Left="-1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Stretch"
+            Cursor="SizeWE"
+            Style="{DynamicResource WavPointControllerStyle}">
+
+            <dxmvvm:Interaction.Behaviors>
+                <dxmvvm:EventToCommand
+                    Command="{Binding PointMovedCommand}"
+                    EventName="DragDelta"
+                    PassEventArgsToCommand="True">
+                    <dxmvvm:EventToCommand.EventArgsConverter>
+                        <vt:DragDeltaToPointConverter />
+                    </dxmvvm:EventToCommand.EventArgsConverter>
+                </dxmvvm:EventToCommand>
+                <dxmvvm:EventToCommand
+                    Command="{Binding DeletePointCommand}"
+                    EventName="MouseRightButtonDown"
+                    PassEventArgsToCommand="True">
+                    <dxmvvm:EventToCommand.EventArgsConverter>
+                        <vt:MouseButtonToPointConverter />
+                    </dxmvvm:EventToCommand.EventArgsConverter>
+                </dxmvvm:EventToCommand>
+            </dxmvvm:Interaction.Behaviors>
+        </Thumb>
+        <Grid Height="100" VerticalAlignment="Stretch">
+
+            <TextBlock
+                Name="TypeLabel"
+                Margin="7,0,0,-15"
+                Padding="0"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Stretch"
-                Cursor="SizeWE"
-                Style="{DynamicResource WavPointControllerStyle}">
-
-                <dxmvvm:Interaction.Behaviors>
-                    <dxmvvm:EventToCommand
-                        Command="{Binding PointMovedCommand}"
-                        EventName="DragDelta"
-                        PassEventArgsToCommand="True">
-                        <dxmvvm:EventToCommand.EventArgsConverter>
-                            <vt:DragDeltaToPointArgsConverter />
-                        </dxmvvm:EventToCommand.EventArgsConverter>
-                    </dxmvvm:EventToCommand>
-                    <dxmvvm:EventToCommand
-                        Command="{Binding DeletePointCommand}"
-                        EventName="MouseRightButtonDown"
-                        PassEventArgsToCommand="True">
-                        <dxmvvm:EventToCommand.EventArgsConverter>
-                            <vt:MouseButtonEventArgsConverter />
-                        </dxmvvm:EventToCommand.EventArgsConverter>
-                    </dxmvvm:EventToCommand>
-                </dxmvvm:Interaction.Behaviors>
-
-
-            </Thumb>
-            <Grid Height="100" VerticalAlignment="Stretch">
-
-                <TextBlock
-                    Name="TypeLabel"
-                    Margin="7,0,0,-15"
-                    Padding="0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Bottom"
-                    Panel.ZIndex="5"
-                    FontFamily="Century Gothic"
-                    FontSize="14"
-                    Text="{Binding Text, FallbackValue=Text}" />
-            </Grid>
-        </Canvas>
+                VerticalAlignment="Bottom"
+                Panel.ZIndex="5"
+                FontFamily="Century Gothic"
+                FontSize="14"
+                Text="{Binding Text, FallbackValue=Text}" />
+        </Grid>
     </Canvas>
 </UserControl>

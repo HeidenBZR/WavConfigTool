@@ -1,6 +1,7 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:WavConfigTool.Styles">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:WavConfigTool.Styles">
 
     <SolidColorBrush x:Key="VowelBorderBrush" Color="#808020" />
     <SolidColorBrush x:Key="VowelBackBrush" Color="#FBFB20" />

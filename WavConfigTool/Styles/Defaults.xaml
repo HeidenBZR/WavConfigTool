@@ -41,9 +41,9 @@
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Themes:ClassicBorderDecorator
                         x:Name="ContentContainer"
-                        BorderStyle="None"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderStyle="None"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         SnapsToDevicePixels="true">
                         <ContentPresenter
@@ -552,10 +552,10 @@
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Themes:ClassicBorderDecorator
                         x:Name="Bd"
-                        BorderStyle="Raised"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}" >
+                        BorderStyle="Raised"
+                        BorderThickness="{TemplateBinding BorderThickness}">
                         <ScrollViewer x:Name="PART_ContentHost" Background="{TemplateBinding Background}" />
                     </Themes:ClassicBorderDecorator>
                     <ControlTemplate.Triggers>

@@ -65,10 +65,13 @@ namespace WavConfigTool.ViewModels
                     delegate (Point point)
                     {
                         var oldValue = Position;
-                        Position += point.X;
+                        Position = point.X;
                         WavPointChanged(oldValue, Position);
                     },
-                    delegate (Point point) { return point != null; }
+                    delegate (Point point)
+                    {
+                        return true;
+                    }
                 );
             }
         }

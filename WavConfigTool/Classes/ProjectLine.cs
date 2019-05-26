@@ -24,6 +24,7 @@ namespace WavConfigTool.Classes
 
         public delegate void ProjectLineChangedEventHandler();
         public event ProjectLineChangedEventHandler ProjectLineChanged;
+        public event ProjectLineChangedEventHandler ProjectLinePointsChanged;
 
         /// <summary>
         /// Возвращает true если файл существовал на момент чтения проекта или изменения голосового банка/реклиста
@@ -32,7 +33,8 @@ namespace WavConfigTool.Classes
 
         public ProjectLine(Recline recline)
         {
-            ProjectLineChanged += ProjectLine_OnProjectLineChanged;
+            ProjectLineChanged += delegate { CalculateZones(); };
+            ProjectLinePointsChanged += delegate { CalculateZones(); };
             Recline = recline;
         }
 
@@ -72,11 +74,6 @@ namespace WavConfigTool.Classes
                 WavImageHash = $"{voicebank.Location}{Recline.Filename}{reclist.Name}{Settings.WAM}".GetHashCode();
             if (IsEnabled)
                 WaveForm = new WaveForm(Path.Combine(voicebank.Location, Recline.Filename));
-        }
-
-        public void ProjectLine_OnProjectLineChanged()
-        {
-            CalculateZones();
         }
 
         public void CalculateZones()
@@ -153,15 +150,16 @@ namespace WavConfigTool.Classes
                 (type == PhonemeType.Rest ? RestZones : VowelZones);
         }
 
-        public void AddPoint(int position, PhonemeType type)
+        public int AddPoint(int position, PhonemeType type)
         {
             var points = PointsOfType(type);
             points.Add(position);
             points.Sort();
-            ProjectLineChanged();
+            ProjectLinePointsChanged();
+            return points.IndexOf(position);
         }
 
-        public void MovePoint(int position1, int position2, PhonemeType type)
+        public (int,int) MovePoint(int position1, int position2, PhonemeType type)
         {
             var points = PointsOfType(type);
             int i = points.IndexOf(position1);
@@ -170,14 +168,17 @@ namespace WavConfigTool.Classes
                 points[i] = position2;
             }
             points.Sort();
-            ProjectLineChanged();
+            ProjectLinePointsChanged();
+            return (i,points.IndexOf(position2));
         }
 
-        public void DeletePoint(int position, PhonemeType type)
+        public int DeletePoint(int position, PhonemeType type)
         {
             var points = PointsOfType(type);
+            var i = points.IndexOf(position);
             points.Remove(position);
-            ProjectLineChanged();
+            ProjectLinePointsChanged();
+            return i;
         }
     }
 }

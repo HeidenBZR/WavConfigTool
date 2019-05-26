@@ -249,23 +249,55 @@ namespace WavConfigTool.ViewModels
             };
             return point;
         }
+
+        public double CheckPosition(double position)
+        {
+            if (position < 0)
+                position = 5;
+            if (position > Width)
+                position = Width - 5;
+            return position;
+        }
         
         public void AddPoint(double position, PhonemeType type)
         {
-            ProjectLine.AddPoint(Settings.ViewToRealX(position), type);
-            ApplyPoints();
+            position = CheckPosition(position);
+            var i = ProjectLine.AddPoint(Settings.ViewToRealX(position), type);
+            var points = PointsOfType(type);
+            points.Add(CreatePoint(position, type, i));
+            PointsChanged();
         }
 
         public void MovePoint(double position1, double position2, PhonemeType type)
         {
+            position2 = CheckPosition(position2);
             ProjectLine.MovePoint(Settings.ViewToRealX(position1), Settings.ViewToRealX(position2), type);
-            ApplyPoints();
+            var points = PointsOfType(type);
+            for (int i = 0; i < points.Count; i++)
+            {
+                if (points[i].Position == position1)
+                {
+                    points[i].Position = position2;
+                    break;
+                }
+            }
+            PointsChanged();
         }
 
         public void DeletePoint(double position, PhonemeType type)
         {
+            position = CheckPosition(position);
             ProjectLine.DeletePoint(Settings.ViewToRealX(position), type);
-            ApplyPoints();
+            var points = PointsOfType(type);
+            foreach (var point in points)
+            {
+                if (point.Position == position)
+                {
+                    points.Remove(point);
+                    break;
+                }
+            }
+            PointsChanged();
         }
         
         public override string ToString()

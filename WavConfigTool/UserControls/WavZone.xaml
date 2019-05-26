@@ -14,8 +14,8 @@
 
     <Canvas>
         <Canvas
-            Canvas.Left="{Binding In, FallbackValue=0}"
-            Width="{Binding Out, FallbackValue=0}"
+            Canvas.Left="{Binding In, FallbackValue=0, TargetNullValue=0}"
+            Width="{Binding Out, FallbackValue=0, TargetNullValue=0}"
             Height="100"
             Background="{Binding BackgroundBrush, FallbackValue=#22EE2222}" />
     </Canvas>

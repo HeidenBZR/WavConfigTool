@@ -234,15 +234,17 @@
                         <TextBlock Margin="3,0" Text="Prefix:" />
                         <TextBox
                             Width="40"
-                            Padding="0" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                            Padding="0"
                             VerticalAlignment="Center"
+                            Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                             Text="{Binding Prefix, Mode=TwoWay}" />
 
                         <TextBlock Margin="3,0" Text="Suffix:" />
                         <TextBox
-                            Width="40" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                            Width="40"
                             Padding="0"
                             VerticalAlignment="Center"
+                            Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                             Text="{Binding Suffix, Mode=TwoWay}" />
 
                     </StackPanel>
@@ -269,8 +271,9 @@
                             ToolTip="Waveform Amplitude Multiplayer" />
                         <TextBox
                             Width="30"
-                            Padding="0" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                            Padding="0"
                             VerticalAlignment="Center"
+                            Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                             Text="{Binding WavAmplitudeMultiplayer, Mode=TwoWay}" />
 
                     </StackPanel>
@@ -336,7 +339,8 @@
             BorderThickness="0"
             ItemTemplate="{DynamicResource WavControlsListViewItem}"
             ItemsPanel="{DynamicResource WavControlListItemsPanel}"
-            ItemsSource="{Binding PagerViewModel.PageContent}" Style="{DynamicResource WavControlsControl}" />
-        
+            ItemsSource="{Binding PagerViewModel.PageContent}"
+            Style="{DynamicResource WavControlsControl}" />
+
     </Grid>
 </Window>
