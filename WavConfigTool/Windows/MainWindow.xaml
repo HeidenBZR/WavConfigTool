@@ -328,7 +328,7 @@
             </Button.Template>
         </Button>
 
-        <ListView
+        <ItemsControl
             Name="WavControlList"
             Grid.Row="3"
             Margin="5"
@@ -336,7 +336,7 @@
             BorderThickness="0"
             ItemTemplate="{DynamicResource WavControlsListViewItem}"
             ItemsPanel="{DynamicResource WavControlListItemsPanel}"
-            ItemsSource="{Binding PagerViewModel.PageContent}"
-            Style="{DynamicResource WavControlList}" />
+            ItemsSource="{Binding PagerViewModel.PageContent}" Style="{DynamicResource WavControlsControl}" />
+        
     </Grid>
 </Window>
