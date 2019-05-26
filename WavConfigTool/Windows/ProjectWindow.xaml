@@ -9,9 +9,7 @@
     Title="Project"
     Width="400"
     Height="200"
-    Background="{DynamicResource ToolsPanelBackgroundBrush}"
-    BorderBrush="{DynamicResource BorderBrush}"
-    Foreground="{DynamicResource ForeBrush}"
+    Background="{DynamicResource WindowBackground}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
@@ -59,7 +57,6 @@
                 Width="200"
                 Height="25"
                 HorizontalAlignment="Left"
-                Background="{DynamicResource BackgroundBrush}"
                 ItemsSource="{Binding Reclists}"
                 SelectedItem="{Binding SelectedReclist, Mode=TwoWay}" />
 

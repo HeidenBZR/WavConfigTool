@@ -9,7 +9,7 @@
     VerticalAlignment="Stretch"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    Background="#227BCBC4"
+    Background="#22000000"
     mc:Ignorable="d">
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <Ellipse
@@ -26,7 +26,7 @@
                 </LinearGradientBrush>
             </Ellipse.Stroke>
         </Ellipse>
-        <Label Content="Loading..." Foreground="{DynamicResource ForeBrush}" />
+        <TextBlock   Text="Loading..."  />
     </StackPanel>
 
 </UserControl>

@@ -14,7 +14,7 @@
     </d:UserControl.DataContext>
     <Border
         Margin="4,4,0,4"
-        BorderBrush="{DynamicResource BorderBrush}"
+        BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrush}}"
         BorderThickness="1">
         <StackPanel Height="60">
             <TextBlock
@@ -31,13 +31,13 @@
                     Padding="3"
                     Command="{Binding SetFirstPageCommand}"
                     CommandParameter=""
-                    Content="|˂" />
+                    Content="◀◀" />
                 <Button
                     Margin="3,0"
                     Padding="3"
                     Command="{Binding SetPreiousPageCommand}"
                     CommandParameter=""
-                    Content="˂" />
+                    Content="◀" />
                 <TextBox
                     Width="30"
                     Margin="3,0"
@@ -60,13 +60,13 @@
                     Padding="3"
                     Command="{Binding SetNextPageCommand}"
                     CommandParameter=""
-                    Content="˃" />
+                    Content="▶" />
                 <Button
                     Margin="3,0"
                     Padding="3"
                     Command="{Binding SetLastPageCommand}"
                     CommandParameter=""
-                    Content="˃|" />
+                    Content="▶▶" />
                 <TextBlock
                     Margin="3,0"
                     Padding="0"

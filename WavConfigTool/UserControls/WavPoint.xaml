@@ -64,7 +64,6 @@
                     Panel.ZIndex="5"
                     FontFamily="Century Gothic"
                     FontSize="14"
-                    Foreground="{DynamicResource ForeBrush}"
                     Text="{Binding Text, FallbackValue=Text}" />
             </Grid>
         </Canvas>

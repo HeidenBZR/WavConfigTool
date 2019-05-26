@@ -61,42 +61,27 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommand<Point>(PointMove, CanPointMove);
+                return new DelegateCommand<Point>(
+                    delegate (Point point)
+                    {
+                        var oldValue = Position;
+                        Position += point.X;
+                        WavPointChanged(oldValue, Position);
+                    },
+                    delegate (Point point) { return point != null; }
+                );
             }
         }
-
-        public void PointMove(Point point)
-        {
-            if (point != null)
-            {
-                var oldValue = Position;
-                Position += point.X;
-                WavPointChanged(oldValue, Position);
-            }
-        }
-
-        public bool CanPointMove(Point point)
-        {
-            return point != null;
-        }
-
 
         public ICommand DeletePointCommand
         {
             get
             {
-                return new DelegateCommand(DeletePoint, CanDeletePoint);
+                return new DelegateCommand(
+                    () => WavPointDeleted(Position),
+                    () => true
+                );
             }
-        }
-
-        public void DeletePoint()
-        {
-            WavPointDeleted(Position);
-        }
-
-        public bool CanDeletePoint()
-        {
-            return true;
         }
 
         public override string ToString()

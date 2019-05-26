@@ -135,7 +135,7 @@
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding ConsonantPoints, Mode=TwoWay}"
+            ItemsSource="{Binding ConsonantPoints, Mode=OneWay}"
             Visibility="{Binding EnabledProperty}" />
         <ItemsControl
             Name="VowelPoints"
@@ -143,7 +143,7 @@
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding VowelPoints, Mode=TwoWay}"
+            ItemsSource="{Binding VowelPoints, Mode=OneWay}"
             Visibility="{Binding EnabledProperty}" />
         <ItemsControl
             Name="RestPoints"
@@ -151,7 +151,7 @@
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding RestPoints, Mode=TwoWay}"
+            ItemsSource="{Binding RestPoints, Mode=OneWay}"
             Visibility="{Binding EnabledProperty}" />
     </Grid>
 </UserControl>

@@ -32,8 +32,8 @@ namespace WavConfigTool.ViewTools
         {
             var ob = (UIElement)sender;
             return new Point(
-                Settings.ViewToRealX(Mouse.GetPosition(ob).X),
-                Settings.ViewToRealX(Mouse.GetPosition(ob).Y)
+                Mouse.GetPosition(ob).X,
+                Mouse.GetPosition(ob).Y
             );
         }
     }
