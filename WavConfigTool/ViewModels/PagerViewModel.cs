@@ -63,12 +63,12 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommonCommand((obj) =>
+                return new DelegateCommand(delegate                
                 {
                     CurrentPage = 0;
                     RaisePropertyChanged(() => CurrentPageView);
                     RaisePropertyChanged(() => PageContent);
-                }, param => (param != null));
+                }, () => PagesTotal > 0);
             }
         }
 
@@ -76,7 +76,7 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommonCommand((obj) =>
+                return new DelegateCommand(delegate
                 {
                     if (PagesTotal > 0)
                         CurrentPage = PagesTotal - 1;
@@ -84,22 +84,19 @@ namespace WavConfigTool.ViewModels
                         CurrentPage = 0;
                     RaisePropertyChanged(() => CurrentPageView);
                     RaisePropertyChanged(() => PageContent);
-                }, param => (param != null));
+                }, () => PagesTotal > 0);
             }
         }
         public ICommand SetNextPageCommand
         {
             get
             {
-                return new DelegateCommonCommand((obj) =>
+                return new DelegateCommand(delegate
                 {
                     CurrentPage++;
                     RaisePropertyChanged(() => CurrentPageView);
                     RaisePropertyChanged(() => PageContent);
-                }, param => (
-                    param != null &&
-                    CurrentPage < PagesTotal - 1)
-                );
+                }, () =>  PagesTotal > 0 && CurrentPage < PagesTotal - 1 );
             }
         }
 
@@ -107,15 +104,12 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommonCommand((obj) =>
+                return new DelegateCommand(delegate
                 {
                     CurrentPage--;
                     RaisePropertyChanged(() => CurrentPageView);
                     RaisePropertyChanged(() => PageContent);
-                }, param => (
-                    param != null &&
-                    CurrentPage > 0)
-                );
+                }, () => PagesTotal > 0 && CurrentPage > 0);
             }
         }
 

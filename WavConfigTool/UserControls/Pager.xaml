@@ -20,13 +20,11 @@
             Margin="3,0"
             Padding="3"
             Command="{Binding SetFirstPageCommand}"
-            CommandParameter=""
             Content="◀◀" />
         <Button
             Margin="3,0"
             Padding="3"
             Command="{Binding SetPreiousPageCommand}"
-            CommandParameter=""
             Content="◀" />
         <TextBox
             Width="30"
@@ -49,13 +47,11 @@
             Margin="3,0"
             Padding="3"
             Command="{Binding SetNextPageCommand}"
-            CommandParameter=""
             Content="▶" />
         <Button
             Margin="3,0"
             Padding="3"
             Command="{Binding SetLastPageCommand}"
-            CommandParameter=""
             Content="▶▶" />
         <TextBlock
             Margin="3,0"

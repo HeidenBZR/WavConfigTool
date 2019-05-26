@@ -94,6 +94,7 @@ namespace WavConfigTool.ViewModels
         public bool IsToolsPanelShown { get => _isToolsPanelShown; set { _isToolsPanelShown = value; RaisePropertyChanged(() => IsToolsPanelShown);  } }
 
         public bool IsLoading { get; set; } = false;
+        public bool IsNotLoading { get => !IsLoading; }
 
         public string ProjectSavedString { get => Settings.IsUnsaved ? "*" : ""; }
         public string Title
@@ -151,6 +152,11 @@ namespace WavConfigTool.ViewModels
             }
         }
 
+        public void GenerateOto()
+        {
+
+        }
+
         public ICommand SetMode
         {
             get
@@ -191,40 +197,19 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-
-        //void ClearTemp()
-        //{
-        //    try
-        //    {
-        //        foreach (string filename in System.IO.Directory.GetFiles(Settings.TempDir))
-        //            System.IO.File.Delete(filename);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on clear cache",
-        //            MessageBoxButton.OK, MessageBoxImage.Error);
-        //    }
-        //}
-
-        //async void ClearTempAsync()
-        //{
-        //    try
-        //    {
-        //        foreach (string filename in System.IO.Directory.GetFiles(Settings.TempDir))
-        //            await Task.Run(delegate { System.IO.File.Delete(filename); });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "Error on clear cache async",
-        //            MessageBoxButton.OK, MessageBoxImage.Error);
-        //    }
-        //}
-
-        //void Init()
-        //{
-        //    PrevMousePosition = Mouse.GetPosition(this); ??????
-
-        //}
+        public ICommand GenerateOtoCommand
+        {
+            get
+            {
+                return new DelegateCommand(delegate
+                {
+                    GenerateOto();
+                }, delegate
+                {
+                    return Project != null && Project.IsLoaded;
+                });
+            }
+        }
 
     }
 }
