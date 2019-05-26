@@ -8,18 +8,19 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
     xmlns:vt="clr-namespace:WavConfigTool.ViewTools"
-    Width="{Binding Width, FallbackValue=1000}"
     Height="100"
     Margin="0,10,0,10"
-    HorizontalAlignment="Left"
     Background="{DynamicResource WavControlBackgroundBrush}"
     Focusable="False"
     mc:Ignorable="d">
     <UserControl.Style>
         <Style TargetType="UserControl">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Width" Value="{Binding Width, FallbackValue=1000}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding DisabledProperty}" Value="True">
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="Width" Value="Auto" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -44,8 +45,18 @@
             VerticalAlignment="Stretch"
             Background="#0710FF22"
             BorderBrush="#FF159B00"
-            BorderThickness="0,3,0,3"
-            Opacity="0" />
+            BorderThickness="0,1,0,1">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Opacity" Value="0" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCompleted, TargetNullValue=False}" Value="True">
+                            <Setter Property="Opacity" Value="1" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
 
         <Rectangle
             Height="1"
