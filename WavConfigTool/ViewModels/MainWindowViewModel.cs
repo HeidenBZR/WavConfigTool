@@ -169,11 +169,6 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public void GenerateOto()
-        {
-
-        }
-
         public void ResetProject()
         {
             PagerViewModel.Clear();
@@ -213,11 +208,11 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public ICommand OpenProjectCommand
+        public ICommand SaveOtoCommand
         {
             get
             {
-                return new OpenFileCommand((obj) =>
+                return new SaveFileCommand((obj) =>
                 {
                     string filename = (string)obj;
                     if (filename.Length > 0)
@@ -227,13 +222,13 @@ namespace WavConfigTool.ViewModels
                         LoadProjectAsync();
                     }
                 },
-                "Open Project",
+                "Save New Project",
                 "WavConfig Project Files|*.wconfig|*|*",
                 param => (param != null),
                 "voicebank");
             }
         }
-
+        
         public ICommand CallProjectCommand
         {
             get
@@ -269,13 +264,21 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommand(delegate
+                return new SaveFileCommand((obj) =>
                 {
-                    GenerateOto();
-                }, delegate
+                    string filename = (string)obj;
+                    if (filename.Length > 0)
+                    {
+                        Project.GenerateOto(filename);
+                    }
+                },
+                "Save Oto",
+                "Oto Files|*oto*.ini|*|*",
+                delegate
                 {
                     return Project != null && Project.IsLoaded;
-                });
+                },
+                "oto");
             }
         }
 

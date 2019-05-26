@@ -46,7 +46,7 @@ namespace WavConfigTool.Classes
                 character = Path.Combine(Location, "..", "character.txt");
             if (!File.Exists(character))
                 return;
-            var lines = File.ReadAllLines(character, Encoding.GetEncoding(932));
+            var lines = File.ReadAllLines(character, Encoding.UTF8);
             foreach(var line in lines)
             {
                 if (line.Contains('='))

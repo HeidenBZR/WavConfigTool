@@ -13,6 +13,7 @@ namespace WavConfigTool.Classes
         public Dictionary<string, string> Replacement { get; private set; }
         public Reclist Reclist { get; set; }
         public Project Project { get; set; }
+        public List<string> EmptyAliases { get; set; }
 
         public OtoGenerator(Reclist reclist)
         {
@@ -116,15 +117,21 @@ namespace WavConfigTool.Classes
             for (int i = 0; i < projectLine.Recline.Phonemes.Count; i++)
             {
                 if (phs.Count > i + 1)
-                    text.AppendLine(Generate(projectLine, phs[i], phs[i + 1]));
+                    AddLine(text, Generate(projectLine, phs[i], phs[i + 1]));
                 if (phs.Count > i + 2)
-                    text.AppendLine(Generate(projectLine, phs[i], phs[i + 1], phs[i + 2]));
+                    AddLine(text, Generate(projectLine, phs[i], phs[i + 1], phs[i + 2]));
                 if (phs.Count > i + 3)
-                    text.AppendLine(Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3]));
+                    AddLine(text, Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3]));
                 if (phs.Count > i + 4)
-                    text.AppendLine(Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3], phs[i + 4]));
+                    AddLine(text, Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3], phs[i + 4]));
             }
             return text.ToString();
+        }
+
+        public void AddLine(StringBuilder lines, string line)
+        {
+            if (line.Length > 0)
+                lines.AppendLine(line);
         }
 
         public string Generate(ProjectLine projectLine, params Phoneme[] phonemes)
@@ -222,7 +229,7 @@ namespace WavConfigTool.Classes
                     return "";
             }
             Reclist.Aliases.Add(alias);
-            var oto = $"{projectLine.Recline.Filename}={Project.Prefix}{alias}{Project.Suffix},{Oto(offset, consonant, cutoff, preutterance, overlap)}\r\n";
+            var oto = $"{projectLine.Recline.Filename}={Project.Prefix}{alias}{Project.Suffix},{Oto(offset, consonant, cutoff, preutterance, overlap)}";
             return oto;
         }
     }

@@ -257,9 +257,17 @@ namespace WavConfigTool.Classes
             return true;
         }
 
+        public void Sort()
+        {
+            foreach (var line in ProjectLines)
+                line.Sort();
+        }
+
         public string GenerateOto()
         {
             var text = new StringBuilder();
+            Sort();
+            OtoGenerator.Project = this;
             Reclist.ResetAliases();
             foreach (ProjectLine projectLine in ProjectLines)
             {
@@ -271,5 +279,10 @@ namespace WavConfigTool.Classes
             return text.ToString();
         }
 
+        public void GenerateOto(string filename)
+        {
+            var oto = GenerateOto();
+            File.WriteAllText(filename, oto, Encoding.UTF8);
+        }
     }
 }

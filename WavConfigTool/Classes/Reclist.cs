@@ -42,7 +42,7 @@ namespace WavConfigTool.Classes
 
         public bool Read()
         {
-            string[] lines = File.ReadAllLines(Location, Encoding.GetEncoding(932));
+            string[] lines = File.ReadAllLines(Location, Encoding.UTF8);
             if (lines.Length < 2)
             {
                 IsLoaded = false;
