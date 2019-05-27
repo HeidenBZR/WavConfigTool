@@ -52,6 +52,7 @@ namespace WavConfigTool.Classes
             ProjectLinesChanged += Project_OnProjectLineChanged;
             Voicebank = new Voicebank(voicebank);
             Reclist = new Reclist(reclist);
+            IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
         }
 
         private void Project_OnProjectChanged()
