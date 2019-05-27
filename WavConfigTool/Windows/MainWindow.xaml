@@ -49,14 +49,8 @@
         <dxmvvm:KeyToCommand Command="{Binding PagerViewModel.SetFirstPageCommand}" KeyGesture="SHIFT+OemOpenBrackets" />
         <dxmvvm:KeyToCommand Command="{Binding PagerViewModel.SetLastPageCommand}" KeyGesture="SHIFT+OemCloseBrackets" />
         <dxmvvm:KeyToCommand Command="{Binding CallProjectCommand}" KeyGesture="CTRL+P" />
-        <dxmvvm:KeyToCommand
-            Command="{Binding OpenProjectCommand}"
-            CommandParameter=""
-            KeyGesture="CTRL+O" />
-        <dxmvvm:KeyToCommand
-            Command="{Binding NewProjectCommand}"
-            CommandParameter=""
-            KeyGesture="CTRL+N" />
+        <dxmvvm:KeyToCommand Command="{Binding OpenProjectCommand}" KeyGesture="CTRL+O" />
+        <dxmvvm:KeyToCommand Command="{Binding NewProjectCommand}" KeyGesture="CTRL+N" />
     </dxmvvm:Interaction.Behaviors>
     <Grid>
         <Grid.RowDefinitions>
@@ -204,7 +198,6 @@
                             <Button
                                 Margin="0,5,0,0"
                                 Command="{Binding CallProjectCommand}"
-                                CommandParameter=""
                                 Content="PROJECT" />
                         </StackPanel>
                     </StackPanel>

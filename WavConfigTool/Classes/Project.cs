@@ -45,13 +45,13 @@ namespace WavConfigTool.Classes
         public delegate void ProjectLinesChangedEventHandler();
         public event ProjectLinesChangedEventHandler ProjectLinesChanged;
 
-        public Project()
+        public Project(string voicebank = "", string reclist = "")
         {
             _projectLines = new List<ProjectLine>();
             ProjectChanged += Project_OnProjectChanged;
             ProjectLinesChanged += Project_OnProjectLineChanged;
-            Voicebank = new Voicebank("");
-            Reclist = new Reclist("");
+            Voicebank = new Voicebank(voicebank);
+            Reclist = new Reclist(reclist);
         }
 
         private void Project_OnProjectChanged()
@@ -102,7 +102,6 @@ namespace WavConfigTool.Classes
         public void ChangeVoicebank(string voicebankLocation)
         {
             Voicebank = new Voicebank(voicebankLocation);
-            OpenLast();
             IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
             ProjectChanged();
         }
@@ -152,7 +151,6 @@ namespace WavConfigTool.Classes
         {
             if (!IsLoaded)
                 return;
-            // TODO: Сохранять в файл проекта параметры, связанные с проектом
             if (Settings.IsUnsaved)
                 Write(Settings.TempProject);
             else

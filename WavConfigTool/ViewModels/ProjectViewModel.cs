@@ -40,18 +40,18 @@ namespace WavConfigTool.ViewModels
         public string SelectedReclist
         {
             get => Project?.Reclist?.Name;
-            set { Project.ChangeReclist(value); ProjectDataChanded(); }
+            set { Project.ChangeReclist(value); ProjectDataChanged(); }
         }
         public string VoicebankName
         {
             get => Project?.Voicebank?.Name;
         }
-        public delegate void ProjectDataChandedHandler();
-        public event ProjectDataChandedHandler ProjectDataChanded;
+        public delegate void ProjectDataChangedHandler();
+        public event ProjectDataChangedHandler ProjectDataChanged;
 
         public ProjectViewModel()
         {
-            ProjectDataChanded += delegate { };
+            ProjectDataChanged += delegate { };
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
             GetReclistsAsync();
@@ -59,7 +59,7 @@ namespace WavConfigTool.ViewModels
 
         public ProjectViewModel(Project project)
         {
-            ProjectDataChanded += delegate { };
+            ProjectDataChanged += delegate { };
             Project = project;
             // Остановить просчитывание в конструкторе
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
@@ -88,7 +88,7 @@ namespace WavConfigTool.ViewModels
                 {
                     var location = Path.GetDirectoryName((string)obj);
                     Project.ChangeVoicebank(location);
-                    ProjectDataChanded();
+                    ProjectDataChanged();
                 },
                 "Select voicebank samples",
                 "Voicebank Files|*.wav;*.ini|*|*",
