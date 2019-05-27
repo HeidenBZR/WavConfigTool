@@ -232,7 +232,7 @@ namespace WavConfigTool.Classes
                     return "";
             }
             Reclist.Aliases.Add(alias);
-            var oto = $"{projectLine.Recline.Filename}={Project.Prefix}{alias}{Project.Suffix},{Oto(offset, consonant, cutoff, preutterance, overlap)}";
+            string oto = $"{projectLine.Recline.Filename}={Project.Prefix}{alias}{Project.Suffix},{Oto(offset, consonant, cutoff, preutterance, overlap)}";
             return oto;
         }
     }
