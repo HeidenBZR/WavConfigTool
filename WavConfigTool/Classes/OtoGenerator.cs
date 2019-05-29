@@ -15,6 +15,12 @@ namespace WavConfigTool.Classes
         public Project Project { get; set; }
         public List<string> EmptyAliases { get; set; }
 
+        Dictionary<string, string> LineByAlias { get; set; }
+        Dictionary<string, bool> HasOtoByAlias { get; set; }
+        public List<string> Aliases { get; set; }
+
+        public bool MustGeneratePreoto { get; set; } = true;
+
         public OtoGenerator(Reclist reclist)
         {
             Reclist = reclist;
@@ -113,40 +119,72 @@ namespace WavConfigTool.Classes
         {
             projectLine.CalculateZones();
             var text = new StringBuilder();
-            var phs = projectLine.Recline.Phonemes;
+            LineByAlias = new Dictionary<string, string>();
+            HasOtoByAlias = new Dictionary<string, bool>();
+            Aliases = new List<string>();
+            var phs = recline.Phonemes;
             for (int i = 0; i < recline.Phonemes.Count; i++)
             {
                 if (phs.Count > i + 1)
-                    AddLine(text, Generate(projectLine, phs[i], phs[i + 1]));
+                    AddLine(Generate(projectLine, phs[i], phs[i + 1]));
                 if (phs.Count > i + 2)
-                    AddLine(text, Generate(projectLine, phs[i], phs[i + 1], phs[i + 2]));
+                    AddLine(Generate(projectLine, phs[i], phs[i + 1], phs[i + 2]));
                 if (phs.Count > i + 3)
-                    AddLine(text, Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3]));
+                    AddLine(Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3]));
                 if (phs.Count > i + 4)
-                    AddLine(text, Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3], phs[i + 4]));
+                    AddLine(Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3], phs[i + 4]));
+            }
+            foreach (var alias in Aliases)
+            {
+                if (MustGeneratePreoto || HasOtoByAlias[alias])
+                    text.AppendLine(LineByAlias[alias]);
             }
             return text.ToString();
         }
 
-        public void AddLine(StringBuilder lines, string line)
+        public void AddLine((bool hasOto, string alias, string line) oto)
         {
-            if (line.Length > 0)
-                lines.AppendLine(line);
+            /// Если раньше не приходили такие алиасы, то сохраняем строку в любом случае
+            /// Если приходили, то смотрим, была прежняя и текущая строка полноценной или преото, 
+            /// если прежняя полноценнная то она остается, если обе преото тоже,
+            /// если первая преото и эта полноценная -- заменяется.
+            /// пустой алиас -- если неадекватный алиас тип вроде VRVC, такие пропускаем сразу
+            if (oto.alias == "")
+                return;
+            if (!Aliases.Contains(oto.alias))
+                Aliases.Add(oto.alias);
+            if (!HasOtoByAlias.ContainsKey(oto.alias))
+            {
+                HasOtoByAlias[oto.alias] = oto.hasOto;
+            }
+            if (!LineByAlias.ContainsKey(oto.alias))
+            {
+                LineByAlias[oto.alias] = oto.line;
+                HasOtoByAlias[oto.alias] = oto.hasOto;
+                return;
+            }
+            else
+            {
+                if (!HasOtoByAlias[oto.alias] && oto.hasOto)
+                {
+                    LineByAlias[oto.alias] = oto.line;
+                    HasOtoByAlias[oto.alias] = oto.hasOto;
+                }
+            }
         }
 
-        public string Generate(ProjectLine projectLine, params Phoneme[] phonemes)
+        public (bool hasOto, string alias, string line) Generate(ProjectLine projectLine, params Phoneme[] phonemes)
         {
             string alias = GetAlias(phonemes);
-            if (Reclist.Aliases.Contains(alias))
-                return "";
 
             Phoneme p1 = phonemes.First();
             Phoneme p2 = phonemes.Last();
-            if (!projectLine.ApplyZones(p1) || !projectLine.ApplyZones(p2))
-                return "";
+            double offset = 0, consonant = 0, cutoff = 0, preutterance = 0, overlap = 0;
+            bool hasZones = projectLine.ApplyZones(p1) && projectLine.ApplyZones(p2);
+            var aliasType = GetAliasType(phonemes);
 
-            double offset, consonant, cutoff, preutterance, overlap;
-            switch (GetAliasType(phonemes))
+            bool hasAliasType = true;
+            switch (aliasType)
             {
                 // Absolute values, relative ones are made in Oto()
 
@@ -227,13 +265,15 @@ namespace WavConfigTool.Classes
                     consonant = p2.Zone.Out - p2.Attack;
                     cutoff = p2.Zone.Out;
                     break;
-                    
+
                 default:
-                    return "";
+                    hasAliasType = false;
+                    break;
             }
-            Reclist.Aliases.Add(alias);
-            string oto = $"{projectLine.Recline.Filename}={Project.Prefix}{alias}{Project.Suffix},{Oto(offset, consonant, cutoff, preutterance, overlap)}";
-            return oto;
+            var otoParams = hasZones ? Oto(offset, consonant, cutoff, preutterance, overlap) : Oto(0, 0, 0, 0, 0);
+            alias = hasAliasType ? alias : "";
+            string oto = $"{projectLine.Recline.Filename}={Project.Prefix}{alias}{Project.Suffix},{otoParams}";
+            return (hasZones && hasAliasType, alias, oto);
         }
     }
 }

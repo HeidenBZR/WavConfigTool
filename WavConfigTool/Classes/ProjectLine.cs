@@ -107,7 +107,7 @@ namespace WavConfigTool.Classes
             // У первой и последней точки это не зона, а синглтоны, а в середине обычные зоны
             var zones = new List<Zone>();
             var points = PointsOfType(PhonemeType.Rest);
-            if (zones.Count > 0)
+            if (points.Count > 0)
                 zones.Add(new Zone(points[0], points[0]));
             for (int i = 1; i + 2 < points.Count; i += 2)
                 zones.Add(new Zone(points[i], points[i + 1]));
@@ -128,7 +128,7 @@ namespace WavConfigTool.Classes
         /// <returns></returns>
         public bool ApplyZones(Phoneme phoneme)
         {
-            int i = Recline.Phonemes.IndexOf(phoneme);
+            int i = Recline.PhonemesOfType(phoneme.Type).IndexOf(phoneme);
             if (i < 0)
                 return false;
             var zones = ZonesOfType(phoneme.Type);

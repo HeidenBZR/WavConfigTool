@@ -14,8 +14,6 @@ namespace WavConfigTool.Classes
         public List<Phoneme> Vowels { get { return Phonemes.Where(n => n.IsVowel).ToList(); } }
         public List<Phoneme> Consonants { get { return Phonemes.Where(n => n.IsConsonant).ToList(); } }
 
-        public List<string> Aliases { get; private set; }
-
         public string Name { get; private set; } = "(Reclist is not avialable)";
         public string Location { get; private set; }
 
@@ -100,10 +98,5 @@ namespace WavConfigTool.Classes
                 return AddUnknownRecline(filename);
         }
 
-        public void ResetAliases()
-        {
-            // TODO: Ввести параметр "максимальное количество дубликатов", чтобы можно было несколько дубликатов все же иметь
-            Aliases = new List<string>();
-        }
     }
 }

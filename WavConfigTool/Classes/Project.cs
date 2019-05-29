@@ -272,7 +272,6 @@ namespace WavConfigTool.Classes
             var text = new StringBuilder();
             Sort();
             OtoGenerator.Project = this;
-            Reclist.ResetAliases();
             foreach (Recline recline in Reclist.Reclines)
             {
                 if (!Voicebank.IsSampleEnabled(recline.Filename))
