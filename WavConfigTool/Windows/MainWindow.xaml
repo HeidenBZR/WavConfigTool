@@ -19,6 +19,7 @@
         <vm:MainWindowViewModel />
     </Window.DataContext>
     <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:EventToCommand Event="Loaded" Command="{Binding LoadedCommand}"/>
         <dxmvvm:KeyToCommand Command="{Binding GenerateOtoCommand}" KeyGesture="CTRL+G" />
         <dxmvvm:KeyToCommand
             Command="{Binding SetMode}"
@@ -87,8 +88,8 @@
                 <Separator />
                 <MenuItem Header="Save WavConfig As New..." InputGestureText="Shift+Ctrl+S" IsEnabled="False" />
                 <Separator />
-                <MenuItem Header="Find Wav" InputGestureText="Ctrl F" IsEnabled="False" />
-                <MenuItem Header="Find Uncompleted" InputGestureText="Ctrl U" IsEnabled="False" />
+                <MenuItem Header="Find Wav" InputGestureText="Ctrl+F" IsEnabled="False" />
+                <MenuItem Header="Find Uncompleted" InputGestureText="Ctrl+U" IsEnabled="False" />
                 <Separator />
                 <MenuItem
                     Command="{Binding CallProjectCommand}"

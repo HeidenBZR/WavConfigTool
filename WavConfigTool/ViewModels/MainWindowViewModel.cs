@@ -108,11 +108,7 @@ namespace WavConfigTool.ViewModels
 
         public MainWindowViewModel()
         {
-            // Остановить просчитывание в конструкторе
-            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-                return;
-            // Загрузить бэкап/последний/новый проект
-            LoadProjectAsync();
+
         }
 
         async void LoadProjectAsync()
@@ -296,6 +292,12 @@ namespace WavConfigTool.ViewModels
                 "oto");
             }
         }
+
+        public ICommand LoadedCommand => new DelegateCommand(() =>
+        {
+            // Загрузить бэкап/последний/новый проект
+            LoadProjectAsync();
+        }, () => true);
 
     }
 }

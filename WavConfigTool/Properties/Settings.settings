@@ -21,10 +21,10 @@
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="ProjectFile" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">D:\Program Files (x86)\UTAU\voices\#Kagari Sata CVC RUS\voicebank.wconfig</Value>
     </Setting>
     <Setting Name="WavSettings" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">cvc_rus</Value>
     </Setting>
     <Setting Name="IsMaximized" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
