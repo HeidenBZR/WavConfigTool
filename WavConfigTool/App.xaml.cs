@@ -16,6 +16,10 @@ namespace WavConfigTool
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+
+        }
         //public DisplayRootRegistry displayRootRegistry = new DisplayRootRegistry();
         //MainWindowViewModel mainWindowViewModel;
 

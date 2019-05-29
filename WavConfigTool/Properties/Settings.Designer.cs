@@ -25,42 +25,6 @@ namespace WavConfigTool.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("30")]
-        public int FadeV {
-            get {
-                return ((int)(this["FadeV"]));
-            }
-            set {
-                this["FadeV"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public int FadeC {
-            get {
-                return ((int)(this["FadeC"]));
-            }
-            set {
-                this["FadeC"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public int FadeD {
-            get {
-                return ((int)(this["FadeD"]));
-            }
-            set {
-                this["FadeD"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("4")]
         public int ItemsOnPage {
             get {
@@ -97,7 +61,7 @@ namespace WavConfigTool.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("D:\\Program Files (x86)\\UTAU\\voices\\#Kagari Sata CVC RUS\\voicebank.wconfig")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ProjectFile {
             get {
                 return ((string)(this["ProjectFile"]));
@@ -109,7 +73,7 @@ namespace WavConfigTool.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("cvc_rus")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string WavSettings {
             get {
                 return ((string)(this["WavSettings"]));

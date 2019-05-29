@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("WavConfigTool")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Heiden.BZR")]
 [assembly: AssemblyProduct("WavConfigTool")]
-[assembly: AssemblyCopyright("Heiden.BZR ©  2018")]
+[assembly: AssemblyCopyright("Heiden.BZR ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,5 +51,5 @@ using System.Windows;
 // Можно задать все значения или принять номер сборки и номер редакции по умолчанию.
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.5.2")]
-[assembly: AssemblyFileVersion("0.1.5.2")]
+[assembly: AssemblyVersion("0.2.0.0")]
+[assembly: AssemblyFileVersion("0.2.0.0")]

@@ -195,10 +195,15 @@
                                 FontWeight="Bold"
                                 Text="{Binding VoicebankName, TargetNullValue='[VOICEBANK]'}" />
                             <TextBlock VerticalAlignment="Center" Text="{Binding ReclistName, TargetNullValue='[RECLIST]'}" />
-                            <Button
-                                Margin="0,5,0,0"
+                            <StackPanel Orientation="Horizontal"
+                                Margin="0,5,0,0">
+
+                                <Button  Margin="0,0,5,0"
                                 Command="{Binding CallProjectCommand}"
                                 Content="PROJECT" />
+                                <Button Margin="0,0,5,0" Content="NEW" Command="{Binding NewProjectCommand}"/>
+                                <Button Content="OPEN" Command="{Binding OpenProjectCommand}"/>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </Border>

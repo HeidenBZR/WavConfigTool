@@ -27,7 +27,7 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Padding" Value="1" />
+        <Setter Property="Padding" Value="6,3" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -39,12 +39,12 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         SnapsToDevicePixels="true">
                         <Grid
-                            Margin="{TemplateBinding Padding}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
 
-                            <TextBlock Foreground="{TemplateBinding Foreground}" Text="{TemplateBinding Content}" />
+                            <TextBlock
+                            Margin="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" Text="{TemplateBinding Content}" />
                         </Grid>
                     </Themes:ClassicBorderDecorator>
                     <ControlTemplate.Triggers>

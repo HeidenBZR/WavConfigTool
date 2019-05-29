@@ -20,7 +20,7 @@ namespace WavConfigTool.ViewModels
 
     class MainWindowViewModel : ViewModelBase
     {
-        public static readonly Version Version = new Version(0, 1, 7, 0);
+        public static readonly Version Version = new Version(0, 2, 0, 0);
         public Project Project
         {
             get => _project;
@@ -116,17 +116,16 @@ namespace WavConfigTool.ViewModels
             IsLoading = true;
             RaisePropertyChanged(() => IsLoading);
             await Task.Run(() => LoadProject());
-            if (!Project.IsLoaded)
+            if (Project != null && Project.IsLoaded)
             {
-                CallProjectCommand.Execute(Project);
-            }
-            var wavControls = new ObservableCollection<WavControlViewModel>();
-            for (int i = 0; i < Project.ProjectLines.Count; i++ )
-                await Task.Run(() => { wavControls.Add(new WavControlViewModel(Project.ProjectLines[i]) { Number = i }); });
+                var wavControls = new ObservableCollection<WavControlViewModel>();
+                for (int i = 0; i < Project.ProjectLines.Count; i++)
+                    await Task.Run(() => { wavControls.Add(new WavControlViewModel(Project.ProjectLines[i]) { Number = i }); });
 
-            PagerViewModel = new PagerViewModel(wavControls);
-            PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
-            await Task.Run(() => Parallel.ForEach(PagerViewModel.Collection, (model) => { model.Load(); }));
+                PagerViewModel = new PagerViewModel(wavControls);
+                PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
+                await Task.Run(() => Parallel.ForEach(PagerViewModel.Collection, (model) => { model.Load(); }));
+            }
             IsLoading = false;
             Refresh();
         }
@@ -222,11 +221,15 @@ namespace WavConfigTool.ViewModels
         param => true,
         "voicebank");
 
+        public ProjectViewModel ProjectViewModel { get; set; }
         public ICommand CallProjectCommand => new DelegateCommonCommand((obj) =>
         {
-            var projectViewModel = new ProjectViewModel(Project);
-            projectViewModel.ProjectDataChanged += delegate { LoadProjectAsync(); };
-            ViewManager.CallProject(projectViewModel);
+            if (ProjectViewModel != null)
+                return;
+            ProjectViewModel = new ProjectViewModel(Project);
+            ProjectViewModel.ProjectDataChanged += delegate { LoadProjectAsync(); };
+            ViewManager.CallProject(ProjectViewModel);
+            ProjectViewModel = null;
         }, (param) => (Project != null));
 
         public ICommand ToggleToolsPanelCommand => new DelegateCommand(delegate
