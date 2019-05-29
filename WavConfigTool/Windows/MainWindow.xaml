@@ -82,27 +82,24 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Top">
             <MenuItem Name="MenuFile" Header="File">
-                <MenuItem Header="_New WavConfig" InputGestureText="Ctrl N" />
-                <MenuItem Header="_Open WavConfig..." InputGestureText="Ctrl O" />
+                <MenuItem Header="_New WavConfig" InputGestureText="Ctrl+N"  Command="{Binding NewProjectCommand}"/>
+                <MenuItem Header="_Open WavConfig..." InputGestureText="Ctrl+O" Command="{Binding OpenProjectCommand}" />
                 <Separator />
-                <MenuItem Header="Save WavConfig" InputGestureText="Ctrl S" />
-                <MenuItem Header="Save WavConfig As New..." InputGestureText="Shift Ctrl S" />
+                <MenuItem Header="Save WavConfig As New..." InputGestureText="Shift+Ctrl+S" IsEnabled="False" />
                 <Separator />
-                <MenuItem Header="Find Wav" InputGestureText="Ctrl F" />
-                <MenuItem Header="Find Uncompleted" InputGestureText="Ctrl U" />
+                <MenuItem Header="Find Wav" InputGestureText="Ctrl F" IsEnabled="False" />
+                <MenuItem Header="Find Uncompleted" InputGestureText="Ctrl U" IsEnabled="False" />
                 <Separator />
                 <MenuItem
                     Command="{Binding CallProjectCommand}"
-                    CommandParameter=""
-                    CommandTarget="{Binding ElementName=_this}"
                     Header="Project"
-                    InputGestureText="Ctrl P" />
-                <MenuItem Header="Generate Oto.ini" InputGestureText="Ctrl G" />
+                    InputGestureText="Ctrl+P" />
+                <MenuItem Header="Generate Oto.ini" InputGestureText="Ctrl+G" Command="{Binding GenerateOtoCommand}" />
                 <Separator />
                 <MenuItem Header="Exit" />
             </MenuItem>
             <MenuItem Header="View">
-                <MenuItem Header="Toggle Waveform" InputGestureText="Ctrl Q" />
+                <MenuItem Header="Toggle Waveform" InputGestureText="Ctrl+Q" IsEnabled="False" />
                 <MenuItem
                     Header="Toggle Spectrum"
                     InputGestureText="Ctrl W"
@@ -112,13 +109,15 @@
                     InputGestureText="Ctrl E"
                     IsEnabled="False" />
                 <Separator />
-                <MenuItem Header="Предыдущая страница" InputGestureText="]" />
-                <MenuItem Header="Следующая страница" InputGestureText="[" />
+                <MenuItem Header="Next page" InputGestureText="Ctrl+]" Command="{Binding PagerViewModel.SetNextPageCommand}" />
+                <MenuItem Header="Previous page" InputGestureText="Ctrl+[" Command="{Binding PagerViewModel.SetPreiousPageCommand}" />
+                <MenuItem Header="First page" InputGestureText="Shift+Ctrl+]" Command="{Binding PagerViewModel.SetNextPageCommand}" />
+                <MenuItem Header="Last page" InputGestureText="Shift+Ctrl+[" Command="{Binding PagerViewModel.SetPreiousPageCommand}" />
                 <Separator />
-                <MenuItem Header="Больше элементов на странице" InputGestureText="Ctrl +" />
-                <MenuItem Header="Меньше элементов на странице" InputGestureText="Ctrl -" />
+                <MenuItem Header="More items on page" InputGestureText="Ctrl+Plus" IsEnabled="False" />
+                <MenuItem Header="Less items on page" InputGestureText="Ctrl+Minus" IsEnabled="False" />
                 <Separator />
-                <MenuItem Header="Toggle Tools Panel" InputGestureText="Ctrl Backspace" />
+                <MenuItem Header="Toggle Tools Panel" InputGestureText="Ctrl+Backspace" Command="{Binding ToggleToolsPanelCommand}" />
             </MenuItem>
         </Menu>
 

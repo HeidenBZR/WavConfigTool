@@ -109,12 +109,12 @@ namespace WavConfigTool.Classes
             return String.Join("", phonemes.Select(n => n.Type.ToString().Substring(0, 1)));
         }
 
-        public string Generate(ProjectLine projectLine)
+        public string Generate(Recline recline, ProjectLine projectLine)
         {
             projectLine.CalculateZones();
             var text = new StringBuilder();
             var phs = projectLine.Recline.Phonemes;
-            for (int i = 0; i < projectLine.Recline.Phonemes.Count; i++)
+            for (int i = 0; i < recline.Phonemes.Count; i++)
             {
                 if (phs.Count > i + 1)
                     AddLine(text, Generate(projectLine, phs[i], phs[i + 1]));

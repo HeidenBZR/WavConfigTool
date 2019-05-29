@@ -13,6 +13,7 @@ namespace WavConfigTool.Classes
         private Reclist _reclist;
         private Voicebank _voicebank;
         private List<ProjectLine> _projectLines;
+        private Dictionary<string, ProjectLine> _projectLinesByFilename;
 
 
         public Reclist Reclist { get => _reclist; private set { _reclist = value; ProjectChanged(); } }
@@ -33,6 +34,7 @@ namespace WavConfigTool.Classes
         public string Suffix { get => _suffix; set { _suffix = value; ProjectChanged(); } }
 
         public List<ProjectLine> ProjectLines { get => _projectLines; set { _projectLines = value; ProjectChanged(); } }
+        public Dictionary<string, ProjectLine> ProjectLinesByFilename { get => _projectLinesByFilename; set { _projectLinesByFilename = value; ProjectChanged(); } }
         public bool IsLoaded { get; set; } = false;
         public double WavAmplitudeMultiplayer { get => _wavAmplitudeMultiplayer; set { _wavAmplitudeMultiplayer = value; ProjectChanged(); Settings.WAM = _wavAmplitudeMultiplayer; } }
 
@@ -209,6 +211,7 @@ namespace WavConfigTool.Classes
         {
             string[] lines = File.ReadAllLines(location, Encoding.UTF8);
             ProjectLines = new List<ProjectLine>();
+            _projectLinesByFilename = new Dictionary<string, ProjectLine>();
             int i = 0;
             /// Совместимость со старыми сейвами без опций
             if (!lines[0].StartsWith("$"))
@@ -232,10 +235,7 @@ namespace WavConfigTool.Classes
                 var recline = Reclist.GetRecline(lines[i]);
                 usedReclines.Add(recline);
                 var projectLine = ProjectLine.Read(recline, lines[i + 1], lines[i + 2], lines[i + 3]);
-                projectLine.ReclistAndVoicebankCheck(Reclist, Voicebank);
-                projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
-                projectLine.ProjectLinePointsChanged += delegate { Save(); };
-                ProjectLines.Add(projectLine);
+                ProcessLineAfterRead(projectLine);
             }
             /// Чтение строк реклиста, которых нет в проекте 
             if (Reclist != null)
@@ -244,16 +244,21 @@ namespace WavConfigTool.Classes
                 {
                     if (!usedReclines.Contains(recline))
                     {
-                        var projectLine = ProjectLine.CreateNewFromRecline(recline);
-                        projectLine.ReclistAndVoicebankCheck(Reclist, Voicebank);
-                        projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
-                        projectLine.ProjectLinePointsChanged += delegate { Save(); };
-                        ProjectLines.Add(projectLine);
+                        ProcessLineAfterRead(ProjectLine.CreateNewFromRecline(recline));
                     }
                 }
             }
             // TODO: сортировать по реклисту
             return true;
+        }
+
+        public void ProcessLineAfterRead(ProjectLine projectLine)
+        {
+            projectLine.ReclistAndVoicebankCheck(Reclist, Voicebank);
+            projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
+            projectLine.ProjectLinePointsChanged += delegate { Save(); };
+            ProjectLines.Add(projectLine);
+            ProjectLinesByFilename[projectLine.Recline.Filename] = projectLine;
         }
 
         public void Sort()
@@ -268,12 +273,13 @@ namespace WavConfigTool.Classes
             Sort();
             OtoGenerator.Project = this;
             Reclist.ResetAliases();
-            foreach (ProjectLine projectLine in ProjectLines)
+            foreach (Recline recline in Reclist.Reclines)
             {
-                if (!Voicebank.IsSampleEnabled(projectLine.Recline.Filename))
+                if (!Voicebank.IsSampleEnabled(recline.Filename))
                     continue;
+                var projectLine = ProjectLinesByFilename[recline.Filename];
                 projectLine.Sort();
-                text.Append(OtoGenerator.Generate(projectLine));
+                text.Append(OtoGenerator.Generate(recline, projectLine));
             }
             return text.ToString();
         }
