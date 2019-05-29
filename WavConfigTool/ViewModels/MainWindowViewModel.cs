@@ -182,116 +182,73 @@ namespace WavConfigTool.ViewModels
             Refresh();
         }
 
-        public ICommand SetMode
+        public ICommand SetMode => new DelegateCommonCommand((obj) =>
         {
-            get
-            {
-                return new DelegateCommonCommand((obj) =>
-                {
-                    Mode = (PhonemeType)obj;
-                }, param => (param != null));
-            }
-        }
+            Mode = (PhonemeType)obj;
+        }, param => (param != null));
 
-        public ICommand NewProjectCommand
+        public ICommand NewProjectCommand => new SaveFileCommand((obj) =>
         {
-            get
+            string filename = (string)obj;
+            if (filename.Length > 0)
             {
-                return new SaveFileCommand((obj) =>
-                {
-                    string filename = (string)obj;
-                    if (filename.Length > 0)
-                    {
-                        Settings.ProjectFile = filename;
-                        string old_reclist = Project.Reclist.Name;
-                        string project_dir = System.IO.Path.GetDirectoryName(filename);
-                        ResetProject();
-                        Project = new Project(project_dir, old_reclist);
-                        Settings.IsUnsaved = false;
-                        Project.Save();
-                        LoadProjectAsync();
-                    }
-                },
-                "Save New Project",
-                "WavConfig Project Files|*.wconfig|*|*",
-                param => true,
-                "voicebank");
+                Settings.ProjectFile = filename;
+                string old_reclist = Project.Reclist.Name;
+                string project_dir = System.IO.Path.GetDirectoryName(filename);
+                ResetProject();
+                Project = new Project(project_dir, old_reclist);
+                Settings.IsUnsaved = false;
+                Project.Save();
+                LoadProjectAsync();
             }
-        }
+        },
+        "Save New Project",
+        "WavConfig Project Files|*.wconfig|*|*",
+        param => true,
+        "voicebank");
 
-        public ICommand OpenProjectCommand
+        public ICommand OpenProjectCommand => new OpenFileCommand((obj) =>
         {
-            get
+            string filename = (string)obj;
+            if (filename.Length > 0)
             {
-                return new OpenFileCommand((obj) =>
-                {
-                    string filename = (string)obj;
-                    if (filename.Length > 0)
-                    {
-                        Settings.ProjectFile = (string)obj;
-                        ResetProject();
-                        LoadProjectAsync();
-                    }
-                },
-                "Save New Project",
-                "WavConfig Project Files|*.wconfig|*|*",
-                param => true,
-                "voicebank");
+                Settings.ProjectFile = (string)obj;
+                ResetProject();
+                LoadProjectAsync();
             }
-        }
-        
-        public ICommand CallProjectCommand
-        {
-            get
-            {
-                return new DelegateCommonCommand((obj) =>
-                {
-                    var projectViewModel = new ProjectViewModel(Project);
-                    projectViewModel.ProjectDataChanged += delegate { LoadProjectAsync(); };
-                    ViewManager.CallProject(projectViewModel);
-                }, (param) => (Project != null));
-            }
-        }
+        },
+        "Save New Project",
+        "WavConfig Project Files|*.wconfig|*|*",
+        param => true,
+        "voicebank");
 
-        public ICommand ToggleToolsPanelCommand
+        public ICommand CallProjectCommand => new DelegateCommonCommand((obj) =>
         {
-            get
-            {
-                return new DelegateCommand(delegate
-                {
-                    IsToolsPanelShown = !IsToolsPanelShown;
-                //    if (ToolsPanelHeight == TOOLS_PANEL_OPENED_HEIGHT)
-                //        ToolsPanelHeight = 0;
-                //    else
-                //        ToolsPanelHeight = TOOLS_PANEL_OPENED_HEIGHT;
-                }, delegate
-                {
-                    return Project != null && Project.IsLoaded;
-                });
-            }
-        }
+            var projectViewModel = new ProjectViewModel(Project);
+            projectViewModel.ProjectDataChanged += delegate { LoadProjectAsync(); };
+            ViewManager.CallProject(projectViewModel);
+        }, (param) => (Project != null));
 
-        public ICommand GenerateOtoCommand
+        public ICommand ToggleToolsPanelCommand => new DelegateCommand(delegate
         {
-            get
+            IsToolsPanelShown = !IsToolsPanelShown;
+        }, () => Project != null && Project.IsLoaded);
+
+        public ICommand GenerateOtoCommand => new SaveFileCommand((obj) =>
+        {
+            string filename = (string)obj;
+            if (filename.Length > 0)
             {
-                return new SaveFileCommand((obj) =>
-                {
-                    string filename = (string)obj;
-                    if (filename.Length > 0)
-                    {
-                        Project.GenerateOto(filename);
-                    }
-                },
-                "Save Oto",
-                "Oto Files|*oto*.ini|*|*",
-                delegate
-                {
-                    return Project != null && Project.IsLoaded;
-                },
-                "oto");
+                Project.GenerateOto(filename);
             }
-        }
+        },
+        "Save Oto",
+        "Oto Files|*oto*.ini|*|*",
+        delegate
+        {
+            return Project != null && Project.IsLoaded;
+        },
+        "oto");
 
         public ICommand LoadedCommand => new DelegateCommand(() =>
         {

@@ -74,99 +74,59 @@ namespace WavConfigTool.ViewModels
             IsHidden = true;
         }
 
-        public ICommand SetFirstPageCommand
+        public ICommand SetFirstPageCommand => new DelegateCommand(delegate
         {
-            get
-            {
-                return new DelegateCommand(delegate                
-                {
-                    CurrentPage = 0;
-                    RaisePropertyChanged(() => CurrentPageView);
-                    RaisePropertyChanged(() => PageContent);
-                    PagerChanged();
-                }, () => PagesTotal > 0);
-            }
-        }
+            CurrentPage = 0;
+            RaisePropertyChanged(() => CurrentPageView);
+            RaisePropertyChanged(() => PageContent);
+            PagerChanged();
+        }, () => PagesTotal > 0);
 
-        public ICommand SetLastPageCommand
+        public ICommand SetLastPageCommand => new DelegateCommand(delegate
         {
-            get
-            {
-                return new DelegateCommand(delegate
-                {
-                    if (PagesTotal > 0)
-                        CurrentPage = PagesTotal - 1;
-                    else
-                        CurrentPage = 0;
-                    RaisePropertyChanged(() => CurrentPageView);
-                    RaisePropertyChanged(() => PageContent);
-                    PagerChanged();
-                }, () => PagesTotal > 0);
-            }
-        }
-        public ICommand SetNextPageCommand
-        {
-            get
-            {
-                return new DelegateCommand(delegate
-                {
-                    CurrentPage++;
-                    RaisePropertyChanged(() => CurrentPageView);
-                    RaisePropertyChanged(() => PageContent);
-                    PagerChanged();
-                }, () =>  PagesTotal > 0 && CurrentPage < PagesTotal - 1 );
-            }
-        }
+            if (PagesTotal > 0)
+                CurrentPage = PagesTotal - 1;
+            else
+                CurrentPage = 0;
+            RaisePropertyChanged(() => CurrentPageView);
+            RaisePropertyChanged(() => PageContent);
+            PagerChanged();
+        }, () => PagesTotal > 0);
 
-        public ICommand SetPreiousPageCommand
+        public ICommand SetNextPageCommand => new DelegateCommand(delegate
         {
-            get
-            {
-                return new DelegateCommand(delegate
-                {
-                    CurrentPage--;
-                    RaisePropertyChanged(() => CurrentPageView);
-                    RaisePropertyChanged(() => PageContent);
-                    PagerChanged();
-                }, () => PagesTotal > 0 && CurrentPage > 0);
-            }
-        }
+            CurrentPage++;
+            RaisePropertyChanged(() => CurrentPageView);
+            RaisePropertyChanged(() => PageContent);
+            PagerChanged();
+        }, () => PagesTotal > 0 && CurrentPage < PagesTotal - 1);
 
-        public ICommand SetPageCommand
+        public ICommand SetPreiousPageCommand => new DelegateCommand(delegate
         {
-            get
-            {
-                return new DelegateCommonCommand((obj) =>
-                {
-                    _currentPage = (int)obj;
-                    RaisePropertyChanged(() => CurrentPageView);
-                    RaisePropertyChanged(() => PageContent);
-                    PagerChanged();
-                }, param => (
-                    param is int &&
-                    (int)param < PageSize &&
-                    (int)param >= 0));
-            }
-        }
+            CurrentPage--;
+            RaisePropertyChanged(() => CurrentPageView);
+            RaisePropertyChanged(() => PageContent);
+            PagerChanged();
+        }, () => PagesTotal > 0 && CurrentPage > 0);
 
-        public ICommand SetPageSizeCommand
+        public ICommand SetPageCommand => new DelegateCommand<int>((currentPage) =>
         {
-            get
-            {
-                return new DelegateCommonCommand((obj) =>
-                {
-                    _pageSize = (int)obj;
-                    // TODO: Проверка на допустимость страницы? 
-                    // TODO: Переход к странице с объектом на прежней странице
-                    RaisePropertyChanged(() => PageSize);
-                    RaisePropertyChanged(() => PagesTotal);
-                    RaisePropertyChanged(() => PageContent);
-                    PagerChanged();
-                }, param => (
-                    param is int &&
-                    (int)param > 0));
-            }
-        }
+            _currentPage = currentPage;
+            RaisePropertyChanged(() => CurrentPageView);
+            RaisePropertyChanged(() => PageContent);
+            PagerChanged();
+        }, currentPage => (currentPage < PageSize && currentPage >= 0));
+
+        public ICommand SetPageSizeCommand => new DelegateCommand<int>((pageSize) =>
+        {
+            _pageSize = pageSize;
+            // TODO: Проверка на допустимость страницы? 
+            // TODO: Переход к странице с объектом на прежней странице
+            RaisePropertyChanged(() => PageSize);
+            RaisePropertyChanged(() => PagesTotal);
+            RaisePropertyChanged(() => PageContent);
+            PagerChanged();
+        }, pageSize => pageSize > 0);
 
     }
 }

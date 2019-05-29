@@ -110,10 +110,10 @@
                     InputGestureText="Ctrl E"
                     IsEnabled="False" />
                 <Separator />
-                <MenuItem Header="Next page" InputGestureText="Ctrl+]" Command="{Binding PagerViewModel.SetNextPageCommand}" />
-                <MenuItem Header="Previous page" InputGestureText="Ctrl+[" Command="{Binding PagerViewModel.SetPreiousPageCommand}" />
-                <MenuItem Header="First page" InputGestureText="Shift+Ctrl+]" Command="{Binding PagerViewModel.SetNextPageCommand}" />
-                <MenuItem Header="Last page" InputGestureText="Shift+Ctrl+[" Command="{Binding PagerViewModel.SetPreiousPageCommand}" />
+                <MenuItem Header="Next page" InputGestureText="]" Command="{Binding PagerViewModel.SetNextPageCommand}" />
+                <MenuItem Header="Previous page" InputGestureText="[" Command="{Binding PagerViewModel.SetPreiousPageCommand}" />
+                <MenuItem Header="First page" InputGestureText="Shift+]" Command="{Binding PagerViewModel.SetNextPageCommand}" />
+                <MenuItem Header="Last page" InputGestureText="Shift+[" Command="{Binding PagerViewModel.SetPreiousPageCommand}" />
                 <Separator />
                 <MenuItem Header="More items on page" InputGestureText="Ctrl+Plus" IsEnabled="False" />
                 <MenuItem Header="Less items on page" InputGestureText="Ctrl+Minus" IsEnabled="False" />

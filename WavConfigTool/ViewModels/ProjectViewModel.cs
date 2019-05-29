@@ -80,21 +80,15 @@ namespace WavConfigTool.ViewModels
         }
 
 
-        public ICommand ChangeVoicebankCommand
+        public ICommand ChangeVoicebankCommand => new OpenFileCommand((obj) =>
         {
-            get
-            {
-                return new OpenFileCommand((obj) =>
-                {
-                    var location = Path.GetDirectoryName((string)obj);
-                    Project.ChangeVoicebank(location);
-                    ProjectDataChanged();
-                },
-                "Select voicebank samples",
-                "Voicebank Files|*.wav;*.ini|*|*",
-                param => (param != null));
-            }
-        }
+            var location = Path.GetDirectoryName((string)obj);
+            Project.ChangeVoicebank(location);
+            ProjectDataChanged();
+        },
+        "Select voicebank samples",
+        "Voicebank Files|*.wav;*.ini|*|*",
+        param => (param != null));
 
         async void GetReclistsAsync()
         {
