@@ -5,40 +5,87 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WavConfigTool.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
     Height="100"
     d:DesignWidth="600"
     mc:Ignorable="d">
+    <d:UserControl.DataContext>
+        <vm:OtoPreviewControlViewModel />
+    </d:UserControl.DataContext>
     <Grid Margin="3">
         <Image
             Name="ImageWav"
             Height="100"
             HorizontalAlignment="Left" />
-        <Label Name="Filename" />
-        <Rectangle
+        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid
+                Canvas.Left="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}, Path=HorizontalOffset}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top">
+                <Rectangle
+                    Fill="{DynamicResource {x:Static SystemColors.ControlBrush}}"
+                    Opacity="0.8"
+                    Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrush}}" />
+                <StackPanel
+                    Margin="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Orientation="Horizontal">
+                    <TextBlock Margin="0" Text="{Binding Filename, TargetNullValue=FILENAME}" />
+                    <TextBlock Margin="0" Text=" = " />
+                    <TextBlock Margin="0,0,5,0" Text="{Binding Alias, TargetNullValue=ALIAS}"/>
+                    <TextBlock Margin="0" Text="[" />
+                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.Offset, TargetNullValue=100}"/>
+                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.Consonant, TargetNullValue=100}"/>
+                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.Cutoff, TargetNullValue=-150}"/>
+                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.Preutterance, TargetNullValue=50}"/>
+                    <TextBlock Margin="0,0,0,0" Text="{Binding Oto.Overlap, TargetNullValue=30}"/>
+                    <TextBlock Margin="0,0,5,0" Text="]"/>
+                </StackPanel>
+            </Grid>
+        </Canvas>
+        <Canvas>
+            <Rectangle
             Name="Offset"
             HorizontalAlignment="Left"
+            Width="{Binding Offset}"
             Fill="#556075A2" />
-        <Rectangle
+        </Canvas>
+        <Canvas>
+            <Rectangle
             Name="Consonant"
+            Canvas.Left="{Binding Offset}"
+            Width="{Binding Consonant}"
             HorizontalAlignment="Left"
             Fill="#55CD8C8C" />
-        <Rectangle
+        </Canvas>
+        <Canvas>
+            <Rectangle
             Name="Cutoff"
+            Canvas.Left="{Binding Cutoff}"
+            Width="{Binding CutoffLength}"
             HorizontalAlignment="Right"
             Fill="#556075A2" />
-        <Rectangle
-            Name="Overlap"
-            Width="1"
-            Height="60"
-            HorizontalAlignment="Left"
-            Fill="#FF0C4707"
-            SnapsToDevicePixels="True" />
-        <Rectangle
+        </Canvas>
+        <Canvas>
+            <Rectangle
             Name="Preutterance"
+            Canvas.Left="{Binding Preutterance}"
             Width="1"
             Height="80"
             HorizontalAlignment="Left"
             Fill="#FFCF1A1A"
             SnapsToDevicePixels="True" />
+        </Canvas>
+        <Canvas>
+            <Rectangle
+            Name="Overlap"
+            Canvas.Left="{Binding Overlap}"
+            Width="1"
+            Height="60"
+            HorizontalAlignment="Left"
+            Fill="#FF0C4707"
+            SnapsToDevicePixels="True" />
+        </Canvas>
     </Grid>
 </UserControl>

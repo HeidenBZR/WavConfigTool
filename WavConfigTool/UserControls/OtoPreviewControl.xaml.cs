@@ -24,39 +24,11 @@ namespace WavConfigTool.UserControls
     /// </summary>
     public partial class OtoPreviewControl : UserControl
     {
-        public static double ScaleX { get { return WavControl.ScaleX; } }
         public double Left;
 
-        public OtoPreviewControl(ImageSource source, string description, int[] ops, int length)
+        public OtoPreviewControl()
         {
-            InitializeComponent(); 
-            try
-            {
-                ImageWav.Source = source;
-                Filename.Content = description;
-                Offset.Width = ops[0] * ScaleX;
-                Consonant.Margin = new Thickness(Offset.Width, 0, 0, 0);
-                Consonant.Width = ops[1] * ScaleX;
-                if (ops[2] < 0)
-                {
-                    Cutoff.Margin = new Thickness(Offset.Width - ops[2] * ScaleX, 0, 0, 0);
-                    Cutoff.Width = length * ScaleX / 4 - Offset.Width + ops[2] * ScaleX;
-                }
-                else
-                {
-                    Cutoff.Margin = new Thickness(0, 0, 0, 0);
-                    Cutoff.Width = length * ScaleX / 4;
-                    HorizontalAlignment = HorizontalAlignment.Right;
-                }
-                if (ops[2] >= 0) Cutoff.Width = ops[2] * ScaleX;
-                Preutterance.Margin = new Thickness(Offset.Width + ops[3] * ScaleX, 0, 0, 0);
-                Overlap.Margin = new Thickness(Offset.Width + ops[4] * ScaleX, 0, 0, 0);
-                Left = Offset.Width;
-            }
-            catch (Exception ex)
-            {
-                MainWindow.MessageBoxError(ex, $"Error on drawing oto preview for {description}");
-            }
+            InitializeComponent();
         }
     }
 }

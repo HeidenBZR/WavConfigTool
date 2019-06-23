@@ -21,11 +21,14 @@ namespace WavConfigTool.Classes
 
         public bool MustGeneratePreoto { get; set; } = true;
 
+        public static OtoGenerator Current { get; private set; }
+
         public OtoGenerator(Reclist reclist)
         {
             Reclist = reclist;
             string path = Settings.GetResoucesPath(@"WavConfigTool\WavSettings\" + reclist.Name + ".txt");
             Replacement = ReadReplacementFile(path);
+            Current = this;
         }
 
         public Dictionary<string, string> ReadReplacementFile(string path)
@@ -102,7 +105,6 @@ namespace WavConfigTool.Classes
                     case "CV":
                         alias.Append($"#{alias_type}#");
                         break;
-
                 }
                 alias.Append(phonemes[i].Alias);
             }

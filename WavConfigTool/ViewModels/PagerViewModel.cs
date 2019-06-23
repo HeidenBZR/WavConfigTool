@@ -128,5 +128,9 @@ namespace WavConfigTool.ViewModels
             PagerChanged();
         }, pageSize => pageSize > 0);
 
+        internal void SetOtoMode(bool isOtoPreviewMode, WavControlViewModel wavControlViewModel)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

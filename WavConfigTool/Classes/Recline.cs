@@ -20,6 +20,7 @@ namespace WavConfigTool.Classes
         /// </summary>
         public bool IsEnabled { get; set; } = false;
 
+        public List<Oto> Otos { get; set; }
         public string Name
         {
             get
@@ -35,6 +36,7 @@ namespace WavConfigTool.Classes
             Filename = filename;
             Phonemes = new List<Phoneme>();
             Description = "(Unknown Recline)";
+            Otos = new List<Oto>();
         }
 
         public Recline (Reclist reclist, string filename, string phonemes, string description)
@@ -51,6 +53,7 @@ namespace WavConfigTool.Classes
                 Phonemes.Add(phoneme);
             }
             Phonemes.Add(new Rest("-") { Recline = this });
+            Otos = new List<Oto>();
             IsEnabled = true;
         }
         

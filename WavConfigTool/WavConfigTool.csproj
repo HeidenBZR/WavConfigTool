@@ -104,6 +104,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\Oto.cs" />
     <Compile Include="Classes\Project.cs" />
     <Compile Include="Classes\ProjectLine.cs" />
     <Compile Include="Classes\Recline.cs" />

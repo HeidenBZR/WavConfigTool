@@ -26,7 +26,6 @@
             Background="#FF181C1F"
             HorizontalScrollBarVisibility="Hidden"
             IsDeferredScrollingEnabled="True"
-            KeyDown="WavControlCanvas_KeyDown"
             VerticalScrollBarVisibility="Hidden" />
         <ItemsControl Name="OtoPreviewView" 
             ItemTemplate="{DynamicResource OtoPreviewListViewItem}"

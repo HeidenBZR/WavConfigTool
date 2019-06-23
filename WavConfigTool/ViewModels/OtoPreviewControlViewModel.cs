@@ -3,42 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WavConfigTool.Classes;
+using WavConfigTool.Tools;
 
 namespace WavConfigTool.ViewModels
 {
     class OtoPreviewControlViewModel
     {
+        public string Filename { get; set; }
+        public string Alias { get; set; }
 
-        public OtoPreviewControl(string description, int[] ops, int length)
+        public double Offset { get; set; }
+        public double Consonant { get; set; }
+        public double Cutoff { get; set; }
+        public double Preutterance { get; set; }
+        public double Overlap { get; set; }
+
+        public double Length { get; set; }
+        public double CutoffLength { get => Length - Cutoff; }
+
+        public double Height { get; } = 100;
+
+        public Oto Oto { get; set; }
+
+        public OtoPreviewControlViewModel() { }
+
+        public OtoPreviewControlViewModel(Oto oto, double length)
         {
-            InitializeComponent();
-            try
+            if (oto != null)
             {
-                ImageWav.Source = source;
-                Filename.Content = description;
-                Offset.Width = ops[0] * ScaleX;
-                Consonant.Margin = new Thickness(Offset.Width, 0, 0, 0);
-                Consonant.Width = ops[1] * ScaleX;
-                if (ops[2] < 0)
-                {
-                    Cutoff.Margin = new Thickness(Offset.Width - ops[2] * ScaleX, 0, 0, 0);
-                    Cutoff.Width = length * ScaleX / 4 - Offset.Width + ops[2] * ScaleX;
-                }
-                else
-                {
-                    Cutoff.Margin = new Thickness(0, 0, 0, 0);
-                    Cutoff.Width = length * ScaleX / 4;
-                    HorizontalAlignment = HorizontalAlignment.Right;
-                }
-                if (ops[2] >= 0) Cutoff.Width = ops[2] * ScaleX;
-                Preutterance.Margin = new Thickness(Offset.Width + ops[3] * ScaleX, 0, 0, 0);
-                Overlap.Margin = new Thickness(Offset.Width + ops[4] * ScaleX, 0, 0, 0);
-                Left = Offset.Width;
+                Filename = oto.Filename;
+                Alias = oto.Alias;
+                Offset = oto.Offset;
+                Consonant = oto.Consonant + oto.Offset;
+                Cutoff = oto.Cutoff < 0 ? oto.Offset - oto.Cutoff : length - oto.Cutoff;
+                Preutterance = oto.Preutterance + oto.Offset;
+                Overlap = oto.Overlap + oto.Offset;
+                Length = length;
+                Oto = oto;
             }
-            catch (Exception ex)
-            {
-                MainWindow.MessageBoxError(ex, $"Error on drawing oto preview for {description}");
-            }
+        }
+
+        public OtoPreviewControlViewModel(string otoLine, double length) : this(Oto.Read(otoLine), length)
+        {
+
         }
     }
 }
