@@ -70,7 +70,30 @@
                 </RowDefinition.Style>
             </RowDefinition>
             <RowDefinition Height="12" />
-            <RowDefinition Height="337*" />
+            <RowDefinition>
+                <RowDefinition.Style>
+                    <Style TargetType="{x:Type RowDefinition}">
+                        <Setter Property="Height" Value="*" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsOtoPreviewMode}" Value="True">
+                                <Setter Property="Height" Value="110" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </RowDefinition.Style>
+            </RowDefinition>
+            <RowDefinition>
+                <RowDefinition.Style>
+                    <Style TargetType="{x:Type RowDefinition}">
+                        <Setter Property="Height" Value="0" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsOtoPreviewMode}" Value="True">
+                                <Setter Property="Height" Value="*" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </RowDefinition.Style>
+            </RowDefinition>
         </Grid.RowDefinitions>
         <uc:CanvasLoading
             x:Name="CanvasLoading"
@@ -347,6 +370,11 @@
             ItemsPanel="{DynamicResource WavControlListItemsPanel}"
             ItemsSource="{Binding PagerViewModel.PageContent}"
             Style="{DynamicResource WavControlsControl}" />
+
+        <Frame DataContext="{Binding OtoPreviewWindowViewModel}"
+            Grid.Row="5" Name="OtoPreviewFrame" Visibility="{Binding IsOtoPreviewMode, Converter={StaticResource BooleanToVisibility}}" >
+            
+        </Frame>
 
     </Grid>
 </Window>

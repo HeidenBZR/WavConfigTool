@@ -43,6 +43,10 @@
         <uc:WavControl />
     </DataTemplate>
 
+    <DataTemplate x:Key="OtoPreviewListViewItem">
+        <uc:OtoPreviewControl />
+    </DataTemplate>
+
     <DataTemplate x:Key="DataPointItemsConrolItem">
         <uc:DataPoint />
     </DataTemplate>

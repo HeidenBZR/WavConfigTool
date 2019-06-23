@@ -114,6 +114,9 @@
     <Compile Include="UserControls\DataPoint.xaml.cs">
       <DependentUpon>DataPoint.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\OtoPreviewControl.xaml.cs">
+      <DependentUpon>OtoPreviewControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Pager.xaml.cs">
       <DependentUpon>Pager.xaml</DependentUpon>
     </Compile>
@@ -127,6 +130,8 @@
       <DependentUpon>WavZone.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewManager.cs" />
+    <Compile Include="ViewModels\OtoPreviewControlViewModel.cs" />
+    <Compile Include="ViewModels\OtoPreviewWindowViewModel.cs" />
     <Compile Include="ViewTools\Command.cs" />
     <Compile Include="ViewTools\EventArgsConverters.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
@@ -141,6 +146,9 @@
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\OtoPreviewWindow.xaml.cs">
+      <DependentUpon>OtoPreviewWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ProjectWindow.xaml.cs">
       <DependentUpon>ProjectWindow.xaml</DependentUpon>
@@ -196,6 +204,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\OtoPreviewControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UserControls\Pager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -215,6 +227,10 @@
     <Page Include="Windows\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="Windows\OtoPreviewWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\ProjectWindow.xaml">
       <SubType>Designer</SubType>

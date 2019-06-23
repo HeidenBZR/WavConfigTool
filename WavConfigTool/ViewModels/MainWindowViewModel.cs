@@ -47,6 +47,7 @@ namespace WavConfigTool.ViewModels
         }
 
         public PagerViewModel PagerViewModel { get; set; }
+        public OtoPreviewWindowViewModel OtoPreviewWindowViewModel { get; set; }
 
         public int ConsonantAttack { get => Project == null ? 0 : Project.ConsonantAttack; set => Project.ConsonantAttack = value; }
         public int VowelAttack { get => Project == null ? 0 : Project.VowelAttack; set => Project.VowelAttack = value; }
@@ -75,6 +76,7 @@ namespace WavConfigTool.ViewModels
 
         public bool IsLoading { get; set; } = false;
         public bool IsNotLoading { get => !IsLoading; }
+        public bool IsOtoPreviewMode { get; set; } = false;
 
         public string ProjectSavedString { get => Settings.IsUnsaved ? "*" : ""; }
         public string Title
@@ -255,9 +257,15 @@ namespace WavConfigTool.ViewModels
 
         public ICommand LoadedCommand => new DelegateCommand(() =>
         {
-            // Загрузить бэкап/последний/новый проект
+            // Загрузить бэкап/последний
             LoadProjectAsync();
         }, () => true);
 
+        public ICommand SetOtoMode => new DelegateCommand<WavControlViewModel>((wavControlViewModel) =>
+        {
+            IsOtoPreviewMode = !IsOtoPreviewMode;
+            PagerViewModel.SetOtoMode(IsOtoPreviewMode, wavControlViewModel);
+            OtoPreviewWindowViewModel = IsOtoPreviewMode ? new OtoPreviewWindowViewModel(wavControlViewModel) : null;
+        }, (wavControlViewModel) => Project != null && Project.IsLoaded);
     }
 }
