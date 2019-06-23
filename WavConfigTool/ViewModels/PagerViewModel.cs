@@ -15,7 +15,7 @@ namespace WavConfigTool.ViewModels
         private int _currentPage = 0;
         private int _pageSize = 4;
 
-        public ObservableCollection<WavControlViewModel> Collection { get; private set; } = new ObservableCollection<WavControlViewModel>();
+        public ObservableCollection<WavControlBaseViewModel> Collection { get; private set; } = new ObservableCollection<WavControlBaseViewModel>();
 
         // TODO: Проверить корректность
         public int PagesTotal
@@ -32,11 +32,11 @@ namespace WavConfigTool.ViewModels
 
         public int CurrentPageView { get => CurrentPage + 1; set => CurrentPage = value - 1; }
 
-        public ObservableCollection<WavControlViewModel> PageContent
+        public ObservableCollection<WavControlBaseViewModel> PageContent
         {
             get
             {
-                var pageContent = new ObservableCollection<WavControlViewModel>();
+                var pageContent = new ObservableCollection<WavControlBaseViewModel>();
                 if (IsHidden)
                     return pageContent;
                 for (int i = PageSize * CurrentPage; i < PageSize * CurrentPage + PageSize; i++)
@@ -55,7 +55,7 @@ namespace WavConfigTool.ViewModels
             IsHidden = false;
         }
 
-        public PagerViewModel(ObservableCollection<WavControlViewModel> collection)
+        public PagerViewModel(ObservableCollection<WavControlBaseViewModel> collection)
         {
             Collection = collection;
             RaisePropertyChanged(() => PageContent);
@@ -128,7 +128,7 @@ namespace WavConfigTool.ViewModels
             PagerChanged();
         }, pageSize => pageSize > 0);
 
-        internal void SetOtoMode(bool isOtoPreviewMode, WavControlViewModel wavControlViewModel)
+        internal void SetOtoMode(bool isOtoPreviewMode, WavControlBaseViewModel wavControlViewModel)
         {
             throw new NotImplementedException();
         }

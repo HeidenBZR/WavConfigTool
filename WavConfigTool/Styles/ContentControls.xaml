@@ -40,7 +40,7 @@
     </Style>
 
     <DataTemplate x:Key="WavControlsListViewItem">
-        <uc:WavControl />
+        <uc:WavControlBase />
     </DataTemplate>
 
     <DataTemplate x:Key="OtoPreviewListViewItem">

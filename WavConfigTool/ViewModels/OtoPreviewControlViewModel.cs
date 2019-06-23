@@ -8,7 +8,7 @@ using WavConfigTool.Tools;
 
 namespace WavConfigTool.ViewModels
 {
-    class OtoPreviewControlViewModel
+    class OtoPreviewControlViewModel : WavControlBaseViewModel
     {
         public string Filename { get; set; }
         public string Alias { get; set; }
@@ -44,9 +44,16 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public OtoPreviewControlViewModel(string otoLine, double length) : this(Oto.Read(otoLine), length)
-        {
+        public OtoPreviewControlViewModel(string otoLine, double length) : this(Oto.Read(otoLine), length) { }
 
+        public override void Load()
+        {
+            
+        }
+
+        public override string ToString()
+        {
+            return $"{(Oto == null ? "(null)" : Oto.Write())} : OtoPreviewViewModel";
         }
     }
 }

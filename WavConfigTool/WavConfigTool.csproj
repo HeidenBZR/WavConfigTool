@@ -124,6 +124,7 @@
     <Compile Include="UserControls\WavControl.xaml.cs">
       <DependentUpon>WavControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\WavControlBase.cs" />
     <Compile Include="UserControls\WavPoint.xaml.cs">
       <DependentUpon>WavPoint.xaml</DependentUpon>
     </Compile>
@@ -133,6 +134,7 @@
     <Compile Include="ViewManager.cs" />
     <Compile Include="ViewModels\OtoPreviewControlViewModel.cs" />
     <Compile Include="ViewModels\OtoPreviewWindowViewModel.cs" />
+    <Compile Include="ViewModels\WavControlBaseViewModel.cs" />
     <Compile Include="ViewTools\Command.cs" />
     <Compile Include="ViewTools\EventArgsConverters.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

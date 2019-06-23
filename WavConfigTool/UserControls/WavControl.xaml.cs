@@ -24,7 +24,7 @@ namespace WavConfigTool.UserControls
     /// <summary>
     /// Логика взаимодействия для WavControl.xaml
     /// </summary>
-    public partial class WavControl : UserControl
+    public partial class WavControl : WavControlBase
     {
 
         public WavControl()

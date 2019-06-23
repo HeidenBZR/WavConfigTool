@@ -15,7 +15,7 @@ using System.Collections.ObjectModel;
 
 namespace WavConfigTool.ViewModels
 {
-    public class WavControlViewModel : ViewModelBase
+    public class WavControlViewModel : WavControlBaseViewModel
     {
         private ProjectLine _projectLine = new ProjectLine(new Recline(new Reclist("?"), "default.wav"));
 
@@ -91,8 +91,8 @@ namespace WavConfigTool.ViewModels
         public List<Phoneme> Phonemes { get => ProjectLine.Recline.Phonemes; }
 
         public Visibility LoadingProperty { get => IsLoading ? Visibility.Visible : Visibility.Hidden; }
-        public Visibility DisabledProperty { get => ProjectLine.IsEnabled ? Visibility.Hidden : Visibility.Visible; } 
-        public Visibility EnabledProperty { get => ProjectLine.IsEnabled ? Visibility.Visible : Visibility.Hidden; } 
+        public Visibility DisabledProperty { get => ProjectLine.IsEnabled ? Visibility.Hidden : Visibility.Visible; }
+        public Visibility EnabledProperty { get => ProjectLine.IsEnabled ? Visibility.Visible : Visibility.Hidden; }
 
         public bool IsCompleted { get => ProjectLine.IsCompleted; }
         public bool IsLoading { get; set; } = false;
@@ -120,7 +120,7 @@ namespace WavConfigTool.ViewModels
                 Width = (int)(Settings.RealToViewX(ProjectLine.WaveForm.Length / ProjectLine.WaveForm.BitRate));
         }
 
-        public void Load()
+        public override void Load()
         {
             LoadImageAsync();
             ApplyPoints();
@@ -218,7 +218,7 @@ namespace WavConfigTool.ViewModels
         public string GetPointLabel(PhonemeType type, int i)
         {
             var phonemes = ProjectLine.Recline.PhonemesOfType(type);
-            return type == PhonemeType.Rest ? "" : 
+            return type == PhonemeType.Rest ? "" :
                 (phonemes.Count * 2 > i && i % 2 == 0 ? phonemes[i / 2] : "");
         }
 
@@ -259,7 +259,7 @@ namespace WavConfigTool.ViewModels
                 position = Width - 5;
             return position;
         }
-        
+
         public void AddPoint(double position, PhonemeType type)
         {
             position = CheckPosition(position);
@@ -302,12 +302,12 @@ namespace WavConfigTool.ViewModels
             }
             PointsChanged();
         }
-        
+
         public override string ToString()
         {
             if (ProjectLine == null || ProjectLine.Recline == null)
                 return "{WavControlViewModel}";
-            else 
+            else
                 return $"{ProjectLine.Recline.Name} : WavControlViewModel";
         }
 
@@ -316,18 +316,17 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return new DelegateCommand<Point>(WavControlClick, CanWavControlClick);
+                return new DelegateCommand<Point>(
+                    delegate (Point point)
+                    {
+                        AddPoint((int)point.X, Settings.Mode);
+                    },
+                    delegate (Point point)
+                    {
+                        return ProjectLine.IsEnabled && !ProjectLine.IsCompleted;
+                    }
+                );
             }
-        }
-
-        public void WavControlClick(Point point)
-        {
-            AddPoint((int)point.X, Settings.Mode);
-        }
-
-        public bool CanWavControlClick(Point point)
-        {
-            return ProjectLine.IsEnabled && !ProjectLine.IsCompleted;
         }
     }
 }

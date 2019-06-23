@@ -101,8 +101,8 @@ namespace WavConfigTool.ViewModels
             return type.ToString().Substring(0, 1);
         }
 
-        public ObservableCollection<WavControlViewModel> WavControlViewModels { get => PagerViewModel.Collection; }
-        public ObservableCollection<WavControlViewModel> WavControlViewModelsPage { get => PagerViewModel.PageContent;  }
+        public ObservableCollection<WavControlBaseViewModel> WavControlViewModels { get => PagerViewModel.Collection; }
+        public ObservableCollection<WavControlBaseViewModel> WavControlViewModelsPage { get => PagerViewModel.PageContent;  }
 
 
         //Point PrevMousePosition;
@@ -120,13 +120,13 @@ namespace WavConfigTool.ViewModels
             await Task.Run(() => LoadProject());
             if (Project != null && Project.IsLoaded)
             {
-                var wavControls = new ObservableCollection<WavControlViewModel>();
+                var wavControls = new ObservableCollection<WavControlBaseViewModel>();
                 for (int i = 0; i < Project.ProjectLines.Count; i++)
                     await Task.Run(() => { wavControls.Add(new WavControlViewModel(Project.ProjectLines[i]) { Number = i }); });
 
                 PagerViewModel = new PagerViewModel(wavControls);
                 PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
-                await Task.Run(() => Parallel.ForEach(PagerViewModel.Collection, (model) => { model.Load(); }));
+                await Task.Run(() => Parallel.ForEach(PagerViewModel.Collection, (model) => { (model as WavControlViewModel).Load(); }));
             }
             IsLoading = false;
             Refresh();
