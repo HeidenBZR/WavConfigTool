@@ -30,6 +30,7 @@ namespace WavConfigTool.Classes
         public int VowelSustain { get => _vowelSustain; set { _vowelSustain = value; ProjectChanged(); } }
         public int VowelAttack { get => _vowelAttack; set { _vowelAttack = value; ProjectChanged(); } }
         public int ConsonantAttack { get => _consonantAttack; set { _consonantAttack = value; ProjectChanged(); } }
+        public int RestAttack { get; set; } = 30;
         public string Prefix { get => _prefix; set { _prefix = value; ProjectChanged(); } }
         public string Suffix { get => _suffix; set { _suffix = value; ProjectChanged(); } }
 
@@ -38,6 +39,7 @@ namespace WavConfigTool.Classes
         public bool IsLoaded { get; set; } = false;
         public double WavAmplitudeMultiplayer { get => _wavAmplitudeMultiplayer; set { _wavAmplitudeMultiplayer = value; ProjectChanged(); Settings.WAM = _wavAmplitudeMultiplayer; } }
 
+        public static Project Current { get; private set; }
 
         #endregion
 
@@ -49,6 +51,7 @@ namespace WavConfigTool.Classes
 
         public Project(string voicebank = "", string reclist = "")
         {
+            Current = this;
             _projectLines = new List<ProjectLine>();
             ProjectChanged += Project_OnProjectChanged;
             ProjectLinesChanged += Project_OnProjectLineChanged;
@@ -267,9 +270,8 @@ namespace WavConfigTool.Classes
                 line.Sort();
         }
 
-        public string GenerateOto()
+        public void GenerateOto()
         {
-            var text = new StringBuilder();
             Sort();
             OtoGenerator.Project = this;
             foreach (Recline recline in Reclist.Reclines)
@@ -278,14 +280,24 @@ namespace WavConfigTool.Classes
                     continue;
                 var projectLine = ProjectLinesByFilename[recline.Filename];
                 projectLine.Sort();
-                text.Append(OtoGenerator.Generate(recline, projectLine));
+                OtoGenerator.Generate(recline, projectLine);
+            }
+        }
+
+        public string GetOtoText()
+        {
+            GenerateOto();
+            var text = new StringBuilder();
+            foreach (Recline recline in Reclist.Reclines)
+            {
+                text.Append(recline.WriteOto(Suffix, Prefix));
             }
             return text.ToString();
         }
 
         public void GenerateOto(string filename)
         {
-            var oto = GenerateOto();
+            var oto = GetOtoText();
             File.WriteAllText(filename, oto, Encoding.UTF8);
         }
     }

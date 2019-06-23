@@ -28,15 +28,15 @@ namespace WavConfigTool.Classes
 
     public abstract class Phoneme
     {
-        public double Preutterance;
-        public double Overlap;
+        public double Preutterance { get; set; }
+        public double Overlap { get; set; }
         public double Length { get { return Zone.Out - Zone.In; } }
-        public double Attack;
+        public virtual double Attack { get; set; }
 
-        public string Alias;
-        public string Letter;
-        public PhonemeType Type;
-        public Zone Zone;
+        public string Alias { get; set; }
+        public string Letter { get; set; }
+        public PhonemeType Type { get; set; }
+        public Zone Zone { get; set; }
         public int GlobalIndex
         {
             get
@@ -88,6 +88,7 @@ namespace WavConfigTool.Classes
 
     public class Consonant : Phoneme
     {
+        public override double Attack { get => Project.Current.ConsonantAttack; }
         public Consonant(string l, string letter = "") : base(l, letter) { Type = PhonemeType.Consonant; }
 
         public override Phoneme Clone() { return new Consonant(Alias, Letter); }
@@ -96,6 +97,7 @@ namespace WavConfigTool.Classes
 
     public class Vowel : Phoneme
     {
+        public override double Attack { get => Project.Current.VowelAttack; }
         public Vowel(string l, string letter = "") : base(l, letter)
         {
             Type = PhonemeType.Vowel;
@@ -109,6 +111,7 @@ namespace WavConfigTool.Classes
 
     public class Rest : Phoneme
     {
+        public override double Attack { get => Project.Current.RestAttack; }
         public Rest(string l, string letter = "") : base(l, letter)
         {
             Type = PhonemeType.Rest;
@@ -116,8 +119,11 @@ namespace WavConfigTool.Classes
         }
         public Rest(string l, double zoneIn, double zoneOut, Recline recline, string letter = "") : this(l, letter)
         {
-            Zone.In = zoneIn;
-            Zone.Out = zoneOut;
+            Zone = new Zone()
+            {
+                In = zoneIn,
+                Out = zoneOut
+            };
             Recline = recline;
         }
 

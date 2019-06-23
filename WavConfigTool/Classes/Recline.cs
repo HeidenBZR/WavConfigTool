@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace WavConfigTool.Classes
 {
@@ -20,7 +21,8 @@ namespace WavConfigTool.Classes
         /// </summary>
         public bool IsEnabled { get; set; } = false;
 
-        public List<Oto> Otos { get; set; }
+        public Dictionary<string, Oto> Otos { get; set; }
+        public Oto[] OtoList { get => Otos.Values.ToArray(); }
         public string Name
         {
             get
@@ -36,7 +38,7 @@ namespace WavConfigTool.Classes
             Filename = filename;
             Phonemes = new List<Phoneme>();
             Description = "(Unknown Recline)";
-            Otos = new List<Oto>();
+            Otos = new Dictionary<string, Oto>();
         }
 
         public Recline (Reclist reclist, string filename, string phonemes, string description)
@@ -53,7 +55,7 @@ namespace WavConfigTool.Classes
                 Phonemes.Add(phoneme);
             }
             Phonemes.Add(new Rest("-") { Recline = this });
-            Otos = new List<Oto>();
+            Otos = new Dictionary<string, Oto>();
             IsEnabled = true;
         }
         
@@ -61,6 +63,21 @@ namespace WavConfigTool.Classes
         {
             return type == PhonemeType.Consonant ? Consonants :
                 (type == PhonemeType.Rest ? Rests : Vowels);
+        }
+
+        public void AddOto(Oto oto)
+        {
+            Otos[oto.Alias] = oto;
+        }
+
+        public string WriteOto(string prefix = "", string suffix = "")
+        {
+            var text = new StringBuilder();
+            foreach (var oto in OtoList)
+            {
+                text.AppendLine(oto.Write(suffix, prefix));
+            }
+            return text.ToString();
         }
 
         public override string ToString()
