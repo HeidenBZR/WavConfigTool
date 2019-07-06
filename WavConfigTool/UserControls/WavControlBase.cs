@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using WavConfigTool.ViewModels;
 
 namespace WavConfigTool.UserControls
 {
-    public class WavControlBase : UserControl
+    public abstract class WavControlBase : UserControl
     {
 
     }
+
 }

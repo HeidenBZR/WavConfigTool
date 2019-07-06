@@ -225,7 +225,8 @@
                                 Command="{Binding CallProjectCommand}"
                                 Content="PROJECT" />
                                 <Button Margin="0,0,5,0" Content="NEW" Command="{Binding NewProjectCommand}"/>
-                                <Button Content="OPEN" Command="{Binding OpenProjectCommand}"/>
+                                <Button Margin="0,0,5,0" Content="OPEN" Command="{Binding OpenProjectCommand}"/>
+                                <Button Content="RELOAD" Command="{Binding ReloadProjectCommand}"/>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
@@ -257,6 +258,13 @@
                                 Padding="0"
                                 VerticalAlignment="Center"
                                 Text="{Binding ConsonantAttack, Mode=TwoWay, TargetNullValue=0}" />
+
+                            <TextBlock Margin="3,0" Text="R:" />
+                            <TextBox
+                                Width="40"
+                                Padding="0"
+                                VerticalAlignment="Center"
+                                Text="{Binding RestAttack, Mode=TwoWay, TargetNullValue=0}" />
 
                         </StackPanel>
                     </StackPanel>
@@ -366,14 +374,21 @@
             Margin="5"
             Background="Transparent"
             BorderThickness="0"
-            ItemTemplate="{DynamicResource WavControlsListViewItem}"
             ItemsPanel="{DynamicResource WavControlListItemsPanel}"
             ItemsSource="{Binding PagerViewModel.PageContent}"
-            Style="{DynamicResource WavControlsControl}" />
+            Style="{DynamicResource WavControlsControl}" >
+            <ItemsControl.Resources>
+                <DataTemplate DataType="{x:Type vm:WavControlViewModel}">
+                    <uc:WavControl />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:OtoPreviewControlViewModel}">
+                    <uc:OtoPreviewControl />
+                </DataTemplate>
+            </ItemsControl.Resources>
+        </ItemsControl>
 
         <Frame DataContext="{Binding OtoPreviewWindowViewModel}"
             Grid.Row="5" Name="OtoPreviewFrame" Visibility="{Binding IsOtoPreviewMode, Converter={StaticResource BooleanToVisibility}}" >
-            
         </Frame>
 
     </Grid>

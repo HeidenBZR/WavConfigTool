@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:WavConfigTool.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
-    Height="100"
+    Height="{Binding Height}"
     d:DesignWidth="600"
     mc:Ignorable="d">
     <d:UserControl.DataContext>
@@ -15,6 +15,7 @@
     <Grid Margin="3">
         <Image
             Name="ImageWav"
+            Source="{Binding WavImage}"
             Height="100"
             HorizontalAlignment="Left" />
         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -49,14 +50,16 @@
             Name="Offset"
             HorizontalAlignment="Left"
             Width="{Binding Offset}"
+    Height="{Binding Height}"
             Fill="#556075A2" />
         </Canvas>
         <Canvas>
             <Rectangle
             Name="Consonant"
             Canvas.Left="{Binding Offset}"
-            Width="{Binding Consonant}"
+            Width="{Binding ConsonantLength}"
             HorizontalAlignment="Left"
+    Height="{Binding Height}"
             Fill="#55CD8C8C" />
         </Canvas>
         <Canvas>
@@ -64,6 +67,7 @@
             Name="Cutoff"
             Canvas.Left="{Binding Cutoff}"
             Width="{Binding CutoffLength}"
+    Height="{Binding Height}"
             HorizontalAlignment="Right"
             Fill="#556075A2" />
         </Canvas>
@@ -75,6 +79,7 @@
             Height="80"
             HorizontalAlignment="Left"
             Fill="#FFCF1A1A"
+                VerticalAlignment="Center"
             SnapsToDevicePixels="True" />
         </Canvas>
         <Canvas>
@@ -83,6 +88,7 @@
             Canvas.Left="{Binding Overlap}"
             Width="1"
             Height="60"
+                VerticalAlignment="Center"
             HorizontalAlignment="Left"
             Fill="#FF0C4707"
             SnapsToDevicePixels="True" />

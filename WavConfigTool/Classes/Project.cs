@@ -23,6 +23,7 @@ namespace WavConfigTool.Classes
         private int _vowelSustain = 200;
         private int _vowelAttack = 60;
         private int _consonantAttack = 30;
+        private int _restAttack = 30;
         private string _prefix = "";
         private string _suffix = "";
         private double _wavAmplitudeMultiplayer = 1;
@@ -30,7 +31,7 @@ namespace WavConfigTool.Classes
         public int VowelSustain { get => _vowelSustain; set { _vowelSustain = value; ProjectChanged(); } }
         public int VowelAttack { get => _vowelAttack; set { _vowelAttack = value; ProjectChanged(); } }
         public int ConsonantAttack { get => _consonantAttack; set { _consonantAttack = value; ProjectChanged(); } }
-        public int RestAttack { get; set; } = 30;
+        public int RestAttack { get => _restAttack; set { _restAttack = value; ProjectChanged(); } }
         public string Prefix { get => _prefix; set { _prefix = value; ProjectChanged(); } }
         public string Suffix { get => _suffix; set { _suffix = value; ProjectChanged(); } }
 
@@ -99,7 +100,7 @@ namespace WavConfigTool.Classes
             var project = new Project();
             project.Read(project_path);
             project.IsLoaded = project.Reclist.IsLoaded && project.Voicebank.IsLoaded;
-            project.OtoGenerator = new OtoGenerator(project.Reclist);
+            project.OtoGenerator = new OtoGenerator(project.Reclist, project);
             Settings.ProjectFile = project_path;
             return project;
         }
@@ -280,7 +281,7 @@ namespace WavConfigTool.Classes
                     continue;
                 var projectLine = ProjectLinesByFilename[recline.Filename];
                 projectLine.Sort();
-                OtoGenerator.Generate(recline, projectLine);
+                OtoGenerator.Generate(projectLine);
             }
         }
 

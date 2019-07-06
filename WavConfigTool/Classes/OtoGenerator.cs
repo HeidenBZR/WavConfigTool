@@ -19,11 +19,12 @@ namespace WavConfigTool.Classes
 
         public static OtoGenerator Current { get; private set; }
 
-        public OtoGenerator(Reclist reclist)
+        public OtoGenerator(Reclist reclist, Project project)
         {
             Reclist = reclist;
             string path = Settings.GetResoucesPath(@"WavConfigTool\WavSettings\" + reclist.Name + ".txt");
             Replacement = ReadReplacementFile(path);
+            Project = project;
             Current = this;
         }
 
@@ -113,25 +114,27 @@ namespace WavConfigTool.Classes
             return String.Join("", phonemes.Select(n => n.Type.ToString().Substring(0, 1)));
         }
 
-        public void Generate(Recline recline, ProjectLine projectLine)
+        public void Generate(ProjectLine projectLine)
         {
+            var recline = projectLine.Recline;
             projectLine.CalculateZones();
             var phs = recline.Phonemes;
             for (int i = 0; i < recline.Phonemes.Count; i++)
             {
                 if (phs.Count > i + 1)
-                    Generate(projectLine, recline, phs[i], phs[i + 1]);
+                    Generate(projectLine, phs[i], phs[i + 1]);
                 if (phs.Count > i + 2)
-                    Generate(projectLine, recline, phs[i], phs[i + 1], phs[i + 2]);
+                    Generate(projectLine, phs[i], phs[i + 1], phs[i + 2]);
                 if (phs.Count > i + 3)
-                    Generate(projectLine, recline, phs[i], phs[i + 1], phs[i + 2], phs[i + 3]);
+                    Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3]);
                 if (phs.Count > i + 4)
-                    Generate(projectLine, recline, phs[i], phs[i + 1], phs[i + 2], phs[i + 3], phs[i + 4]);
+                    Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3], phs[i + 4]);
             }
         }
 
-        public void Generate(ProjectLine projectLine, Recline recline, params Phoneme[] phonemes)
+        public void Generate(ProjectLine projectLine, params Phoneme[] phonemes)
         {
+            var recline = projectLine.Recline;
             string alias = GetAlias(phonemes);
 
             Phoneme p1 = phonemes.First();
@@ -231,21 +234,20 @@ namespace WavConfigTool.Classes
             {
                 if (hasZones)
                 {
-                    // Relative values
-                    overlap -= offset;
-                    preutterance -= offset;
-                    consonant -= offset;
-                    if (cutoff != 0)
-                        cutoff = -(cutoff - offset);
-                    else
-                        cutoff = 10;
-                    recline.AddOto(new Oto(recline.Filename, alias, offset, consonant, cutoff, preutterance, overlap));
+                    recline.AddOto(ProcessOto(new Oto(recline.Filename, alias, offset, consonant, cutoff, preutterance, overlap), projectLine));
                 }
                 else if (MustGeneratePreoto)
                 {
                     recline.AddOto(new Oto(recline.Filename, alias));
                 }
             }
+        }
+
+        public Oto ProcessOto(Oto oto, ProjectLine line)
+        {
+            oto.Smarty();
+            line.Recline.AddOto(oto);
+            return oto;
         }
     }
 }

@@ -17,11 +17,13 @@ namespace WavConfigTool.ViewModels
 
         public ObservableCollection<WavControlBaseViewModel> Collection { get; private set; } = new ObservableCollection<WavControlBaseViewModel>();
 
+        public int ItemsCount { get; set; } = 0;
+
         // TODO: Проверить корректность
         public int PagesTotal
         {
             // Количество деленное на размер страницы, округляя в большую сторону
-            get => Collection.Count() / PageSize + (Collection.Count() % PageSize > 0 ? 1 : 0);
+            get => ItemsCount / PageSize + (ItemsCount % PageSize > 0 ? 1 : 0);
         }
         public int CurrentPage { get => _currentPage; set => SetPageCommand.Execute(value); }
         public int PageSize { get => _pageSize; set => SetPageSizeCommand.Execute(value); }
@@ -62,7 +64,7 @@ namespace WavConfigTool.ViewModels
             RaisePropertyChanged(() => CurrentPageView);
             RaisePropertyChanged(() => PagesTotal);
             IsHidden = false;
-
+            ItemsCount = Collection.Count();
             PagerChanged += delegate { };
 
         }
@@ -122,15 +124,22 @@ namespace WavConfigTool.ViewModels
             _pageSize = pageSize;
             // TODO: Проверка на допустимость страницы? 
             // TODO: Переход к странице с объектом на прежней странице
+            Refresh();
+        }, pageSize => pageSize > 0);
+
+        internal void OtoMode()
+        {
+            CurrentPage = 0;
+            PageSize = ItemsCount;
+            Refresh();
+        }
+
+        void Refresh()
+        {
             RaisePropertyChanged(() => PageSize);
             RaisePropertyChanged(() => PagesTotal);
             RaisePropertyChanged(() => PageContent);
             PagerChanged();
-        }, pageSize => pageSize > 0);
-
-        internal void SetOtoMode(bool isOtoPreviewMode, WavControlBaseViewModel wavControlViewModel)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -29,11 +29,14 @@
         <dxmvvm:EventToCommand
             Command="{Binding WavControlClickCommand}"
             EventName="MouseLeftButtonDown"
+            ModifierKeys="{x:Null}"
             PassEventArgsToCommand="True">
             <dxmvvm:EventToCommand.EventArgsConverter>
                 <vt:MouseButtonToPointConverter />
             </dxmvvm:EventToCommand.EventArgsConverter>
         </dxmvvm:EventToCommand>
+        <dxmvvm:EventToCommand Command="{Binding OtoModeCommand}" 
+            EventName="MouseLeftButtonDown" ModifierKeys="Alt" />
     </dxmvvm:Interaction.Behaviors>
     <d:UserControl.DataContext>
         <vm:WavControlViewModel />

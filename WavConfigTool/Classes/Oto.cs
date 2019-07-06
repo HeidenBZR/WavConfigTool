@@ -27,7 +27,7 @@ namespace WavConfigTool.Classes
             Preutterance = preuttercance;
             Overlap = overlap;
         }
-        public static Oto Read(string line)
+        public static Oto Read(string line, double length)
         {
             try
             {
@@ -62,7 +62,15 @@ namespace WavConfigTool.Classes
                 {
                     overlap = result;
                 }
-                return new Oto(filename, alias, offset, consonant, cutoff, preuttercance, overlap);
+                return new Oto(
+                    filename, 
+                    alias, 
+                    offset, 
+                    offset + consonant, 
+                    cutoff > 0 ? length - cutoff : offset - cutoff, 
+                    offset + preuttercance, 
+                    offset + overlap
+                );
             }
             catch (Exception ex)
             {
@@ -72,7 +80,22 @@ namespace WavConfigTool.Classes
 
         public string Write(string prefix = "", string suffix = "")
         {
-            return $"{Filename}={prefix}{Alias}{suffix},{Offset},{Consonant},{Cutoff},{Preutterance},{Overlap}";
+            // Relative values
+            var offset = Offset;
+            var overlap = Overlap - offset;
+            var preutterance = Preutterance - offset;
+            var consonant = Consonant - offset;
+            var cutoff = Cutoff != 0 ? -(Cutoff - offset) : 10;
+            return $"{Filename}={prefix}{Alias}{suffix},{offset},{consonant},{cutoff},{preutterance},{overlap}";
+        }
+
+        public void Smarty()
+        {
+            Cutoff = Cutoff <= Offset ? Offset + 30 : Cutoff;
+            Consonant = Consonant < Offset ? Offset : Consonant;
+            Consonant = Consonant > Cutoff ? Cutoff - 10 : Consonant;
+            Overlap = Preutterance < Overlap ? Preutterance - 5 : Overlap;
+            Offset = Overlap < Offset ? Overlap - 10 : Offset;
         }
     }
 }

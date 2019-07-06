@@ -112,8 +112,12 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public WavControlViewModel() { }
-        public WavControlViewModel(ProjectLine projectLine)
+        public WavControlViewModel()
+        {
+            OnOtoMode += delegate { };
+        }
+
+        public WavControlViewModel(ProjectLine projectLine) : base()
         {
             ProjectLine = projectLine;
             if (ProjectLine.IsEnabled)
@@ -185,6 +189,17 @@ namespace WavConfigTool.ViewModels
             FillPoints(PhonemeType.Rest);
             FillPoints(PhonemeType.Vowel);
             PointsChanged();
+        }
+
+        internal ObservableCollection<WavControlBaseViewModel> GenerateOtoPreview()
+        {
+            var collection = new ObservableCollection<WavControlBaseViewModel>();
+            collection.Add(this);
+            foreach (Oto oto in ProjectLine.Recline.OtoList)
+            {
+                collection.Add(new OtoPreviewControlViewModel(oto, WavImage));
+            }
+            return collection;
         }
 
         public void PointsChanged()
@@ -324,6 +339,26 @@ namespace WavConfigTool.ViewModels
                     delegate (Point point)
                     {
                         return ProjectLine.IsEnabled && !ProjectLine.IsCompleted;
+                    }
+                );
+            }
+        }
+
+        public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
+        public event OtoModeHandler OnOtoMode;
+
+        public ICommand OtoModeCommand
+        {
+            get
+            {
+                return new DelegateCommand(
+                    delegate
+                    {
+                        OnOtoMode(this);
+                    },
+                    delegate
+                    {
+                        return !IsLoading;
                     }
                 );
             }

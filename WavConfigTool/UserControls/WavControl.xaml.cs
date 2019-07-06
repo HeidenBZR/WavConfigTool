@@ -33,39 +33,6 @@ namespace WavConfigTool.UserControls
         }
 
 
-        #region Events
-
-        //private void WavControl_Reset(object sender, RoutedEventArgs e)
-        //{
-        //    string tag = (sender as MenuItem).Tag.ToString();
-        //    if (tag == "All") Reset();
-        //    else if (tag == "C") Reset(WavConfigPoint.C);
-        //    else if (tag == "V") Reset(WavConfigPoint.V);
-        //    else if (tag == "D") Reset(WavConfigPoint.D);
-        //}
-
-        //private void WavControl_OtoPreview(object sender, RoutedEventArgs e)
-        //{
-        //    DrawOtoPreview();
-        //}
-
-        //private void Main_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
-        //    {
-        //        if (AllowOtoPreview)
-        //            DrawOtoPreview();
-        //    }
-        //    else
-        //    {
-        //        if (!WavContextMenu.IsVisible && Keyboard.IsKeyUp(Key.Space))
-        //        {
-        //            double x = e.GetPosition(this).X;
-        //            Draw(MainWindow.Mode, x);
-        //        }
-        //    }
-        //}
-
-        #endregion
+         
     }
 }

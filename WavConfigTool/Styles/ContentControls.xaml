@@ -39,10 +39,6 @@
         </Setter>
     </Style>
 
-    <DataTemplate x:Key="WavControlsListViewItem">
-        <uc:WavControlBase />
-    </DataTemplate>
-
     <DataTemplate x:Key="OtoPreviewListViewItem">
         <uc:OtoPreviewControl />
     </DataTemplate>
