@@ -77,7 +77,11 @@ namespace WavConfigTool
 
     public class Consonant : Phoneme
     {
-        public Consonant(string l, string letter = "") : base(l, letter) { Type = PhonemeType.Consonant; }
+        public Consonant(string l, string letter = "") : base(l, letter)
+        {
+            Type = PhonemeType.Consonant;
+            Attack = Settings.ConsonantAttack;
+        }
 
         public override Phoneme Clone() { return new Consonant(Alias, Letter); }
     };

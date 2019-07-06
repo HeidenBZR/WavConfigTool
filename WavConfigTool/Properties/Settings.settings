@@ -3,13 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="FadeV" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">30</Value>
+      <Value Profile="(Default)">50</Value>
     </Setting>
     <Setting Name="FadeC" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">10</Value>
+      <Value Profile="(Default)">30</Value>
     </Setting>
     <Setting Name="FadeD" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">100</Value>
+      <Value Profile="(Default)">40</Value>
     </Setting>
     <Setting Name="ItemsOnPage" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">4</Value>
