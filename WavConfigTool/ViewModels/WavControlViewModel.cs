@@ -52,6 +52,8 @@ namespace WavConfigTool.ViewModels
             }
         }
 
+        public bool IsOtoBase { get; set; } = false;
+
         public ObservableCollection<WavPointViewModel> ConsonantPoints { get; set; } = new ObservableCollection<WavPointViewModel>();
         public ObservableCollection<WavPointViewModel> VowelPoints { get; set; } = new ObservableCollection<WavPointViewModel>();
         public ObservableCollection<WavPointViewModel> RestPoints { get; set; } = new ObservableCollection<WavPointViewModel>();
@@ -115,10 +117,12 @@ namespace WavConfigTool.ViewModels
         public WavControlViewModel()
         {
             OnOtoMode += delegate { };
+            PointsChanged += OnPointsChanged;
         }
 
         public WavControlViewModel(ProjectLine projectLine) : base()
         {
+            PointsChanged += OnPointsChanged;
             ProjectLine = projectLine;
             if (ProjectLine.IsEnabled)
                 Width = (int)(Settings.RealToViewX(ProjectLine.WaveForm.Length / ProjectLine.WaveForm.BitRate));
@@ -191,7 +195,7 @@ namespace WavConfigTool.ViewModels
             PointsChanged();
         }
 
-        internal ObservableCollection<WavControlBaseViewModel> GenerateOtoPreview()
+        internal ObservableCollection<WavControlBaseViewModel> GenerateOtoPreviewWithSelf()
         {
             var collection = new ObservableCollection<WavControlBaseViewModel>();
             collection.Add(this);
@@ -201,8 +205,23 @@ namespace WavConfigTool.ViewModels
             }
             return collection;
         }
+        internal ObservableCollection<WavControlBaseViewModel> GenerateOtoPreview()
+        {
+            var collection = new ObservableCollection<WavControlBaseViewModel>();
+            foreach (Oto oto in ProjectLine.Recline.OtoList)
+            {
+                collection.Add(new OtoPreviewControlViewModel(oto, WavImage));
+            }
+            return collection;
+        }
 
-        public void PointsChanged()
+        public delegate void PointsChangedHandler();
+        public event SimpleHandler PointsChanged;
+
+        public delegate void SimpleHandler();
+        public event SimpleHandler RegenerateOtoRequest;
+
+        public void OnPointsChanged()
         {
             RaisePropertiesChanged(
                 () => ConsonantPoints,
@@ -347,21 +366,14 @@ namespace WavConfigTool.ViewModels
         public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
         public event OtoModeHandler OnOtoMode;
 
-        public ICommand OtoModeCommand
+        public ICommand OtoModeCommand => new DelegateCommand(() =>
         {
-            get
-            {
-                return new DelegateCommand(
-                    delegate
-                    {
-                        OnOtoMode(this);
-                    },
-                    delegate
-                    {
-                        return !IsLoading;
-                    }
-                );
-            }
-        }
+            OnOtoMode(this);
+        }, () => !IsLoading);
+
+        public ICommand RegenerateOtoCommand => new DelegateCommand(() =>
+        {
+            RegenerateOtoRequest();
+        }, () => IsOtoBase);
     }
 }

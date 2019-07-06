@@ -527,11 +527,11 @@ namespace WavConfigTool.Windows
         //    ChangeSettings();
         //}
 
-        //private void Sustain_LostFocus(object sender, RoutedEventArgs e)
+        //private void Decay_LostFocus(object sender, RoutedEventArgs e)
         //{
-        //    if (int.TryParse(TextBoxSustain.Text, out int sustain))
-        //        if (!SetSustain(sustain))
-        //            TextBoxSustain.Text = WavControl.VowelSustain.ToString("f0");
+        //    if (int.TryParse(TextBoxDecay.Text, out int Decay))
+        //        if (!SetDecay(Decay))
+        //            TextBoxDecay.Text = WavControl.VowelDecay.ToString("f0");
         //}
 
         #endregion

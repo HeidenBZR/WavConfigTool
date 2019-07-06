@@ -117,6 +117,7 @@ namespace WavConfigTool.Classes
         public void Generate(ProjectLine projectLine)
         {
             var recline = projectLine.Recline;
+            recline.ResetOto();
             projectLine.CalculateZones();
             var phs = recline.Phonemes;
             for (int i = 0; i < recline.Phonemes.Count; i++)
@@ -146,7 +147,7 @@ namespace WavConfigTool.Classes
             bool hasAliasType = true;
             switch (aliasType)
             {
-                // Absolute values, relative ones are made in Oto()
+                // Absolute values, relative ones are made in Oto on write (!)
 
                 // Ends with vowel
                 case "VV":
@@ -161,17 +162,17 @@ namespace WavConfigTool.Classes
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out - Project.VowelSustain - p2.Attack;
+                    consonant = p2.Zone.In + Project.VowelDecay;
                     cutoff = p2.Zone.Out - p2.Attack;
                     break;
 
                 case "RCV":
                 case "RCCV":
                 case "RCCCV":
-                    offset = p1.Zone.In;
-                    overlap = p1.Zone.Out + p1.Attack;
+                    offset = p1.Zone.In - p1.Attack;
+                    overlap = p1.Zone.In;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out - Project.VowelSustain - p2.Attack;
+                    consonant = p2.Zone.In + Project.VowelDecay;
                     cutoff = p2.Zone.Out - p2.Attack;
                     break;
 
@@ -179,11 +180,11 @@ namespace WavConfigTool.Classes
                 case "RCC":
                 case "RCCC":
                 case "RCCCC":
-                    offset = p1.Zone.In;
-                    overlap = p1.Zone.Out + p1.Attack;
+                    offset = p1.Zone.In - p1.Attack;
+                    overlap = p1.Zone.In;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out - p2.Attack;
-                    cutoff = p2.Zone.Out;
+                    consonant = p2.Zone.Out + 50;
+                    cutoff = p2.Zone.Out + 60;
                     break;
 
                 // Ends with Rest
@@ -195,7 +196,7 @@ namespace WavConfigTool.Classes
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out - p2.Attack;
+                    consonant = p2.Zone.Out + Project.VowelDecay;
                     cutoff = 0;
                     break;
 
@@ -206,7 +207,7 @@ namespace WavConfigTool.Classes
                     offset = p1.Zone.In;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out;
+                    consonant = p2.Zone.Out + Project.VowelDecay;
                     cutoff = 0;
                     break;
 
@@ -234,7 +235,7 @@ namespace WavConfigTool.Classes
             {
                 if (hasZones)
                 {
-                    recline.AddOto(ProcessOto(new Oto(recline.Filename, alias, offset, consonant, cutoff, preutterance, overlap), projectLine));
+                    ProcessOto(new Oto(recline.Filename, alias, offset, consonant, cutoff, preutterance, overlap), projectLine);
                 }
                 else if (MustGeneratePreoto)
                 {

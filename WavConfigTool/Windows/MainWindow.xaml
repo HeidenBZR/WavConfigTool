@@ -70,29 +70,7 @@
                 </RowDefinition.Style>
             </RowDefinition>
             <RowDefinition Height="12" />
-            <RowDefinition>
-                <RowDefinition.Style>
-                    <Style TargetType="{x:Type RowDefinition}">
-                        <Setter Property="Height" Value="*" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsOtoPreviewMode}" Value="True">
-                                <Setter Property="Height" Value="110" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </RowDefinition.Style>
-            </RowDefinition>
-            <RowDefinition>
-                <RowDefinition.Style>
-                    <Style TargetType="{x:Type RowDefinition}">
-                        <Setter Property="Height" Value="0" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsOtoPreviewMode}" Value="True">
-                                <Setter Property="Height" Value="*" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </RowDefinition.Style>
+            <RowDefinition Height="*">
             </RowDefinition>
         </Grid.RowDefinitions>
         <uc:CanvasLoading
@@ -278,7 +256,7 @@
                         <TextBlock
                             Padding="0"
                             HorizontalAlignment="Center"
-                            Text="Sustain" />
+                            Text="Decay" />
                         <StackPanel
                             Height="25"
                             Margin="10"
@@ -288,7 +266,7 @@
                                 Width="50"
                                 Padding="0"
                                 VerticalAlignment="Center"
-                                Text="{Binding VowelSustain, Mode=TwoWay, TargetNullValue=0}" />
+                                Text="{Binding VowelDecay, Mode=TwoWay, TargetNullValue=0}" />
 
                         </StackPanel>
                     </StackPanel>
@@ -354,6 +332,27 @@
                     </StackPanel>
                 </Border>
                 <Border
+                    Margin="4,4,0,4"
+                    BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                    
+                    Visibility="{Binding IsOtoPreviewMode, Converter={StaticResource BooleanToVisibility}}"
+                    BorderThickness="1">
+                    <StackPanel Height="60">
+                        <TextBlock
+                            Padding="0"
+                            HorizontalAlignment="Center"
+                            Text="Mode" />
+                        <StackPanel
+                            Height="25"
+                            Margin="10"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Button Margin="0,0,5,0" Content="Set Wav Config Mode" Command="{Binding SetWavConfigMode}"/>
+
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border
                     Margin="4"
                     BorderBrush="DarkBlue"
                     BorderThickness="1"
@@ -386,10 +385,6 @@
                 </DataTemplate>
             </ItemsControl.Resources>
         </ItemsControl>
-
-        <Frame DataContext="{Binding OtoPreviewWindowViewModel}"
-            Grid.Row="5" Name="OtoPreviewFrame" Visibility="{Binding IsOtoPreviewMode, Converter={StaticResource BooleanToVisibility}}" >
-        </Frame>
 
     </Grid>
 </Window>

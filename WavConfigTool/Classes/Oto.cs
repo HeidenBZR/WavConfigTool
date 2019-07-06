@@ -78,22 +78,23 @@ namespace WavConfigTool.Classes
             }
         }
 
+        public double OffsetWrite => Offset;
+        public double ConsonantWrite => Consonant - Offset;
+        public double CutoffWrite => Cutoff != 0 ? -(Cutoff - Offset) : 10;
+        public double PreutteranceWrite => Preutterance - Offset;
+        public double OverlapWrite => Overlap - Offset;
+
         public string Write(string prefix = "", string suffix = "")
         {
             // Relative values
-            var offset = Offset;
-            var overlap = Overlap - offset;
-            var preutterance = Preutterance - offset;
-            var consonant = Consonant - offset;
-            var cutoff = Cutoff != 0 ? -(Cutoff - offset) : 10;
-            return $"{Filename}={prefix}{Alias}{suffix},{offset},{consonant},{cutoff},{preutterance},{overlap}";
+            return $"{Filename}={prefix}{Alias}{suffix},{OffsetWrite},{ConsonantWrite},{CutoffWrite},{PreutteranceWrite},{OverlapWrite}";
         }
 
         public void Smarty()
         {
-            Cutoff = Cutoff <= Offset ? Offset + 30 : Cutoff;
-            Consonant = Consonant < Offset ? Offset : Consonant;
-            Consonant = Consonant > Cutoff ? Cutoff - 10 : Consonant;
+            Cutoff = Cutoff != 0 && Cutoff <= Offset ? Offset + 30 : Cutoff;
+            Consonant = Consonant < Preutterance ? Preutterance : Consonant;
+            Consonant = Cutoff != 0 && Consonant > Cutoff ? Cutoff - 10 : Consonant;
             Overlap = Preutterance < Overlap ? Preutterance - 5 : Overlap;
             Offset = Overlap < Offset ? Overlap - 10 : Offset;
         }

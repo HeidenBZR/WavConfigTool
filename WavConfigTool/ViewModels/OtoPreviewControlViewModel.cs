@@ -14,11 +14,15 @@ namespace WavConfigTool.ViewModels
         public string Filename { get => Oto.Filename; }
         public string Alias { get => Oto.Alias; }
 
-        public double Offset { get => Oto.Offset * Settings.ScaleX; set => Oto.Offset = value / Settings.ScaleX; }
-        public double Consonant { get => Oto.Consonant * Settings.ScaleX; set => Oto.Consonant = value / Settings.ScaleX; }
-        public double Cutoff { get => Oto.Cutoff * Settings.ScaleX; set => Oto.Cutoff = value / Settings.ScaleX; }
-        public double Preutterance { get => Oto.Preutterance * Settings.ScaleX; set => Oto.Preutterance = value / Settings.ScaleX; }
-        public double Overlap { get => Oto.Overlap * Settings.ScaleX; set => Oto.Overlap = value / Settings.ScaleX; }
+        public double Offset { get => Settings.RealToViewX(Oto.Offset); set => Oto.Offset = value / Settings.ScaleX; }
+        public double Consonant { get => Settings.RealToViewX(Oto.Consonant); set => Oto.Consonant = value / Settings.ScaleX; }
+        public double Cutoff
+        {
+            get => Oto.Cutoff == 0 ? Length - Settings.RealToViewX(Oto.Cutoff) : Settings.RealToViewX(Oto.Cutoff);
+            set => Oto.Cutoff = value / Settings.ScaleX;
+        }
+        public double Preutterance { get => Settings.RealToViewX(Oto.Preutterance); set => Oto.Preutterance = value / Settings.ScaleX; }
+        public double Overlap { get =>  Settings.RealToViewX(Oto.Overlap); set => Oto.Overlap = value / Settings.ScaleX; }
 
         public double Length { get; set; }
         public double CutoffLength { get => Length - Cutoff; }
@@ -34,11 +38,11 @@ namespace WavConfigTool.ViewModels
 
         public OtoPreviewControlViewModel(Oto oto, ImageSource image)
         {
+            WavImage = image;
+            Length = image.Width;
             if (oto != null)
             {
                 Oto = oto;
-                WavImage = image;
-                Length = image.Width;
             }
         }
 

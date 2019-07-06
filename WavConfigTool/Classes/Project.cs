@@ -20,7 +20,7 @@ namespace WavConfigTool.Classes
         public Voicebank Voicebank { get => _voicebank; private set { _voicebank = value; ProjectChanged(); } }
         public OtoGenerator OtoGenerator { get; private set; }
 
-        private int _vowelSustain = 200;
+        private int _vowelDecay = 200;
         private int _vowelAttack = 60;
         private int _consonantAttack = 30;
         private int _restAttack = 30;
@@ -28,7 +28,7 @@ namespace WavConfigTool.Classes
         private string _suffix = "";
         private double _wavAmplitudeMultiplayer = 1;
 
-        public int VowelSustain { get => _vowelSustain; set { _vowelSustain = value; ProjectChanged(); } }
+        public int VowelDecay { get => _vowelDecay; set { _vowelDecay = value; ProjectChanged(); } }
         public int VowelAttack { get => _vowelAttack; set { _vowelAttack = value; ProjectChanged(); } }
         public int ConsonantAttack { get => _consonantAttack; set { _consonantAttack = value; ProjectChanged(); } }
         public int RestAttack { get => _restAttack; set { _restAttack = value; ProjectChanged(); } }
@@ -137,7 +137,7 @@ namespace WavConfigTool.Classes
             text.Append($"$Reclist={Reclist.Name}\r\n");
             text.Append($"$Suffix={Suffix}\r\n");
             text.Append($"$Prefix={Prefix}\r\n");
-            text.Append($"$VowelSustain={VowelSustain}\r\n");
+            text.Append($"$VowelDecay={VowelDecay}\r\n");
             text.Append($"$VowelAttack={VowelAttack}\r\n");
             text.Append($"$ConsonantAttack={ConsonantAttack}\r\n");
             text.Append($"$WavAmplitudeMultiplayer={WavAmplitudeMultiplayer.ToString("F2")}\r\n");
@@ -189,9 +189,9 @@ namespace WavConfigTool.Classes
                     Prefix = value;
                     break;
 
-                case "VowelSustain":
-                    if (int.TryParse(value, out int vowelSustain))
-                        VowelSustain = vowelSustain;
+                case "VowelDecay":
+                    if (int.TryParse(value, out int vowelDecay))
+                        VowelDecay = vowelDecay;
                     break;
 
                 case "VowelAttack":

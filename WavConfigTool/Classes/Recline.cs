@@ -65,9 +65,29 @@ namespace WavConfigTool.Classes
                 (type == PhonemeType.Rest ? Rests : Vowels);
         }
 
+        public void ResetOto()
+        {
+            Otos = new Dictionary<string, Oto>();
+        }
+
         public void AddOto(Oto oto)
         {
-            Otos[oto.Alias] = oto;
+            if (Otos.ContainsKey(oto.Alias))
+            {
+                string newAlias;
+                int i = 1;
+                do
+                {
+                    i++;
+                    newAlias = $"{oto.Alias} ({i})";
+                }
+                while (Otos.ContainsKey(newAlias));
+                Otos[newAlias] = oto;
+            }
+            else
+            {
+                Otos[oto.Alias] = oto;
+            }
         }
 
         public string WriteOto(string prefix = "", string suffix = "")

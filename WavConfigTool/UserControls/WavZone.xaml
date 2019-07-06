@@ -13,10 +13,18 @@
     </d:UserControl.DataContext>
 
     <Canvas>
-        <Canvas
+        <!--<Canvas
             Canvas.Left="{Binding In, FallbackValue=0, TargetNullValue=0}"
             Width="{Binding Out, FallbackValue=0, TargetNullValue=0}"
             Height="100"
-            Background="{Binding BackgroundBrush, FallbackValue=#22EE2222}" />
+            Background="{Binding BackgroundBrush, FallbackValue=#22EE2222}" />-->
+        <Polygon 
+            Height="100"
+            Width="{Binding Width}"
+            Fill="{Binding BackgroundBrush, FallbackValue=#22EE2222}"
+            Stroke="{Binding BorderBrush, FallbackValue=#22EE2222}"
+            Points="{Binding Points}"
+            Canvas.Left="{Binding In, FallbackValue=0, TargetNullValue=0}">
+        </Polygon>
     </Canvas>
 </UserControl>

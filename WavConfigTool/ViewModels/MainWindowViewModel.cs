@@ -54,7 +54,7 @@ namespace WavConfigTool.ViewModels
         public int ConsonantAttack { get => Project == null ? 0 : Project.ConsonantAttack; set => Project.ConsonantAttack = value; }
         public int VowelAttack { get => Project == null ? 0 : Project.VowelAttack; set => Project.VowelAttack = value; }
         public int RestAttack { get => Project == null ? 0 : Project.RestAttack; set => Project.RestAttack = value; }
-        public int VowelSustain { get => Project == null ? 0 : Project.VowelSustain; set => Project.VowelSustain = value; }
+        public int VowelDecay { get => Project == null ? 0 : Project.VowelDecay; set => Project.VowelDecay = value; }
 
         public string Prefix { get => Project == null ? "" : Project.Prefix; set => Project.Prefix = value; }
         public string Suffix { get => Project == null ? "" : Project.Suffix; set => Project.Suffix = value; }
@@ -140,20 +140,32 @@ namespace WavConfigTool.ViewModels
 
         WavControlViewModel CreateWavControl(int i)
         {
-            var control = new WavControlViewModel(Project.ProjectLines[i]) { Number = i };
+            var projectLine = Project.ProjectLines[i];
+            var control = new WavControlViewModel(projectLine) { Number = i };
             control.OnOtoMode += delegate
             {
-                OtoPagerModeInit(control);
+                SetOtoMode(control);
+            };
+            control.RegenerateOtoRequest += delegate
+            {
+                if (IsOtoPreviewMode)
+                {
+                    OtoGenerator.Current.Generate(projectLine);
+                    OtoPagerViewModel.UpdateOtoPreviewControls(control.GenerateOtoPreview());
+                    RaisePropertyChanged(() => PagerViewModel);
+                }
             };
             return control;
         }
 
-        void OtoPagerModeInit(WavControlViewModel wavControl)
+        void SetOtoMode(WavControlViewModel wavControl)
         {
+            wavControl.IsOtoBase = true;
             OtoGenerator.Current.Generate(wavControl.ProjectLine);
-            OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreview());
+            OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreviewWithSelf());
             OtoPagerViewModel.OtoMode();
             PagerViewModel = OtoPagerViewModel;
+            IsOtoPreviewMode = true;
             Refresh();
         }
 
@@ -183,7 +195,7 @@ namespace WavConfigTool.ViewModels
                 RaisePropertiesChanged(
                     () => ConsonantAttack,
                     () => VowelAttack,
-                    () => VowelSustain,
+                    () => VowelDecay,
                     () => Prefix,
                     () => Suffix);
 
@@ -291,5 +303,12 @@ namespace WavConfigTool.ViewModels
             LoadProjectAsync();
             Refresh();
         }, () => !IsLoading);
+
+        public ICommand SetWavConfigMode => new DelegateCommand(() =>
+        {
+            PagerViewModel = WavControlsPagerViewModel;
+            IsOtoPreviewMode = false;
+            Refresh();
+        }, () => IsOtoPreviewMode);
     }
 }

@@ -41,6 +41,8 @@
                         <vt:MouseButtonToPointConverter />
                     </dxmvvm:EventToCommand.EventArgsConverter>
                 </dxmvvm:EventToCommand>
+                <dxmvvm:EventToCommand Command="{Binding RegenerateOtoCommand}" SourceObject="{RelativeSource AncestorType=local:WavControl}"
+                    EventName="MouseLeftButtonUp" />
             </dxmvvm:Interaction.Behaviors>
         </Thumb>
         <Grid

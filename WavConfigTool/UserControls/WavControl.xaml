@@ -9,7 +9,7 @@
     xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
     xmlns:vt="clr-namespace:WavConfigTool.ViewTools"
     Height="100"
-    Margin="0,10,0,10"
+    Margin="0,0,0,10"
     Background="{DynamicResource WavControlBackgroundBrush}"
     Focusable="False"
     mc:Ignorable="d">
@@ -37,6 +37,8 @@
         </dxmvvm:EventToCommand>
         <dxmvvm:EventToCommand Command="{Binding OtoModeCommand}" 
             EventName="MouseLeftButtonDown" ModifierKeys="Alt" />
+        <dxmvvm:EventToCommand Command="{Binding RegenerateOtoCommand}" 
+            EventName="MouseLeftButtonUp" />
     </dxmvvm:Interaction.Behaviors>
     <d:UserControl.DataContext>
         <vm:WavControlViewModel />

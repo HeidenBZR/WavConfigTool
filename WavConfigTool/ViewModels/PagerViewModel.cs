@@ -13,7 +13,7 @@ namespace WavConfigTool.ViewModels
     public class PagerViewModel : ViewModelBase
     {
         private int _currentPage = 0;
-        private int _pageSize = 4;
+        private int _pageSize = 7;
 
         public ObservableCollection<WavControlBaseViewModel> Collection { get; private set; } = new ObservableCollection<WavControlBaseViewModel>();
 
@@ -140,6 +140,18 @@ namespace WavConfigTool.ViewModels
             RaisePropertyChanged(() => PagesTotal);
             RaisePropertyChanged(() => PageContent);
             PagerChanged();
+        }
+
+        internal void UpdateOtoPreviewControls(ObservableCollection<WavControlBaseViewModel> controls)
+        {
+            while (Collection.Count > 1)
+            {
+                Collection.RemoveAt(Collection.Count - 1);
+            }
+            foreach (var control in controls)
+            {
+                Collection.Add(control);
+            }
         }
     }
 }

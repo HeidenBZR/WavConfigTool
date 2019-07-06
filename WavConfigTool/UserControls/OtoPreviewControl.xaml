@@ -8,17 +8,66 @@
     xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
     Height="{Binding Height}"
     d:DesignWidth="600"
+    Margin="0,10,0,0"
     mc:Ignorable="d">
     <d:UserControl.DataContext>
         <vm:OtoPreviewControlViewModel />
     </d:UserControl.DataContext>
-    <Grid Margin="3">
+    <Grid>
+        <Canvas
+            Name="Offset">
+            <Rectangle
+            HorizontalAlignment="Left"
+            Width="{Binding Offset}"
+    Height="{Binding Height}"
+            Fill="#FF003344" />
+        </Canvas>
+        <Canvas
+            Name="Consonant">
+            <Rectangle
+            Canvas.Left="{Binding Offset}"
+            Width="{Binding ConsonantLength}"
+            HorizontalAlignment="Left"
+    Height="{Binding Height}"
+            Fill="#FF403200" />
+        </Canvas>
+        <Canvas
+            Name="Cutoff">
+            <Rectangle
+            Canvas.Left="{Binding Cutoff}"
+            Width="{Binding CutoffLength}"
+    Height="{Binding Height}"
+            HorizontalAlignment="Right"
+            Fill="#FF003344" />
+        </Canvas>
         <Image
             Name="ImageWav"
             Source="{Binding WavImage}"
             Height="100"
             HorizontalAlignment="Left" />
-        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Canvas
+            Name="Preutterance">
+            <Rectangle
+            Canvas.Left="{Binding Preutterance}"
+            Width="1"
+            Height="100"
+            HorizontalAlignment="Left"
+            Fill="#FFCF1A1A"
+                VerticalAlignment="Center"
+            SnapsToDevicePixels="True" />
+        </Canvas>
+        <Canvas
+            Name="Overlap">
+            <Rectangle
+            Canvas.Left="{Binding Overlap}"
+            Width="1"
+            Height="100"
+                VerticalAlignment="Center"
+            HorizontalAlignment="Left"
+            Fill="#FF4BAE43"
+            SnapsToDevicePixels="True" />
+        </Canvas>
+        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="Caption">
             <Grid
                 Canvas.Left="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}, Path=HorizontalOffset}"
                 HorizontalAlignment="Left"
@@ -36,62 +85,14 @@
                     <TextBlock Margin="0" Text=" = " />
                     <TextBlock Margin="0,0,5,0" Text="{Binding Alias, TargetNullValue=ALIAS}"/>
                     <TextBlock Margin="0" Text="[" />
-                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.Offset, TargetNullValue=100}"/>
-                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.Consonant, TargetNullValue=100}"/>
-                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.Cutoff, TargetNullValue=-150}"/>
-                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.Preutterance, TargetNullValue=50}"/>
-                    <TextBlock Margin="0,0,0,0" Text="{Binding Oto.Overlap, TargetNullValue=30}"/>
+                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.OffsetWrite, TargetNullValue=100}"/>
+                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.ConsonantWrite, TargetNullValue=100}"/>
+                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.CutoffWrite, TargetNullValue=-150}"/>
+                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.PreutteranceWrite, TargetNullValue=50}"/>
+                    <TextBlock Margin="0,0,0,0" Text="{Binding Oto.OverlapWrite, TargetNullValue=30}"/>
                     <TextBlock Margin="0,0,5,0" Text="]"/>
                 </StackPanel>
             </Grid>
-        </Canvas>
-        <Canvas>
-            <Rectangle
-            Name="Offset"
-            HorizontalAlignment="Left"
-            Width="{Binding Offset}"
-    Height="{Binding Height}"
-            Fill="#556075A2" />
-        </Canvas>
-        <Canvas>
-            <Rectangle
-            Name="Consonant"
-            Canvas.Left="{Binding Offset}"
-            Width="{Binding ConsonantLength}"
-            HorizontalAlignment="Left"
-    Height="{Binding Height}"
-            Fill="#55CD8C8C" />
-        </Canvas>
-        <Canvas>
-            <Rectangle
-            Name="Cutoff"
-            Canvas.Left="{Binding Cutoff}"
-            Width="{Binding CutoffLength}"
-    Height="{Binding Height}"
-            HorizontalAlignment="Right"
-            Fill="#556075A2" />
-        </Canvas>
-        <Canvas>
-            <Rectangle
-            Name="Preutterance"
-            Canvas.Left="{Binding Preutterance}"
-            Width="1"
-            Height="80"
-            HorizontalAlignment="Left"
-            Fill="#FFCF1A1A"
-                VerticalAlignment="Center"
-            SnapsToDevicePixels="True" />
-        </Canvas>
-        <Canvas>
-            <Rectangle
-            Name="Overlap"
-            Canvas.Left="{Binding Overlap}"
-            Width="1"
-            Height="60"
-                VerticalAlignment="Center"
-            HorizontalAlignment="Left"
-            Fill="#FF0C4707"
-            SnapsToDevicePixels="True" />
         </Canvas>
     </Grid>
 </local:WavControlBase>
