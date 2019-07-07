@@ -23,6 +23,9 @@ namespace WavConfigTool.ViewModels
         public double Decay => Type == PhonemeType.Vowel ? Project.Current.VowelDecay : Attack;
 
         public PointCollection Points { get; private set; }
+        public PointCollection BorderPoints1 { get; private set; }
+        public PointCollection BorderPoints2 { get; private set; }
+        public PointCollection BorderPoints3 { get; private set; }
         public Brush BackgroundBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantZoneBrush"];
         public Brush BorderBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantBackBrush"];
 
@@ -51,39 +54,88 @@ namespace WavConfigTool.ViewModels
                     BorderBrush = (SolidColorBrush)Application.Current.Resources["RestBackBrush"];
                     break;
             }
+            double outMinusAttack = Out - Settings.RealToViewX(Attack);
+            outMinusAttack = outMinusAttack < 0 ? 0 : outMinusAttack;
+            double decay = Settings.RealToViewX(Project.Current.VowelDecay);
             switch (Type)
             {
                 case PhonemeType.Consonant:
+                    BorderPoints1 = new PointCollection
+                        {
+                            new Point(0, 100),
+                            new Point(0, 50),
+                            new Point(outMinusAttack, 50),
+                            new Point(outMinusAttack, 100),
+                        };
+                    BorderPoints2 = new PointCollection
+                        {
+                            new Point(outMinusAttack, 100),
+                            new Point(outMinusAttack, 50),
+                            new Point(Out, 100),
+                        };
                     Points = new PointCollection
                         {
                             new Point(0, 100),
-                            new Point(-Settings.RealToViewX(Attack), 100),
-                            new Point(0, 0),
-                            new Point(Out, 0),
+                            new Point(0, 50),
+                            new Point(outMinusAttack, 50),
                             new Point(Out, 100),
                         };
                     break;
                 case PhonemeType.Vowel:
+                    BorderPoints1 = new PointCollection
+                        {
+                            new Point(0, 100),
+                            new Point(0, 0),
+                            new Point(decay, 50),
+                            new Point(decay, 100),
+                        };
+                    BorderPoints2 = new PointCollection
+                        {
+                            new Point(decay, 50),
+                            new Point(outMinusAttack, 50),
+                            new Point(outMinusAttack, 100),
+                            new Point(decay, 100),
+                        };
+                    BorderPoints3 = new PointCollection
+                        {
+                            new Point(outMinusAttack, 50),
+                            new Point(Out, 100),
+                            new Point(outMinusAttack, 100),
+                        };
                     Points = new PointCollection
                         {
                             new Point(0, 100),
                             new Point(0, 0),
-                            new Point(Settings.RealToViewX(Decay), 50),
-                            new Point(Out - Settings.RealToViewX(Attack), 50),
+                            new Point(decay, 50),
+                            new Point(outMinusAttack, 50),
                             new Point(Out, 100),
-                            new Point(Settings.RealToViewX(Decay), 100),
-                            new Point(Settings.RealToViewX(Decay), 50),
-                            new Point(Out - Settings.RealToViewX(Attack), 50),
-                            new Point(Out - Settings.RealToViewX(Attack), 100),
                         };
                     break;
                 case PhonemeType.Rest:
+                    BorderPoints1 = new PointCollection
+                        {
+                            new Point(0, 100),
+                            new Point(decay, 50),
+                            new Point(decay, 100),
+                        };
+                    BorderPoints2 = new PointCollection
+                        {
+                            new Point(decay, 50),
+                            new Point(decay, 100),
+                            new Point(outMinusAttack, 100),
+                            new Point(outMinusAttack, 50),
+                        };
+                    BorderPoints3 = new PointCollection
+                        {
+                            new Point(outMinusAttack, 50),
+                            new Point(Out, 100),
+                            new Point(outMinusAttack, 100),
+                        };
                     Points = new PointCollection
                         {
                             new Point(0, 100),
-                            new Point(Settings.RealToViewX(Project.Current.VowelDecay), 50),
-                            new Point(0, 50),
-                            new Point(Out - Settings.RealToViewX(Attack), 50),
+                            new Point(decay, 50),
+                            new Point(outMinusAttack, 50),
                             new Point(Out, 100),
                         };
                     break;

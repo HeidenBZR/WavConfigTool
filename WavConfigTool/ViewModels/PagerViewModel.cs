@@ -121,9 +121,6 @@ namespace WavConfigTool.ViewModels
         public ICommand SetFirstPageCommand => new DelegateCommand(delegate
         {
             CurrentPage = 0;
-            RaisePropertyChanged(() => CurrentPageView);
-            RaisePropertyChanged(() => PageContent);
-            PagerChanged();
         }, () => PagesTotal > 0);
 
         public ICommand SetLastPageCommand => new DelegateCommand(delegate
@@ -132,25 +129,16 @@ namespace WavConfigTool.ViewModels
                 CurrentPage = PagesTotal - 1;
             else
                 CurrentPage = 0;
-            RaisePropertyChanged(() => CurrentPageView);
-            RaisePropertyChanged(() => PageContent);
-            PagerChanged();
         }, () => PagesTotal > 0);
 
         public ICommand SetNextPageCommand => new DelegateCommand(delegate
         {
             CurrentPage++;
-            RaisePropertyChanged(() => CurrentPageView);
-            RaisePropertyChanged(() => PageContent);
-            PagerChanged();
         }, () => PagesTotal > 0 && CurrentPage < PagesTotal - 1);
 
         public ICommand SetPreiousPageCommand => new DelegateCommand(delegate
         {
             CurrentPage--;
-            RaisePropertyChanged(() => CurrentPageView);
-            RaisePropertyChanged(() => PageContent);
-            PagerChanged();
         }, () => PagesTotal > 0 && CurrentPage > 0);
 
         public ICommand SetPageCommand => new DelegateCommand<int>((currentPage) =>

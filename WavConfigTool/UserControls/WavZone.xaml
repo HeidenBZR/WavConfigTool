@@ -21,9 +21,33 @@
         <Polygon 
             Height="100"
             Width="{Binding Width}"
-            Fill="{Binding BackgroundBrush, FallbackValue=#22EE2222}"
-            Stroke="{Binding BorderBrush, FallbackValue=#22EE2222}"
+            Fill="{Binding BackgroundBrush, FallbackValue=#00000000}"
+            SnapsToDevicePixels="True"
             Points="{Binding Points}"
+            Canvas.Left="{Binding In, FallbackValue=0, TargetNullValue=0}">
+        </Polygon>
+        <Polygon 
+            Height="100"
+            Width="{Binding Width}"
+            Stroke="{Binding BorderBrush, FallbackValue=#00000000}"
+            SnapsToDevicePixels="True"
+            Points="{Binding BorderPoints1}"
+            Canvas.Left="{Binding In, FallbackValue=0, TargetNullValue=0}">
+        </Polygon>
+        <Polygon 
+            Height="100"
+            Width="{Binding Width}"
+            Stroke="{Binding BorderBrush, FallbackValue=#00000000}"
+            SnapsToDevicePixels="True"
+            Points="{Binding BorderPoints2}"
+            Canvas.Left="{Binding In, FallbackValue=0, TargetNullValue=0}">
+        </Polygon>
+        <Polygon 
+            Height="100"
+            Width="{Binding Width}"
+            Stroke="{Binding BorderBrush, FallbackValue=#00000000}"
+            SnapsToDevicePixels="True"
+            Points="{Binding BorderPoints3}"
             Canvas.Left="{Binding In, FallbackValue=0, TargetNullValue=0}">
         </Polygon>
     </Canvas>
