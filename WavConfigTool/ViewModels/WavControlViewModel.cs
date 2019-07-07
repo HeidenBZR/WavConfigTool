@@ -62,9 +62,10 @@ namespace WavConfigTool.ViewModels
         public List<WavZoneViewModel> VowelZones { get { return GetZones(PhonemeType.Vowel, VowelPoints); } }
         public List<WavZoneViewModel> RestZones { get { return GetRestZones(); } }
 
-        public List<WavZoneViewModel> GetZones(PhonemeType point, IList<WavPointViewModel> points)
+        public List<WavZoneViewModel> GetZones(PhonemeType point, ObservableCollection<WavPointViewModel> points)
         {
             var zones = new List<WavZoneViewModel>();
+            SortPoints(points);
             for (int i = 0; i + 1 < points.Count; i += 2)
             {
                 zones.Add(new WavZoneViewModel(point, points[i].Position, points[i + 1].Position));
@@ -74,7 +75,7 @@ namespace WavConfigTool.ViewModels
 
         public List<WavZoneViewModel> GetRestZones()
         {
-            var local = new List<WavPointViewModel>();
+            var local = new ObservableCollection<WavPointViewModel>();
             if (RestPoints.Count > 1)
             {
                 var p = new WavPointViewModel(0, PhonemeType.Rest, "");
