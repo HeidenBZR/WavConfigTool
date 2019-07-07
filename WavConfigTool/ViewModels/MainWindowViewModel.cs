@@ -49,7 +49,6 @@ namespace WavConfigTool.ViewModels
         public PagerViewModel PagerViewModel { get; set; }
         public PagerViewModel WavControlsPagerViewModel { get; set; }
         public PagerViewModel OtoPagerViewModel { get; set; }
-        public OtoPreviewWindowViewModel OtoPreviewWindowViewModel { get; set; }
 
         public int ConsonantAttack { get => Project == null ? 0 : Project.ConsonantAttack; set => Project.ConsonantAttack = value; }
         public int VowelAttack { get => Project == null ? 0 : Project.VowelAttack; set => Project.VowelAttack = value; }
@@ -132,10 +131,37 @@ namespace WavConfigTool.ViewModels
                 WavControlsPagerViewModel = new PagerViewModel(wavControls);
                 PagerViewModel = WavControlsPagerViewModel;
                 PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
+                ReadProjectOptions();
+                Project.BeforeSave += () => { WriteProjectOptions(); };
                 await Task.Run(() => Parallel.ForEach(PagerViewModel.Collection, (model) => { (model as WavControlViewModel).Load(); }));
             }
             IsLoading = false;
             Refresh();
+        }
+
+        private void ReadProjectOptions()
+        {
+            foreach (KeyValuePair<string, string> option in Project.Options)
+            {
+                if (option.Key.StartsWith("Pager."))
+                {
+                    PagerViewModel.ReadProjectOption(option.Key, option.Value);
+                }
+                else
+                {
+                    switch (option.Key)
+                    {
+
+                    }
+                }
+            }
+        }
+
+        private void WriteProjectOptions()
+        {
+            Project.Options = PagerViewModel.WriteProjectOptions();
+            // дозаписать свои если есть
+
         }
 
         WavControlViewModel CreateWavControl(int i)

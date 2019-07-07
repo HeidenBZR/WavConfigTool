@@ -14,7 +14,7 @@ namespace WavConfigTool.Classes
         private Voicebank _voicebank;
         private List<ProjectLine> _projectLines;
         private Dictionary<string, ProjectLine> _projectLinesByFilename;
-
+        public Dictionary<string, string> Options;
 
         public Reclist Reclist { get => _reclist; private set { _reclist = value; ProjectChanged(); } }
         public Voicebank Voicebank { get => _voicebank; private set { _voicebank = value; ProjectChanged(); } }
@@ -45,10 +45,11 @@ namespace WavConfigTool.Classes
         #endregion
 
 
-        public delegate void ProjectChangedEventHandler();
-        public event ProjectChangedEventHandler ProjectChanged;
-        public delegate void ProjectLinesChangedEventHandler();
-        public event ProjectLinesChangedEventHandler ProjectLinesChanged;
+        public delegate void SimpleHandler();
+        public event SimpleHandler ProjectChanged;
+        public event SimpleHandler ProjectLinesChanged;
+        public event SimpleHandler BeforeSave;
+        public event SimpleHandler AfterSave;
 
         public Project(string voicebank = "", string reclist = "")
         {
@@ -56,6 +57,8 @@ namespace WavConfigTool.Classes
             _projectLines = new List<ProjectLine>();
             ProjectChanged += Project_OnProjectChanged;
             ProjectLinesChanged += Project_OnProjectLineChanged;
+            BeforeSave += () => { };
+            AfterSave += () => { };
             Voicebank = new Voicebank(voicebank);
             Reclist = new Reclist(reclist);
             IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
@@ -141,6 +144,10 @@ namespace WavConfigTool.Classes
             text.Append($"$VowelAttack={VowelAttack}\r\n");
             text.Append($"$ConsonantAttack={ConsonantAttack}\r\n");
             text.Append($"$WavAmplitudeMultiplayer={WavAmplitudeMultiplayer.ToString("F2")}\r\n");
+            foreach (var key in Options.Keys)
+            {
+                text.Append($"${key}={Options[key]}\r\n");
+            }
 
             foreach (var projectLine in ProjectLines)
             {
@@ -158,12 +165,14 @@ namespace WavConfigTool.Classes
         {
             if (!IsLoaded)
                 return;
+            BeforeSave();
             if (Settings.IsUnsaved)
                 Write(Settings.TempProject);
             else
                 Write(Settings.ProjectFile);
 
             Settings.IsUnsaved = Settings.ProjectFile == Settings.TempProject;
+            AfterSave();
         }
 
         void ReadOption(string line)
@@ -208,12 +217,18 @@ namespace WavConfigTool.Classes
                     if (double.TryParse(value, out double wavAmplitudeMultiplayer))
                         WavAmplitudeMultiplayer = wavAmplitudeMultiplayer;
                     break;
+
+                default:
+                    Options[option] = value;
+                    break;
+
             }
         }
 
         bool Read(string location)
         {
             string[] lines = File.ReadAllLines(location, Encoding.UTF8);
+            Options = new Dictionary<string, string>();
             ProjectLines = new List<ProjectLine>();
             _projectLinesByFilename = new Dictionary<string, ProjectLine>();
             int i = 0;

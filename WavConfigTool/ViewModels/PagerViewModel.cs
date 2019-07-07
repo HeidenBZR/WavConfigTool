@@ -76,6 +76,34 @@ namespace WavConfigTool.ViewModels
             IsHidden = true;
         }
 
+        public void ReadProjectOption(string key, string value)
+        {
+            switch (key)
+            {
+                case "Pager.PageSize":
+                    if (int.TryParse(value, out int pageSize))
+                    {
+                        SetPageSizeCommand.Execute(pageSize);
+                    }
+                    break;
+                case "Pager.CurrentPage":
+                    if (int.TryParse(value, out int page))
+                    {
+                        SetPageCommand.Execute(page);
+                    }
+                    break;
+            }
+        }
+
+        public Dictionary<string, string> WriteProjectOptions()
+        {
+            return new Dictionary<string, string>
+            {
+                ["Pager.CurrentPage"] = CurrentPage.ToString(),
+                ["Pager.PageSize"] = PageSize.ToString()
+            };
+        }
+
         public ICommand SetFirstPageCommand => new DelegateCommand(delegate
         {
             CurrentPage = 0;
@@ -152,6 +180,8 @@ namespace WavConfigTool.ViewModels
             {
                 Collection.Add(control);
             }
+            IsHidden = false;
+            ItemsCount = Collection.Count();
         }
     }
 }
