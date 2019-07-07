@@ -151,7 +151,6 @@ namespace WavConfigTool.Classes
 
                 // Ends with vowel
                 case "VV":
-                case "RV":
                 case "CV":
                 case "CCV":
                 case "CCCV":
@@ -159,6 +158,14 @@ namespace WavConfigTool.Classes
                 case "VCV":
                 case "VCCV":
                 case "VCCCV":
+                    offset = p1.Zone.Out - p1.Attack < p1.Zone.In ? p1.Zone.In : p1.Zone.Out - p1.Attack;
+                    overlap = p1.Zone.Out;
+                    preutterance = p2.Zone.In;
+                    consonant = p2.Zone.In + Project.VowelDecay;
+                    cutoff = p2.Zone.Out - p2.Attack;
+                    break;
+
+                case "RV":
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;

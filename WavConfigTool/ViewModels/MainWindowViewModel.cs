@@ -186,13 +186,21 @@ namespace WavConfigTool.ViewModels
 
         void SetOtoMode(WavControlViewModel wavControl)
         {
-            wavControl.IsOtoBase = true;
-            OtoGenerator.Current.Generate(wavControl.ProjectLine);
-            OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreviewWithSelf());
-            OtoPagerViewModel.OtoMode();
-            PagerViewModel = OtoPagerViewModel;
-            IsOtoPreviewMode = true;
-            Refresh();
+            if (IsOtoPreviewMode)
+            {
+                SetWavConfigMode.Execute(null);
+            }
+            else
+            {
+                wavControl.IsOtoBase = true;
+                OtoGenerator.Current.Generate(wavControl.ProjectLine);
+                OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreview());
+                OtoPagerViewModel.Base = wavControl;
+                OtoPagerViewModel.OtoMode();
+                PagerViewModel = OtoPagerViewModel;
+                IsOtoPreviewMode = true;
+                Refresh();
+            }
         }
 
         void LoadProject()

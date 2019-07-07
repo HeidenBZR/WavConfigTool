@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using WavConfigTool.Tools;
 
 namespace WavConfigTool.Classes
@@ -159,6 +160,11 @@ namespace WavConfigTool.Classes
                 text.Append($"{String.Join(" ", projectLine.ConsonantPoints)}\r\n");
             }
             File.WriteAllText(path, text.ToString(), Encoding.UTF8);
+        }
+
+        public async void SaveAsync()
+        {
+            await Task.Run(() => Save());
         }
 
         public void Save()
