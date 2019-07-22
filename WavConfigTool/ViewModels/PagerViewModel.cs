@@ -147,7 +147,7 @@ namespace WavConfigTool.ViewModels
             RaisePropertyChanged(() => CurrentPageView);
             RaisePropertyChanged(() => PageContent);
             PagerChanged();
-        }, currentPage => (currentPage < PageSize && currentPage >= 0));
+        }, currentPage => (currentPage < PagesTotal && currentPage >= 0));
 
         public ICommand SetPageSizeCommand => new DelegateCommand<int>((pageSize) =>
         {
