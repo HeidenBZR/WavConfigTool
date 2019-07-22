@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using WavConfigTool.ViewTools;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 
 namespace WavConfigTool.ViewModels
 {
@@ -100,6 +101,7 @@ namespace WavConfigTool.ViewModels
         public bool IsCompleted { get => ProjectLine.IsCompleted; }
         public bool IsLoading { get; set; } = false;
         public int Number { get; set; }
+        public int NumberView => Number + 1;
 
         public int Width { get; set; } = 1000;
         public string WavImagePath { get; set; } = "";
@@ -127,12 +129,12 @@ namespace WavConfigTool.ViewModels
             ProjectLine = projectLine;
             if (ProjectLine.IsEnabled)
                 Width = (int)(Settings.RealToViewX(ProjectLine.WaveForm.Length / ProjectLine.WaveForm.BitRate));
+            ApplyPoints();
         }
 
         public override void Load()
         {
             LoadImageAsync();
-            ApplyPoints();
         }
 
         public async void LoadImageAsync()
@@ -196,16 +198,6 @@ namespace WavConfigTool.ViewModels
             PointsChanged();
         }
 
-        internal ObservableCollection<WavControlBaseViewModel> GenerateOtoPreviewWithSelf()
-        {
-            var collection = new ObservableCollection<WavControlBaseViewModel>();
-            collection.Add(this);
-            foreach (Oto oto in ProjectLine.Recline.OtoList)
-            {
-                collection.Add(new OtoPreviewControlViewModel(oto, WavImage));
-            }
-            return collection;
-        }
         internal ObservableCollection<WavControlBaseViewModel> GenerateOtoPreview()
         {
             var collection = new ObservableCollection<WavControlBaseViewModel>();

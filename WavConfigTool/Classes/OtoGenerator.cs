@@ -122,6 +122,8 @@ namespace WavConfigTool.Classes
             var phs = recline.Phonemes;
             for (int i = 0; i < recline.Phonemes.Count; i++)
             {
+                if (phs.Count > i)
+                    Generate(projectLine, phs[i]);
                 if (phs.Count > i + 1)
                     Generate(projectLine, phs[i], phs[i + 1]);
                 if (phs.Count > i + 2)
@@ -148,6 +150,13 @@ namespace WavConfigTool.Classes
             switch (aliasType)
             {
                 // Absolute values, relative ones are made in Oto on write (!)
+                case "V":
+                    offset = p1.Zone.In + Project.VowelDecay - p1.Attack;
+                    overlap = p1.Zone.In + Project.VowelDecay;
+                    preutterance = overlap;
+                    consonant = overlap;
+                    cutoff = p1.Zone.Out - p1.Attack;
+                    break;
 
                 // Ends with vowel
                 case "VV":

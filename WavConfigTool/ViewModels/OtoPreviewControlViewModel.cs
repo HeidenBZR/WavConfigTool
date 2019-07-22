@@ -28,6 +28,8 @@ namespace WavConfigTool.ViewModels
         public double CutoffLength { get => Length - Cutoff; }
         public double ConsonantLength { get => Consonant - Offset; }
 
+        public string NumberView => Oto.NumberView;
+
         public double Height { get; } = 100;
 
         public ImageSource WavImage { get; set; }

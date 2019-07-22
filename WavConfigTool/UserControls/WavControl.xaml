@@ -35,6 +35,15 @@
                 <vt:MouseButtonToPointConverter />
             </dxmvvm:EventToCommand.EventArgsConverter>
         </dxmvvm:EventToCommand>
+        <dxmvvm:EventToCommand
+            Command="{Binding WavControlClickCommand}"
+            EventName="MouseLeftButtonUp"
+            ModifierKeys="{x:Null}"
+            PassEventArgsToCommand="True">
+            <dxmvvm:EventToCommand.EventArgsConverter>
+                <vt:MouseButtonToPointConverter />
+            </dxmvvm:EventToCommand.EventArgsConverter>
+        </dxmvvm:EventToCommand>
         <dxmvvm:EventToCommand Command="{Binding OtoModeCommand}" 
             EventName="MouseLeftButtonDown" ModifierKeys="Alt" />
         <dxmvvm:EventToCommand Command="{Binding RegenerateOtoCommand}" 
@@ -130,7 +139,7 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Orientation="Horizontal">
-                    <TextBlock Margin="0" Text="{Binding Number}" />
+                    <TextBlock Margin="0" Text="{Binding NumberView}" />
                     <TextBlock Margin="0" Text=". " />
                     <TextBlock Margin="0,0,5,0" Text="{Binding Filename}">
 

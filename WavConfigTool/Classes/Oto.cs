@@ -15,6 +15,8 @@ namespace WavConfigTool.Classes
         public double Cutoff { get; set; }
         public double Preutterance { get; set; }
         public double Overlap { get; set; }
+        public int Number { get; set; } = 1;
+        public string NumberView => Number == 1 ? "" : Number.ToString();
 
         public Oto() { }
         public Oto(string filename, string alias="", double offset=0, double consonant=0, double cutoff=0, double preuttercance=0, double overlap=0)
@@ -87,7 +89,7 @@ namespace WavConfigTool.Classes
         public string Write(string prefix = "", string suffix = "")
         {
             // Relative values
-            return $"{Filename}={prefix}{Alias}{suffix},{OffsetWrite},{ConsonantWrite},{CutoffWrite},{PreutteranceWrite},{OverlapWrite}";
+            return $"{Filename}={prefix}{Alias}{NumberView}{suffix},{OffsetWrite},{ConsonantWrite},{CutoffWrite},{PreutteranceWrite},{OverlapWrite}";
         }
 
         public void Smarty()

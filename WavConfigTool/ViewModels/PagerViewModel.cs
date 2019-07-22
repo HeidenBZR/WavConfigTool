@@ -25,7 +25,9 @@ namespace WavConfigTool.ViewModels
             // Количество деленное на размер страницы, округляя в большую сторону
             get => ItemsCount / PageSize + (ItemsCount % PageSize > 0 ? 1 : 0);
         }
-        public int CurrentPage { get => _currentPage; set => SetPageCommand.Execute(value); }
+        public int CurrentPage
+        { get => _currentPage;
+            set => SetPageCommand.Execute(value); }
         public int PageSize { get => _pageSize; set => SetPageSizeCommand.Execute(value); }
         public delegate void SimpleHandler();
         public event SimpleHandler PagerChanged;

@@ -83,7 +83,8 @@
                     Orientation="Horizontal">
                     <TextBlock Margin="0" Text="{Binding Filename, TargetNullValue=FILENAME}" />
                     <TextBlock Margin="0" Text=" = " />
-                    <TextBlock Margin="0,0,5,0" Text="{Binding Alias, TargetNullValue=ALIAS}"/>
+                    <TextBlock Margin="0" Text="{Binding Alias, TargetNullValue=ALIAS}"/>
+                    <TextBlock Margin="0,0,5,0" Text="{Binding NumberView}"/>
                     <TextBlock Margin="0" Text="[" />
                     <TextBlock Margin="0,0,5,0" Text="{Binding Oto.OffsetWrite, TargetNullValue=100}"/>
                     <TextBlock Margin="0,0,5,0" Text="{Binding Oto.ConsonantWrite, TargetNullValue=100}"/>

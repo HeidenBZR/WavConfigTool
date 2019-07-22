@@ -80,6 +80,7 @@ namespace WavConfigTool.Classes
                 {
                     i++;
                     newAlias = $"{oto.Alias} ({i})";
+                    oto.Number = i;
                 }
                 while (Otos.ContainsKey(newAlias));
                 Otos[newAlias] = oto;
