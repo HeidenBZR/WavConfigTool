@@ -38,7 +38,7 @@
         <dxmvvm:EventToCommand
             Command="{Binding WavControlClickCommand}"
             EventName="MouseLeftButtonUp"
-            ModifierKeys="{x:Null}"
+            ModifierKeys="Shift"
             PassEventArgsToCommand="True">
             <dxmvvm:EventToCommand.EventArgsConverter>
                 <vt:MouseButtonToPointConverter />

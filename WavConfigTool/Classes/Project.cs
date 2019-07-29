@@ -24,7 +24,7 @@ namespace WavConfigTool.Classes
         private int _vowelDecay = 200;
         private int _vowelAttack = 60;
         private int _consonantAttack = 30;
-        private int _restAttack = 30;
+        private int _restAttack = 40;
         private string _prefix = "";
         private string _suffix = "";
         private double _wavAmplitudeMultiplayer = 1;
@@ -56,6 +56,7 @@ namespace WavConfigTool.Classes
         {
             Current = this;
             _projectLines = new List<ProjectLine>();
+            Options = new Dictionary<string, string>();
             ProjectChanged += Project_OnProjectChanged;
             ProjectLinesChanged += Project_OnProjectLineChanged;
             BeforeSave += () => { };
