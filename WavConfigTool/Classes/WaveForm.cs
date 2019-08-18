@@ -35,7 +35,7 @@ namespace WavConfigTool.Classes
 
         public WaveForm(string path)
         {
-            Path = path;
+            Path = path + ".wav";
             Init();
         }
 

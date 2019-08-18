@@ -64,7 +64,7 @@ namespace WavConfigTool.Classes
         {
             if (!IsLoaded)
                 return false;
-            return File.Exists(Path.Combine(Location, sample));
+            return File.Exists(Path.Combine(Location, sample + ".wav"));
         }
     }
 }

@@ -26,11 +26,6 @@ namespace WavConfigTool.Classes.Mask
             return wavs.Contains(filename);
         }
 
-        public bool HasAliasType(AliasType aliasType)
-        {
-            return aliasTypes.ContainsKey(aliasType);
-        }
-
         public void AddWav(string filename)
         {
             wavs.Add(filename);
@@ -44,5 +39,10 @@ namespace WavConfigTool.Classes.Mask
         public Dictionary<AliasType, AliasTypeMask> GetAliasTypes() => aliasTypes;
 
         public List<string> GetWavs() => wavs;
+
+        internal bool CanGenerateOnPosition(AliasType aliasType, int position)
+        {
+            return aliasTypes.ContainsKey(aliasType) ? aliasTypes[aliasType].IsAllowedOnPosition(position) : false;
+        }
     }
 }

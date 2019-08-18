@@ -19,7 +19,7 @@ namespace WavConfigTool.Classes.Mask
         public AliasTypeMask(int[] positions)
         {
             this.positions = positions;
-            canTakeAllPositions = false;
+            canTakeAllPositions = positions == null || positions.Length == 0;
         }
 
         public bool IsAllowedOnPosition(int position)

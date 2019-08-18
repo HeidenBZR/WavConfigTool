@@ -115,7 +115,7 @@ namespace WavConfigTool.ViewModels
 
         public MainWindowViewModel()
         {
-            WavMaskCreator.CreateCvcRusWavMask();
+
         }
 
         async void LoadProjectAsync()

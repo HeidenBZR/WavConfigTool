@@ -27,12 +27,13 @@ namespace WavConfigTool.Classes.Mask
 
         public WavMask Read(string filename)
         {
-            return ReadYaml(filename);
+            var wavMask = ReadYaml(filename);
+            return wavMask == null ? new WavMask(false) : wavMask;
         }
 
         public void Write(string filename, WavMask wavMask)
         {
-            if (wavMask == null || wavMask.GetWavGroupsByName() == null)
+            if (wavMask == null || wavMask.GetWavGroups() == null)
                 return;
             WriteYaml(filename, wavMask);
         }
@@ -100,8 +101,9 @@ namespace WavConfigTool.Classes.Mask
         private IOWavMask GetIOWavMask(WavMask wavMask)
         {
             var ioWavMask = new IOWavMask();
+            ioWavMask.MaxDuplicates = wavMask.MaxDuplicates;
             var list = new List<IOWavGroup>();
-            foreach (var wavGroup in wavMask.GetWavGroupsByName())
+            foreach (var wavGroup in wavMask.GetWavGroups())
             {
                 var ioWavGroup = new IOWavGroup();
                 var iOAliasTypes = new List<IOAliasType>();
@@ -128,6 +130,7 @@ namespace WavConfigTool.Classes.Mask
         private WavMask GetWavMask(IOWavMask ioWavMask)
         {
             var wavMask = new WavMask();
+            wavMask.MaxDuplicates = ioWavMask.MaxDuplicates;
             foreach (var iOWavGroup in ioWavMask.WavGroups)
             {
                 var aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
@@ -157,6 +160,7 @@ namespace WavConfigTool.Classes.Mask
         public class IOWavMask
         {
             public IOWavGroup[] WavGroups;
+            public int MaxDuplicates;
         }
 
         [Serializable]
@@ -164,7 +168,7 @@ namespace WavConfigTool.Classes.Mask
         {
             public string Name;
             public int[] Positions;
-            public bool CanTakeFromAllPositions = true;
+            public bool CanTakeFromAllPositions;
         }
     }
 }

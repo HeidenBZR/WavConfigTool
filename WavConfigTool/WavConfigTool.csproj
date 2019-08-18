@@ -119,6 +119,7 @@
     <Compile Include="Classes\Mask\WavMask.cs" />
     <Compile Include="Classes\Mask\IOWavMask.cs" />
     <Compile Include="Classes\Mask\WavMaskCreator.cs" />
+    <Compile Include="Tools\PathResolver.cs" />
     <Compile Include="UserControls\CanvasLoading.xaml.cs">
       <DependentUpon>CanvasLoading.xaml</DependentUpon>
     </Compile>

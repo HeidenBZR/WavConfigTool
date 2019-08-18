@@ -120,22 +120,25 @@ namespace WavConfigTool.Classes
             recline.ResetOto();
             projectLine.CalculateZones();
             var phs = recline.Phonemes;
+            var position = 0;
             for (int i = 0; i < recline.Phonemes.Count; i++)
             {
-                if (phs.Count > i)
-                    Generate(projectLine, phs[i]);
-                if (phs.Count > i + 1)
-                    Generate(projectLine, phs[i], phs[i + 1]);
-                if (phs.Count > i + 2)
-                    Generate(projectLine, phs[i], phs[i + 1], phs[i + 2]);
-                if (phs.Count > i + 3)
-                    Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3]);
-                if (phs.Count > i + 4)
-                    Generate(projectLine, phs[i], phs[i + 1], phs[i + 2], phs[i + 3], phs[i + 4]);
+                for (int count = 1; count < 6 && i + count - 1 < recline.Phonemes.Count; count++)
+                {
+                    var phonemes = recline.Phonemes.GetRange(i, count);
+                    var prev = i - 1 >= 0 ? recline.Phonemes[i - 1] : null;
+                    var next = i + count + 1 < recline.Phonemes.Count ? recline.Phonemes[i + count + 1] : null;
+                    Generate(projectLine, position, phonemes.ToArray(), prev, next);
+                }
+
+                if (recline.Phonemes[i].Type != PhonemeType.Consonant)
+                {
+                    position++;
+                }
             }
         }
 
-        public void Generate(ProjectLine projectLine, params Phoneme[] phonemes)
+        public void Generate(ProjectLine projectLine, int position, Phoneme[] phonemes, Phoneme prev, Phoneme next)
         {
             var recline = projectLine.Recline;
             string alias = GetAlias(phonemes);
@@ -145,6 +148,10 @@ namespace WavConfigTool.Classes
             double offset = 0, consonant = 0, cutoff = 0, preutterance = 0, overlap = 0;
             bool hasZones = projectLine.ApplyZones(p1) && projectLine.ApplyZones(p2);
             var aliasType = AliasTypeResolver.GetInstance().GetAliasType(GetAliasType(phonemes));
+            var masked = aliasType != AliasType.undefined && Reclist.WavMask.CanGenerateOnPosition(projectLine.Recline.Filename, aliasType, position);
+
+            if (!masked)
+                return;
 
             bool hasAliasType = true;
             switch (aliasType)

@@ -13,11 +13,15 @@ namespace WavConfigTool.Classes.Mask
     {
         private Dictionary<string, List<WavGroup>> wavGroupsByFilename;
         private List<WavGroup> wavGroups;
+        public int MaxDuplicates;
 
-        public WavMask()
+        public WavMask(bool init = true)
         {
-            wavGroups = new List<WavGroup>();
-            wavGroupsByFilename = new Dictionary<string, List<WavGroup>>();
+            if (init)
+            {
+                wavGroups = new List<WavGroup>();
+                wavGroupsByFilename = new Dictionary<string, List<WavGroup>>();
+            }
         }
 
         public List<string> GetAliasTypes(string filename)
@@ -43,9 +47,21 @@ namespace WavConfigTool.Classes.Mask
             }
         }
 
-        public List<WavGroup> GetWavGroupsByName()
+        public bool CanGenerateOnPosition(string filename, AliasType aliasType, int position)
         {
-            return wavGroups;
+            if (wavGroupsByFilename == null)
+                return true; // without mask file we generate all possible
+            if (wavGroupsByFilename.ContainsKey(filename))
+            {
+                foreach (var wavGroup in wavGroupsByFilename[filename])
+                {
+                    if (wavGroup.CanGenerateOnPosition(aliasType, position))
+                        return true;
+                }
+            }
+            return false;
         }
+
+        public List<WavGroup> GetWavGroups() => wavGroups;
     }
 }

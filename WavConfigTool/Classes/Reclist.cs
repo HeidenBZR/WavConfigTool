@@ -22,7 +22,7 @@ namespace WavConfigTool.Classes
 
         public bool IsLoaded { get; private set; } = false;
 
-        public WavMask WavMask { get; private set; }
+        public WavMask WavMask { get; private set; } = new WavMask(false);
 
         public Reclist(string location)
         {
@@ -34,12 +34,13 @@ namespace WavConfigTool.Classes
             Location = PathResolver.Reclist(location + ".reclist");
             if (!File.Exists(Location))
                 Location = PathResolver.Reclist(location + ".wsettings");
-            if (!File.Exists(Location))
-                return;
 
-            IsLoaded = Read();
-            Name = Path.GetFileNameWithoutExtension(Location);
-            WavMask = IsLoaded ? WavMaskReader.GetInstance().Read(Name + ".mask") : null;
+            if (File.Exists(Location))
+            {
+                IsLoaded = Read();
+                Name = Path.GetFileNameWithoutExtension(Location);
+                WavMask = WavMaskReader.GetInstance().Read(PathResolver.Reclist(Name + ".mask"));
+            }
         }
 
         public bool Read()
@@ -64,7 +65,7 @@ namespace WavConfigTool.Classes
                 if (items.Length < 2)
                     continue;
                 string desc = items.Length >= 3 ? items[2] : $"{items[0]}" ;
-                AddRecline(new Recline(this, items[0], items[1], desc));
+                AddRecline(new Recline(this, Path.GetFileNameWithoutExtension(items[0]), items[1], desc));
             }
 
             return true;
