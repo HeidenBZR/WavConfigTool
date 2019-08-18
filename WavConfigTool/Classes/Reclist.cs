@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using WavConfigTool.Tools;
+using WavConfigTool.Classes.Mask;
 
 namespace WavConfigTool.Classes
 {
@@ -21,6 +22,8 @@ namespace WavConfigTool.Classes
 
         public bool IsLoaded { get; private set; } = false;
 
+        public WavMask WavMask { get; private set; }
+
         public Reclist(string location)
         {
             Phonemes = new List<Phoneme>();
@@ -28,14 +31,15 @@ namespace WavConfigTool.Classes
             _reclineByFilename = new Dictionary<string, Recline>();
             IsLoaded = false;
 
-            Location = Settings.GetResoucesPath(Path.Combine("WavConfigTool", "WavSettings", location + ".reclist"));
+            Location = PathResolver.Reclist(location + ".reclist");
             if (!File.Exists(Location))
-                Location = Settings.GetResoucesPath(Path.Combine("WavConfigTool", "WavSettings", location + ".wsettings"));
-            if (!File.Exists(Settings.GetResoucesPath(Path.Combine("WavConfigTool", "WavSettings", Location))))
+                Location = PathResolver.Reclist(location + ".wsettings");
+            if (!File.Exists(Location))
                 return;
 
             IsLoaded = Read();
             Name = Path.GetFileNameWithoutExtension(Location);
+            WavMask = IsLoaded ? WavMaskReader.GetInstance().Read(Name + ".mask") : null;
         }
 
         public bool Read()

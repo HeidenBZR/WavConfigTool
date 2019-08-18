@@ -99,6 +99,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="YamlDotNet, Version=6.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.6.1.2\lib\net45\YamlDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -111,11 +114,11 @@
     <Compile Include="Classes\ProjectLine.cs" />
     <Compile Include="Classes\Recline.cs" />
     <Compile Include="Classes\Voicebank.cs" />
-    <Compile Include="Classes\WavMask\AliasTypeMask.cs" />
-    <Compile Include="Classes\WavMask\WavGroup.cs" />
-    <Compile Include="Classes\WavMask\WavMask.cs" />
-    <Compile Include="Classes\WavMask\IOWavMask.cs" />
-    <Compile Include="Classes\WavMask\WavMaskCreator.cs" />
+    <Compile Include="Classes\Mask\AliasTypeMask.cs" />
+    <Compile Include="Classes\Mask\WavGroup.cs" />
+    <Compile Include="Classes\Mask\WavMask.cs" />
+    <Compile Include="Classes\Mask\IOWavMask.cs" />
+    <Compile Include="Classes\Mask\WavMaskCreator.cs" />
     <Compile Include="UserControls\CanvasLoading.xaml.cs">
       <DependentUpon>CanvasLoading.xaml</DependentUpon>
     </Compile>

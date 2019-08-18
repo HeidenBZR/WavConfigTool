@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WavConfigTool.Classes.WavMask
+namespace WavConfigTool.Classes.Mask
 {
     [Serializable]
     public class WavMask

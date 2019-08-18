@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WavConfigTool.Classes;
-using WavConfigTool.Classes.WavMask;
+using WavConfigTool.Classes.Mask;
 using WavConfigTool.Tools;
 using WavConfigTool.ViewTools;
 
