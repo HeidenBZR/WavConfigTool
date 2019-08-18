@@ -8,30 +8,18 @@ using System.Threading.Tasks;
 
 namespace WavConfigTool.Classes.WavMask
 {
-    [Serializable]
-    public class IOWavGroup
-    {
-        public string[] WavFiles;
-        public string[] AliasTypes;
-    }
-
-    [Serializable]
-    class IOWavMask
-    {
-        public Dictionary<string, IOWavGroup> WavGroups = new Dictionary<string, IOWavGroup>();
-    }
 
     public class WavMaskReader
     {
-        public static WavMaskReader _current;
+        public static WavMaskReader current;
 
         public static WavMaskReader GetInstance()
         {
-            if (_current == null)
+            if (current == null)
             {
-                _current = new WavMaskReader();
+                current = new WavMaskReader();
             }
-            return _current;
+            return current;
         }
 
         public WavMask Read(string filename)
@@ -44,9 +32,18 @@ namespace WavConfigTool.Classes.WavMask
                 if (ioWavMask == null)
                     return null;
 
-                foreach (var pair in ioWavMask.WavGroups)
+                foreach (var iOWavGroup in ioWavMask.WavGroups)
                 {
-                    var wavGroup = new WavGroup(pair.Key, pair.Value.AliasTypes, pair.Value.WavFiles);
+                    var aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
+                    foreach (IOAliasType iOAliasType in iOWavGroup.AliasTypes)
+                    {
+                        var aliasType = AliasTypeResolver.GetInstance().GetAliasType(iOAliasType.Name);
+                        if (aliasType != AliasType.undefined)
+                        {
+                            aliasTypes[aliasType] = iOAliasType.CanTakeFromAllPositions ? new AliasTypeMask() : new AliasTypeMask(iOAliasType.Positions);
+                        }
+                    }
+                    var wavGroup = new WavGroup(iOWavGroup.Name, aliasTypes, iOWavGroup.WavFiles);
                     wavMask.AddGroup(wavGroup);
                 }
             }
@@ -60,18 +57,54 @@ namespace WavConfigTool.Classes.WavMask
             using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
             {
                 var ioWavMask = new IOWavMask();
+                var list = new List<IOWavGroup>();
                 foreach (var wavGroup in wavMask.GetWavGroupsByName())
                 {
                     var ioWavGroup = new IOWavGroup();
-                    ioWavGroup.AliasTypes = wavGroup.GetAliasTypes().Select(n => n.ToString()).ToArray();
+                    var iOAliasTypes = new List<IOAliasType>();
+                    foreach (var pair in wavGroup.GetAliasTypes())
+                    {
+                        var ioAliasType = new IOAliasType();
+                        ioAliasType.Name = pair.Key.ToString();
+                        ioAliasType.CanTakeFromAllPositions = pair.Value.GetCanTakeAllPositions();
+                        if (!ioAliasType.CanTakeFromAllPositions)
+                        {
+                            ioAliasType.Positions = pair.Value.GetPositions();
+                        }
+                        iOAliasTypes.Add(ioAliasType);
+                    }
+                    ioWavGroup.AliasTypes = iOAliasTypes.ToArray();
                     ioWavGroup.WavFiles = wavGroup.GetWavs().ToArray();
-                    ioWavMask.WavGroups[wavGroup.Name] = ioWavGroup;
+                    ioWavGroup.Name = wavGroup.Name;
+                    list.Add(ioWavGroup);
                 }
+                ioWavMask.WavGroups = list.ToArray();
 
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IOWavMask));
                 serializer.WriteObject(fileStream, ioWavMask);
             }
         }
 
+        [Serializable]
+        public class IOWavGroup
+        {
+            public string Name;
+            public string[] WavFiles;
+            public IOAliasType[] AliasTypes;
+        }
+
+        [Serializable]
+        class IOWavMask
+        {
+            public IOWavGroup[] WavGroups;
+        }
+
+        [Serializable]
+        public class IOAliasType
+        {
+            public string Name;
+            public int[] Positions;
+            public bool CanTakeFromAllPositions = true;
+        }
     }
 }

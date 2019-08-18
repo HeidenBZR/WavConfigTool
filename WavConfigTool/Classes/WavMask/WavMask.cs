@@ -25,7 +25,7 @@ namespace WavConfigTool.Classes.WavMask
             var aliasTypes = new List<string>();
             foreach (var wavGroup in wavGroupsByFilename[filename])
             {
-                aliasTypes.AddRange(wavGroup.GetAliasTypes());
+                aliasTypes.AddRange(wavGroup.GetAliasTypes().Select(n => n.ToString()));
             }
             return aliasTypes;
         }

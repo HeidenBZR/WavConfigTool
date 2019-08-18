@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WavConfigTool.Classes;
+using WavConfigTool.Classes.WavMask;
 using WavConfigTool.Tools;
 using WavConfigTool.ViewTools;
 
@@ -114,7 +115,7 @@ namespace WavConfigTool.ViewModels
 
         public MainWindowViewModel()
         {
-
+            WavMaskCreator.CreateCvcRusWavMask();
         }
 
         async void LoadProjectAsync()

@@ -11,19 +11,13 @@ namespace WavConfigTool.Classes.WavMask
     {
         public string Name;
         private List<string> wavs = new List<string>();
-        private List<AliasType> aliasTypes = new List<AliasType>();
+        private Dictionary<AliasType, AliasTypeMask> aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
 
         public WavGroup() { }
-        public WavGroup(string name, string[] aliasTypes, string[] wavFiles)
+        public WavGroup(string name, Dictionary<AliasType, AliasTypeMask> aliasTypes, string[] wavFiles)
         {
             Name = name;
-            this.aliasTypes = new List<AliasType>();
-            foreach (var aliasTypeString in aliasTypes)
-            {
-                var aliasType = AliasTypeResolver.GetInstance().GetAliasType(aliasTypeString);
-                if (aliasType != AliasType.undefined  && !this.aliasTypes.Contains(aliasType))
-                    this.aliasTypes.Add(aliasType);
-            }
+            this.aliasTypes = aliasTypes;
             this.wavs = wavFiles.ToList();
         }
 
@@ -34,7 +28,7 @@ namespace WavConfigTool.Classes.WavMask
 
         public bool HasAliasType(AliasType aliasType)
         {
-            return aliasTypes.Contains(aliasType);
+            return aliasTypes.ContainsKey(aliasType);
         }
 
         public void AddWav(string filename)
@@ -42,19 +36,13 @@ namespace WavConfigTool.Classes.WavMask
             wavs.Add(filename);
         }
 
-        public void AddAliasType(AliasType aliasType)
+        public void AddAliasTypeMask(AliasType aliasType, AliasTypeMask aliasTypeMask = null)
         {
-            aliasTypes.Add(aliasType);
+            aliasTypes[aliasType] = aliasTypeMask == null ? new AliasTypeMask() : aliasTypeMask;
         }
 
-        public List<AliasType> GetAliasTypes()
-        {
-            return aliasTypes;
-        }
+        public Dictionary<AliasType, AliasTypeMask> GetAliasTypes() => aliasTypes;
 
-        public List<string> GetWavs()
-        {
-            return wavs;
-        }
+        public List<string> GetWavs() => wavs;
     }
 }

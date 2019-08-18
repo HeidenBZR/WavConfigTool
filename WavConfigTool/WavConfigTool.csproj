@@ -111,9 +111,11 @@
     <Compile Include="Classes\ProjectLine.cs" />
     <Compile Include="Classes\Recline.cs" />
     <Compile Include="Classes\Voicebank.cs" />
+    <Compile Include="Classes\WavMask\AliasTypeMask.cs" />
     <Compile Include="Classes\WavMask\WavGroup.cs" />
     <Compile Include="Classes\WavMask\WavMask.cs" />
     <Compile Include="Classes\WavMask\IOWavMask.cs" />
+    <Compile Include="Classes\WavMask\WavMaskCreator.cs" />
     <Compile Include="UserControls\CanvasLoading.xaml.cs">
       <DependentUpon>CanvasLoading.xaml</DependentUpon>
     </Compile>
