@@ -144,13 +144,13 @@ namespace WavConfigTool.Classes
             Phoneme p2 = phonemes.Last();
             double offset = 0, consonant = 0, cutoff = 0, preutterance = 0, overlap = 0;
             bool hasZones = projectLine.ApplyZones(p1) && projectLine.ApplyZones(p2);
-            var aliasType = GetAliasType(phonemes);
+            var aliasType = AliasTypeResolver.GetInstance().GetAliasType(GetAliasType(phonemes));
 
             bool hasAliasType = true;
             switch (aliasType)
             {
                 // Absolute values, relative ones are made in Oto on write (!)
-                case "V":
+                case AliasType.V:
                     offset = p1.Zone.In + Project.VowelDecay - p1.Attack;
                     overlap = p1.Zone.In + Project.VowelDecay;
                     preutterance = overlap;
@@ -159,14 +159,11 @@ namespace WavConfigTool.Classes
                     break;
 
                 // Ends with vowel
-                case "VV":
-                case "CV":
-                case "CCV":
-                case "CCCV":
-                case "CCCCV":
-                case "VCV":
-                case "VCCV":
-                case "VCCCV":
+                case AliasType.VV:
+                case AliasType.CV:
+                case AliasType.CmV:
+                case AliasType.VCV:
+                case AliasType.VCmV:
                     offset = p1.Zone.Out - p1.Attack < p1.Zone.In ? p1.Zone.In : p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
@@ -174,7 +171,7 @@ namespace WavConfigTool.Classes
                     cutoff = p2.Zone.Out - p2.Attack;
                     break;
 
-                case "RV":
+                case AliasType.RV:
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
@@ -182,9 +179,8 @@ namespace WavConfigTool.Classes
                     cutoff = p2.Zone.Out - p2.Attack;
                     break;
 
-                case "RCV":
-                case "RCCV":
-                case "RCCCV":
+                case AliasType.RCV:
+                case AliasType.RCmV:
                     offset = p1.Zone.In - p1.Attack;
                     overlap = p1.Zone.In;
                     preutterance = p2.Zone.In;
@@ -192,10 +188,8 @@ namespace WavConfigTool.Classes
                     cutoff = p2.Zone.Out - p2.Attack;
                     break;
 
-                case "RC":
-                case "RCC":
-                case "RCCC":
-                case "RCCCC":
+                case AliasType.RC:
+                case AliasType.RCm:
                     offset = p1.Zone.In - p1.Attack;
                     overlap = p1.Zone.In;
                     preutterance = p2.Zone.In;
@@ -205,10 +199,9 @@ namespace WavConfigTool.Classes
 
                 // Ends with Rest
 
-                case "VR":
-                case "VCR":
-                case "VCCR":
-                case "VCCCR":
+                case AliasType.VR:
+                case AliasType.VCR:
+                case AliasType.VCmR:
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
@@ -216,10 +209,8 @@ namespace WavConfigTool.Classes
                     cutoff = 0;
                     break;
 
-                case "CR":
-                case "CCR":
-                case "CCCR":
-                case "CCCCR":
+                case AliasType.CR:
+                case AliasType.CmR:
                     offset = p1.Zone.In;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
@@ -228,14 +219,10 @@ namespace WavConfigTool.Classes
                     break;
 
                 // Ends with Consonant
-                case "VC":
-                case "VCC":
-                case "VCCC":
-                case "VCCCC":
-                case "CC":
-                case "CCC":
-                case "CCCC":
-                case "CCCCC":
+                case AliasType.VC:
+                case AliasType.VCm:
+                case AliasType.CC:
+                case AliasType.CmC:
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
