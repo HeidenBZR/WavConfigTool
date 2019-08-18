@@ -114,11 +114,11 @@
     <Compile Include="Classes\ProjectLine.cs" />
     <Compile Include="Classes\Recline.cs" />
     <Compile Include="Classes\Voicebank.cs" />
-    <Compile Include="Classes\Mask\AliasTypeMask.cs" />
-    <Compile Include="Classes\Mask\WavGroup.cs" />
-    <Compile Include="Classes\Mask\WavMask.cs" />
-    <Compile Include="Classes\Mask\IOWavMask.cs" />
-    <Compile Include="Classes\Mask\WavMaskCreator.cs" />
+    <Compile Include="Classes\AliasTypeMask.cs" />
+    <Compile Include="Classes\WavGroup.cs" />
+    <Compile Include="Classes\WavMask.cs" />
+    <Compile Include="Classes\IO\IOWavMask.cs" />
+    <Compile Include="Classes\Creators\WavMaskCreator.cs" />
     <Compile Include="Tools\PathResolver.cs" />
     <Compile Include="UserControls\CanvasLoading.xaml.cs">
       <DependentUpon>CanvasLoading.xaml</DependentUpon>
@@ -289,6 +289,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Classes\Mask\" />
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <ItemGroup>

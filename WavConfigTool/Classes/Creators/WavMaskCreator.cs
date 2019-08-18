@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WavConfigTool.Classes.Mask
+﻿namespace WavConfigTool.Classes.Creators
 {
     static class WavMaskCreator
     {
@@ -46,7 +40,7 @@ namespace WavConfigTool.Classes.Mask
             wavMask.AddGroup(CV_VC_Cgroup);
             wavMask.AddGroup(V_group);
 
-            var reader = new WavMaskReader();
+            var reader = new IO.WavMaskReader();
             reader.Write("cvc_rus.mask", wavMask);
         }
     }

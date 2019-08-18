@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using WavConfigTool.Classes;
 using WavConfigTool.Tools;
 
@@ -22,7 +17,7 @@ namespace WavConfigTool.ViewModels
             set => Oto.Cutoff = value / Settings.ScaleX;
         }
         public double Preutterance { get => Settings.RealToViewX(Oto.Preutterance); set => Oto.Preutterance = value / Settings.ScaleX; }
-        public double Overlap { get =>  Settings.RealToViewX(Oto.Overlap); set => Oto.Overlap = value / Settings.ScaleX; }
+        public double Overlap { get => Settings.RealToViewX(Oto.Overlap); set => Oto.Overlap = value / Settings.ScaleX; }
 
         public double Length { get; set; }
         public double CutoffLength { get => Length - Cutoff; }
@@ -52,7 +47,7 @@ namespace WavConfigTool.ViewModels
 
         public override void Load()
         {
-            
+
         }
 
         public override string ToString()

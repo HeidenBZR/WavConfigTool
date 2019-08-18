@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WavConfigTool.Classes
 {
@@ -19,7 +15,7 @@ namespace WavConfigTool.Classes
         public string NumberView => Number == 1 ? "" : Number.ToString();
 
         public Oto() { }
-        public Oto(string filename, string alias="", double offset=0, double consonant=0, double cutoff=0, double preuttercance=0, double overlap=0)
+        public Oto(string filename, string alias = "", double offset = 0, double consonant = 0, double cutoff = 0, double preuttercance = 0, double overlap = 0)
         {
             Filename = filename;
             Alias = alias;
@@ -65,12 +61,12 @@ namespace WavConfigTool.Classes
                     overlap = result;
                 }
                 return new Oto(
-                    filename, 
-                    alias, 
-                    offset, 
-                    offset + consonant, 
-                    cutoff > 0 ? length - cutoff : offset - cutoff, 
-                    offset + preuttercance, 
+                    filename,
+                    alias,
+                    offset,
+                    offset + consonant,
+                    cutoff > 0 ? length - cutoff : offset - cutoff,
+                    offset + preuttercance,
                     offset + overlap
                 );
             }

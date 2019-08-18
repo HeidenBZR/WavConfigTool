@@ -32,7 +32,7 @@ namespace WavConfigTool.Classes
             }
         }
 
-        public Recline (Reclist reclist, string filename)
+        public Recline(Reclist reclist, string filename)
         {
             Reclist = reclist;
             Filename = filename;
@@ -41,7 +41,7 @@ namespace WavConfigTool.Classes
             Otos = new Dictionary<string, Oto>();
         }
 
-        public Recline (Reclist reclist, string filename, string phonemes, string description)
+        public Recline(Reclist reclist, string filename, string phonemes, string description)
         {
             Reclist = reclist;
             Filename = filename;
@@ -58,7 +58,7 @@ namespace WavConfigTool.Classes
             Otos = new Dictionary<string, Oto>();
             IsEnabled = true;
         }
-        
+
         public List<Phoneme> PhonemesOfType(PhonemeType type)
         {
             return type == PhonemeType.Consonant ? Consonants :

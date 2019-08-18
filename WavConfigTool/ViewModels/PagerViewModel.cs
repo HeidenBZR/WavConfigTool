@@ -1,12 +1,8 @@
 ﻿using DevExpress.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using WavConfigTool.ViewTools;
 
 namespace WavConfigTool.ViewModels
 {
@@ -26,8 +22,10 @@ namespace WavConfigTool.ViewModels
             get => ItemsCount / PageSize + (ItemsCount % PageSize > 0 ? 1 : 0);
         }
         public int CurrentPage
-        { get => _currentPage;
-            set => SetPageCommand.Execute(value); }
+        {
+            get => _currentPage;
+            set => SetPageCommand.Execute(value);
+        }
         public int PageSize { get => _pageSize; set => SetPageSizeCommand.Execute(value); }
         public delegate void SimpleHandler();
         public event SimpleHandler PagerChanged;
@@ -49,7 +47,7 @@ namespace WavConfigTool.ViewModels
                 {
                     pageContent.Add(Base);
                     var otosPageSize = PageSize - 1;
-                    for (int i = otosPageSize * CurrentPage; i < otosPageSize * (CurrentPage + 1)  && i < Collection.Count; i++)
+                    for (int i = otosPageSize * CurrentPage; i < otosPageSize * (CurrentPage + 1) && i < Collection.Count; i++)
                     {
                         pageContent.Add(Collection[i]);
                     }

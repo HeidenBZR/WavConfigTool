@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using WavConfigTool.Tools;
-using WavConfigTool.Classes.Mask;
 
 namespace WavConfigTool.Classes
 {
@@ -39,7 +38,7 @@ namespace WavConfigTool.Classes
             {
                 IsLoaded = Read();
                 Name = Path.GetFileNameWithoutExtension(Location);
-                WavMask = WavMaskReader.GetInstance().Read(PathResolver.Reclist(Name + ".mask"));
+                WavMask = IO.WavMaskReader.GetInstance().Read(PathResolver.Reclist(Name + ".mask"));
             }
         }
 
@@ -64,7 +63,7 @@ namespace WavConfigTool.Classes
                 string[] items = lines[i].Split('\t');
                 if (items.Length < 2)
                     continue;
-                string desc = items.Length >= 3 ? items[2] : $"{items[0]}" ;
+                string desc = items.Length >= 3 ? items[2] : $"{items[0]}";
                 AddRecline(new Recline(this, Path.GetFileNameWithoutExtension(items[0]), items[1], desc));
             }
 

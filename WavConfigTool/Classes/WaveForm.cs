@@ -1,9 +1,9 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Drawing;
 using System.IO;
-using NAudio.Wave;
+using System.Linq;
 using WavConfigTool.Tools;
 
 namespace WavConfigTool.Classes
@@ -30,7 +30,7 @@ namespace WavConfigTool.Classes
         public bool IsEnabled = false;
         public bool IsGenerating = false;
         public bool IsGenerated = false;
-        
+
         public Exception GeneratingException;
 
         public WaveForm(string path)
@@ -159,7 +159,7 @@ namespace WavConfigTool.Classes
             try
             {
                 IsGenerated = false;
-                (PointF[] points, int w, int h, string imagePath, System.Drawing.Pen pen ) = 
+                (PointF[] points, int w, int h, string imagePath, System.Drawing.Pen pen) =
                     ((PointF[] points, int w, int h, string imagePath, System.Drawing.Pen))data;
 
                 Bitmap image = new Bitmap(w, h);

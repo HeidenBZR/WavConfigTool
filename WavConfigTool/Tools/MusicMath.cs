@@ -42,7 +42,7 @@ namespace WavConfigTool.Tools
                 return zoomRatios[i];
             }
         }
-        
+
         public static double TickToMillisecond(long tick, double tempo)
         {
             double BeatTicks = 480;

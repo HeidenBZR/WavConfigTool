@@ -1,9 +1,8 @@
-﻿using System.Windows;
+﻿using DevExpress.Mvvm;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using DevExpress.Mvvm;
 using WavConfigTool.Classes;
-using WavConfigTool.Tools;
 
 namespace WavConfigTool.ViewModels
 {

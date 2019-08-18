@@ -14,7 +14,7 @@ namespace WavConfigTool.Classes
         public Reclist Reclist { get; set; }
         public Project Project { get; set; }
         public List<string> EmptyAliases { get; set; }
-        
+
         public bool MustGeneratePreoto { get; set; } = true;
 
         public static OtoGenerator Current { get; private set; }
@@ -71,7 +71,7 @@ namespace WavConfigTool.Classes
                 if (!Replacement.ContainsKey($"#{alias_type}#"))
                     alias = alias.Replace($"#{alias_type}#", " ");
             }
-            foreach (var alias_type in new[] { "CV"})
+            foreach (var alias_type in new[] { "CV" })
             {
                 if (!Replacement.ContainsKey($"#{alias_type}#"))
                     alias = alias.Replace($"#{alias_type}#", "");

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using WavConfigTool.Tools;
@@ -89,7 +88,7 @@ namespace WavConfigTool.Classes
         {
             Sort();
             VowelZones = new List<Zone>();
-            foreach (PhonemeType type in new[] { PhonemeType.Consonant, PhonemeType.Vowel})
+            foreach (PhonemeType type in new[] { PhonemeType.Consonant, PhonemeType.Vowel })
             {
                 var points = PointsOfType(type);
                 var zones = ZonesOfType(type);
@@ -172,7 +171,7 @@ namespace WavConfigTool.Classes
             return points.IndexOf(position);
         }
 
-        public (int,int) MovePoint(int position1, int position2, PhonemeType type)
+        public (int, int) MovePoint(int position1, int position2, PhonemeType type)
         {
             var points = PointsOfType(type);
             int i = points.IndexOf(position1);
@@ -182,7 +181,7 @@ namespace WavConfigTool.Classes
             }
             points.Sort();
             ProjectLinePointsChanged();
-            return (i,points.IndexOf(position2));
+            return (i, points.IndexOf(position2));
         }
 
         public int DeletePoint(int position, PhonemeType type)

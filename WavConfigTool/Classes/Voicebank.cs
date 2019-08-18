@@ -1,9 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace WavConfigTool.Classes
 {
@@ -13,7 +10,7 @@ namespace WavConfigTool.Classes
         public string Location { get; private set; } = "";
 
         public string Name { get; private set; } = "(Voicebaink is not avialable)";
-        public string Image{ get; private set; } = "";
+        public string Image { get; private set; } = "";
         public string ImagePath
         {
             get
@@ -47,7 +44,7 @@ namespace WavConfigTool.Classes
             if (!File.Exists(character))
                 return;
             var lines = File.ReadAllLines(character, Encoding.UTF8);
-            foreach(var line in lines)
+            foreach (var line in lines)
             {
                 if (line.Contains('='))
                 {
