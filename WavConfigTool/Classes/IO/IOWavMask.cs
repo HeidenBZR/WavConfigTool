@@ -12,14 +12,18 @@ namespace WavConfigTool.Classes.IO
     public class WavMaskReader
     {
         private static WavMaskReader current;
+        private WavMaskReader() { }
 
-        public static WavMaskReader GetInstance()
+        public static WavMaskReader Current
         {
-            if (current == null)
+            get
             {
-                current = new WavMaskReader();
+                if (current == null)
+                {
+                    current = new WavMaskReader();
+                }
+                return current;
             }
-            return current;
         }
 
         public WavMask Read(string filename)
@@ -133,7 +137,7 @@ namespace WavConfigTool.Classes.IO
                 var aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
                 foreach (IOAliasType iOAliasType in iOWavGroup.AliasTypes)
                 {
-                    var aliasType = AliasTypeResolver.GetInstance().GetAliasType(iOAliasType.Name);
+                    var aliasType = AliasTypeResolver.Current.GetAliasType(iOAliasType.Name);
                     if (aliasType != AliasType.undefined)
                     {
                         aliasTypes[aliasType] = iOAliasType.CanTakeFromAllPositions ? new AliasTypeMask() : new AliasTypeMask(iOAliasType.Positions);

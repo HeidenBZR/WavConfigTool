@@ -38,7 +38,7 @@ namespace WavConfigTool.Classes
             {
                 IsLoaded = Read();
                 Name = Path.GetFileNameWithoutExtension(Location);
-                WavMask = IO.WavMaskReader.GetInstance().Read(PathResolver.Reclist(Name + ".mask"));
+                WavMask = IO.WavMaskReader.Current.Read(PathResolver.Reclist(Name + ".mask"));
             }
         }
 

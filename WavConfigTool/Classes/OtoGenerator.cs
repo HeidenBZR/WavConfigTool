@@ -147,7 +147,7 @@ namespace WavConfigTool.Classes
             Phoneme p2 = phonemes.Last();
             double offset = 0, consonant = 0, cutoff = 0, preutterance = 0, overlap = 0;
             bool hasZones = projectLine.ApplyZones(p1) && projectLine.ApplyZones(p2);
-            var aliasType = AliasTypeResolver.GetInstance().GetAliasType(GetAliasType(phonemes));
+            var aliasType = AliasTypeResolver.Current.GetAliasType(GetAliasType(phonemes));
             var masked = aliasType != AliasType.undefined && Reclist.WavMask.CanGenerateOnPosition(projectLine.Recline.Filename, aliasType, position);
 
             if (!masked)

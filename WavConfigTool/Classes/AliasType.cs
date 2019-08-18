@@ -30,15 +30,19 @@ namespace WavConfigTool.Classes
 
     class AliasTypeResolver
     {
-        private static AliasTypeResolver _current;
+        private static AliasTypeResolver current;
+        private AliasTypeResolver() { }
 
-        public static AliasTypeResolver GetInstance()
+        public static AliasTypeResolver Current
         {
-            if (_current == null)
+            get
             {
-                _current = new AliasTypeResolver();
+                if (current == null)
+                {
+                    current = new AliasTypeResolver();
+                }
+                return current;
             }
-            return _current;
         }
 
         public AliasType GetAliasType(string aliasTypeString)
