@@ -40,8 +40,7 @@
             wavMask.AddGroup(CV_VC_Cgroup);
             wavMask.AddGroup(V_group);
 
-            var reader = new IO.WavMaskReader();
-            reader.Write("cvc_rus.mask", wavMask);
+            IO.WavMaskReader.Current.Write("cvc_rus.mask", wavMask);
         }
     }
 }

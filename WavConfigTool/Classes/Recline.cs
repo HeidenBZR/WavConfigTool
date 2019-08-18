@@ -9,6 +9,7 @@ namespace WavConfigTool.Classes
     {
         public string Filename;
         public string Description { get; set; }
+        public List<Phoneme> PhonemesRaw;
         public List<Phoneme> Phonemes;
         public List<Phoneme> Vowels { get { return Phonemes.Where(n => n.IsVowel).ToList(); } }
         public List<Phoneme> Consonants { get { return Phonemes.Where(n => n.IsConsonant).ToList(); } }
@@ -41,20 +42,20 @@ namespace WavConfigTool.Classes
             Otos = new Dictionary<string, Oto>();
         }
 
-        public Recline(Reclist reclist, string filename, string phonemes, string description)
+        public Recline(Reclist reclist, string filename, List<Phoneme> phonemes, string description)
         {
             Reclist = reclist;
             Filename = filename;
             Description = description;
             Phonemes = new List<Phoneme>();
-            Phonemes.Add(new Rest("-") { Recline = this });
-            foreach (string ph in phonemes.Split(' '))
+            PhonemesRaw = new List<Phoneme>();
+            Phonemes.Add(Rest.Create(this));
+            foreach (var phoneme in phonemes)
             {
-                Phoneme phoneme = Reclist.GetPhoneme(ph);
-                phoneme.Recline = this;
                 Phonemes.Add(phoneme);
+                PhonemesRaw.Add(phoneme);
             }
-            Phonemes.Add(new Rest("-") { Recline = this });
+            Phonemes.Add(Rest.Create(this));
             Otos = new Dictionary<string, Oto>();
             IsEnabled = true;
         }

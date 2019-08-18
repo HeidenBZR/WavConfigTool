@@ -29,7 +29,7 @@ namespace WavConfigTool.Classes.IO
         public WavMask Read(string filename)
         {
             var wavMask = ReadYaml(filename);
-            return wavMask == null ? new WavMask(false) : wavMask;
+            return wavMask ?? new WavMask(false);
         }
 
         public void Write(string filename, WavMask wavMask)

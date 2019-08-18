@@ -111,8 +111,14 @@ namespace WavConfigTool.Classes
 
     public class Rest : Phoneme
     {
+        public const string ALIAS = "-";
         public override double Attack { get => Project.Current.RestAttack; }
-        public Rest(string l, string letter = "") : base(l, letter)
+
+        public static Rest Create(Recline recline = null)
+        {
+            return new Rest(Rest.ALIAS) { Recline = recline };
+        }
+        private Rest(string l, string letter = "") : base(l, letter)
         {
             Type = PhonemeType.Rest;
             Attack = 0;

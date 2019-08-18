@@ -61,7 +61,7 @@ namespace WavConfigTool.Classes
             BeforeSave += () => { };
             AfterSave += () => { };
             Voicebank = new Voicebank(voicebank);
-            Reclist = new Reclist(reclist);
+            Reclist = IO.ReclistReader.Current.Read(reclist);
             IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
         }
 
@@ -119,7 +119,7 @@ namespace WavConfigTool.Classes
 
         public void ChangeReclist(string reclist_location)
         {
-            Reclist = new Reclist(reclist_location);
+            Reclist = IO.ReclistReader.Current.Read(reclist_location);
             OpenLast();
             IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
             ProjectChanged();
@@ -129,7 +129,7 @@ namespace WavConfigTool.Classes
         {
             ProjectLines = new List<ProjectLine>();
             Voicebank = new Voicebank(voicebank);
-            Reclist = new Reclist(reclist);
+            Reclist = IO.ReclistReader.Current.Read(reclist);
             Save();
         }
 
@@ -193,7 +193,7 @@ namespace WavConfigTool.Classes
                     break;
 
                 case "Reclist":
-                    Reclist = new Reclist(value);
+                    Reclist = IO.ReclistReader.Current.Read(value);
                     break;
 
                 case "Suffix":

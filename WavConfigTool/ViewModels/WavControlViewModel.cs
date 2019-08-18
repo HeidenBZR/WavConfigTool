@@ -14,7 +14,7 @@ namespace WavConfigTool.ViewModels
 {
     public class WavControlViewModel : WavControlBaseViewModel
     {
-        private ProjectLine _projectLine = new ProjectLine(new Recline(new Reclist("?"), "default.wav"));
+        private ProjectLine _projectLine;
 
         public ProjectLine ProjectLine
         {

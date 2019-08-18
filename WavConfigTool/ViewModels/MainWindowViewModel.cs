@@ -131,6 +131,7 @@ namespace WavConfigTool.ViewModels
             }
             IsLoading = false;
             Refresh();
+            //Classes.IO.ReclistReader.Current.Write(Project.Reclist.Name + ".reclist", Project.Reclist);
         }
 
         private void ReadProjectOptions()
