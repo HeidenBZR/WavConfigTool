@@ -7,6 +7,12 @@ using WavConfigTool.Tools;
 
 namespace WavConfigTool.Classes
 {
+    public class ProjectOptions
+    {
+        public int PageSize = 5;
+        public int LastPage = 0;
+    }
+
     public class Project
     {
         #region variables
@@ -28,12 +34,16 @@ namespace WavConfigTool.Classes
         private string _suffix = "";
         private double _wavAmplitudeMultiplayer = 1;
 
+        public ProjectOptions ProjectOptions { get; set; }
+
         public int VowelDecay { get => _vowelDecay; set { _vowelDecay = value; ProjectChanged(); } }
         public int VowelAttack { get => _vowelAttack; set { _vowelAttack = value; ProjectChanged(); } }
         public int ConsonantAttack { get => _consonantAttack; set { _consonantAttack = value; ProjectChanged(); } }
         public int RestAttack { get => _restAttack; set { _restAttack = value; ProjectChanged(); } }
         public string Prefix { get => _prefix; set { _prefix = value; ProjectChanged(); } }
         public string Suffix { get => _suffix; set { _suffix = value; ProjectChanged(); } }
+        public string WavPrefix { get; set; } = "";
+        public string WavSuffix { get; set; } = "";
 
         public List<ProjectLine> ProjectLines { get => _projectLines; set { _projectLines = value; ProjectChanged(); } }
         public Dictionary<string, ProjectLine> ProjectLinesByFilename { get => _projectLinesByFilename; set { _projectLinesByFilename = value; ProjectChanged(); } }
@@ -53,6 +63,7 @@ namespace WavConfigTool.Classes
 
         public Project(string voicebank = "", string reclist = "")
         {
+            ProjectOptions = new ProjectOptions();
             Current = this;
             _projectLines = new List<ProjectLine>();
             Options = new Dictionary<string, string>();
@@ -176,6 +187,8 @@ namespace WavConfigTool.Classes
                 Write(Settings.TempProject);
             else
                 Write(Settings.ProjectFile);
+
+            IO.ProjectReader.Current.Write("project.wsp", this);
 
             Settings.IsUnsaved = Settings.ProjectFile == Settings.TempProject;
             AfterSave();

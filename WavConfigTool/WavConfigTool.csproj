@@ -109,6 +109,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\AliasType.cs" />
+    <Compile Include="Classes\IO\IOProject.cs" />
     <Compile Include="Classes\IO\IOReclist.cs" />
     <Compile Include="Classes\Oto.cs" />
     <Compile Include="Classes\Project.cs" />

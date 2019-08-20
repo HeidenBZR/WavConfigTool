@@ -154,7 +154,7 @@ namespace WavConfigTool.ViewModels
 
         private void WriteProjectOptions()
         {
-            Project.Options = PagerViewModel.WriteProjectOptions();
+            Project.Options = PagerViewModel.WriteProjectOptions(Project.ProjectOptions);
             // дозаписать свои если есть
 
         }

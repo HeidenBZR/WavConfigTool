@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using WavConfigTool.Classes;
 
 namespace WavConfigTool.ViewModels
 {
@@ -109,8 +110,10 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public Dictionary<string, string> WriteProjectOptions()
+        public Dictionary<string, string> WriteProjectOptions(ProjectOptions projectOptions)
         {
+            projectOptions.LastPage = CurrentPage;
+            projectOptions.PageSize = PageSize;
             return new Dictionary<string, string>
             {
                 ["Pager.CurrentPage"] = CurrentPage.ToString(),
