@@ -57,14 +57,14 @@ namespace WavConfigTool.Classes.IO
             var ioProject = new IOProject();
             ioProject.Voicebank = project.Voicebank.Location;
             ioProject.Reclist = project.Reclist.Name;
-            ioProject.WavPrefix = project.WavPrefix;
-            ioProject.WavSuffix = project.WavSuffix;
-            ioProject.OtoPrefix = project.Prefix;
-            ioProject.OtoSuffix = project.Suffix;
-            ioProject.VowelDecay = project.VowelDecay;
-            ioProject.VowelAttack = project.VowelAttack;
-            ioProject.ConsonantAttack = project.ConsonantAttack;
-            ioProject.WavAmplitudeMultiplayer = project.WavAmplitudeMultiplayer;
+            ioProject.WavOptions.WavPrefix = project.WavPrefix;
+            ioProject.WavOptions.WavSuffix = project.WavSuffix;
+            ioProject.WavOptions.WavAmplitudeMultiplayer = project.WavAmplitudeMultiplayer;
+            ioProject.OtoOptions.OtoPrefix = project.Prefix;
+            ioProject.OtoOptions.OtoSuffix = project.Suffix;
+            ioProject.OtoOptions.VowelDecay = project.VowelDecay;
+            ioProject.OtoOptions.VowelAttack = project.VowelAttack;
+            ioProject.OtoOptions.ConsonantAttack = project.ConsonantAttack;
             ioProject.ProjectOptions = new IOProjectOptions();
             ioProject.ProjectOptions.LastPage = project.ProjectOptions.LastPage;
             ioProject.ProjectOptions.PageSize = project.ProjectOptions.PageSize;
@@ -89,6 +89,24 @@ namespace WavConfigTool.Classes.IO
         }
     }
 
+
+    [Serializable]
+    public class IOWavOptions
+    {
+        public string WavPrefix;
+        public string WavSuffix;
+        public double WavAmplitudeMultiplayer = 1;
+    }
+    [Serializable]
+    public class IOOtoOptions
+    {
+        public string OtoPrefix;
+        public string OtoSuffix;
+        public int VowelDecay = 80;
+        public int VowelAttack = 60;
+        public int ConsonantAttack = 40;
+    }
+
     [Serializable]
     public class IOWavConfig
     {
@@ -110,14 +128,8 @@ namespace WavConfigTool.Classes.IO
     {
         public string Voicebank;
         public string Reclist;
-        public string WavPrefix;
-        public string WavSuffix;
-        public string OtoPrefix;
-        public string OtoSuffix;
-        public int VowelDecay;
-        public int VowelAttack;
-        public int ConsonantAttack;
-        public double WavAmplitudeMultiplayer;
+        public IOWavOptions WavOptions = new IOWavOptions();
+        public IOOtoOptions OtoOptions = new IOOtoOptions();
         public IOProjectOptions ProjectOptions = new IOProjectOptions();
         public IOWavConfig[] WavConfigs = new IOWavConfig[0];
     }
