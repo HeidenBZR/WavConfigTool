@@ -327,7 +327,7 @@ namespace WavConfigTool
                 }
                 string filename = SaveOtoDialog();
                 if (filename != "")
-                    File.WriteAllText(System.IO.Path.Combine(Reclist.VoicebankPath, filename), text, Encoding.ASCII);
+                    File.WriteAllText(System.IO.Path.Combine(Reclist.VoicebankPath, filename), text, Encoding.UTF8);
             }
             catch (Exception ex)
             {
