@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:WavConfigTool"
+    xmlns:viewtools="clr-namespace:WavConfigTool.ViewTools"
     StartupUri="Windows/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -18,6 +19,7 @@
                 <ResourceDictionary Source="Styles/UserControls.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+            <viewtools:PhonemeTypeToColorConverter x:Key="PhonemeTypeToColor" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

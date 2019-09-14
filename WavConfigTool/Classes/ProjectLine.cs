@@ -42,8 +42,11 @@ namespace WavConfigTool.Classes
         public ProjectLine(Recline recline)
         {
             ProjectLineChanged += delegate { CalculateZones(); };
-            ProjectLinePointsChanged += delegate { CalculateZones(); };
+            ProjectLinePointsChanged += delegate { CalculateZones(); SetHasZone(); };
             Recline = recline;
+            SetHasZone();
+            ProjectLineChanged();
+            ProjectLinePointsChanged();
         }
 
         public void CallChanged()
@@ -171,6 +174,36 @@ namespace WavConfigTool.Classes
             return points.IndexOf(position);
         }
 
+        void SetHasZone()
+        {
+            var points = PointsOfType(PhonemeType.Rest);
+            var phonemes = Recline.PhonemesOfType(PhonemeType.Rest);
+            for (int i = 0; i < phonemes.Count; i++)
+            {
+                if (i == 0)
+                {
+                    phonemes[i].HasZone = points.Count > 0;
+                }
+                else if (i == phonemes.Count - 1)
+                {
+                    phonemes[i].HasZone = points.Count == i * 2 - 1;
+                }
+                else
+                {
+                    phonemes[i].HasZone = points.Count >= i * 2 - 2 + 1;
+                }
+            }
+            foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel})
+            {
+                points = PointsOfType(phonemeType);
+                phonemes = Recline.PhonemesOfType(phonemeType);
+                for (int i = 0; i < phonemes.Count; i++)
+                {
+                    phonemes[i].HasZone = points.Count >= i * 2 + 1;
+                }
+            }
+        }
+
         public (int, int) MovePoint(int position1, int position2, PhonemeType type)
         {
             var points = PointsOfType(type);
@@ -180,6 +213,7 @@ namespace WavConfigTool.Classes
                 points[i] = position2;
             }
             points.Sort();
+            SetHasZone();
             ProjectLinePointsChanged();
             return (i, points.IndexOf(position2));
         }
@@ -189,6 +223,7 @@ namespace WavConfigTool.Classes
             var points = PointsOfType(type);
             var i = points.IndexOf(position);
             points.Remove(position);
+            SetHasZone();
             ProjectLinePointsChanged();
             return i;
         }

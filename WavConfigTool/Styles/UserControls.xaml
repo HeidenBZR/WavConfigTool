@@ -2,7 +2,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
-    xmlns:local="clr-namespace:WavConfigTool.Styles">
+    xmlns:local="clr-namespace:WavConfigTool.Styles"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:viewtools="clr-namespace:WavConfigTool.ViewTools">
 
     <Style x:Key="WavPointControllerStyle" TargetType="{x:Type Thumb}">
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
@@ -139,6 +141,48 @@
                             <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </ScrollViewer>
                     </Themes:ClassicBorderDecorator>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <viewtools:PhonemeTypeToColorConverter x:Key="PhonemeTypeToColor" />
+    <viewtools:PhonemeTypeToBorderColorConverter x:Key="PhonemeTypeToBorderColor" />
+    <viewtools:BooleanToFontWeightConverter x:Key="BooleanToFontWeight" />
+    <Style x:Key="PhonemesItemStyle" TargetType="{x:Type ListViewItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                    <DockPanel>
+                        <Border Margin="2">
+                            <TextBlock
+                                Text="{Binding}" 
+                                x:Name="PhonemeContainer"
+                                Margin="3 1" >
+                                <TextBlock.Style>
+                                    <Style>
+                                        <Setter Property="TextBlock.Foreground" Value="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"></Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasZone, Mode=TwoWay}" Value="true">
+                                                <Setter Property="TextBlock.Foreground" Value="{Binding Type, Converter={StaticResource PhonemeTypeToColor}}"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <Border.Style>
+                                <Style>
+                                    <Setter Property="Border.BorderBrush" Value="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"></Setter>
+                                    <Setter Property="Border.BorderThickness" Value="1"></Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasZone, Mode=TwoWay}" Value="true">
+                                            <Setter Property="Border.BorderBrush" Value="{Binding Type, Converter={StaticResource PhonemeTypeToColor}}"></Setter>
+                                            <Setter Property="Border.Background" Value="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+                    </DockPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

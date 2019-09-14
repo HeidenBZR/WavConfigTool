@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -221,8 +222,14 @@ namespace WavConfigTool.ViewModels
             RaisePropertiesChanged(
                 () => ConsonantZones,
                 () => VowelZones,
-                () => RestZones
+                () => RestZones,
+                () => ProjectLine.Recline.Phonemes,
+                () => Phonemes
             );
+            foreach (var phoneme in Phonemes)
+            {
+                RaisePropertyChanged(() => phoneme.HasZone);
+            }
         }
 
         public IList<WavPointViewModel> PointsOfType(PhonemeType type)

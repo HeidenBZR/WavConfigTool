@@ -1,6 +1,7 @@
 ﻿using DevExpress.Mvvm;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace WavConfigTool.ViewModels
 {

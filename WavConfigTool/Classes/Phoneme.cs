@@ -41,7 +41,7 @@ namespace WavConfigTool.Classes
         {
             get
             {
-                return Recline.Phonemes.IndexOf(this);
+                return Recline == null ? -1 : Recline.Phonemes.IndexOf(this);
             }
         }
         public int LocalIndex
@@ -49,20 +49,14 @@ namespace WavConfigTool.Classes
             get
             {
                 if (IsConsonant)
-                    return Recline.Consonants.IndexOf(this);
+                    return Recline == null ? -1 : Recline.Consonants.IndexOf(this);
                 else if (IsVowel)
-                    return Recline.Vowels.IndexOf(this);
+                    return Recline == null ? -1 : Recline.Vowels.IndexOf(this);
                 else
-                    return Recline.Rests.IndexOf(this);
+                    return Recline == null ? -1 : Recline.Rests.IndexOf(this);
             }
         }
-        public bool HasZone
-        {
-            get
-            {
-                return Zone.In != 0 && Zone.Out != 0;
-            }
-        }
+        public bool HasZone { get; set; }
         public Recline Recline;
 
         public bool IsConsonant { get { return Type == PhonemeType.Consonant; } }

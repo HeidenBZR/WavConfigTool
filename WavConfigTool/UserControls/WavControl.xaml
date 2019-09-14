@@ -155,7 +155,7 @@
                             </ContextMenu>
                         </TextBlock.ContextMenu>
                     </TextBlock>
-                    <ListView ItemsSource="{Binding Phonemes}" Style="{DynamicResource ListViewPhonemes}">
+                    <ListView ItemsSource="{Binding Phonemes}" Style="{DynamicResource ListViewPhonemes}" ItemContainerStyle="{DynamicResource PhonemesItemStyle}">
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Horizontal" />
