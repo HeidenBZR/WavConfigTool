@@ -115,7 +115,7 @@ namespace WavConfigTool.ViewModels
             LoadImageAsync();
             foreach (var phoneme in ProjectLine.Recline.Phonemes)
             {
-                phoneme.FireHasZoneChanged(this);
+                phoneme.FireChanged(this);
             }
             ApplyPoints();
         }

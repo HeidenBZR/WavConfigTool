@@ -6,7 +6,7 @@
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:local="clr-namespace:WavConfigTool.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vt="clr-namespace:WavConfigTool.ViewTools"
+    xmlns:viewtools="clr-namespace:WavConfigTool.ViewTools"
     Width="50"
     Height="100"
     d:DesignHeight="100"
@@ -17,6 +17,49 @@
         <local:WavPoint />
     </d:UserControl.DataContext>-->
     <Canvas>
+        <Grid
+            Canvas.Left="{Binding Position, FallbackValue=0}"
+            VerticalAlignment="Stretch"
+            Height="100">
+
+            <Border 
+                Margin="0,0,0,0"
+                BorderBrush="{Binding Type, Converter={StaticResource PhonemeTypeToColor}}"
+                Background="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"
+                VerticalAlignment="Bottom">
+                <TextBlock
+                Name="TypeLabel"
+                Padding="0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Foreground="{Binding Type, Converter={StaticResource PhonemeTypeToColor}}"
+                Panel.ZIndex="5"
+                FontFamily="Century Gothic"
+                FontSize="14"
+                Text="{Binding VisualText, FallbackValue=Text, Mode=OneWay}" >
+                    <TextBlock.Style>
+                        <Style>
+                            <Setter Property="TextBlock.Margin" Value="5,1,4,1"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding VisualText, Mode=OneWay}" Value="">
+                                    <Setter Property="TextBlock.Margin" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <Border.Style>
+                    <Style>
+                        <Setter Property="Border.BorderThickness" Value="0,1,1,0"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding VisualText, Mode=OneWay}" Value="">
+                                <Setter Property="Border.BorderThickness" Value="0"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+        </Grid>
         <Thumb
             Canvas.Left="{Binding Position, FallbackValue=0}"
             HorizontalAlignment="Left"
@@ -30,7 +73,7 @@
                     EventName="DragDelta"
                     PassEventArgsToCommand="True">
                     <dxmvvm:EventToCommand.EventArgsConverter>
-                        <vt:DragDeltaToPointConverter />
+                        <viewtools:DragDeltaToPointConverter />
                     </dxmvvm:EventToCommand.EventArgsConverter>
                 </dxmvvm:EventToCommand>
                 <dxmvvm:EventToCommand
@@ -38,28 +81,12 @@
                     EventName="MouseRightButtonDown"
                     PassEventArgsToCommand="True">
                     <dxmvvm:EventToCommand.EventArgsConverter>
-                        <vt:MouseButtonToPointConverter />
+                        <viewtools:MouseButtonToPointConverter />
                     </dxmvvm:EventToCommand.EventArgsConverter>
                 </dxmvvm:EventToCommand>
                 <dxmvvm:EventToCommand Command="{Binding RegenerateOtoCommand}" SourceObject="{RelativeSource AncestorType=local:WavControl}"
                     EventName="MouseLeftButtonUp" />
             </dxmvvm:Interaction.Behaviors>
         </Thumb>
-        <Grid
-            Canvas.Left="{Binding Position, FallbackValue=0}"
-            Height="100"
-            VerticalAlignment="Stretch">
-
-            <TextBlock
-                Name="TypeLabel"
-                Margin="7,0,0,-15"
-                Padding="0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Panel.ZIndex="5"
-                FontFamily="Century Gothic"
-                FontSize="14"
-                Text="{Binding Text, FallbackValue=Text}" />
-        </Grid>
     </Canvas>
 </UserControl>

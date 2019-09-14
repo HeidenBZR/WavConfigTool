@@ -59,7 +59,7 @@ namespace WavConfigTool.Classes
             }
         }
         private bool hasZone;
-        public bool HasZone { get => hasZone; set { hasZone = value; FireHasZoneChanged(this); } }
+        public bool HasZone { get => hasZone; set { hasZone = value; FireChanged(this); } }
         public Recline Recline;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -83,7 +83,7 @@ namespace WavConfigTool.Classes
             return phoneme.Alias;
         }
 
-        public void FireHasZoneChanged(object sender)
+        public void FireChanged(object sender)
         {
             PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("HasZone"));
         }

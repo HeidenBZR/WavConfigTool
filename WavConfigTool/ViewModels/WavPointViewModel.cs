@@ -8,7 +8,10 @@ namespace WavConfigTool.ViewModels
 {
     public class WavPointViewModel : ViewModelBase
     {
-        public string Text { get; set; } = "Text";
+        private string text = "Text";
+
+        public string Text { get => text; set { text = value; FireChanged(); } }
+        public string VisualText => Type == PhonemeType.Rest ? "" : Text;
         public double Position { get; set; } = 0;
         public Brush BorderBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantBorderBrush"];
         public Brush BackgroundBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantBackBrush"];
@@ -89,6 +92,11 @@ namespace WavConfigTool.ViewModels
         public override string ToString()
         {
             return $"{{{Position}}} {Text}";
+        }
+
+        public void FireChanged()
+        {
+            RaisePropertyChanged("VisualText");
         }
     }
 }

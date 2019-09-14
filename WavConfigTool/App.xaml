@@ -20,6 +20,8 @@
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
             <viewtools:PhonemeTypeToColorConverter x:Key="PhonemeTypeToColor" />
+            <viewtools:PhonemeTypeToBorderColorConverter x:Key="PhonemeTypeToBorderColor" />
+            <viewtools:BooleanToFontWeightConverter x:Key="BooleanToFontWeight" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
