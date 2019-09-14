@@ -56,17 +56,18 @@ namespace WavConfigTool.ViewModels
         public ObservableCollection<WavPointViewModel> VowelPoints { get; set; } = new ObservableCollection<WavPointViewModel>();
         public ObservableCollection<WavPointViewModel> RestPoints { get; set; } = new ObservableCollection<WavPointViewModel>();
 
-        public List<WavZoneViewModel> ConsonantZones { get { return GetZones(PhonemeType.Consonant, ConsonantPoints); } }
-        public List<WavZoneViewModel> VowelZones { get { return GetZones(PhonemeType.Vowel, VowelPoints); } }
-        public List<WavZoneViewModel> RestZones { get { return GetZones(PhonemeType.Rest, RestPoints); } }
+        public List<WavZoneViewModel> ConsonantZones { get { return GetZones(PhonemeType.Consonant); } }
+        public List<WavZoneViewModel> VowelZones { get { return GetZones(PhonemeType.Vowel); } }
+        public List<WavZoneViewModel> RestZones { get { return GetZones(PhonemeType.Rest); } }
 
-        public List<WavZoneViewModel> GetZones(PhonemeType point, ObservableCollection<WavPointViewModel> points)
+        public List<WavZoneViewModel> GetZones(PhonemeType type)
         {
+            var points = ProjectLine.PointsOfType(type).ShallowClone();
             var zones = new List<WavZoneViewModel>();
-            SortPoints(points);
+            points.Sort();
             for (int i = 0; i + 1 < points.Count; i += 2)
             {
-                zones.Add(new WavZoneViewModel(point, points[i].Position, points[i + 1].Position));
+                zones.Add(new WavZoneViewModel(type, Settings.RealToViewX(points[i]), Settings.RealToViewX(points[i + 1])));
             }
             return zones;
         }
@@ -229,7 +230,7 @@ namespace WavConfigTool.ViewModels
         private void FillPoints(PhonemeType type)
         {
             var points = PointsOfType(type);
-            var projectPoints = ProjectLine.PointsOfType(type);
+            var projectPoints = ProjectLine.PointsOfType(type, virtuals:false);
             points.Clear();
             for (int i = 0; i < projectPoints.Count; i++)
             {
@@ -267,28 +268,12 @@ namespace WavConfigTool.ViewModels
         public void AddPoint(double position, PhonemeType type, bool checkRest = true)
         {
             position = CheckPosition(position);
-            if (checkRest)
-                ChechExtraRestPoint(type);
             var i = ProjectLine.AddPoint(Settings.ViewToRealX(position), type);
             if (i == -1)
                 return;
             var points = PointsOfType(type);
             points.Add(CreatePoint(position, type, i));
             PointsChanged();
-        }
-
-        void ChechExtraRestPoint(PhonemeType type)
-        {
-            if (type != PhonemeType.Rest)
-                return;
-            if (RestPoints.Count == 0)
-            {
-                AddPoint(0, type, false);
-            }
-            else if (RestPoints.Count == 2)
-            {
-                AddPoint(Length, type, false);
-            }
         }
 
         public void MovePoint(double position1, double position2, PhonemeType type)

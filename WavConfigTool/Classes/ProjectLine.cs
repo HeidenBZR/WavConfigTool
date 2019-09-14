@@ -10,10 +10,27 @@ namespace WavConfigTool.Classes
         public List<int> VowelPoints { get; set; } = new List<int>();
         public List<int> ConsonantPoints { get; set; } = new List<int>();
         public List<int> RestPoints { get; set; } = new List<int>();
-
         public List<Zone> VowelZones { get; private set; } = new List<Zone>();
         public List<Zone> ConsonantZones { get; private set; } = new List<Zone>();
         public List<Zone> RestZones { get; private set; } = new List<Zone>();
+
+        public List<int> VirtualRestPoints
+        {
+            get
+            {
+                var points = new List<int>();
+                if (RestPoints.Count > 0)
+                {
+                    points.Add(0);
+                }
+                if (RestPoints.Count > 1)
+                {
+                    points.AddRange(RestPoints.ShallowClone());
+                    points.Add(Settings.ViewToRealX(WaveForm.VisualWidth));
+                }
+                return points;
+            }
+        }
 
         public Recline Recline { get; set; }
         public bool IsCompleted
@@ -21,7 +38,7 @@ namespace WavConfigTool.Classes
             get
             {
                 return RestPoints != null && VowelPoints != null && ConsonantPoints != null &&
-                    RestPoints.Count >= Recline.Rests.Count * 2 &&
+                    VirtualRestPoints.Count >= Recline.Rests.Count * 2 &&
                     ConsonantPoints.Count >= Recline.Consonants.Count * 2 &&
                     VowelPoints.Count >= Recline.Vowels.Count * 2;
             }
@@ -134,10 +151,12 @@ namespace WavConfigTool.Classes
             ConsonantPoints.Sort();
         }
 
-        public List<int> PointsOfType(PhonemeType type)
+        public List<int> PointsOfType(PhonemeType type, bool virtuals = true)
         {
             return type == PhonemeType.Consonant ? ConsonantPoints :
-                (type == PhonemeType.Rest ? RestPoints : VowelPoints);
+                (type == PhonemeType.Vowel ? VowelPoints : 
+                (virtuals ? VirtualRestPoints : RestPoints)
+            );
         }
 
         public List<Zone> ZonesOfType(PhonemeType type)
@@ -153,15 +172,16 @@ namespace WavConfigTool.Classes
             var neededCount = phonemes.Count * 2;
             if (points.Count >= neededCount)
                 return -1;
-            points.Add(position);
-            points.Sort();
+            var realPhonemes = PointsOfType(type, virtuals: false);
+            realPhonemes.Add(position);
+            realPhonemes.Sort();
             ProjectLinePointsChanged();
-            return points.IndexOf(position);
+            return realPhonemes.IndexOf(position);
         }
 
         void SetHasZone()
         {
-            foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest})
+            foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest })
             {
                 var points = PointsOfType(phonemeType);
                 var phonemes = Recline.PhonemesOfType(phonemeType);
@@ -174,7 +194,7 @@ namespace WavConfigTool.Classes
 
         public (int, int) MovePoint(int position1, int position2, PhonemeType type)
         {
-            var points = PointsOfType(type);
+            var points = PointsOfType(type, virtuals: false);
             int i = points.IndexOf(position1);
             if (i > -1)
             {
@@ -188,7 +208,7 @@ namespace WavConfigTool.Classes
 
         public int DeletePoint(int position, PhonemeType type)
         {
-            var points = PointsOfType(type);
+            var points = PointsOfType(type, virtuals:false);
             var i = points.IndexOf(position);
             points.Remove(position);
             SetHasZone();
