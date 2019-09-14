@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using WavConfigTool.Classes;
+using WavConfigTool.Classes.IO;
 using WavConfigTool.Tools;
 using WavConfigTool.ViewTools;
 
@@ -108,7 +109,12 @@ namespace WavConfigTool.ViewModels
 
         public MainWindowViewModel()
         {
+        }
 
+        void convertWavsettingsToReclist(string name)
+        {
+            var reclist = WavSettingsReader.Current.Read(name);
+            ReclistReader.Current.Write(name, reclist);
         }
 
         async void LoadProjectAsync()
