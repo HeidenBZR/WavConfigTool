@@ -64,8 +64,59 @@
             Canvas.Left="{Binding Position, FallbackValue=0}"
             HorizontalAlignment="Left"
             VerticalAlignment="Stretch"
-            Cursor="SizeWE"
-            Style="{DynamicResource WavPointControllerStyle}">
+            Cursor="SizeWE">
+            <Thumb.Style>
+                <Style TargetType="{x:Type Thumb}">
+                    <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+                    <Setter Property="Background" Value="{Binding Type, Converter={StaticResource PhonemeTypeToColor}, FallbackValue=Red}" />
+                    <Setter Property="BorderBrush" Value="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}, FallbackValue=#ff440000}" />
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                <Canvas>
+                                    <Rectangle
+                            x:Name="Line"
+                            Canvas.Left="-1"
+                            Width="2"
+                            Height="100"
+                            Fill="{TemplateBinding BorderBrush}" />
+                                    <Grid Height="100" VerticalAlignment="Stretch">
+                                        <Polygon Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}">
+                                            <Polygon.Points>
+                                                <Point X="-6" Y="0" />
+                                                <Point X="6" Y="0" />
+                                                <Point X="0" Y="6" />
+                                            </Polygon.Points>
+                                        </Polygon>
+                                        <Polygon
+                                x:Name="ControllerBottom"
+                                Width="15"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                Cursor="Hand"
+                                Fill="{TemplateBinding Background}"
+                                RenderTransformOrigin="0.5,0.5"
+                                Stroke="{TemplateBinding BorderBrush}">
+                                            <Polygon.Points>
+                                                <Point X="-6" Y="0" />
+                                                <Point X="6" Y="0" />
+                                                <Point X="0" Y="-6" />
+                                            </Polygon.Points>
+                                        </Polygon>
+                                    </Grid>
+                                </Canvas>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="true">
+                                        <Setter Property="Background" Value="White" />
+                                        <Setter Property="BorderBrush" Value="Black" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Thumb.Style>
 
             <dxmvvm:Interaction.Behaviors>
                 <dxmvvm:EventToCommand
