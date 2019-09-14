@@ -133,7 +133,7 @@ namespace WavConfigTool.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.7")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.45")]
         public double ScaleX {
             get {
                 return ((double)(this["ScaleX"]));

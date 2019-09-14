@@ -20,6 +20,7 @@ namespace WavConfigTool.Classes
         public int BitRate;
         //public List<double> Ds = new List<double>();
         public double MostLeft;
+        public int VisualWidth;
 
         public long Length;
         public float[] Data;
@@ -36,150 +37,111 @@ namespace WavConfigTool.Classes
         public WaveForm(string path)
         {
             Path = path + ".wav";
-            Init();
+            IsEnabled = File.Exists(Path);
         }
 
-        public void Init()
+        public void MakeWaveForm(int height, string imagePath, Color color)
         {
-            if (!File.Exists(Path))
-                return;
-            else
-                IsEnabled = true;
-
-            AudioFileReader reader = new AudioFileReader(Path);
-
-            SampleRate = reader.WaveFormat.SampleRate;
-            BitRate = reader.WaveFormat.BitsPerSample;
-            Length = reader.Length / 4;
-            Data = new float[Length];
-            reader.Read(Data, 0, (int)Length);
-            reader.Close();
+            var reader = new AudioFileReader(Path);
+            Bitmap bitmap = DrawWaveform(reader, height, color);
+            bitmap.Save(imagePath);
         }
-
-        float Truncate(float value)
+        private Bitmap DrawWaveform(AudioFileReader reader, int height, Color color)
         {
-            if (value > 50) return 50;
-            else if (value < -50) return -50;
-            else if (Math.Abs(value) < Threshold) return 0;
-            else return value;
-        }
-
-        public PointF[] GetAudioPoints()
-        {
-            try
-            {
-                if (Data is null)
-                    Init();
-                var points = new List<PointF>();
-                var max = Data.Max();
-                long i = 0;
-                float factorX = (float)(Settings.RealToViewX(1000 / (double)SampleRate));
-                float factorY = (float)(Settings.RealToViewY(Settings.WAM));
-
-                float prev = 0;
-                float preprev = 0;
-                for (; i < Length; i += PointSkip)
-                {
-                    float x = i * factorX;
-                    float y = Truncate(Data[i] * factorY) + 50;
-                    if (i > 0 || y != prev && y != preprev)
-                        points.Add(new PointF(x, y));
-                    prev = y;
-                    preprev = prev;
-                }
-                Data = null;
-                return points.ToArray();
-            }
-            catch (Exception ex)
-            {
+            // calculate number of samples
+            long nSamples = reader.Length / ((reader.WaveFormat.BitsPerSample * reader.WaveFormat.Channels) / 8);
+            if (nSamples < 2)
                 return null;
+
+            // drawing position/scaling factors
+            int yBase = height;
+            double yScale = -(height - 3);
+
+            yBase = height / 2;
+            yScale = -((double)height - 3) / 2;
+
+            double sampleWidth = Settings.ScaleX / reader.WaveFormat.BitsPerSample * reader.WaveFormat.Channels;
+            double currPosition = 0;
+            // Data for current column
+            int currColumn = 0;
+            var points = new List<Point[]>();
+            Bitmap res;
+            using (Pen linePen = new Pen(Color.Red))
+            using (Brush fillBrush = new SolidBrush(color))
+            {
+                //g.Clear(Color.Black);
+
+                float minVal = float.PositiveInfinity, maxVal = float.NegativeInfinity;
+
+                // Data for previous column
+                int prevColumn = 0;
+                int prevMinY = 0, prevMaxY = 0;
+
+                // Buffer for reading samples
+                float[] buffer = new float[8192];
+                int readCount;
+
+                while ((readCount = reader.Read(buffer, 0, 8192)) > 0)
+                {
+                    // Merge stereo samples to mono
+                    if (reader.WaveFormat.Channels == 2)
+                    {
+                        for (int i = 0, o = 0; i < readCount; i += 2, o++)
+                            buffer[o] = (buffer[i] + buffer[i + 1]) / 2;
+                        readCount >>= 1;
+                    }
+
+                    // process samples
+                    foreach (float sample in buffer.Take(readCount))
+                    {
+                        minVal = Math.Min(minVal, sample);
+                        maxVal = Math.Max(maxVal, sample);
+                        currPosition += sampleWidth;
+
+                        // on column change, draw to bitmap
+                        if ((int)currPosition > currColumn)
+                        {
+                            if (!float.IsInfinity(minVal) && !float.IsInfinity(maxVal))
+                            {
+                                // calculate Y coordinates for min & max
+                                int minY = (int)(yBase + yScale * minVal);
+                                int maxY = (int)(yBase + yScale * maxVal);
+
+                                points.Add(new Point[] {
+                                        new Point(prevColumn, prevMinY), new Point(prevColumn, prevMaxY),
+                                        new Point(currColumn, maxY), new Point(currColumn, minY)
+                                });
+
+                                // save current data to previous
+                                prevColumn = currColumn;
+                                prevMinY = minY;
+                                prevMaxY = maxY;
+                            }
+
+                            // update column number and reset accumulators
+                            currColumn = (int)currPosition;
+                            minVal = float.PositiveInfinity;
+                            maxVal = float.NegativeInfinity;
+                        }
+                    }
+                }
+
+                VisualWidth = (int)currPosition;
+                res = new Bitmap(VisualWidth, height);
+
+                using (Graphics g = Graphics.FromImage(res))
+                {
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                    foreach (var pointsPair in points)
+                    {
+                        g.FillPolygon(fillBrush, pointsPair, System.Drawing.Drawing2D.FillMode.Winding);
+                    }
+                }
+                    
             }
+
+            return res;
         }
-
-        //public System.Windows.Point[] GetAudioPoints()
-        //{
-        //    List<System.Windows.Point> points = new List<System.Windows.Point>();
-        //    long lastpoint = 0;
-        //    var max = Data.Max();
-        //    long i = 0;
-        //    Length /= 4;
-        //    for (; i < Length; i += PointSkip)
-        //    {
-        //        var x = i * WavControl.ScaleX / SampleRate * 1000;
-        //        var y = Truncate(Data[i] * WavControl.ScaleY * Settings.WAM) + 50;
-        //        points.Add(new System.Windows.Point(x, y));
-        //        if (Data[i] >= max * 0.05)
-        //        {
-        //            if (Ds.Count == 0)
-        //            {
-        //                Ds.Add((double)i / SampleRate * 1000 - 20);
-        //            }
-        //            else
-        //            {
-        //                if (Ds[0] * WavControl.ScaleX < MostLeft) MostLeft = Ds[0] * WavControl.ScaleX;
-        //                lastpoint = i;
-        //            }
-        //        }
-        //    }
-        //    if (Ds.Count < 2) Ds.Add((double)lastpoint / SampleRate * 1000 + 20);
-        //    if (Ds[0] < 0)
-        //        Ds[0] = 40;
-        //    if (Ds[1] > Length - 40)
-        //        Ds[1] = Length - 40;
-        //    return points.ToArray();
-        //}
-
-        public void PointsToImage(PointF[] points, int w, int h, string imagePath, System.Drawing.Pen pen)
-        {
-            try
-            {
-                IsGenerated = false;
-                Bitmap image = new Bitmap(w, h);
-                Graphics waveform = Graphics.FromImage(image);
-                waveform.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                waveform.DrawCurve(pen, points);
-                waveform.Save();
-                image.Save(imagePath);
-                waveform.Dispose();
-                image.Dispose();
-                IsGenerating = false;
-                IsGenerated = true;
-            }
-            catch (Exception ex)
-            {
-                IsGenerating = false;
-                IsGenerated = false;
-                GeneratingException = ex;
-            }
-        }
-
-        public void PointsToImage(object data)
-        {
-            try
-            {
-                IsGenerated = false;
-                (PointF[] points, int w, int h, string imagePath, System.Drawing.Pen pen) =
-                    ((PointF[] points, int w, int h, string imagePath, System.Drawing.Pen))data;
-
-                Bitmap image = new Bitmap(w, h);
-                Graphics waveform = Graphics.FromImage(image);
-                waveform.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                waveform.DrawCurve(pen, points);
-                waveform.Save();
-                image.Save(imagePath);
-                waveform.Dispose();
-                image.Dispose();
-                IsGenerating = false;
-                IsGenerated = true;
-            }
-            catch (Exception ex)
-            {
-                IsGenerating = false;
-                IsGenerated = false;
-                GeneratingException = ex;
-            }
-        }
-
 
     }
 }

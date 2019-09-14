@@ -21,8 +21,6 @@ namespace WavConfigTool.ViewTools
     {
         protected override object Convert(object sender, DragDeltaEventArgs args)
         {
-            if (args.HorizontalChange != 0)
-                Console.WriteLine("Moved: " + (args.HorizontalChange).ToString());
             return new Point(
                 Canvas.GetLeft(sender as UIElement) + args.HorizontalChange,
                 Canvas.GetLeft(sender as UIElement) + args.VerticalChange

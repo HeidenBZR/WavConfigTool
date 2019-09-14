@@ -30,7 +30,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="ScaleX" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.7</Value>
+      <Value Profile="(Default)">0.45</Value>
     </Setting>
     <Setting Name="ScaleY" Type="System.Double" Scope="User">
       <Value Profile="(Default)">60</Value>

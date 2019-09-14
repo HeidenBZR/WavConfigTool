@@ -83,7 +83,7 @@ namespace WavConfigTool.ViewModels
         public int Number { get; set; }
         public int NumberView => Number + 1;
 
-        public int Width { get; set; } = 1000;
+        public int Width => ProjectLine.IsEnabled ? ProjectLine.WaveForm.VisualWidth : 1000;
         public string WavImagePath { get; set; } = "";
         public bool IsImageEnabled { get; set; } = false;
         public BitmapImage WavImage
@@ -107,8 +107,6 @@ namespace WavConfigTool.ViewModels
         {
             PointsChanged += OnPointsChanged;
             ProjectLine = projectLine;
-            if (ProjectLine.IsEnabled)
-                Width = (int)(Settings.RealToViewX(ProjectLine.WaveForm.Length / (float)ProjectLine.WaveForm.BitRate));
             ApplyPoints();
         }
 
@@ -150,19 +148,19 @@ namespace WavConfigTool.ViewModels
             RaisePropertyChanged(() => IsLoading);
 
             WavImagePath = "";
-            var points = ProjectLine.WaveForm.GetAudioPoints();
-            ProjectLine.WaveForm.PointsToImage(
-                    points,
-                    Width,
-                    100,
-                    new_image,
-                    new System.Drawing.Pen(System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR))
-            );
+            ProjectLine.WaveForm.MakeWaveForm(100, new_image, System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR));
+            //ProjectLine.WaveForm.PointsToImage(
+            //        Width,
+            //        100,
+            //        new_image,
+            //        new System.Drawing.Pen(System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR))
+            //);
             if (File.Exists(new_image))
             {
                 WavImagePath = new_image;
                 IsImageEnabled = true;
             }
+            RaisePropertyChanged(() => Width);
             RaisePropertyChanged(() => WavImage);
 
             IsLoading = false;
