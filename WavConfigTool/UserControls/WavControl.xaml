@@ -125,15 +125,42 @@
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
             ItemsSource="{Binding RestZones, Mode=OneWay}"
             Visibility="{Binding EnabledProperty}" />
+        <ItemsControl
+            Name="ConsonantPoints"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
+            ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+            ItemsSource="{Binding ConsonantPoints, Mode=OneWay}"
+            Visibility="{Binding EnabledProperty}" />
+        <ItemsControl
+            Name="VowelPoints"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
+            ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+            ItemsSource="{Binding VowelPoints, Mode=OneWay}"
+            Visibility="{Binding EnabledProperty}" />
+        <ItemsControl
+            Name="RestPoints"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
+            ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+            ItemsSource="{Binding RestPoints, Mode=OneWay}"
+            Visibility="{Binding EnabledProperty}" />
         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid
                 Canvas.Left="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}, Path=HorizontalOffset}"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top">
-                <Rectangle
-                    Fill="{DynamicResource {x:Static SystemColors.ControlBrush}}"
-                    Opacity="0.8"
-                    Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrush}}" />
+                <Border
+                    Background="{DynamicResource WindowBackground}"
+                    BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                    BorderThickness="0,0,1,1"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Opacity="0.8" />
                 <StackPanel
                     Margin="5"
                     HorizontalAlignment="Left"
@@ -165,29 +192,5 @@
                 </StackPanel>
             </Grid>
         </Canvas>
-        <ItemsControl
-            Name="ConsonantPoints"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
-            ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding ConsonantPoints, Mode=OneWay}"
-            Visibility="{Binding EnabledProperty}" />
-        <ItemsControl
-            Name="VowelPoints"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
-            ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding VowelPoints, Mode=OneWay}"
-            Visibility="{Binding EnabledProperty}" />
-        <ItemsControl
-            Name="RestPoints"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
-            ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding RestPoints, Mode=OneWay}"
-            Visibility="{Binding EnabledProperty}" />
     </Grid>
 </local:WavControlBase>

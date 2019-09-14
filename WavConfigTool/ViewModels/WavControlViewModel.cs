@@ -108,12 +108,16 @@ namespace WavConfigTool.ViewModels
         {
             PointsChanged += OnPointsChanged;
             ProjectLine = projectLine;
-            ApplyPoints();
         }
 
         public override void Load()
         {
             LoadImageAsync();
+            foreach (var phoneme in ProjectLine.Recline.Phonemes)
+            {
+                phoneme.FireHasZoneChanged(this);
+            }
+            ApplyPoints();
         }
 
         public async void LoadImageAsync()
