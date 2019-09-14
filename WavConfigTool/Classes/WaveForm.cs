@@ -54,7 +54,6 @@ namespace WavConfigTool.Classes
             Data = new float[Length];
             reader.Read(Data, 0, (int)Length);
             reader.Close();
-
         }
 
         float Truncate(float value)

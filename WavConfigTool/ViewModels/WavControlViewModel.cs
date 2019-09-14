@@ -46,7 +46,7 @@ namespace WavConfigTool.ViewModels
         {
             get
             {
-                return WavImage == null ? 0 : WavImage.Width;
+                return Settings.ViewToRealX(Width);
             }
         }
 
@@ -58,7 +58,7 @@ namespace WavConfigTool.ViewModels
 
         public List<WavZoneViewModel> ConsonantZones { get { return GetZones(PhonemeType.Consonant, ConsonantPoints); } }
         public List<WavZoneViewModel> VowelZones { get { return GetZones(PhonemeType.Vowel, VowelPoints); } }
-        public List<WavZoneViewModel> RestZones { get { return GetRestZones(); } }
+        public List<WavZoneViewModel> RestZones { get { return GetZones(PhonemeType.Rest, RestPoints); } }
 
         public List<WavZoneViewModel> GetZones(PhonemeType point, ObservableCollection<WavPointViewModel> points)
         {
@@ -69,23 +69,6 @@ namespace WavConfigTool.ViewModels
                 zones.Add(new WavZoneViewModel(point, points[i].Position, points[i + 1].Position));
             }
             return zones;
-        }
-
-        public List<WavZoneViewModel> GetRestZones()
-        {
-            var local = new ObservableCollection<WavPointViewModel>();
-            if (RestPoints.Count > 1)
-            {
-                var p = new WavPointViewModel(0, PhonemeType.Rest, "");
-                local.Add(p);
-                foreach (var pp in RestPoints)
-                {
-                    local.Add(pp);
-                }
-                p = new WavPointViewModel(Length, PhonemeType.Rest, "");
-                local.Add(p);
-            }
-            return GetZones(PhonemeType.Rest, local);
         }
 
         public string Filename { get => ProjectLine.Recline.Filename; }
@@ -125,7 +108,7 @@ namespace WavConfigTool.ViewModels
             PointsChanged += OnPointsChanged;
             ProjectLine = projectLine;
             if (ProjectLine.IsEnabled)
-                Width = (int)(Settings.RealToViewX(ProjectLine.WaveForm.Length / ProjectLine.WaveForm.BitRate));
+                Width = (int)(Settings.RealToViewX(ProjectLine.WaveForm.Length / (float)ProjectLine.WaveForm.BitRate));
             ApplyPoints();
         }
 
@@ -248,8 +231,7 @@ namespace WavConfigTool.ViewModels
         public string GetPointLabel(PhonemeType type, int i)
         {
             var phonemes = ProjectLine.Recline.PhonemesOfType(type);
-            return type == PhonemeType.Rest ? "" :
-                (phonemes.Count * 2 > i && i % 2 == 0 ? phonemes[i / 2] : "");
+            return phonemes.Count * 2 > i && i % 2 == 0 ? phonemes[i / 2] : "";
         }
 
         private void FillPoints(PhonemeType type)
@@ -290,15 +272,31 @@ namespace WavConfigTool.ViewModels
             return position;
         }
 
-        public void AddPoint(double position, PhonemeType type)
+        public void AddPoint(double position, PhonemeType type, bool checkRest = true)
         {
             position = CheckPosition(position);
+            if (checkRest)
+                ChechExtraRestPoint(type);
             var i = ProjectLine.AddPoint(Settings.ViewToRealX(position), type);
             if (i == -1)
                 return;
             var points = PointsOfType(type);
             points.Add(CreatePoint(position, type, i));
             PointsChanged();
+        }
+
+        void ChechExtraRestPoint(PhonemeType type)
+        {
+            if (type != PhonemeType.Rest)
+                return;
+            if (RestPoints.Count == 0)
+            {
+                AddPoint(0, type, false);
+            }
+            else if (RestPoints.Count == 2)
+            {
+                AddPoint(Length, type, false);
+            }
         }
 
         public void MovePoint(double position1, double position2, PhonemeType type)

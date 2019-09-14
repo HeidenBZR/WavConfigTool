@@ -77,7 +77,7 @@
             HorizontalAlignment="Stretch"
             Fill="{DynamicResource WaveformBrush}"
             SnapsToDevicePixels="True"
-            Visibility="{Binding EnabledProperty}" />
+            Visibility="Collapsed" />
         <local:CanvasLoading
             x:Name="CanvasLoading"
             HorizontalAlignment="Stretch"

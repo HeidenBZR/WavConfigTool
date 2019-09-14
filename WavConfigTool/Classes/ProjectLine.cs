@@ -21,7 +21,7 @@ namespace WavConfigTool.Classes
             get
             {
                 return RestPoints != null && VowelPoints != null && ConsonantPoints != null &&
-                    RestPoints.Count >= Recline.Rests.Count * 2 - 2 &&
+                    RestPoints.Count >= Recline.Rests.Count * 2 &&
                     ConsonantPoints.Count >= Recline.Consonants.Count * 2 &&
                     VowelPoints.Count >= Recline.Vowels.Count * 2;
             }
@@ -91,7 +91,7 @@ namespace WavConfigTool.Classes
         {
             Sort();
             VowelZones = new List<Zone>();
-            foreach (PhonemeType type in new[] { PhonemeType.Consonant, PhonemeType.Vowel })
+            foreach (PhonemeType type in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest })
             {
                 var points = PointsOfType(type);
                 var zones = ZonesOfType(type);
@@ -101,21 +101,6 @@ namespace WavConfigTool.Classes
                     zones.Add(new Zone(points[i], points[i + 1]));
                 }
             }
-            RestZones = CalculateRestZones();
-        }
-
-        public List<Zone> CalculateRestZones()
-        {
-            // У первой и последней точки это не зона, а синглтоны, а в середине обычные зоны
-            var zones = new List<Zone>();
-            var points = PointsOfType(PhonemeType.Rest);
-            if (points.Count > 0)
-                zones.Add(new Zone(points[0], points[0]));
-            for (int i = 1; i + 2 < points.Count; i += 2)
-                zones.Add(new Zone(points[i], points[i + 1]));
-            if (RestPoints.Count > 1)
-                zones.Add(new Zone(points.Last(), points.Last()));
-            return zones;
         }
 
         public override string ToString()
@@ -165,7 +150,7 @@ namespace WavConfigTool.Classes
         {
             var points = PointsOfType(type);
             var phonemes = Recline.PhonemesOfType(type);
-            var neededCount = type == PhonemeType.Rest ? phonemes.Count * 2 - 2 : phonemes.Count * 2;
+            var neededCount = phonemes.Count * 2;
             if (points.Count >= neededCount)
                 return -1;
             points.Add(position);
@@ -176,27 +161,10 @@ namespace WavConfigTool.Classes
 
         void SetHasZone()
         {
-            var points = PointsOfType(PhonemeType.Rest);
-            var phonemes = Recline.PhonemesOfType(PhonemeType.Rest);
-            for (int i = 0; i < phonemes.Count; i++)
+            foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest})
             {
-                if (i == 0)
-                {
-                    phonemes[i].HasZone = points.Count > 0;
-                }
-                else if (i == phonemes.Count - 1)
-                {
-                    phonemes[i].HasZone = points.Count == i * 2 - 1;
-                }
-                else
-                {
-                    phonemes[i].HasZone = points.Count >= i * 2 - 2 + 1;
-                }
-            }
-            foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel})
-            {
-                points = PointsOfType(phonemeType);
-                phonemes = Recline.PhonemesOfType(phonemeType);
+                var points = PointsOfType(phonemeType);
+                var phonemes = Recline.PhonemesOfType(phonemeType);
                 for (int i = 0; i < phonemes.Count; i++)
                 {
                     phonemes[i].HasZone = points.Count >= i * 2 + 1;
