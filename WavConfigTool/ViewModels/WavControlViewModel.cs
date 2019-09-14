@@ -198,14 +198,9 @@ namespace WavConfigTool.ViewModels
             RaisePropertiesChanged(
                 () => ConsonantZones,
                 () => VowelZones,
-                () => RestZones,
-                () => ProjectLine.Recline.Phonemes,
-                () => Phonemes
+                () => RestZones
             );
-            foreach (var phoneme in Phonemes)
-            {
-                RaisePropertyChanged(() => phoneme.HasZone);
-            }
+            RaisePropertiesChanged("Phoneme", "HasPhoneme");
         }
 
         public IList<WavPointViewModel> PointsOfType(PhonemeType type)

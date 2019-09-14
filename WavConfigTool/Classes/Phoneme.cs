@@ -1,5 +1,7 @@
 ﻿
 
+using System.ComponentModel;
+
 namespace WavConfigTool.Classes
 {
     public enum PhonemeType
@@ -26,7 +28,7 @@ namespace WavConfigTool.Classes
         }
     }
 
-    public abstract class Phoneme
+    public abstract class Phoneme : INotifyPropertyChanged
     {
         public double Preutterance { get; set; }
         public double Overlap { get; set; }
@@ -56,8 +58,11 @@ namespace WavConfigTool.Classes
                     return Recline == null ? -1 : Recline.Rests.IndexOf(this);
             }
         }
-        public bool HasZone { get; set; }
+        private bool hasZone;
+        public bool HasZone { get => hasZone; set { hasZone = value; PropertyChanged(this, new PropertyChangedEventArgs("HasZone")); } }
         public Recline Recline;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public bool IsConsonant { get { return Type == PhonemeType.Consonant; } }
         public bool IsVowel { get { return Type == PhonemeType.Vowel; } }

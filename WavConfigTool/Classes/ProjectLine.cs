@@ -187,7 +187,7 @@ namespace WavConfigTool.Classes
                 var phonemes = Recline.PhonemesOfType(phonemeType);
                 for (int i = 0; i < phonemes.Count; i++)
                 {
-                    phonemes[i].HasZone = points.Count >= i * 2 + 1;
+                    phonemes[i].HasZone = points.Count >= i * 2 + 2;
                 }
             }
         }
