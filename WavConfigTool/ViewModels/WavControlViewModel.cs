@@ -149,12 +149,6 @@ namespace WavConfigTool.ViewModels
 
             WavImagePath = "";
             ProjectLine.WaveForm.MakeWaveForm(100, new_image, System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR));
-            //ProjectLine.WaveForm.PointsToImage(
-            //        Width,
-            //        100,
-            //        new_image,
-            //        new System.Drawing.Pen(System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR))
-            //);
             if (File.Exists(new_image))
             {
                 WavImagePath = new_image;
