@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using WavConfigTool.Classes;
+using WavConfigTool.Classes.IO;
 using WavConfigTool.Tools;
 using WavConfigTool.ViewTools;
 
@@ -36,7 +37,11 @@ namespace WavConfigTool.ViewModels
         public string SelectedReclist
         {
             get => Project?.Reclist?.Name;
-            set { Project.ChangeReclist(value); ProjectDataChanged(); }
+            set
+            {
+                Project.SetReclist(ReclistReader.Current.Read(value));
+                ProjectDataChanged();
+            }
         }
         public string VoicebankName
         {
@@ -75,11 +80,10 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-
         public ICommand ChangeVoicebankCommand => new OpenFileCommand((obj) =>
         {
             var location = Path.GetDirectoryName((string)obj);
-            Project.ChangeVoicebank(location);
+            Project.SetVoicebank(new Voicebank(location));
             ProjectDataChanged();
         },
         "Select voicebank samples",
@@ -90,6 +94,5 @@ namespace WavConfigTool.ViewModels
         {
             await Task.Run(() => GetReclists());
         }
-
     }
 }

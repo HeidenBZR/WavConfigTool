@@ -40,8 +40,6 @@ namespace WavConfigTool.ViewTools
             this.execute(parameter);
         }
     }
-    
-
 
     class OpenFileCommand : ICommand
     {
@@ -97,8 +95,6 @@ namespace WavConfigTool.ViewTools
         }
     }
 
-
-
     class SaveFileCommand : ICommand
     {
         Action<object> execute;
@@ -150,6 +146,65 @@ namespace WavConfigTool.ViewTools
         public bool ShowDialog(Action<CancelEventArgs> fileOK, string directoryName)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    class MessageBoxCommand : ICommand
+    {
+        Action<object> execute;
+        private Func<object, bool> canExecute;
+
+        public int FilterIndex { get; set; }
+
+        public string Text { get; set; }
+
+        public MessageBoxButton MessageBoxButton { get; set; }
+        public MessageBoxImage MessageBoxImage { get; set; }
+
+        public string Title { get; set; }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public MessageBoxCommand(Action<object> execute, string title, string text, Func<object, bool> canExecute = null)
+        {
+            this.Title = title;
+            this.Text = text;
+            this.canExecute = canExecute;
+            this.execute = execute;
+            this.MessageBoxImage = MessageBoxImage.Information;
+            this.MessageBoxButton = MessageBoxButton.OK;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return this.execute == null || this.canExecute(parameter);
+        }
+
+        public void Execute(object parameter)
+        {
+            var result = MessageBox.Show(Text, Title, MessageBoxButton, MessageBoxImage);
+            if (result == MessageBoxResult.Yes)
+            {
+                this.execute(result);
+            }
+        }
+
+        public bool ShowDialog(Action<CancelEventArgs> fileOK, string directoryName)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class MessageBoxConfirmationCommand : MessageBoxCommand
+    {
+        public MessageBoxConfirmationCommand(Action<object> execute, string title, string text, Func<object, bool> canExecute = null) : base(execute, title, text, canExecute)
+        {
+            this.MessageBoxImage = MessageBoxImage.Question;
+            this.MessageBoxButton = MessageBoxButton.YesNo;
         }
     }
 }

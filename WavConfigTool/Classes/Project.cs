@@ -60,79 +60,87 @@ namespace WavConfigTool.Classes
         public event SimpleHandler ProjectLinesChanged;
         public event SimpleHandler BeforeSave;
         public event SimpleHandler AfterSave;
+        public event SimpleHandler SaveMe;
 
-        public Project(string voicebank = "", string reclist = "")
+        public Project()
         {
             ProjectOptions = new ProjectOptions();
+            _voicebank = new Voicebank("");
+            _reclist = new Reclist();
             Current = this;
             _projectLines = new List<ProjectLine>();
+            _projectLinesByFilename = new Dictionary<string, ProjectLine>();
             Options = new Dictionary<string, string>();
             ProjectChanged += Project_OnProjectChanged;
             ProjectLinesChanged += Project_OnProjectLineChanged;
             BeforeSave += () => { };
             AfterSave += () => { };
-            Voicebank = new Voicebank(voicebank);
-            Reclist = IO.ReclistReader.Current.Read(reclist);
-            IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
+            SaveMe += () => { };
+            IsLoaded = false;
         }
 
         private void Project_OnProjectChanged()
         {
-            foreach (var line in ProjectLines)
-                line.IsEnabled = Voicebank.IsSampleEnabled(line.Recline.Filename);
             if (IsLoaded)
-                Save();
+                FireSaveMe();
         }
 
         private void Project_OnProjectLineChanged()
         {
             if (IsLoaded)
-                Save();
+                FireSaveMe();
         }
 
-        public static Project OpenBackup()
+        public void SetVoicebank(Voicebank voicebank)
         {
-            if (!Settings.IsUnsaved || !File.Exists(Settings.TempProject))
-                return null;
-            var project = Open(Settings.TempProject);
-            Settings.IsUnsaved = true;
-            return project;
-        }
-
-        public static Project OpenLast()
-        {
-            if (!File.Exists(Settings.ProjectFile))
-                return null;
-            var project = Open(Settings.ProjectFile);
-            return project;
-        }
-
-        public static Project Open(string project_path)
-        {
-
-            if (!File.Exists(project_path))
-                return null;
-            var project = new Project();
-            project.Read(project_path);
-            project.IsLoaded = project.Reclist.IsLoaded && project.Voicebank.IsLoaded;
-            project.OtoGenerator = new OtoGenerator(project.Reclist, project);
-            Settings.ProjectFile = project_path;
-            return project;
-        }
-
-
-        public void ChangeVoicebank(string voicebankLocation)
-        {
-            Voicebank = new Voicebank(voicebankLocation);
+            Voicebank = voicebank;
             IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
+            CheckEnabled();
             ProjectChanged();
         }
 
-        public void ChangeReclist(string reclist_location)
+        public void SetReclist(Reclist reclist)
         {
-            Reclist = IO.ReclistReader.Current.Read(reclist_location);
-            OpenLast();
+            Reclist = reclist;
             IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
+            CheckEnabled();
+            ProjectChanged();
+        }
+
+        public void CheckEnabled()
+        {
+            if (!IsLoaded)
+                return;
+            
+            foreach (var projectLine in ProjectLines)
+            {
+                projectLine.IsEnabled = false;
+            }
+            foreach (var recline in Reclist.Reclines)
+            {
+                if (!ProjectLinesByFilename.ContainsKey(recline.Filename))
+                {
+                    AddProjectLine(recline.Filename, new ProjectLine());
+                }
+                if (ProjectLinesByFilename.TryGetValue(recline.Filename, out var projectLine))
+                {
+                    projectLine.Recline = recline;
+                    projectLine.IsEnabled = Voicebank.IsSampleEnabled(projectLine.Recline.Filename);
+                    ProcessLineAfterRead(projectLine);
+                }
+            }
+        }
+
+        public void AddProjectLine(string filename, ProjectLine projectLine)
+        {
+            ProjectLines.Add(projectLine);
+            ProjectLinesByFilename[filename] = projectLine;
+            ProcessLineAfterRead(projectLine);
+        }
+
+        public void SetOtoGenerator(OtoGenerator otoGenerator)
+        {
+            OtoGenerator = otoGenerator;
             ProjectChanged();
         }
 
@@ -141,164 +149,27 @@ namespace WavConfigTool.Classes
             ProjectLines = new List<ProjectLine>();
             Voicebank = new Voicebank(voicebank);
             Reclist = IO.ReclistReader.Current.Read(reclist);
-            Save();
-        }
-
-        public void Write(string path)
-        {
-
-            StringBuilder text = new StringBuilder();
-            text.Append($"$Voicebank={Voicebank.Location}\r\n");
-            text.Append($"$Reclist={Reclist.Name}\r\n");
-            text.Append($"$Suffix={Suffix}\r\n");
-            text.Append($"$Prefix={Prefix}\r\n");
-            text.Append($"$VowelDecay={VowelDecay}\r\n");
-            text.Append($"$VowelAttack={VowelAttack}\r\n");
-            text.Append($"$ConsonantAttack={ConsonantAttack}\r\n");
-            text.Append($"$WavAmplitudeMultiplayer={WavAmplitudeMultiplayer.ToString("F2")}\r\n");
-            foreach (var key in Options.Keys)
-            {
-                text.Append($"${key}={Options[key]}\r\n");
-            }
-
-            foreach (var projectLine in ProjectLines)
-            {
-                if (projectLine.RestPoints.Count == 0 && projectLine.VowelPoints.Count == 0 && projectLine.ConsonantPoints.Count == 0)
-                    continue;
-                text.Append($"{projectLine.Recline.Filename}\r\n");
-                text.Append($"{String.Join(" ", projectLine.RestPoints)}\r\n");
-                text.Append($"{String.Join(" ", projectLine.VowelPoints) }\r\n");
-                text.Append($"{String.Join(" ", projectLine.ConsonantPoints)}\r\n");
-            }
-            File.WriteAllText(path, text.ToString(), Encoding.UTF8);
-        }
-
-        public async void SaveAsync()
-        {
-            await Task.Run(() => Save());
-        }
-
-        public void Save()
-        {
-            if (!IsLoaded)
-                return;
-            BeforeSave();
-            if (Settings.IsUnsaved)
-                Write(Settings.TempProject);
-            else
-                Write(Settings.ProjectFile);
-
-            IO.ProjectReader.Current.Write("project.wsp", this);
-
-            Settings.IsUnsaved = Settings.ProjectFile == Settings.TempProject;
-            AfterSave();
-        }
-
-        void ReadOption(string line)
-        {
-            var pair = line.Split('=');
-            var option = pair[0].Substring(1);
-            var value = pair[1];
-            switch (option)
-            {
-                case "Voicebank":
-                    Voicebank = new Voicebank(value);
-                    break;
-
-                case "Reclist":
-                    Reclist = IO.ReclistReader.Current.Read(value);
-                    break;
-
-                case "Suffix":
-                    Suffix = value;
-                    break;
-
-                case "Prefix":
-                    Prefix = value;
-                    break;
-
-                case "VowelDecay":
-                    if (int.TryParse(value, out int vowelDecay))
-                        VowelDecay = vowelDecay;
-                    break;
-
-                case "VowelAttack":
-                    if (int.TryParse(value, out int vowelAttack))
-                        VowelAttack = vowelAttack;
-                    break;
-
-                case "ConsonantAttack":
-                    if (int.TryParse(value, out int consonantAttack))
-                        ConsonantAttack = consonantAttack;
-                    break;
-
-                case "WavAmplitudeMultiplayer":
-                    if (double.TryParse(value, out double wavAmplitudeMultiplayer))
-                        WavAmplitudeMultiplayer = wavAmplitudeMultiplayer;
-                    break;
-
-                default:
-                    Options[option] = value;
-                    break;
-
-            }
-        }
-
-        bool Read(string location)
-        {
-            string[] lines = File.ReadAllLines(location, Encoding.UTF8);
-            Options = new Dictionary<string, string>();
-            ProjectLines = new List<ProjectLine>();
-            _projectLinesByFilename = new Dictionary<string, ProjectLine>();
-            int i = 0;
-            /// Совместимость со старыми сейвами без опций
-            if (!lines[0].StartsWith("$"))
-            {
-                Voicebank = new Voicebank(lines[0]);
-                i++;
-            }
-            /// Чтение опций
-            for (; lines.Length > i && lines[i].StartsWith("$"); i++)
-            {
-                if (!lines[i].Contains("="))
-                    continue;
-                ReadOption(lines[i]);
-
-            }
-            ProjectLines = new List<ProjectLine>();
-            var usedReclines = new List<Recline>();
-            /// Чтение строк реклиста из проекта
-            for (; i + 3 < lines.Length; i += 4)
-            {
-                var recline = Reclist.GetRecline(lines[i]);
-                usedReclines.Add(recline);
-                var projectLine = ProjectLine.Read(recline, lines[i + 1], lines[i + 2], lines[i + 3]);
-                ProcessLineAfterRead(projectLine);
-            }
-            /// Чтение строк реклиста, которых нет в проекте 
-            if (Reclist != null)
-            {
-                foreach (var recline in Reclist.Reclines)
-                {
-                    if (!usedReclines.Contains(recline))
-                    {
-                        ProcessLineAfterRead(ProjectLine.CreateNewFromRecline(recline));
-                    }
-                }
-            }
-            // TODO: сортировать по реклисту
-            return true;
+            FireSaveMe();
         }
 
         public void ProcessLineAfterRead(ProjectLine projectLine)
         {
             projectLine.ReclistAndVoicebankCheck(Reclist, Voicebank);
             projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
-            projectLine.ProjectLinePointsChanged += delegate { Save(); };
-            ProjectLines.Add(projectLine);
-            ProjectLinesByFilename[projectLine.Recline.Filename] = projectLine;
+            projectLine.ProjectLinePointsChanged += delegate { FireSaveMe(); };
         }
 
+        public void Save(string filename)
+        {
+            IO.ProjectReader.Current.Write(filename, this);
+        }
+
+        public void FireSaveMe()
+        {
+            BeforeSave();
+            SaveMe();
+            AfterSave();
+        }
         public void Sort()
         {
             foreach (var line in ProjectLines)

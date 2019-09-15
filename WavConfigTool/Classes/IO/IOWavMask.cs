@@ -64,7 +64,12 @@ namespace WavConfigTool.Classes.IO
             using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
             {
                 var serializer = new Deserializer();
-                var ioWavMask = serializer.Deserialize(new StreamReader(fileStream, Encoding.UTF8), typeof(IOWavMask)) as IOWavMask;
+                IOWavMask ioWavMask = null;
+                try
+                {
+                    ioWavMask = serializer.Deserialize(new StreamReader(fileStream, Encoding.UTF8), typeof(IOWavMask)) as IOWavMask;
+                }
+                catch { }
                 return ioWavMask == null ? null : GetWavMask(ioWavMask);
             }
         }

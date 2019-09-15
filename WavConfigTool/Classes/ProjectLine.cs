@@ -26,7 +26,8 @@ namespace WavConfigTool.Classes
                 if (RestPoints.Count > 1)
                 {
                     points.AddRange(RestPoints.ShallowClone());
-                    points.Add(Settings.ViewToRealX(WaveForm.VisualWidth));
+                    if (WaveForm != null)
+                        points.Add(Settings.ViewToRealX(WaveForm.VisualWidth));
                 }
                 return points;
             }
@@ -56,10 +57,21 @@ namespace WavConfigTool.Classes
         /// </summary>
         public bool IsEnabled { get; set; } = false;
 
-        public ProjectLine(Recline recline)
+        public ProjectLine()
         {
             ProjectLineChanged += delegate { CalculateZones(); };
             ProjectLinePointsChanged += delegate { CalculateZones(); SetHasZone(); };
+        }
+
+        public void SetPoints(IEnumerable<int> vowels, IEnumerable<int> consonants, IEnumerable<int> rests)
+        {
+            VowelPoints = vowels.ToList();
+            ConsonantPoints = consonants.ToList();
+            RestPoints = rests.ToList();
+        }
+
+        public void SetRecline(Recline recline)
+        {
             Recline = recline;
             SetHasZone();
             ProjectLineChanged();
@@ -73,7 +85,8 @@ namespace WavConfigTool.Classes
 
         public static ProjectLine Read(Recline recline, string pds, string pvs, string pcs)
         {
-            var projectLine = new ProjectLine(recline);
+            var projectLine = new ProjectLine();
+            projectLine.SetRecline(recline);
             if (pds.Length > 0)
                 projectLine.RestPoints = pds.Split(' ').Select(n => int.Parse(n)).ToList();
             if (pvs.Length > 0)
@@ -86,22 +99,22 @@ namespace WavConfigTool.Classes
 
         public static ProjectLine CreateNewFromRecline(Recline recline)
         {
-            var projectLine = new ProjectLine(recline)
+            var projectLine = new ProjectLine()
             {
                 RestPoints = new List<int>(),
                 VowelPoints = new List<int>(),
-                ConsonantPoints = new List<int>()
+                ConsonantPoints = new List<int>(),
+                Recline = recline
             };
             return projectLine;
         }
 
         public void ReclistAndVoicebankCheck(Reclist reclist, Voicebank voicebank)
         {
-            IsEnabled = voicebank.IsSampleEnabled(Recline.Filename);
-            if (IsEnabled)
-                WavImageHash = $"{voicebank.Location}{Recline.Filename}{reclist.Name}{Settings.WAM}".GetHashCode();
-            if (IsEnabled)
-                WaveForm = new WaveForm(Path.Combine(voicebank.Location, Recline.Filename));
+            if (!IsEnabled)
+                return;
+            WavImageHash = $"{voicebank.Location}{Recline.Filename}{reclist.Name}{Settings.WAM}".GetHashCode();
+            WaveForm = new WaveForm(Path.Combine(voicebank.Location, Recline.Filename));
         }
 
         public void CalculateZones()

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -16,17 +17,7 @@ namespace WavConfigTool.ViewModels
     class MainWindowViewModel : ViewModelBase
     {
         public static readonly Version Version = new Version(0, 2, 0, 0);
-        public Project Project
-        {
-            get => _project;
-            set
-            {
-                _project = value;
-                if (_project == null)
-                    return;
-                Refresh();
-            }
-        }
+        public Project Project => ProjectManager.Project;
         public string ReclistName { get => Project == null || Project.Reclist == null ? null : Project.Reclist.Name; }
         public string VoicebankName { get => Project == null || Project.Voicebank == null ? null : Project.Voicebank.Name; }
         public string VoicebankImagePath { get => Project.Voicebank.ImagePath; }
@@ -44,6 +35,7 @@ namespace WavConfigTool.ViewModels
         public PagerViewModel PagerViewModel { get; set; }
         public PagerViewModel WavControlsPagerViewModel { get; set; }
         public PagerViewModel OtoPagerViewModel { get; set; }
+        public ProjectManager ProjectManager { get; private set; } = new ProjectManager();
 
         public int ConsonantAttack { get => Project == null ? 0 : Project.ConsonantAttack; set => Project.ConsonantAttack = value; }
         public int VowelAttack { get => Project == null ? 0 : Project.VowelAttack; set => Project.VowelAttack = value; }
@@ -104,14 +96,12 @@ namespace WavConfigTool.ViewModels
         public ObservableCollection<WavControlBaseViewModel> WavControlViewModelsPage { get => PagerViewModel.PageContent; }
 
 
-        //Point PrevMousePosition;
-        private Project _project;
 
         public MainWindowViewModel()
         {
         }
 
-        void convertWavsettingsToReclist(string name)
+        void ConvertWavsettingsToReclist(string name)
         {
             var reclist = WavSettingsReader.Current.Read(name);
             ReclistReader.Current.Write(name, reclist);
@@ -121,48 +111,29 @@ namespace WavConfigTool.ViewModels
         {
             IsLoading = true;
             RaisePropertyChanged(() => IsLoading);
-            await Task.Run(() => LoadProject());
             if (Project != null && Project.IsLoaded)
             {
                 var wavControls = new ObservableCollection<WavControlBaseViewModel>();
                 for (int i = 0; i < Project.ProjectLines.Count; i++)
-                    await Task.Run(() => { wavControls.Add(CreateWavControl(i)); });
+                {
+                    if (Project.ProjectLines[i].IsEnabled)
+                        await Task.Run(() => { wavControls.Add(CreateWavControl(i)); });
+                }
 
                 WavControlsPagerViewModel = new PagerViewModel(wavControls);
                 PagerViewModel = WavControlsPagerViewModel;
                 PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
-                ReadProjectOptions();
                 Project.BeforeSave += () => { WriteProjectOptions(); };
                 await Task.Run(() => Parallel.ForEach(PagerViewModel.Collection, (model) => { (model as WavControlViewModel).Load(); }));
             }
             IsLoading = false;
             Refresh();
-            //Classes.IO.ReclistReader.Current.Write(Project.Reclist.Name + ".reclist", Project.Reclist);
-        }
-
-        private void ReadProjectOptions()
-        {
-            foreach (KeyValuePair<string, string> option in Project.Options)
-            {
-                if (option.Key.StartsWith("Pager."))
-                {
-                    PagerViewModel.ReadProjectOption(option.Key, option.Value);
-                }
-                else
-                {
-                    switch (option.Key)
-                    {
-
-                    }
-                }
-            }
         }
 
         private void WriteProjectOptions()
         {
-            Project.Options = PagerViewModel.WriteProjectOptions(Project.ProjectOptions);
+            PagerViewModel.WriteProjectOptions(Project.ProjectOptions);
             // дозаписать свои если есть
-
         }
 
         WavControlViewModel CreateWavControl(int i)
@@ -204,45 +175,30 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        void LoadProject()
-        {
-            Settings.CheckPath();
-            Project = Project.OpenBackup();
-            if (Project is null)
-            {
-                Project = Project.OpenLast();
-                if (Project is null)
-                    Project = new Project();
-            }
-        }
-
         public void Refresh()
         {
-            if (_project == null)
+            if (Project == null)
                 return;
-            _project.ProjectChanged += () =>
-            {
-                RaisePropertiesChanged(
-                    () => VoicebankName,
-                    () => VoicebankImagePath,
-                    () => PagerViewModel);
+            RaisePropertiesChanged(
+                () => VoicebankName,
+                () => VoicebankImagePath,
+                () => PagerViewModel);
 
-                RaisePropertiesChanged(
-                    () => ConsonantAttack,
-                    () => VowelAttack,
-                    () => VowelDecay,
-                    () => Prefix,
-                    () => Suffix);
+            RaisePropertiesChanged(
+                () => ConsonantAttack,
+                () => VowelAttack,
+                () => VowelDecay,
+                () => Prefix,
+                () => Suffix);
 
-                RaisePropertiesChanged(
-                    () => WavAmplitudeMultiplayer,
-                    () => Title,
-                    () => ReclistName,
-                    () => VoicebankImage,
-                    () => WavControlViewModels
-                );
-                RaisePropertyChanged(() => IsLoading);
-            };
+            RaisePropertiesChanged(
+                () => WavAmplitudeMultiplayer,
+                () => Title,
+                () => ReclistName,
+                () => VoicebankImage,
+                () => WavControlViewModels
+            );
+            RaisePropertyChanged(() => IsLoading);
         }
 
 
@@ -250,7 +206,7 @@ namespace WavConfigTool.ViewModels
         {
             if (PagerViewModel != null)
                 PagerViewModel.Clear();
-            Project = null;
+            ProjectManager.Reset();
             IsLoading = true;
             Refresh();
         }
@@ -265,18 +221,15 @@ namespace WavConfigTool.ViewModels
             string filename = (string)obj;
             if (filename.Length > 0)
             {
-                Settings.ProjectFile = filename;
-                string old_reclist = Project.Reclist.Name;
-                string project_dir = System.IO.Path.GetDirectoryName(filename);
                 ResetProject();
-                Project = new Project(project_dir, old_reclist);
-                Settings.IsUnsaved = false;
-                Project.Save();
+                ProjectManager.CreateProject();
+                CallProjectCommand.Execute(this);
+                ProjectManager.SaveAs(filename);
                 LoadProjectAsync();
             }
         },
         "Save New Project",
-        "WavConfig Project Files|*.wconfig|*|*",
+        "WavConfig Project Files|*.wcp|*|*",
         param => true,
         "voicebank");
 
@@ -285,13 +238,14 @@ namespace WavConfigTool.ViewModels
             string filename = (string)obj;
             if (filename.Length > 0)
             {
-                Settings.ProjectFile = (string)obj;
                 ResetProject();
+                ProjectManager.Open((string)obj);
+                CallProjectCommand.Execute(this);
                 LoadProjectAsync();
             }
         },
         "Save New Project",
-        "WavConfig Project Files|*.wconfig|*|*",
+        "WavConfig Project Files|*.wcp|*|*",
         param => true,
         "voicebank");
 
@@ -329,12 +283,14 @@ namespace WavConfigTool.ViewModels
 
         public ICommand LoadedCommand => new DelegateCommand(() =>
         {
-            // Загрузить бэкап/последний
+            ProjectManager.LoadProject();
             LoadProjectAsync();
+            Refresh();
         }, () => true);
 
         public ICommand ReloadProjectCommand => new DelegateCommand(() =>
         {
+            ProjectManager.LoadProject();
             LoadProjectAsync();
             Refresh();
         }, () => !IsLoading);
@@ -345,5 +301,6 @@ namespace WavConfigTool.ViewModels
             IsOtoPreviewMode = false;
             Refresh();
         }, () => IsOtoPreviewMode);
+
     }
 }

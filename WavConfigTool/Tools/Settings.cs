@@ -14,7 +14,7 @@ namespace WavConfigTool.Tools
                 tempdir = Path.Combine(tempdir, "WavConfigTool");
                 if (!Directory.Exists(tempdir))
                     Directory.CreateDirectory(tempdir);
-                tempdir = Path.Combine(tempdir, @"temp.wconfig");
+                tempdir = Path.Combine(tempdir, @"~temp.wcp");
                 return tempdir;
 
             }
@@ -102,6 +102,18 @@ namespace WavConfigTool.Tools
             set
             {
                 Properties.Settings.Default.ProjectFile = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+        public static string LastReclist
+        {
+            get
+            {
+                return Properties.Settings.Default.LastReclist;
+            }
+            set
+            {
+                Properties.Settings.Default.LastReclist = value;
                 Properties.Settings.Default.Save();
             }
         }

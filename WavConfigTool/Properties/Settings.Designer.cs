@@ -154,5 +154,17 @@ namespace WavConfigTool.Properties {
                 this["ScaleY"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastReclist {
+            get {
+                return ((string)(this["LastReclist"]));
+            }
+            set {
+                this["LastReclist"] = value;
+            }
+        }
     }
 }

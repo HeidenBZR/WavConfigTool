@@ -10,6 +10,7 @@ namespace WavConfigTool.Classes
         public string Location { get; private set; } = "";
 
         public string Name { get; private set; } = "(Voicebaink is not avialable)";
+        public string Subfolder { get; set; }
         public string Image { get; private set; } = "";
         public string ImagePath
         {
@@ -40,7 +41,10 @@ namespace WavConfigTool.Classes
         {
             string character = Path.Combine(Location, "character.txt");
             if (!File.Exists(character))
+            {
                 character = Path.Combine(Location, "..", "character.txt");
+                Subfolder = Path.GetDirectoryName(Location);
+            }
             if (!File.Exists(character))
                 return;
             var lines = File.ReadAllLines(character, Encoding.UTF8);

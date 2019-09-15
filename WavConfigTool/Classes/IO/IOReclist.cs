@@ -87,6 +87,7 @@ namespace WavConfigTool.Classes.IO
         public Reclist Read(string name)
         {
             var reclist = ReadYaml(name);
+            Settings.LastReclist = reclist != null ? reclist.Name : Settings.LastReclist;
             return reclist ?? new Reclist();
         }
 
@@ -101,7 +102,12 @@ namespace WavConfigTool.Classes.IO
             using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
             {
                 var serializer = new Deserializer();
-                var ioReclist = serializer.Deserialize(new StreamReader(fileStream, Encoding.UTF8), typeof(IOReclist)) as IOReclist;
+                IOReclist ioReclist = null;
+                try
+                {
+                    ioReclist = serializer.Deserialize(new StreamReader(fileStream, Encoding.UTF8), typeof(IOReclist)) as IOReclist;
+                }
+                catch { }
                 return ioReclist == null ? null : GetReclist(ioReclist, name);
             }
         }

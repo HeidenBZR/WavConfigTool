@@ -114,6 +114,7 @@
     <Compile Include="Classes\Oto.cs" />
     <Compile Include="Classes\Project.cs" />
     <Compile Include="Classes\ProjectLine.cs" />
+    <Compile Include="Classes\ProjectManager.cs" />
     <Compile Include="Classes\Recline.cs" />
     <Compile Include="Classes\Voicebank.cs" />
     <Compile Include="Classes\AliasTypeMask.cs" />

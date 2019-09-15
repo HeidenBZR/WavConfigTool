@@ -81,7 +81,6 @@ namespace WavConfigTool.ViewModels
             IsHidden = false;
             ItemsCount = Collection.Count();
             PagerChanged += delegate { };
-
         }
 
         public void Clear()
@@ -110,15 +109,10 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public Dictionary<string, string> WriteProjectOptions(ProjectOptions projectOptions)
+        public void WriteProjectOptions(ProjectOptions projectOptions)
         {
             projectOptions.LastPage = CurrentPage;
             projectOptions.PageSize = PageSize;
-            return new Dictionary<string, string>
-            {
-                ["Pager.CurrentPage"] = CurrentPage.ToString(),
-                ["Pager.PageSize"] = PageSize.ToString()
-            };
         }
 
         public ICommand SetFirstPageCommand => new DelegateCommand(delegate
