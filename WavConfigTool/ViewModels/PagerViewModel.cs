@@ -37,16 +37,28 @@ namespace WavConfigTool.ViewModels
         public bool IsOtoMode { get; set; } = false;
         public int CurrentPageView { get => CurrentPage + 1; set => CurrentPage = value - 1; }
 
+        private ObservableCollection<WavControlBaseViewModel> pageContent = new ObservableCollection<WavControlBaseViewModel>();
+
         public ObservableCollection<WavControlBaseViewModel> PageContent
         {
             get
             {
-                var pageContent = new ObservableCollection<WavControlBaseViewModel>();
                 if (IsHidden)
-                    return pageContent;
+                    return new ObservableCollection<WavControlBaseViewModel>();
                 if (IsOtoMode)
                 {
-                    pageContent.Add(Base);
+                    if (pageContent.Count == 0)
+                    {
+                        pageContent.Add(Base);
+                    }
+                    else if (pageContent[0] != Base)
+                    {
+                        pageContent[0] = Base;
+                    }
+                    while (pageContent.Count > 1)
+                    {
+                        pageContent.RemoveAt(1);
+                    }
                     var otosPageSize = PageSize - 1;
                     for (int i = otosPageSize * CurrentPage; i < otosPageSize * (CurrentPage + 1) && i < Collection.Count; i++)
                     {
@@ -55,6 +67,7 @@ namespace WavConfigTool.ViewModels
                 }
                 else
                 {
+                    pageContent.Clear();
                     for (int i = PageSize * CurrentPage; i < PageSize * (CurrentPage + 1); i++)
                     {
                         if (i < Collection.Count)
