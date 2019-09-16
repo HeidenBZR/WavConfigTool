@@ -29,7 +29,7 @@
         <dxmvvm:EventToCommand
             Command="{Binding WavControlClickCommand}"
             EventName="MouseLeftButtonDown"
-            ModifierKeys="{x:Null}"
+            ModifierKeys=""
             PassEventArgsToCommand="True">
             <dxmvvm:EventToCommand.EventArgsConverter>
                 <vt:MouseButtonToPointConverter />

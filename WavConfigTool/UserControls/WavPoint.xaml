@@ -135,8 +135,9 @@
                         <viewtools:MouseButtonToPointConverter />
                     </dxmvvm:EventToCommand.EventArgsConverter>
                 </dxmvvm:EventToCommand>
-                <dxmvvm:EventToCommand Command="{Binding RegenerateOtoCommand}" SourceObject="{RelativeSource AncestorType=local:WavControl}"
-                    EventName="MouseLeftButtonUp" />
+                <dxmvvm:EventToCommand 
+                    Command="{Binding RegenerateOtoRequestCommand}"
+                    EventName="DragCompleted" />
             </dxmvvm:Interaction.Behaviors>
         </Thumb>
     </Canvas>

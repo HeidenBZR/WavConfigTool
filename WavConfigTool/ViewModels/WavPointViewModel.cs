@@ -19,15 +19,16 @@ namespace WavConfigTool.ViewModels
 
         public delegate void WavPointChangedEventHandler(double position1, double position2);
         public delegate void WavPointDeletedEventHandler(double position1);
-        public event WavPointChangedEventHandler WavPointChanged;
-        public event WavPointDeletedEventHandler WavPointDeleted;
+        public delegate void SimpleHandler();
+        public event WavPointChangedEventHandler WavPointChanged = delegate { };
+        public event WavPointDeletedEventHandler WavPointDeleted = delegate { };
+        public event SimpleHandler RegenerateOtoRequest = delegate { };
 
         public bool IsLoaded { get; set; } = false;
 
         public WavPointViewModel()
         {
-            WavPointChanged += delegate { };
-            WavPointDeleted += delegate { };
+
         }
 
         public WavPointViewModel(double position, PhonemeType type, string text)
@@ -78,16 +79,14 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public ICommand DeletePointCommand
-        {
-            get
-            {
-                return new DelegateCommand(
-                    () => WavPointDeleted(Position),
-                    () => true
-                );
-            }
-        }
+        public ICommand DeletePointCommand => new DelegateCommand(
+            () => WavPointDeleted(Position),
+            () => true
+        );
+        public ICommand RegenerateOtoRequestCommand => new DelegateCommand(
+            () => RegenerateOtoRequest(),
+            () => true
+        );
 
         public override string ToString()
         {

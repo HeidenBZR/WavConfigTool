@@ -9,6 +9,10 @@ namespace WavConfigTool.ViewModels
     {
         public abstract void Load();
 
+        public event SimpleHandler PointsChanged;
+
+        public delegate void SimpleHandler();
+
         public static void SortPoints(ObservableCollection<WavPointViewModel> collection)
         {
             var sortableList = new List<WavPointViewModel>(collection);
@@ -18,6 +22,11 @@ namespace WavConfigTool.ViewModels
             {
                 collection.Move(collection.IndexOf(sortableList[i]), i);
             }
+        }
+
+        public void FirePointsChanged()
+        {
+            PointsChanged();
         }
     }
 }

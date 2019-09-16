@@ -172,7 +172,7 @@ namespace WavConfigTool.ViewModels
             FillPoints(PhonemeType.Consonant);
             FillPoints(PhonemeType.Rest);
             FillPoints(PhonemeType.Vowel);
-            PointsChanged();
+            FirePointsChanged();
         }
 
         internal ObservableCollection<WavControlBaseViewModel> GenerateOtoPreview()
@@ -185,10 +185,6 @@ namespace WavConfigTool.ViewModels
             return collection;
         }
 
-        public delegate void PointsChangedHandler();
-        public event SimpleHandler PointsChanged;
-
-        public delegate void SimpleHandler();
         public event SimpleHandler RegenerateOtoRequest;
 
         public void OnPointsChanged()
@@ -251,6 +247,10 @@ namespace WavConfigTool.ViewModels
             {
                 DeletePoint(position, type);
             };
+            point.RegenerateOtoRequest += delegate
+            {
+                RegenerateOtoRequest();
+            };
             return point;
         }
 
@@ -271,7 +271,7 @@ namespace WavConfigTool.ViewModels
                 return;
             var points = PointsOfType(type);
             points.Add(CreatePoint(position, type, i));
-            PointsChanged();
+            FirePointsChanged();
         }
 
         public void MovePoint(double position1, double position2, PhonemeType type)
@@ -287,7 +287,7 @@ namespace WavConfigTool.ViewModels
                     break;
                 }
             }
-            PointsChanged();
+            FirePointsChanged();
         }
 
         public void DeletePoint(double position, PhonemeType type)
@@ -303,7 +303,7 @@ namespace WavConfigTool.ViewModels
                     break;
                 }
             }
-            PointsChanged();
+            FirePointsChanged();
         }
 
         public override string ToString()
