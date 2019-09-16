@@ -8,5 +8,10 @@ namespace WavConfigTool.Tools
         {
             return Settings.GetResoucesPath(Path.Combine("WavConfigTool", "WavSettings", filename));
         }
+
+        public static string Log()
+        {
+            return Path.Combine(Settings.TempDir, "log.txt");
+        }
     }
 }

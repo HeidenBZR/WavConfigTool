@@ -123,6 +123,7 @@
     <Compile Include="Classes\IO\IOWavMask.cs" />
     <Compile Include="Classes\Creators\WavMaskCreator.cs" />
     <Compile Include="Styles\Styles.cs" />
+    <Compile Include="Tools\Debug.cs" />
     <Compile Include="Tools\Extensions.cs" />
     <Compile Include="Tools\PathResolver.cs" />
     <Compile Include="UserControls\CanvasLoading.xaml.cs">
