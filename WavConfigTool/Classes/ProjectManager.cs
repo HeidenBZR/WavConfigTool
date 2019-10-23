@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WavConfigTool.Classes.IO;
+using WavConfigTool.Classes.Reader;
 using WavConfigTool.Tools;
 using WavConfigTool.ViewTools;
 

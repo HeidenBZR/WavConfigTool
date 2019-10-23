@@ -292,7 +292,7 @@ namespace WavConfigTool.Classes.Reader
 
             project.SetVoicebank(new Voicebank(ioProject.Voicebank));
             project.SetReclist(ReclistReader.Current.Read(ioProject.Reclist));
-            project.SetReplacer(new Replacer());
+            project.SetReplacer(ReplacerReader.Current.Read(ioProject.Replacer, project.Reclist));
 
             foreach (var ioWavConfig in ioProject.WavConfigs)
             {

@@ -12,58 +12,19 @@ namespace WavConfigTool.Classes
     {
         public string Name = "";
 
-        private Dictionary<string, string> replacements = new Dictionary<string, string>();
-        private Dictionary<AliasType, string> formats = new Dictionary<AliasType, string>();
-
         public Replacer()
         {
             InitFormats();
         }
 
-        void InitFormats()
+        public void SetReplacement(string key, string value)
         {
-            foreach (AliasType aliasType in Enum.GetValues(typeof(AliasType)))
-            {
-                var aliasTypeString = AliasTypeResolver.Current.GetAliasTypeFormat(aliasType);
-                aliasTypeString = aliasTypeString.Replace("$C $V", "$C$V");
-                formats[aliasType] = aliasTypeString;
-            }
+            replacements[key] = value;
         }
 
-        public void Read(Reclist reclist, string name = "")
+        public void SetFormat(AliasType key, string value)
         {
-            replacements = new Dictionary<string, string>();
-            var filename = PathResolver.Replacer(reclist.Name, name);
-            if (!System.IO.File.Exists(filename))
-                return;
-            foreach (string line in System.IO.File.ReadAllLines(filename, Encoding.UTF8))
-            {
-                if (line.Contains("="))
-                {
-                    var pair = line.Split('=');
-                    var key = pair[0].Trim().Replace("\\s", " ");
-                    var value = pair[1].Trim().Replace("\\s", " ");
-                    if (key == "")
-                        continue;
-                    if (value.Contains("$"))
-                    {
-                        if (value != "")
-                        {
-                            var aliasType = AliasTypeResolver.Current.GetAliasType(key);
-                            if (AliasTypeResolver.Current.IsFormatValid(aliasType, value))
-                            {
-                                formats[aliasType] = value;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        key = key.Replace("%V%", $"({(string.Join("|", reclist.Vowels.Select(n => n.Alias)))})");
-                        key = key.Replace("%C%", $"({(string.Join("|", reclist.Consonants.Select(n => n.Alias)))})");
-                        replacements[key] = value;
-                    }
-                }
-            }
+            formats[key] = value;
         }
 
         public string Replace(string alias)
@@ -90,9 +51,22 @@ namespace WavConfigTool.Classes
             return Replace(alias);
         }
 
+        public Dictionary<string, string> GetReplacements()
+        {
+            return replacements;
+        }
+
+        public Dictionary<AliasType, string> GetFormats()
+        {
+            return formats;
+        }
+
         const string VOWEL_MASK = "$V";
         const string CONSONANT_MASK = "$C";
         const string REST_MASK = "$R";
+
+        private Dictionary<string, string> replacements = new Dictionary<string, string>();
+        private Dictionary<AliasType, string> formats = new Dictionary<AliasType, string>();
 
         string ExtractFirstPhonemeMask(string format)
         {
@@ -107,6 +81,15 @@ namespace WavConfigTool.Classes
         bool IsPhonemeTypeCorrect(string mask, PhonemeType phonemeType)
         {
             return mask == VOWEL_MASK && phonemeType == PhonemeType.Vowel || mask == CONSONANT_MASK && phonemeType == PhonemeType.Consonant || mask == REST_MASK && phonemeType == PhonemeType.Rest;
+        }
+        void InitFormats()
+        {
+            foreach (AliasType aliasType in Enum.GetValues(typeof(AliasType)))
+            {
+                var aliasTypeString = AliasTypeResolver.Current.GetAliasTypeFormat(aliasType);
+                aliasTypeString = aliasTypeString.Replace("$C $V", "$C$V");
+                formats[aliasType] = aliasTypeString;
+            }
         }
     }
 }

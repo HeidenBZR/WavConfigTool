@@ -45,6 +45,7 @@ namespace WavConfigTool.Classes.Reader
     {
         public string Voicebank;
         public string Reclist;
+        public string Replacer = "";
         public IOWavOptions WavOptions = new IOWavOptions();
         public IOOtoOptions OtoOptions = new IOOtoOptions();
         public IOProjectOptions ProjectOptions = new IOProjectOptions();

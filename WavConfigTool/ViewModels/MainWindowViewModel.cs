@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using WavConfigTool.Classes;
-using WavConfigTool.Classes.IO;
+using WavConfigTool.Classes.Reader;
 using WavConfigTool.Tools;
 using WavConfigTool.ViewTools;
 

@@ -118,8 +118,7 @@ namespace WavConfigTool.Classes
         public void SetReplacer(Replacer replacer)
         {
             Replacer = replacer;
-            if (Reclist.IsLoaded)
-                replacer.Read(Reclist);
+            Reader.ReplacerReader.Current.Write(replacer, Reclist);
             ProjectChanged();
         }
 
@@ -164,7 +163,7 @@ namespace WavConfigTool.Classes
         {
             ProjectLines = new List<ProjectLine>();
             Voicebank = new Voicebank(voicebank);
-            Reclist = IO.ReclistReader.Current.Read(reclist);
+            Reclist = Reader.ReclistReader.Current.Read(reclist);
             FireSaveMe();
         }
 
@@ -177,7 +176,7 @@ namespace WavConfigTool.Classes
 
         public void Save(string filename)
         {
-            IO.ProjectReader.Current.Write(filename, this);
+            Reader.ProjectReader.Current.Write(filename, this);
         }
 
         public void FireSaveMe()

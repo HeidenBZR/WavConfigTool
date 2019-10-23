@@ -66,7 +66,7 @@ namespace WavConfigTool.Classes
 
         public bool IsFormatValid(AliasType aliasType, string format)
         {
-            var aliasTypeParts = aliasType.ToString().Split().ToList();
+            var aliasTypeParts = aliasType.ToString().ToCharArray().Select(n => n.ToString()).ToList();
             for (var i = 0; i + 1 < format.Count() && aliasTypeParts.Count > 0; i++)
             {
                 if (format[i] == '$')
