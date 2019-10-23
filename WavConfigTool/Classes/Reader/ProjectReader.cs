@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WavConfigTool.Tools;
 using YamlDotNet.Serialization;
 
-namespace WavConfigTool.Classes.IO
+namespace WavConfigTool.Classes.Reader
 {
     class WConfigReader
     {
@@ -295,7 +294,7 @@ namespace WavConfigTool.Classes.IO
             project.SetReclist(ReclistReader.Current.Read(ioProject.Reclist));
             project.SetReplacer(new Replacer());
 
-            foreach (var ioWavConfig in  ioProject.WavConfigs)
+            foreach (var ioWavConfig in ioProject.WavConfigs)
             {
                 if (!project.ProjectLinesByFilename.ContainsKey(ioWavConfig.File))
                 {
@@ -310,49 +309,5 @@ namespace WavConfigTool.Classes.IO
         }
     }
 
-
-    [Serializable]
-    public class IOWavOptions
-    {
-        public string WavPrefix;
-        public string WavSuffix;
-        public double WavAmplitudeMultiplayer = 1;
-    }
-    [Serializable]
-    public class IOOtoOptions
-    {
-        public string OtoPrefix;
-        public string OtoSuffix;
-        public int VowelDecay = 80;
-        public int VowelAttack = 60;
-        public int ConsonantAttack = 40;
-    }
-
-    [Serializable]
-    public class IOWavConfig
-    {
-        public string File = "";
-        public int[] Vowels = new int[0];
-        public int[] Consonants = new int[0];
-        public int[] Rests = new int[0];
-    }
-
-    [Serializable]
-    public class IOProjectOptions
-    {
-        public int PageSize = 5;
-        public int LastPage = 0;
-    }
-
-    [Serializable]
-    public class IOProject
-    {
-        public string Voicebank;
-        public string Reclist;
-        public IOWavOptions WavOptions = new IOWavOptions();
-        public IOOtoOptions OtoOptions = new IOOtoOptions();
-        public IOProjectOptions ProjectOptions = new IOProjectOptions();
-        public IOWavConfig[] WavConfigs = new IOWavConfig[0];
-    }
 
 }

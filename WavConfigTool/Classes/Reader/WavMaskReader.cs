@@ -4,9 +4,10 @@ using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Xml.Serialization;
+using WavConfigTool.Classes.Reader.IO;
 using YamlDotNet.Serialization;
 
-namespace WavConfigTool.Classes.IO
+namespace WavConfigTool.Classes.Reader
 {
 
     public class WavMaskReader
@@ -39,26 +40,6 @@ namespace WavConfigTool.Classes.IO
             WriteYaml(filename, wavMask);
         }
 
-        private WavMask ReadJson(string filename)
-        {
-            using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
-            {
-                var serializer = new DataContractJsonSerializer(typeof(IOWavMask));
-                var ioWavMask = serializer.ReadObject(fileStream) as IOWavMask;
-                return ioWavMask == null ? null : GetWavMask(ioWavMask);
-            }
-        }
-
-        private WavMask ReadXml(string filename)
-        {
-            using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
-            {
-                var serializer = new XmlSerializer(typeof(IOWavMask));
-                var ioWavMask = serializer.Deserialize(fileStream) as IOWavMask;
-                return ioWavMask == null ? null : GetWavMask(ioWavMask);
-            }
-        }
-
         private WavMask ReadYaml(string filename)
         {
             using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
@@ -71,26 +52,6 @@ namespace WavConfigTool.Classes.IO
                 }
                 catch { }
                 return ioWavMask == null ? null : GetWavMask(ioWavMask);
-            }
-        }
-
-        private void WriteJson(string filename, WavMask wavMask)
-        {
-            using (var fileStream = new FileStream(filename, FileMode.Create))
-            {
-                var ioWavMask = GetIOWavMask(wavMask);
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IOWavMask));
-                serializer.WriteObject(fileStream, ioWavMask);
-            }
-        }
-
-        private void WriteXml(string filename, WavMask wavMask)
-        {
-            using (var fileStream = new FileStream(filename, FileMode.Create))
-            {
-                var ioWavMask = GetIOWavMask(wavMask);
-                var serializer = new XmlSerializer(typeof(IOWavMask));
-                serializer.Serialize(fileStream, ioWavMask);
             }
         }
 
@@ -154,27 +115,46 @@ namespace WavConfigTool.Classes.IO
             return wavMask;
         }
 
-        [Serializable]
-        public class IOWavGroup
+        /// deprecated
+
+        private WavMask ReadJson(string filename)
         {
-            public string Name;
-            public string[] WavFiles;
-            public IOAliasType[] AliasTypes;
+            using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
+            {
+                var serializer = new DataContractJsonSerializer(typeof(IOWavMask));
+                var ioWavMask = serializer.ReadObject(fileStream) as IOWavMask;
+                return ioWavMask == null ? null : GetWavMask(ioWavMask);
+            }
         }
 
-        [Serializable]
-        public class IOWavMask
+        private WavMask ReadXml(string filename)
         {
-            public IOWavGroup[] WavGroups;
-            public int MaxDuplicates;
+            using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
+            {
+                var serializer = new XmlSerializer(typeof(IOWavMask));
+                var ioWavMask = serializer.Deserialize(fileStream) as IOWavMask;
+                return ioWavMask == null ? null : GetWavMask(ioWavMask);
+            }
         }
 
-        [Serializable]
-        public class IOAliasType
+        private void WriteJson(string filename, WavMask wavMask)
         {
-            public string Name;
-            public int[] Positions;
-            public bool CanTakeFromAllPositions;
+            using (var fileStream = new FileStream(filename, FileMode.Create))
+            {
+                var ioWavMask = GetIOWavMask(wavMask);
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IOWavMask));
+                serializer.WriteObject(fileStream, ioWavMask);
+            }
+        }
+
+        private void WriteXml(string filename, WavMask wavMask)
+        {
+            using (var fileStream = new FileStream(filename, FileMode.Create))
+            {
+                var ioWavMask = GetIOWavMask(wavMask);
+                var serializer = new XmlSerializer(typeof(IOWavMask));
+                serializer.Serialize(fileStream, ioWavMask);
+            }
         }
     }
 }
