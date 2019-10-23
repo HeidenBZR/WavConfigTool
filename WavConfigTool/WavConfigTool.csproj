@@ -110,6 +110,8 @@
     </ApplicationDefinition>
     <Compile Include="Classes\AliasType.cs" />
     <Compile Include="Classes\Reader\IO\IOProject.cs" />
+    <Compile Include="Classes\Reader\IO\IOReclist.cs" />
+    <Compile Include="Classes\Reader\IO\IOWavMask.cs" />
     <Compile Include="Classes\Reader\ProjectReader.cs" />
     <Compile Include="Classes\Reader\ReclistReader.cs" />
     <Compile Include="Classes\Reader\ReplacerReader.cs" />
