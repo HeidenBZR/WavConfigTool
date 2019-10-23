@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace WavConfigTool.Classes
@@ -53,6 +55,50 @@ namespace WavConfigTool.Classes
                 return aliasType;
             }
             return AliasType.undefined;
+        }
+
+        public string GetAliasTypeFormat(AliasType aliasType)
+        {
+            if (aliasType == AliasType.undefined)
+                return "";
+            return string.Join(" ", aliasType.ToString().ToCharArray().Select(n => $"${n}")).Replace(" $m", "*");
+        }
+
+        public bool IsFormatValid(AliasType aliasType, string format)
+        {
+            var aliasTypeParts = aliasType.ToString().Split().ToList();
+            for (var i = 0; i + 1 < format.Count() && aliasTypeParts.Count > 0; i++)
+            {
+                if (format[i] == '$')
+                {
+                    var formatString = format[i + 1].ToString();
+                    if (format[i + 1].ToString() == aliasTypeParts[0])
+                    {
+                        if (i + 2 < format.Count() && format[i + 2] == '*')
+                        {
+                            if (formatString == "C" && aliasTypeParts.Count > 1 && aliasTypeParts[1] == "m")
+                            {
+                                aliasTypeParts.RemoveAt(0);
+                                aliasTypeParts.RemoveAt(0);
+                                i++;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            aliasTypeParts.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }

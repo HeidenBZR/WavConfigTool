@@ -180,7 +180,7 @@ namespace WavConfigTool.Classes.IO
                 return null;
             var project = Read(project_path);
             project.IsLoaded = project.Reclist.IsLoaded && project.Voicebank.IsLoaded;
-            project.SetOtoGenerator(new OtoGenerator(project.Reclist, project));
+            project.SetOtoGenerator(new OtoGenerator(project.Reclist, project, project.Replacer));
             Settings.ProjectFile = project_path;
             return project;
         }
@@ -293,6 +293,7 @@ namespace WavConfigTool.Classes.IO
 
             project.SetVoicebank(new Voicebank(ioProject.Voicebank));
             project.SetReclist(ReclistReader.Current.Read(ioProject.Reclist));
+            project.SetReplacer(new Replacer());
 
             foreach (var ioWavConfig in  ioProject.WavConfigs)
             {

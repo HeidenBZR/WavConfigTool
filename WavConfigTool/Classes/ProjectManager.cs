@@ -38,7 +38,7 @@ namespace WavConfigTool.Classes
                     CreateProject();
                 }
             }
-            Project.SetOtoGenerator(new OtoGenerator(Project.Reclist, Project));
+            Project.SetOtoGenerator(new OtoGenerator(Project.Reclist, Project, Project.Replacer));
             Project.SaveMe += Save;
         }
 

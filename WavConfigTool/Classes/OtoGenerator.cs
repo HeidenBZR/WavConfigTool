@@ -9,41 +9,22 @@ namespace WavConfigTool.Classes
 {
     public class OtoGenerator
     {
-
-        public Dictionary<string, string> Replacement { get; private set; }
         public Reclist Reclist { get; set; }
         public Project Project { get; set; }
+        public Replacer Replacer { get; set; }
         public List<string> EmptyAliases { get; set; }
 
         public bool MustGeneratePreoto { get; set; } = true;
 
         public static OtoGenerator Current { get; private set; }
 
-        public OtoGenerator(Reclist reclist, Project project)
+        public OtoGenerator(Reclist reclist, Project project, Replacer replacer)
         {
             Reclist = reclist;
             string path = Settings.GetResoucesPath(@"WavConfigTool\WavSettings\" + reclist.Name + ".txt");
-            Replacement = ReadReplacementFile(path);
             Project = project;
+            Replacer = replacer;
             Current = this;
-        }
-
-        public Dictionary<string, string> ReadReplacementFile(string path)
-        {
-            if (!System.IO.File.Exists(path))
-                return null;
-            var replacement = new Dictionary<string, string>();
-            foreach (string line in System.IO.File.ReadAllLines(path, Encoding.UTF8))
-            {
-                if (line.Contains("="))
-                {
-                    var pair = line.Split('=');
-                    pair[0] = pair[0].Replace("%V%", $"({(string.Join("|", Reclist.Vowels.Select(n => n.Alias)))})");
-                    pair[0] = pair[0].Replace("%C%", $"({(string.Join("|", Reclist.Consonants.Select(n => n.Alias)))})");
-                    replacement[pair[0].Trim().Replace("\\s", " ")] = pair[1].Trim().Replace("\\s", " ");
-                }
-            }
-            return replacement;
         }
 
         public string Oto(double of, double con, double cut, double pre, double ov)
@@ -59,54 +40,6 @@ namespace WavConfigTool.Classes
                 cut = 10;
 
             return $"{of.ToString(f)},{con.ToString(f)},{cut.ToString(f)},{pre.ToString(f)},{ov.ToString(f)}";
-        }
-
-        public string Replace(string alias)
-        {
-            if (Replacement is null)
-                Replacement = new Dictionary<string, string>();
-
-            foreach (var alias_type in new[] { "VC", "CC", "RV", "RC", "VR", "CR", "VV" })
-            {
-                if (!Replacement.ContainsKey($"#{alias_type}#"))
-                    alias = alias.Replace($"#{alias_type}#", " ");
-            }
-            foreach (var alias_type in new[] { "CV" })
-            {
-                if (!Replacement.ContainsKey($"#{alias_type}#"))
-                    alias = alias.Replace($"#{alias_type}#", "");
-            }
-
-
-            foreach (KeyValuePair<string, string> entry in Replacement)
-                alias = Regex.Replace(alias.ToString(), entry.Key, entry.Value);
-            return alias;
-        }
-
-        public string GetAlias(params Phoneme[] phonemes)
-        {
-            var alias = new StringBuilder(phonemes[0].Alias);
-            for (int i = 1; i < phonemes.Length; i++)
-            {
-                var alias_type = GetAliasType(phonemes[i - 1], phonemes[i]);
-                var alias_type2 = i + 1 < phonemes.Length ? GetAliasType(phonemes[i - 1], phonemes[i], phonemes[i + 1]) : "";
-                switch (alias_type)
-                {
-                    case "VC":
-                    case "RC":
-                    case "RV":
-                    case "CR":
-                    case "VR":
-                    case "CC":
-                    case "VV":
-                    case "CV":
-                        alias.Append($"#{alias_type}#");
-                        break;
-                }
-                alias.Append(phonemes[i].Alias);
-            }
-
-            return Replace(alias.ToString());
         }
 
         public string GetAliasType(params Phoneme[] phonemes)
@@ -141,16 +74,19 @@ namespace WavConfigTool.Classes
         public void Generate(ProjectLine projectLine, int position, Phoneme[] phonemes, Phoneme prev, Phoneme next)
         {
             var recline = projectLine.Recline;
-            string alias = GetAlias(phonemes);
 
             Phoneme p1 = phonemes.First();
             Phoneme p2 = phonemes.Last();
             double offset = 0, consonant = 0, cutoff = 0, preutterance = 0, overlap = 0;
             bool hasZones = projectLine.ApplyZones(p1) && projectLine.ApplyZones(p2);
-            var aliasType = AliasTypeResolver.Current.GetAliasType(GetAliasType(phonemes));
-            var masked = aliasType != AliasType.undefined && Reclist.WavMask.CanGenerateOnPosition(projectLine.Recline.Filename, aliasType, position);
+            AliasType aliasType = AliasTypeResolver.Current.GetAliasType(GetAliasType(phonemes));
+            bool masked = aliasType != AliasType.undefined && Reclist.WavMask.CanGenerateOnPosition(projectLine.Recline.Filename, aliasType, position);
 
             if (!masked)
+                return;
+
+            string alias = Replacer.MakeAlias(phonemes, aliasType);
+            if (alias == null)
                 return;
 
             bool hasAliasType = true;

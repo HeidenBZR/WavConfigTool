@@ -116,6 +116,7 @@
     <Compile Include="Classes\ProjectLine.cs" />
     <Compile Include="Classes\ProjectManager.cs" />
     <Compile Include="Classes\Recline.cs" />
+    <Compile Include="Classes\Replacer.cs" />
     <Compile Include="Classes\Voicebank.cs" />
     <Compile Include="Classes\AliasTypeMask.cs" />
     <Compile Include="Classes\WavGroup.cs" />
