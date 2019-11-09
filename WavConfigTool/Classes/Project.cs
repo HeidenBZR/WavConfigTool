@@ -197,8 +197,8 @@ namespace WavConfigTool.Classes
             OtoGenerator.Project = this;
             foreach (Recline recline in Reclist.Reclines)
             {
-                if (!Voicebank.IsSampleEnabled(recline.Filename))
-                    continue;
+                //if (!Voicebank.IsSampleEnabled(recline.Filename))
+                //    continue;
                 var projectLine = ProjectLinesByFilename[recline.Filename];
                 projectLine.Sort();
                 OtoGenerator.Generate(projectLine);

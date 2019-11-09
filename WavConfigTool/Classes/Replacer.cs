@@ -63,6 +63,7 @@ namespace WavConfigTool.Classes
 
         const string VOWEL_MASK = "$V";
         const string CONSONANT_MASK = "$C";
+        const string MULTICONSONANT_MASK = "$C*";
         const string REST_MASK = "$R";
 
         private Dictionary<string, string> replacements = new Dictionary<string, string>();
@@ -72,6 +73,8 @@ namespace WavConfigTool.Classes
         {
             for (var i = 0; i + 1 < format.Length; i++)
             {
+                if (i + 1 < format.Length && format.Length >= i + 3 && format.Substring(i, 3) == MULTICONSONANT_MASK)
+                    return MULTICONSONANT_MASK;
                 var sub = format.Substring(i, 2);
                 if (sub == VOWEL_MASK || sub == CONSONANT_MASK || sub == REST_MASK)
                     return sub;
@@ -80,7 +83,8 @@ namespace WavConfigTool.Classes
         }
         bool IsPhonemeTypeCorrect(string mask, PhonemeType phonemeType)
         {
-            return mask == VOWEL_MASK && phonemeType == PhonemeType.Vowel || mask == CONSONANT_MASK && phonemeType == PhonemeType.Consonant || mask == REST_MASK && phonemeType == PhonemeType.Rest;
+            return mask == VOWEL_MASK && phonemeType == PhonemeType.Vowel || mask == REST_MASK && phonemeType == PhonemeType.Rest || 
+                (mask == CONSONANT_MASK || mask == MULTICONSONANT_MASK) && phonemeType == PhonemeType.Consonant;
         }
         void InitFormats()
         {

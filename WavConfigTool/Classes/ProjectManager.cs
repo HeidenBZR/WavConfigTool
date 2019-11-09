@@ -21,7 +21,10 @@ namespace WavConfigTool.Classes
 
         public void CheckForLast()
         {
-            Project = ProjectReader.Current.Read(Settings.ProjectFile);
+            if (File.Exists(Settings.ProjectFile))
+            {
+                Project = ProjectReader.Current.Read(Settings.ProjectFile);
+            }
             Settings.IsUnsaved = false;
         }
 

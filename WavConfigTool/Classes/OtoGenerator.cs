@@ -52,19 +52,19 @@ namespace WavConfigTool.Classes
             var recline = projectLine.Recline;
             recline.ResetOto();
             projectLine.CalculateZones();
-            var phs = recline.Phonemes;
             var position = 0;
-            for (int i = 0; i < recline.Phonemes.Count; i++)
+            var reclinePhonemes = recline.GetPhonemesForGeneration();
+            for (int i = 0; i < reclinePhonemes.Count; i++)
             {
-                for (int count = 1; count < 6 && i + count - 1 < recline.Phonemes.Count; count++)
+                for (int count = 1; count < 6 && i + count - 1 < reclinePhonemes.Count; count++)
                 {
-                    var phonemes = recline.Phonemes.GetRange(i, count);
-                    var prev = i - 1 >= 0 ? recline.Phonemes[i - 1] : null;
-                    var next = i + count + 1 < recline.Phonemes.Count ? recline.Phonemes[i + count + 1] : null;
+                    var phonemes = reclinePhonemes.GetRange(i, count);
+                    var prev = i - 1 >= 0 ? reclinePhonemes[i - 1] : null;
+                    var next = i + count + 1 < reclinePhonemes.Count ? reclinePhonemes[i + count + 1] : null;
                     Generate(projectLine, position, phonemes.ToArray(), prev, next);
                 }
 
-                if (recline.Phonemes[i].Type != PhonemeType.Consonant)
+                if (reclinePhonemes[i].Type != PhonemeType.Consonant)
                 {
                     position++;
                 }
@@ -96,7 +96,7 @@ namespace WavConfigTool.Classes
                 case AliasType.V:
                     offset = p1.Zone.In + Project.VowelDecay - p1.Attack;
                     overlap = p1.Zone.In + Project.VowelDecay;
-                    preutterance = overlap;
+                    preutterance = overlap - 5;
                     consonant = overlap;
                     cutoff = p1.Zone.Out - p1.Attack;
                     break;

@@ -42,6 +42,27 @@ namespace WavConfigTool.Classes
             Otos = new Dictionary<string, Oto>();
         }
 
+        public List<Phoneme> GetPhonemesForGeneration()
+        {
+            var phonemesForGeneration = new List<Phoneme>();
+            foreach (var phoneme in Phonemes)
+            {
+                if (phoneme.Type == PhonemeType.Rest)
+                {
+                    var r1 = Rest.Create(this);
+                    var r2 = Rest.Create(this);
+                    r1.Zone = new Zone(phoneme.Zone.In, phoneme.Zone.In);
+                    r2.Zone = new Zone(phoneme.Zone.Out, phoneme.Zone.Out);
+                    phonemesForGeneration.Add(r1);
+                    phonemesForGeneration.Add(r2);
+                }
+                else
+                {
+                    phonemesForGeneration.Add(phoneme);
+                }
+            }
+            return phonemesForGeneration;
+        } 
         public Recline(Reclist reclist, string filename, List<Phoneme> phonemes, string description)
         {
             Reclist = reclist;
@@ -73,7 +94,7 @@ namespace WavConfigTool.Classes
 
         private bool CheckForDuplicates(int i)
         {
-            return Reclist.WavMask.MaxDuplicates == 0 || i < Reclist.WavMask.MaxDuplicates;
+            return i == 1 || Reclist.WavMask.MaxDuplicates == 0 || i < Reclist.WavMask.MaxDuplicates + 1;
         }
 
         public void AddOto(Oto oto)

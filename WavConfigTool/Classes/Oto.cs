@@ -85,7 +85,7 @@ namespace WavConfigTool.Classes
         public string Write(string prefix = "", string suffix = "")
         {
             // Relative values
-            return $"{Filename}={prefix}{Alias}{NumberView}{suffix},{OffsetWrite},{ConsonantWrite},{CutoffWrite},{PreutteranceWrite},{OverlapWrite}";
+            return $"{Filename}.wav={prefix}{Alias}{NumberView}{suffix},{OffsetWrite},{ConsonantWrite},{CutoffWrite},{PreutteranceWrite},{OverlapWrite}";
         }
 
         public void Smarty()

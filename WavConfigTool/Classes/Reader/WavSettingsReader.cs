@@ -25,10 +25,9 @@ namespace WavConfigTool.Classes.Reader
             }
         }
 
-        public Reclist Read(string name)
+        public Reclist Read(string filename)
         {
             var reclist = new Reclist();
-            var filename = PathResolver.Reclist(name + ".wsettings");
 
             if (!File.Exists(filename))
                 return reclist;

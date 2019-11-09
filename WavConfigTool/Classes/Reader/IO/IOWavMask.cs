@@ -11,7 +11,7 @@ namespace WavConfigTool.Classes.Reader.IO
     public class IOAliasType
     {
         public string Name;
-        public int[] Positions;
+        public int[] Positions = new int[0];
         public bool CanTakeFromAllPositions;
     }
 
@@ -19,14 +19,14 @@ namespace WavConfigTool.Classes.Reader.IO
     public class IOWavGroup
     {
         public string Name;
-        public string[] WavFiles;
-        public IOAliasType[] AliasTypes;
+        public string[] WavFiles = new string[0];
+        public IOAliasType[] AliasTypes = new IOAliasType[0];
     }
 
     [Serializable]
     public class IOWavMask
     {
-        public IOWavGroup[] WavGroups;
+        public IOWavGroup[] WavGroups = new IOWavGroup[0];
         public int MaxDuplicates;
     }
 }

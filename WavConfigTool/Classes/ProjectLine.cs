@@ -123,12 +123,15 @@ namespace WavConfigTool.Classes
             VowelZones = new List<Zone>();
             foreach (PhonemeType type in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest })
             {
-                var points = PointsOfType(type);
+                var points = PointsOfType(type, false);
                 var zones = ZonesOfType(type);
                 zones.Clear();
                 for (int i = 0; i + 1 < points.Count; i += 2)
                 {
-                    zones.Add(new Zone(points[i], points[i + 1]));
+                    if (type == PhonemeType.Rest)
+                        zones.Add(new Zone(points[i], points[i]));
+                    else
+                        zones.Add(new Zone(points[i], points[i + 1]));
                 }
             }
         }

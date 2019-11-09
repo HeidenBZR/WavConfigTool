@@ -115,6 +115,7 @@
     <Compile Include="Classes\Reader\ProjectReader.cs" />
     <Compile Include="Classes\Reader\ReclistReader.cs" />
     <Compile Include="Classes\Reader\ReplacerReader.cs" />
+    <Compile Include="Classes\Reader\WavconfigReader.cs" />
     <Compile Include="Classes\Reader\WavSettingsReader.cs" />
     <Compile Include="Classes\Oto.cs" />
     <Compile Include="Classes\Project.cs" />

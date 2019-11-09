@@ -45,7 +45,7 @@ namespace WavConfigTool.Classes
 
         public bool CanGenerateOnPosition(string filename, AliasType aliasType, int position)
         {
-            if (wavGroupsByFilename == null)
+            if (wavGroupsByFilename == null || wavGroupsByFilename.Count == 0)
                 return true; // without mask file we generate all possible
             if (wavGroupsByFilename.ContainsKey(filename))
             {

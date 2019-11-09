@@ -71,7 +71,7 @@ namespace WavConfigTool.ViewModels
         void GetReclists()
         {
             Reclists = new ObservableCollection<string>();
-            string path = Settings.GetResoucesPath(@"WavConfigTool\WavSettings\");
+            string path = Settings.GetResoucesPath(@"WavConfigTool\Settings\");
             foreach (string filename in Directory.GetFiles(path, "*.reclist"))
             {
                 var reclist = Path.GetFileNameWithoutExtension(filename);
