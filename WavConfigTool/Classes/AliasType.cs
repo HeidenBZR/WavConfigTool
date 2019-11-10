@@ -26,7 +26,7 @@ namespace WavConfigTool.Classes
         CmR,
         VC,
         VCm,
-        CC,
+        Cm,
         CmC
     }
 

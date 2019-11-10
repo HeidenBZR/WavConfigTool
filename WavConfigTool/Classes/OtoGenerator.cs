@@ -164,7 +164,7 @@ namespace WavConfigTool.Classes
                 // Ends with Consonant
                 case AliasType.VC:
                 case AliasType.VCm:
-                case AliasType.CC:
+                case AliasType.Cm:
                 case AliasType.CmC:
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
