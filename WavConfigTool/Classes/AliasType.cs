@@ -49,7 +49,7 @@ namespace WavConfigTool.Classes
 
         public AliasType GetAliasType(string aliasTypeString)
         {
-            var aliasTypeStringFormed = Regex.Replace(aliasTypeString, "/CC*/", "Cm");
+            var aliasTypeStringFormed = Regex.Replace(aliasTypeString, "CCC*", "Cm");
             if (Enum.TryParse(aliasTypeStringFormed, true, out AliasType aliasType))
             {
                 return aliasType;

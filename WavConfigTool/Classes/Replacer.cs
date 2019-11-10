@@ -37,14 +37,43 @@ namespace WavConfigTool.Classes
         public string MakeAlias(Phoneme[] phonemes, AliasType aliasType)
         {
             var alias = formats[aliasType];
-            foreach (Phoneme phoneme in phonemes)
+            var multiconsonants = new List<string>();
+            for (var i = 0; i < phonemes.Count(); i++)
             {
+                var phoneme = phonemes[i];
                 string mask = ExtractFirstPhonemeMask(alias);
                 if (mask == null)
                     return null; // too many phonemes
-                if (!IsPhonemeTypeCorrect(mask, phoneme.Type))
-                    return null; // wrong phoneme type
-                alias = new Regex($"{"\\"}{mask}").Replace(alias, phoneme.Alias, 1);
+                if (mask == MULTICONSONANT_MASK)
+                {
+                    var isCorrect = IsPhonemeTypeCorrect(CONSONANT_MASK, phoneme.Type);
+                    if (IsPhonemeTypeCorrect(CONSONANT_MASK, phoneme.Type))
+                    {
+                        multiconsonants.Add(phoneme.Alias);
+                    }
+                    if (!isCorrect || i == phonemes.Count() - 1)
+                    {
+                        alias = new Regex(EcraneMask(mask)).Replace(alias, string.Join(formats[AliasType.CmC], multiconsonants), 1);
+                        multiconsonants.Clear();
+                        if (!isCorrect)
+                        {
+                            i--;
+                        }
+                    }
+                }
+                else
+                {
+                    if (multiconsonants.Count > 0)
+                    {
+                        throw new Exception();
+                    }
+                    else
+                    {
+                        if (!IsPhonemeTypeCorrect(mask, phoneme.Type))
+                            return null; // wrong phoneme type
+                        alias = new Regex(EcraneMask(mask)).Replace(alias, phoneme.Alias, 1);
+                    }
+                }
             }
             if (ExtractFirstPhonemeMask(alias) != null)
                 return null; // not enough phonemes
@@ -81,6 +110,12 @@ namespace WavConfigTool.Classes
             }
             return null;
         }
+
+        string EcraneMask(string mask)
+        {
+            return mask.Replace("$", "\\$").Replace("*", "\\*");
+        }
+
         bool IsPhonemeTypeCorrect(string mask, PhonemeType phonemeType)
         {
             return mask == VOWEL_MASK && phonemeType == PhonemeType.Vowel || mask == REST_MASK && phonemeType == PhonemeType.Rest || 
@@ -94,6 +129,7 @@ namespace WavConfigTool.Classes
                 aliasTypeString = aliasTypeString.Replace("$C $V", "$C$V");
                 formats[aliasType] = aliasTypeString;
             }
+            formats[AliasType.CmC] = " ";
         }
     }
 }

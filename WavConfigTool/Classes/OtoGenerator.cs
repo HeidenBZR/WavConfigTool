@@ -54,7 +54,7 @@ namespace WavConfigTool.Classes
             projectLine.CalculateZones();
             var position = 0;
             var reclinePhonemes = recline.GetPhonemesForGeneration();
-            for (int i = 0; i < reclinePhonemes.Count; i++)
+            for (int i = 1; i < reclinePhonemes.Count - 1; i++)
             {
                 for (int count = 1; count < 6 && i + count - 1 < reclinePhonemes.Count; count++)
                 {

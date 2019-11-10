@@ -70,12 +70,12 @@ namespace WavConfigTool.Classes.Reader
             {
                 if (format.Key == AliasType.undefined)
                     continue;
-                text.AppendLine($"{format.Key} = {format.Value}");
+                text.AppendLine($"{format.Key} = {(format.Value == " " ? "\\s" : format.Value)}");
             }
 
             foreach (var replacement in replacer.GetReplacements())
             {
-                text.AppendLine($"{replacement.Key} = {replacement.Value}");
+                text.AppendLine($"{replacement.Key} = {(replacement.Value == " " ? "\\s" : replacement.Value)}");
             }
             File.WriteAllText(filename, text.ToString());
         }

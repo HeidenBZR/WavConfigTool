@@ -46,6 +46,7 @@ namespace WavConfigTool.Classes
             Bitmap bitmap = DrawWaveform(reader, height, color);
             bitmap.Save(imagePath);
             bitmap.Dispose();
+            reader.Close();
         }
         private Bitmap DrawWaveform(AudioFileReader reader, int height, Color color)
         {
