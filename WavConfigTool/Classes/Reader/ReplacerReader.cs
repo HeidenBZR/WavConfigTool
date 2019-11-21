@@ -40,7 +40,7 @@ namespace WavConfigTool.Classes.Reader
                     var value = pair[1].Trim().Replace("\\s", " ");
                     if (key == "")
                         continue;
-                    if (value.Contains("$"))
+                    if (replacer.FormatStrings.Contains(key))
                     {
                         if (value != "")
                         {
@@ -75,7 +75,10 @@ namespace WavConfigTool.Classes.Reader
 
             foreach (var replacement in replacer.GetReplacements())
             {
-                text.AppendLine($"{replacement.Key} = {(replacement.Value == " " ? "\\s" : replacement.Value)}");
+                var key = replacement.Key;
+                key = key.Replace($"({(string.Join("|", reclist.Vowels.Select(n => n.Alias)))})", "%V%");
+                key = key.Replace($"({(string.Join("|", reclist.Consonants.Select(n => n.Alias)))})", "%C%");
+                text.AppendLine($"{key} = {(replacement.Value == " " ? "\\s" : replacement.Value)}");
             }
             File.WriteAllText(filename, text.ToString());
         }

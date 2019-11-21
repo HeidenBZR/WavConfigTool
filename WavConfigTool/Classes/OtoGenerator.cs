@@ -165,7 +165,6 @@ namespace WavConfigTool.Classes
                 case AliasType.VC:
                 case AliasType.VCm:
                 case AliasType.Cm:
-                case AliasType.CmC:
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
@@ -185,7 +184,7 @@ namespace WavConfigTool.Classes
                 }
                 else if (MustGeneratePreoto)
                 {
-                    recline.AddOto(new Oto(recline.Filename, alias));
+                    recline.AddOto(new Oto(recline.Filename, alias, 10, 100, -100, 60, 40));
                 }
             }
         }

@@ -11,6 +11,7 @@ namespace WavConfigTool.Classes
     public class Replacer
     {
         public string Name = "";
+        public List<string> FormatStrings;
 
         public Replacer()
         {
@@ -123,13 +124,21 @@ namespace WavConfigTool.Classes
         }
         void InitFormats()
         {
+            FormatStrings = new List<string>();
             foreach (AliasType aliasType in Enum.GetValues(typeof(AliasType)))
             {
-                var aliasTypeString = AliasTypeResolver.Current.GetAliasTypeFormat(aliasType);
-                aliasTypeString = aliasTypeString.Replace("$C $V", "$C$V");
-                formats[aliasType] = aliasTypeString;
+                if (aliasType == AliasType.CmC)
+                {
+                    formats[AliasType.CmC] = " ";
+                }
+                else
+                {
+                    var aliasTypeString = AliasTypeResolver.Current.GetAliasTypeFormat(aliasType);
+                    aliasTypeString = aliasTypeString.Replace("$C $V", "$C$V");
+                    formats[aliasType] = aliasTypeString;
+                }
+                FormatStrings.Add(aliasType.ToString());
             }
-            formats[AliasType.CmC] = " ";
         }
     }
 }
