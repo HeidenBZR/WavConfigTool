@@ -20,7 +20,8 @@ namespace WavConfigTool.Classes
 
         private Dictionary<string, Recline> _reclineByFilename;
 
-        public bool IsLoaded { get; set; } = false;
+        public bool IsLoaded { get; set; }
+
 
         public WavMask WavMask { get; set; } = new WavMask(false);
 
@@ -29,7 +30,7 @@ namespace WavConfigTool.Classes
             Phonemes = new List<Phoneme>();
             Reclines = new List<Recline>();
             _reclineByFilename = new Dictionary<string, Recline>();
-            IsLoaded = false;
+            IsLoaded = true;
         }
 
         public void AddRecline(Recline recline)

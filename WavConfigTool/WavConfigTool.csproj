@@ -30,7 +30,7 @@
     <ProductName>WavConfigTool</ProductName>
     <PublisherName>Heiden.BZR</PublisherName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationRevision>1</ApplicationRevision>
     <ApplicationVersion>0.2.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -120,6 +120,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\AliasType.cs" />
+    <Compile Include="Classes\ExceptionCatcher.cs" />
     <Compile Include="Classes\Reader\IO\IOProject.cs" />
     <Compile Include="Classes\Reader\IO\IOReclist.cs" />
     <Compile Include="Classes\Reader\IO\IOWavMask.cs" />

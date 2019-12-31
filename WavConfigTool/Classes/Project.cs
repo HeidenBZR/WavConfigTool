@@ -79,6 +79,11 @@ namespace WavConfigTool.Classes
             AfterSave += () => { };
             SaveMe += () => { };
             IsLoaded = false;
+
+            string st;
+            st = "234";
+            st = null;
+            Console.WriteLine(st + "ser");
         }
 
         private void Project_OnProjectChanged()

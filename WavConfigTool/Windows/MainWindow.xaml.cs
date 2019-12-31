@@ -19,6 +19,7 @@ using WavConfigTool.Classes;
 using WavConfigTool.Tools;
 using WavConfigTool.Windows;
 
+
 namespace WavConfigTool.Windows
 {
 
@@ -31,14 +32,19 @@ namespace WavConfigTool.Windows
 
         public MainWindow()
         {
-            InitializeComponent();
+#if !DEBUG
+            try
+            {
+#endif
+                InitializeComponent();
+#if !DEBUG
+            }
+            catch (Exception ex)
+            {
+                ExceptionCatcher.Current.Catch(ex);
+            }
+#endif
         }
-
-        //public static void MessageBoxError(Exception ex, string name)
-        //{
-        //    MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", name,
-        //        MessageBoxButton.OK, MessageBoxImage.Error);
-        //}
 
         //void ScrollView()
         //{
@@ -57,278 +63,8 @@ namespace WavConfigTool.Windows
         //            WavControls[i].LabelName.Margin = new Thickness(offset, 0, 0, 0);
         //}
 
+#region Events
 
-        //bool OpenProjectWindow(string voicebank = "", string wavsettings = "", string path = "", bool open = false)
-        //{
-        //    try
-        //    {
-        //        ClearWavcontrols();
-        //        ProjectWindow project = new ProjectWindow(voicebank, wavsettings, path, open);
-        //        project.ShowDialog();
-        //        if (project.Result == Result.Cancel)
-        //        {
-        //            DrawPageAsync();
-        //            return true;
-        //        }
-        //        if (project.Result == Result.Close)
-        //            return false;
-        //        else if (project.Result == Result.Open)
-        //            if (Open(project.Settings, project.Path))
-        //                return true;
-        //            else { }
-        //        else
-        //        {
-        //            NewProject(project.Settings, project.Voicebank);
-        //            return true;
-        //        }
-        //        return false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBoxError(ex, "Error on open project window");
-        //        return false;
-        //    }
-        //}
-
-
-        //public static string SaveOtoDialog()
-        //{
-        //    try
-        //    {
-
-        //        SaveFileDialog dialog = new SaveFileDialog();
-        //        dialog.Filter = "oto.ini file (oto.ini)|*oto*.ini";
-        //        dialog.InitialDirectory = Reclist.Current.VoicebankPath;
-        //        dialog.FileName = "oto.ini";
-        //        var result = dialog.ShowDialog();
-        //        if (!result.HasValue || !result.Value) return "";
-        //        return dialog.FileName;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on save oto dialog");
-        //        return "";
-        //    }
-        //}
-
-        //public void SaveFileDialog()
-        //{
-        //    throw new NotImplementedException();
-
-            //string lastpath = Settings.ProjectFile;
-            //SaveFileDialog openFileDialog = new SaveFileDialog();
-            //openFileDialog.Filter = "WavConfig Project (*.wconfig)|*.wconfig";
-            //openFileDialog.RestoreDirectory = true;
-            //openFileDialog.ShowDialog();
-            //if (openFileDialog.FileName == "") return;
-            //Settings.ProjectFile = openFileDialog.FileName;
-            //Save();
-            //File.Delete(lastpath);
-            //IsUnsaved = false;
-        //}
-
-
-        //public void ChangeVoicebankDialog()
-        //{
-        //    throw new NotImplementedException();
-
-            //string old_s = Settings.WavSettings;
-            //var s = ProjectWindow.SettingsDialog();
-            //if (s != null)
-            //    if (File.Exists(s))
-            //    {
-            //        Settings.WavSettings = s;
-            //        ClearWavcontrols();
-            //        loaded = (CheckSettings() && (Settings.IsUnsaved && OpenBackup()
-            //            || ReadProject(Settings.ProjectFile)));
-            //        if (!loaded)
-            //        {
-            //            Settings.WavSettings = old_s;
-            //            ClearWavcontrols();
-            //            loaded = (CheckSettings() && (Settings.IsUnsaved && OpenBackup()
-            //                || ReadProject(Settings.ProjectFile)));
-            //            MessageBox.Show("WavSettings changing failed");
-            //        }
-            //    }
-        //}
-
-        //public void GenerateOtoDialog()
-        //{
-        //    throw new NotImplementedException();
-            //string oto = Project.GenerateOto();
-            //string filename = SaveOtoDialog();
-            //File.WriteAllText(filename, oto, Encoding.ASCII);
-        //}
-        //public static string ProjectDialog(string initialFile = "")
-        //{
-        //    throw new NotImplementedException();
-            //try
-            //{
-            //    OpenFileDialog openFileDialog = new OpenFileDialog();
-            //    openFileDialog.Filter = "WavConfig Project (*.wconfig)|*.wconfig";
-            //    openFileDialog.RestoreDirectory = false;
-            //    if (initialFile != null && initialFile != "")
-            //        if (Directory.Exists(System.IO.Path.GetDirectoryName(initialFile)))
-            //            openFileDialog.InitialDirectory = System.IO.Path.GetDirectoryName(initialFile);
-            //    var result = openFileDialog.ShowDialog();
-            //    if (result == null || !result.Value || openFileDialog.FileName == "")
-            //        return null;
-            //    else
-            //        return openFileDialog.FileName;
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"{ex.Message}\r\n\r\n{ex.StackTrace}", "Error on project openfile dialog");
-            //    return null;
-            //}
-
-        //}
-
-
-
-        //void UndrawPage()
-        //{
-        //    throw new NotImplementedException();
-            //try
-            //{
-            //    Dispatcher.Invoke(() => { WaveControlStackPanel.Children.Clear(); });
-            //    var min = Settings.ItemsOnPage * Settings.CurrentPage;
-            //    var max = min + Settings.ItemsOnPage;
-            //    var count = WavControls.Count;
-            //    for (int i = min; i < max && i < count; i++)
-            //        if (WavControls[i].Recline.IsEnabled)
-            //            WavControls[i].Undraw();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBoxError(ex, "Error on draw page");
-            //}
-        //}
-
-        //void DrawPage()
-        //{
-        //    throw new NotImplementedException();
-            //try
-            //{
-            //    var min = Settings.ItemsOnPage * Settings.CurrentPage;
-            //    var max = min + Settings.ItemsOnPage;
-            //    var count = WavControls.Count;
-            //    for (int i = min; i < max && i < count; i++)
-            //    {
-            //        if (WavControls[i].Recline.IsEnabled)
-            //        {
-            //            Dispatcher.Invoke(() => { WaveControlStackPanel.Children.Add(WavControls[i]); });
-            //            WavControls[i].Draw();
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBoxError(ex, "Error on draw page");
-            //}
-        //}
-
-
-        //async void DrawPageAsync(bool manual = true)
-        //{
-        //    throw new NotImplementedException();
-            //try
-            //{
-            //    if (!IsInitialized) return;
-            //    //CanvasLoading.Visibility = Visibility.Visible;
-            //    WaveControlStackPanel.Children.Clear();
-            //    WaveControlStackPanel.Children.Capacity = 0;
-            //    SetPageTotal();
-            //    DrawPage();
-            //    //await Task.Run(() => { DrawPage(count); });
-            //    //CanvasLoading.Visibility = Visibility.Hidden;
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBoxError(ex, "Error on Draw Page Async");
-            //}
-        //}
-
-        //async void InitWavcontrols(bool force)
-        //{
-        //    throw new NotImplementedException();
-            //if (WavControls is null)
-            //    return;
-            //try
-            //{
-
-            //    var min = Settings.CurrentPage * Settings.ItemsOnPage;
-            //    var max = (Settings.CurrentPage + 1) * Settings.ItemsOnPage;
-            //    var count = WavControls.Count;
-
-
-            //    Parallel.For(min, max, delegate (int i)
-            //    {
-            //        if (max < count)
-            //            WavControls[i].Init(true);
-            //    });
-            //    await Task.Run(delegate
-            //    {
-            //        Parallel.For(0, count, delegate (int i)
-            //        {
-            //            if (i < min || i >= max)
-            //                WavControls[i].Init();
-            //        });
-            //    });
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBoxError(ex, "Error on GenerateWaveformsAsync");
-            //    CanvasLoading.Visibility = Visibility.Hidden;
-            //}
-        //}
-
-        //async void InitWavcontrolsAsync(bool force = true)
-        //{
-        //    throw new NotImplementedException();
-            //InitWavcontrols(force);
-        //}
-        #region Events
-
-        //private void MenuSave_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Save();
-        //}
-
-        //private void MenuGenerate_Click(object sender, RoutedEventArgs e)
-        //{
-        //    GenerateOto();
-        //}
-
-        //private void MenuNew_Click(object sender, RoutedEventArgs e)
-        //{
-        //    string reclist = Reclist is null || Reclist.VoicebankPath is null ? "" : Reclist.VoicebankPath;
-        //    if (!loaded || DoEvenIfUnsaved())
-        //        if ((sender as MenuItem).Tag.ToString() == "New")
-        //            OpenProjectWindow(reclist, Settings.WavSettings, Settings.ProjectFile);
-        //        else
-        //            OpenProjectWindow(reclist, Settings.WavSettings, Settings.ProjectFile, true);
-        //}
-
-        //private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
-        //{
-        //    if (!IsLoaded) return;
-        //    ScrollContent();
-        //}
-
-        //private void MenuSaveAs_Click(object sender, RoutedEventArgs e)
-        //{
-        //    SaveAs();
-        //}
-
-        //private void Button_SetMode(object sender, RoutedEventArgs e)
-        //{
-        //    Button button = sender as Button;
-        //    if (button.Content.ToString() == "D") SetMode(WavConfigPoint.D);
-        //    else if (button.Content.ToString() == "V") SetMode(WavConfigPoint.V);
-        //    else if (button.Content.ToString() == "C") SetMode(WavConfigPoint.C);
-        //}
 
         //private void Window_KeyDown(object sender, KeyEventArgs e)
         //{
@@ -534,6 +270,6 @@ namespace WavConfigTool.Windows
         //            TextBoxDecay.Text = WavControl.VowelDecay.ToString("f0");
         //}
 
-        #endregion
+#endregion
     }
 }
