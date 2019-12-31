@@ -164,6 +164,7 @@ namespace WavConfigTool
             int i;
             try
             {
+                OtoGenerator.Current.ResetDuplicates();
                 List<WavMarker> markers = MarkerCanvas.Children.OfType<WavMarker>().ToList();
                 markers.OrderBy(n => n.Position);
 

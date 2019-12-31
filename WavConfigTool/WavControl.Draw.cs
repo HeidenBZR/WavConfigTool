@@ -184,10 +184,10 @@ namespace WavConfigTool
                     Stroke = VowelZoneBrush,
                     Points = new PointCollection
                     {
-                        new Point((Vs[i + 1] - VowelSustain - Settings.VowelAttack) * ScaleX, 70),
                         new Point((Vs[i + 1] - Settings.VowelAttack) * ScaleX, 70),
+                        new Point((Vs[i] + WavControl.VowelSustain) * ScaleX, 70),
+                        new Point((Vs[i] + WavControl.VowelSustain) * ScaleX, 30),
                         new Point((Vs[i + 1] - Settings.VowelAttack) * ScaleX, 30),
-                        new Point((Vs[i + 1] - VowelSustain - Settings.VowelAttack) * ScaleX, 30),
                     },
                     Name = $"VRelease{i / 2}{(i % 2 == 0 ? "In" : "Out")}",
                     Fill = FillVowelSustainBrush
