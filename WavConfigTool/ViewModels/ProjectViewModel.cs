@@ -1,4 +1,5 @@
 ﻿using DevExpress.Mvvm;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -55,7 +56,7 @@ namespace WavConfigTool.ViewModels
             ProjectDataChanged += delegate { };
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
-            GetReclistsAsync();
+            GetReclists();
         }
 
         public ProjectViewModel(Project project)
@@ -65,19 +66,20 @@ namespace WavConfigTool.ViewModels
             // Остановить просчитывание в конструкторе
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
-            GetReclistsAsync();
+            GetReclists();
         }
 
         void GetReclists()
         {
-            Reclists = new ObservableCollection<string>();
-            string path = Settings.GetResoucesPath(@"WavConfigTool\Settings\");
+            var list = new List<string>();
+            string path = PathResolver.Reclist();
             foreach (string filename in Directory.GetFiles(path, "*.reclist"))
             {
                 var reclist = Path.GetFileNameWithoutExtension(filename);
-                if (!Reclists.Contains(reclist))
-                    Reclists.Add(reclist);
+                if (!list.Contains(reclist))
+                    list.Add(reclist);
             }
+            Reclists = new ObservableCollection<string>(list);
         }
 
         public ICommand ChangeVoicebankCommand => new OpenFileCommand((obj) =>

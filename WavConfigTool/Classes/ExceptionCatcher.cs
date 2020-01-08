@@ -29,6 +29,16 @@ namespace WavConfigTool.Classes
             var text = $"{message}\n{ex.Message}\n\n{ex.StackTrace}";
             MessageBox.Show(text, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        public void Greeting()
+        {
+            MessageBox.Show("Crash catch is enabled", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        public void End()
+        {
+            MessageBox.Show("End of program", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }
 

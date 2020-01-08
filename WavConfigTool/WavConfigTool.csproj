@@ -77,6 +77,9 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>WavConfigTool.EntryPoint</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.Mvvm, Version=18.2.0.0, Culture=neutral, PublicKeyToken=382ad28f6ae31f30, processorArchitecture=MSIL">
       <HintPath>..\packages\DevExpressMvvm.18.2.3\lib\net452\DevExpress.Mvvm.dll</HintPath>
@@ -141,6 +144,7 @@
     <Compile Include="Classes\WavMask.cs" />
     <Compile Include="Classes\Reader\WavMaskReader.cs" />
     <Compile Include="Classes\Creators\WavMaskCreator.cs" />
+    <Compile Include="EntryPoint.cs" />
     <Compile Include="Styles\Styles.cs" />
     <Compile Include="Tools\Debug.cs" />
     <Compile Include="Tools\Extensions.cs" />

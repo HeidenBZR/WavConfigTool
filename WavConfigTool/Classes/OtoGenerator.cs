@@ -21,7 +21,6 @@ namespace WavConfigTool.Classes
         public OtoGenerator(Reclist reclist, Project project, Replacer replacer)
         {
             Reclist = reclist;
-            string path = Settings.GetResoucesPath(@"WavConfigTool\WavSettings\" + reclist.Name + ".txt");
             Project = project;
             Replacer = replacer;
             Current = this;

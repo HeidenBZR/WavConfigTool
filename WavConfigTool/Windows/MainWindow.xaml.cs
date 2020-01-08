@@ -32,18 +32,7 @@ namespace WavConfigTool.Windows
 
         public MainWindow()
         {
-#if !DEBUG
-            try
-            {
-#endif
-                InitializeComponent();
-#if !DEBUG
-            }
-            catch (Exception ex)
-            {
-                ExceptionCatcher.Current.Catch(ex);
-            }
-#endif
+            InitializeComponent();
         }
 
         //void ScrollView()

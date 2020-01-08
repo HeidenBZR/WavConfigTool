@@ -11,7 +11,7 @@ namespace WavConfigTool.Tools
 
         public const string LOG_FILE = "log.txt";
         public const string BACKUP_FILE = "~temp" + PROJECT_EXT;
-        public static string Reclist(string filename)
+        public static string Reclist(string filename = "")
         {
             return Settings.GetResoucesPath(Path.Combine("WavConfigTool", "Settings", filename));
         }
