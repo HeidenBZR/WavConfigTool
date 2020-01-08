@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Threading;
 
 namespace WavConfigTool.Classes
 {
@@ -28,6 +29,22 @@ namespace WavConfigTool.Classes
         {
             var text = $"{message}\n{ex.Message}\n\n{ex.StackTrace}";
             MessageBox.Show(text, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        public void CatchOnAsyncCallback(Action action, string message = "")
+        {
+#if !DEBUG
+            try
+            {
+#endif
+                action.Invoke();
+#if !DEBUG
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.CurrentDispatcher.Invoke(() => Catch(ex, message));
+            }
+#endif
         }
 
         public void Greeting()

@@ -151,7 +151,7 @@ namespace WavConfigTool.Classes.Reader
 
         public async void SaveAsync(Project project, string path)
         {
-            await Task.Run(() => Write(path, project));
+            await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() => Write(path, project)));
         }
 
         public Project OpenBackup()

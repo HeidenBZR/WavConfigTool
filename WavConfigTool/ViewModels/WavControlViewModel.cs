@@ -122,7 +122,7 @@ namespace WavConfigTool.ViewModels
 
         public async void LoadImageAsync()
         {
-            await Task.Run(delegate { LoadImage(); }).ConfigureAwait(true);
+            await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(LoadImage)).ConfigureAwait(true);
         }
 
         public void LoadImage()
@@ -146,8 +146,6 @@ namespace WavConfigTool.ViewModels
                 }
                 catch (UnauthorizedAccessException ex) { }
             }
-
-
 
             IsLoading = true;
             RaisePropertyChanged(() => IsLoading);

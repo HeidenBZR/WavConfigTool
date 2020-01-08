@@ -111,14 +111,16 @@ namespace WavConfigTool.ViewModels
                 for (int i = 0; i < Project.ProjectLines.Count; i++)
                 {
                     if (Project.ProjectLines[i].IsEnabled)
-                        await Task.Run(() => { wavControls.Add(CreateWavControl(i)); });
+                        await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
+                            wavControls.Add(CreateWavControl(i))));
                 }
 
                 WavControlsPagerViewModel = new PagerViewModel(wavControls);
                 PagerViewModel = WavControlsPagerViewModel;
                 PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
                 Project.BeforeSave += () => { WriteProjectOptions(); };
-                await Task.Run(() => Parallel.ForEach(PagerViewModel.Collection, (model) => { (model as WavControlViewModel).Load(); }));
+                await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() => 
+                    Parallel.ForEach(PagerViewModel.Collection, (model) => { (model as WavControlViewModel).Load(); })));
             }
             IsLoading = false;
             Refresh();

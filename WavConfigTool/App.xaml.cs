@@ -20,25 +20,5 @@ namespace WavConfigTool
         {
 
         }
-        //public DisplayRootRegistry displayRootRegistry = new DisplayRootRegistry();
-        //MainWindowViewModel mainWindowViewModel;
-
-        //public App()
-        //{
-        //    displayRootRegistry.RegisterWindowType<MainWindowViewModel, MainWindow>();
-        //    //displayRootRegistry.RegisterWindowType<ProjectViewModel, ProjectWindow>();
-        //}
-
-        //protected override async void OnStartup(StartupEventArgs e)
-        //{
-        //    base.OnStartup(e);
-
-        //    mainWindowViewModel = new MainWindowViewModel();
-
-        //    await displayRootRegistry.ShowModalPresentation(mainWindowViewModel);
-
-        //    Shutdown();
-        //}
-
     }
 }

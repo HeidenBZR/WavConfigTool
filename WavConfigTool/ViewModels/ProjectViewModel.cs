@@ -56,7 +56,7 @@ namespace WavConfigTool.ViewModels
             ProjectDataChanged += delegate { };
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
-            GetReclists();
+            GetReclistsAsync();
         }
 
         public ProjectViewModel(Project project)
@@ -66,7 +66,7 @@ namespace WavConfigTool.ViewModels
             // Остановить просчитывание в конструкторе
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
-            GetReclists();
+            GetReclistsAsync();
         }
 
         void GetReclists()
@@ -94,7 +94,7 @@ namespace WavConfigTool.ViewModels
 
         async void GetReclistsAsync()
         {
-            await Task.Run(() => GetReclists());
+            await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(GetReclists));
         }
     }
 }
