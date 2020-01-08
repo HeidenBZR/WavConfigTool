@@ -122,6 +122,12 @@ namespace WavConfigTool.ViewModels
             }
         }
 
+        public void UpdateImages()
+        {
+            foreach (var control in pageContent)
+                control.ResetImage();
+        }
+
         public void WriteProjectOptions(ProjectOptions projectOptions)
         {
             projectOptions.LastPage = CurrentPage;

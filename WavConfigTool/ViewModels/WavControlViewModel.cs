@@ -87,14 +87,21 @@ namespace WavConfigTool.ViewModels
         public int Width => ProjectLine.IsEnabled ? ProjectLine.WaveForm.VisualWidth : 1000;
         public string WavImagePath { get; set; } = "";
         public bool IsImageEnabled { get; set; } = false;
+        private BitmapImage wavImage;
         public BitmapImage WavImage
         {
             get
             {
                 if (IsImageEnabled)
-                    return new BitmapImage(new Uri(WavImagePath));
+                {
+                    if (wavImage == null)
+                        wavImage = new BitmapImage(new Uri(WavImagePath));
+                    return wavImage;
+                }
                 else
+                {
                     return null;
+                }
             }
         }
 
@@ -108,6 +115,11 @@ namespace WavConfigTool.ViewModels
         {
             PointsChanged += OnPointsChanged;
             ProjectLine = projectLine;
+        }
+
+        public override void ResetImage()
+        {
+            wavImage = null;
         }
 
         public override void Load()
@@ -128,6 +140,7 @@ namespace WavConfigTool.ViewModels
         public void LoadImage()
         {
             IsImageEnabled = false;
+            wavImage = null;
             if (!ProjectLine.IsEnabled)
                 return;
 

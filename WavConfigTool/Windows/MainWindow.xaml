@@ -331,7 +331,7 @@
                                 Padding="0"
                                 VerticalAlignment="Center"
                                 IsEnabled="{Binding IsNotLoading}"
-                                Text="{Binding WavAmplitudeMultiplayer, Mode=TwoWay, TargetNullValue=1}" />
+                                Text="{Binding WavAmplitudeMultiplayer, Mode=TwoWay}" />
 
                         </StackPanel>
                     </StackPanel>
