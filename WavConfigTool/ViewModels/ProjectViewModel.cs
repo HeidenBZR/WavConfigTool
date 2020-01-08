@@ -72,7 +72,7 @@ namespace WavConfigTool.ViewModels
         void GetReclists()
         {
             var list = new List<string>();
-            string path = PathResolver.Reclist();
+            string path = PathResolver.Current.Reclist();
             foreach (string filename in Directory.GetFiles(path, "*.reclist"))
             {
                 var reclist = Path.GetFileNameWithoutExtension(filename);

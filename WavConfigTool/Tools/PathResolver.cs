@@ -2,7 +2,7 @@
 
 namespace WavConfigTool.Tools
 {
-    static class PathResolver
+    class PathResolver
     {
         public const string SETTINGS_EXT = ".reclist";
         public const string REPLACEMENT_EXT = ".txt";
@@ -11,17 +11,39 @@ namespace WavConfigTool.Tools
 
         public const string LOG_FILE = "log.txt";
         public const string BACKUP_FILE = "~temp" + PROJECT_EXT;
-        public static string Reclist(string filename = "")
+
+        private static PathResolver current;
+        public static PathResolver Current
+        {
+            get
+            {
+                if (current == null)
+                {
+                    current = new PathResolver();
+                }
+                return current;
+            }
+        }
+
+        private PathResolver()
+        {
+            if (!Directory.Exists(Reclist()))
+                Directory.CreateDirectory(Reclist());
+            if (!Directory.Exists(Settings.TempDir))
+                Directory.CreateDirectory(Settings.TempDir);
+        }
+
+        public string Reclist(string filename = "")
         {
             return Settings.GetResoucesPath(Path.Combine("WavConfigTool", "Settings", filename));
         }
 
-        public static string Log()
+        public string Log()
         {
             return Path.Combine(Settings.TempDir, LOG_FILE);
         }
 
-        public static string Replacer(string reclistName, string name = "")
+        public string Replacer(string reclistName, string name = "")
         {
             var filename = name == "" ? reclistName : $"{reclistName}__{name}";
             filename += REPLACEMENT_EXT;

@@ -28,7 +28,7 @@ namespace WavConfigTool.Classes.Reader
         public Replacer Read(string name, Reclist reclist)
         {
             var replacer = new Replacer();
-            var filename = PathResolver.Replacer(reclist.Name, name);
+            var filename = PathResolver.Current.Replacer(reclist.Name, name);
             if (!System.IO.File.Exists(filename))
                 return replacer;
             foreach (string line in System.IO.File.ReadAllLines(filename, Encoding.UTF8))
@@ -64,7 +64,7 @@ namespace WavConfigTool.Classes.Reader
 
         public void Write(Replacer replacer, Reclist reclist)
         {
-            var filename = PathResolver.Replacer(reclist.Name, replacer.Name);
+            var filename = PathResolver.Current.Replacer(reclist.Name, replacer.Name);
             var text = new StringBuilder();
             foreach (var format in replacer.GetFormats())
             {

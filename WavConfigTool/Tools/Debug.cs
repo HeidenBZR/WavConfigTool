@@ -23,7 +23,7 @@ namespace WavConfigTool.Tools
 
         static void SaveLog(string text)
         {
-            File.WriteAllText(PathResolver.Log(), text, Encoding.UTF8);
+            File.WriteAllText(PathResolver.Current.Log(), text, Encoding.UTF8);
         }
     }
 }

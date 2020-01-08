@@ -41,7 +41,7 @@ namespace WavConfigTool.Classes.Reader
 
         private Reclist ReadYaml(string name)
         {
-            var filename = PathResolver.Reclist(name + ".reclist");
+            var filename = PathResolver.Current.Reclist(name + ".reclist");
             using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
             {
                 var serializer = new Deserializer();
@@ -69,7 +69,7 @@ namespace WavConfigTool.Classes.Reader
         {
             var reclist = new Reclist();
             reclist.Name = name;
-            reclist.WavMask = WavMaskReader.Current.Read(PathResolver.Reclist(reclist.Name + ".mask"));
+            reclist.WavMask = WavMaskReader.Current.Read(PathResolver.Current.Reclist(reclist.Name + ".mask"));
 
             var phonemes = new List<Phoneme>
             {
