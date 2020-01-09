@@ -92,27 +92,9 @@ namespace WavConfigTool.Classes
             Otos = new Dictionary<string, Oto>();
         }
 
-        private bool CheckForDuplicates(int i)
+        public void AddOto(string alias, Oto oto)
         {
-            return i == 1 || Reclist.WavMask.MaxDuplicates == 0 || i < Reclist.WavMask.MaxDuplicates + 1;
-        }
-
-        public void AddOto(Oto oto)
-        {
-            var newAlias = oto.Alias;
-            int i = 1;
-            if (Otos.ContainsKey(oto.Alias))
-            {
-                do
-                {
-                    i++;
-                    newAlias = $"{oto.Alias} ({i})";
-                    oto.Number = i;
-                }
-                while (Otos.ContainsKey(newAlias));
-            }
-            if (CheckForDuplicates(i))
-                Otos[newAlias] = oto;
+            Otos[alias] = oto;
         }
 
         public string WriteOto(string prefix = "", string suffix = "")

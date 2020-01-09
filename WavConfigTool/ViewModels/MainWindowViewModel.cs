@@ -145,6 +145,8 @@ namespace WavConfigTool.ViewModels
             {
                 if (IsOtoPreviewMode)
                 {
+                    Project.ResetOto();
+                    projectLine.Recline.ResetOto();
                     OtoGenerator.Current.Generate(projectLine);
                     OtoPagerViewModel.UpdateOtoPreviewControls(control.GenerateOtoPreview());
                     RaisePropertyChanged(() => PagerViewModel);
@@ -162,6 +164,8 @@ namespace WavConfigTool.ViewModels
             else
             {
                 wavControl.IsOtoBase = true;
+                Project.ResetOto();
+                wavControl.ProjectLine.Recline.ResetOto();
                 OtoGenerator.Current.Generate(wavControl.ProjectLine);
                 OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreview());
                 OtoPagerViewModel.Base = wavControl;
@@ -287,6 +291,7 @@ namespace WavConfigTool.ViewModels
 
         public ICommand ReloadProjectCommand => new DelegateCommand(() =>
         {
+            PagerViewModel.UpdateImages();
             ProjectManager.LoadProject();
             LoadProjectAsync();
             Refresh();

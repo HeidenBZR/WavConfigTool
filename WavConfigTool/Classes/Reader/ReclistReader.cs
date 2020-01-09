@@ -77,12 +77,23 @@ namespace WavConfigTool.Classes.Reader
             };
             foreach (var phoneme in ioReclist.Phonemes.Consonants)
             {
-                if (phoneme != Rest.ALIAS)
+                if (phoneme == Rest.ALIAS || phoneme == "")
+                    continue;
+
+                // HACK: can't find how to escape ~ in yaml
+                if (phoneme == null)
+                    phonemes.Add(new Consonant("~"));
+                else
                     phonemes.Add(new Consonant(phoneme));
             }
             foreach (var phoneme in ioReclist.Phonemes.Vowels)
             {
-                if (phoneme != Rest.ALIAS)
+                if (phoneme == Rest.ALIAS || phoneme == "")
+                    continue;
+
+                if (phoneme == null)
+                    phonemes.Add(new Vowel("~"));
+                else
                     phonemes.Add(new Vowel(phoneme));
             }
             reclist.Phonemes = phonemes;

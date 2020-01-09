@@ -49,7 +49,6 @@ namespace WavConfigTool.Classes
         public void Generate(ProjectLine projectLine)
         {
             var recline = projectLine.Recline;
-            recline.ResetOto();
             projectLine.CalculateZones();
             var position = 0;
             var reclinePhonemes = recline.GetPhonemesForGeneration();
@@ -60,7 +59,12 @@ namespace WavConfigTool.Classes
                     var phonemes = reclinePhonemes.GetRange(i, count);
                     var prev = i - 1 >= 0 ? reclinePhonemes[i - 1] : null;
                     var next = i + count + 1 < reclinePhonemes.Count ? reclinePhonemes[i + count + 1] : null;
-                    Generate(projectLine, position, phonemes.ToArray(), prev, next);
+                    var otoRaw = Generate(projectLine, position, phonemes.ToArray(), prev, next);
+                    if (otoRaw != null)
+                    {
+                        (var alias, var oto) = Project.AddOto(otoRaw);
+                        recline.AddOto(alias, oto);
+                    }
                 }
 
                 if (reclinePhonemes[i].Type != PhonemeType.Consonant)
@@ -70,7 +74,7 @@ namespace WavConfigTool.Classes
             }
         }
 
-        public void Generate(ProjectLine projectLine, int position, Phoneme[] phonemes, Phoneme prev, Phoneme next)
+        public Oto Generate(ProjectLine projectLine, int position, Phoneme[] phonemes, Phoneme prev, Phoneme next)
         {
             var recline = projectLine.Recline;
 
@@ -82,11 +86,11 @@ namespace WavConfigTool.Classes
             bool masked = aliasType != AliasType.undefined && Reclist.WavMask.CanGenerateOnPosition(projectLine.Recline.Filename, aliasType, position);
 
             if (!masked)
-                return;
+                return null;
 
             string alias = Replacer.MakeAlias(phonemes, aliasType);
             if (alias == null)
-                return;
+                return null;
 
             bool hasAliasType = true;
             switch (aliasType)
@@ -179,20 +183,16 @@ namespace WavConfigTool.Classes
             {
                 if (hasZones)
                 {
-                    ProcessOto(new Oto(recline.Filename, alias, offset, consonant, cutoff, preutterance, overlap), projectLine);
+                    var oto = new Oto(recline.Filename, alias, offset, consonant, cutoff, preutterance, overlap);
+                    oto.Smarty();
+                    return oto;
                 }
                 else if (MustGeneratePreoto)
                 {
-                    recline.AddOto(new Oto(recline.Filename, alias, 10, 100, -100, 60, 40));
+                    return new Oto(recline.Filename, alias, 10, 100, 150, 60, 40);
                 }
             }
-        }
-
-        public Oto ProcessOto(Oto oto, ProjectLine line)
-        {
-            oto.Smarty();
-            line.Recline.AddOto(oto);
-            return oto;
+            return null;
         }
     }
 }

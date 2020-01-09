@@ -19,8 +19,16 @@ namespace WavConfigTool.ViewModels
         // TODO: Проверить корректность
         public int PagesTotal
         {
-            // Количество деленное на размер страницы, округляя в большую сторону
-            get => ItemsCount / PageSize + (ItemsCount % PageSize > 0 ? 1 : 0);
+            get
+            {
+                if (ItemsCount == 0)
+                    return 1;
+                var realSize = IsOtoMode ? PageSize - 1 : PageSize;
+                var pages = ItemsCount / realSize;
+                if (ItemsCount % realSize > 0)
+                    pages++;
+                return pages;
+            }
         }
         public int CurrentPage
         {

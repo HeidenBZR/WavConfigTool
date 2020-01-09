@@ -46,8 +46,10 @@ namespace WavConfigTool.Classes
             return recline;
         }
 
-        public Phoneme GetPhoneme(string alias)
+        public Phoneme GetPhoneme(string rawAlias)
         {
+            // HACK: can't find how to escape ~ in yaml
+            var alias = rawAlias != null ? rawAlias : "~";
             var phoneme = Phonemes.Find(n => n.Alias == alias);
             if (phoneme is null)
             {

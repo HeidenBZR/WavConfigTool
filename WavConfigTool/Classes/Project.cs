@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WavConfigTool.Tools;
@@ -22,6 +23,8 @@ namespace WavConfigTool.Classes
         private List<ProjectLine> _projectLines;
         private Dictionary<string, ProjectLine> _projectLinesByFilename;
         public Dictionary<string, string> Options;
+        public Dictionary<string, Oto> Otos { get; set; }
+        public Oto[] OtoList { get => Otos.Values.ToArray(); }
 
         public Reclist Reclist { get => _reclist; private set { _reclist = value; ProjectChanged(); } }
         public Voicebank Voicebank { get => _voicebank; private set { _voicebank = value; ProjectChanged(); } }
@@ -116,6 +119,8 @@ namespace WavConfigTool.Classes
         public void SetReclist(Reclist reclist)
         {
             Reclist = reclist;
+            if (Reclist.IsLoaded)
+                Reader.ReclistReader.Current.Write(PathResolver.Current.Reclist(Reclist.Name + PathResolver.SETTINGS_EXT), Reclist);
             IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
             CheckEnabled();
             ProjectChanged();
@@ -158,10 +163,40 @@ namespace WavConfigTool.Classes
             ProcessLineAfterRead(projectLine);
         }
 
+
         public void SetOtoGenerator(OtoGenerator otoGenerator)
         {
             OtoGenerator = otoGenerator;
             ProjectChanged();
+        }
+
+        public void ResetOto()
+        {
+            Otos = new Dictionary<string, Oto>();
+        }
+
+        public (string, Oto) AddOto(Oto oto)
+        {
+            var newAlias = oto.Alias;
+            int i = 0;
+            if (Otos.ContainsKey(oto.Alias))
+            {
+                do
+                {
+                    i++;
+                    newAlias = $"{oto.Alias} ({i})";
+                    oto.Number = i;
+                }
+                while (Otos.ContainsKey(newAlias));
+            }
+            if (CheckForDuplicates(i))
+                Otos[newAlias] = oto;
+            return (newAlias, oto);
+        }
+
+        private bool CheckForDuplicates(int i)
+        {
+            return i == 0 || Reclist.WavMask.MaxDuplicates == 0 || i < Reclist.WavMask.MaxDuplicates;
         }
 
         void NewProject(string reclist, string voicebank)
@@ -169,6 +204,8 @@ namespace WavConfigTool.Classes
             ProjectLines = new List<ProjectLine>();
             Voicebank = new Voicebank(voicebank);
             Reclist = Reader.ReclistReader.Current.Read(reclist);
+            if (Reclist.IsLoaded)
+                Reader.ReclistReader.Current.Write(reclist, Reclist);
             FireSaveMe();
         }
 
@@ -200,10 +237,12 @@ namespace WavConfigTool.Classes
         {
             Sort();
             OtoGenerator.Project = this;
+            ResetOto();
             foreach (Recline recline in Reclist.Reclines)
             {
                 //if (!Voicebank.IsSampleEnabled(recline.Filename))
                 //    continue;
+                recline.ResetOto();
                 var projectLine = ProjectLinesByFilename[recline.Filename];
                 projectLine.Sort();
                 OtoGenerator.Generate(projectLine);
