@@ -52,6 +52,14 @@ namespace WavConfigTool.Classes
             projectLine.CalculateZones();
             var position = 0;
             var reclinePhonemes = recline.GetPhonemesForGeneration();
+
+            var phonemesOfType = new Dictionary<PhonemeType, List<Phoneme>>();
+            phonemesOfType[PhonemeType.Vowel] = new List<Phoneme>();
+            phonemesOfType[PhonemeType.Consonant] = new List<Phoneme>();
+            phonemesOfType[PhonemeType.Rest] = new List<Phoneme>();
+            foreach (var phoneme in reclinePhonemes)
+                phonemesOfType[phoneme.Type].Add(phoneme);
+
             for (int i = 1; i < reclinePhonemes.Count - 1; i++)
             {
                 for (int count = 1; count < 6 && i + count - 1 < reclinePhonemes.Count; count++)
@@ -59,7 +67,7 @@ namespace WavConfigTool.Classes
                     var phonemes = reclinePhonemes.GetRange(i, count);
                     var prev = i - 1 >= 0 ? reclinePhonemes[i - 1] : null;
                     var next = i + count + 1 < reclinePhonemes.Count ? reclinePhonemes[i + count + 1] : null;
-                    var otoRaw = Generate(projectLine, position, phonemes.ToArray(), prev, next);
+                    var otoRaw = Generate(projectLine, position, phonemes.ToArray(), prev, next, phonemesOfType);
                     if (otoRaw != null)
                     {
                         (var alias, var oto) = Project.AddOto(otoRaw);
@@ -74,14 +82,14 @@ namespace WavConfigTool.Classes
             }
         }
 
-        public Oto Generate(ProjectLine projectLine, int position, Phoneme[] phonemes, Phoneme prev, Phoneme next)
+        public Oto Generate(ProjectLine projectLine, int position, Phoneme[] phonemes, Phoneme prev, Phoneme next, Dictionary<PhonemeType, List<Phoneme>> phonemesOfType)
         {
             var recline = projectLine.Recline;
 
             Phoneme p1 = phonemes.First();
             Phoneme p2 = phonemes.Last();
             double offset = 0, consonant = 0, cutoff = 0, preutterance = 0, overlap = 0;
-            bool hasZones = projectLine.ApplyZones(p1) && projectLine.ApplyZones(p2);
+            bool hasZones = projectLine.ApplyZones(phonemesOfType[p1.Type], p1) && projectLine.ApplyZones(phonemesOfType[p2.Type], p2);
             AliasType aliasType = AliasTypeResolver.Current.GetAliasType(GetAliasType(phonemes));
             bool masked = aliasType != AliasType.undefined && Reclist.WavMask.CanGenerateOnPosition(projectLine.Recline.Filename, aliasType, position);
 

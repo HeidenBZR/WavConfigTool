@@ -126,13 +126,24 @@ namespace WavConfigTool.Classes
                 var points = PointsOfType(type, false);
                 var zones = ZonesOfType(type);
                 zones.Clear();
+                // HACK: Rests currently are working as Zone=Point when others are two points for zone.
+                // So there are fake zones for start and end rest zones. Should be made better
+                if (type == PhonemeType.Rest)
+                    zones.Add(new Zone(0, 0));
                 for (int i = 0; i + 1 < points.Count; i += 2)
                 {
                     if (type == PhonemeType.Rest)
+                    {
                         zones.Add(new Zone(points[i], points[i]));
+                        zones.Add(new Zone(points[i + 1], points[i + 1]));
+                    }
                     else
+                    {
                         zones.Add(new Zone(points[i], points[i + 1]));
+                    }
                 }
+                if (type == PhonemeType.Rest)
+                    zones.Add(new Zone(0, 0));
             }
         }
 
@@ -146,9 +157,9 @@ namespace WavConfigTool.Classes
         /// </summary>
         /// <param name="phoneme"></param>
         /// <returns></returns>
-        public bool ApplyZones(Phoneme phoneme)
+        public bool ApplyZones(List<Phoneme> phonemes, Phoneme phoneme)
         {
-            int i = Recline.PhonemesOfType(phoneme.Type).IndexOf(phoneme);
+            int i = phonemes.IndexOf(phoneme);
             if (i < 0)
                 return false;
             var zones = ZonesOfType(phoneme.Type);
