@@ -127,8 +127,8 @@ namespace WavConfigTool.Classes
 
                 case AliasType.RCV:
                 case AliasType.RCmV:
-                    offset = p1.Zone.In - p1.Attack;
-                    overlap = p1.Zone.In;
+                    offset = p1.Zone.Out - p1.Attack;
+                    overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.In + Project.VowelDecay;
                     cutoff = p2.Zone.Out - p2.Attack;
