@@ -26,7 +26,7 @@ namespace WavConfigTool.ViewModels
 
         public WavZoneViewModel() { }
 
-        public WavZoneViewModel(PhonemeType type, double p_in, double p_out)
+        public WavZoneViewModel(PhonemeType type, double p_in, double p_out, double length)
         {
             In = p_in;
             Out = p_out - p_in;
@@ -107,32 +107,81 @@ namespace WavConfigTool.ViewModels
                         };
                     break;
                 case PhonemeType.Rest:
-                    BorderPoints1 = new PointCollection
+                    if (p_in == 0)
+                    {
+                        BorderPoints2 = new PointCollection
+                        {
+                            new Point(0, 50),
+                            new Point(0, 100),
+                            new Point(outMinusAttack, 100),
+                            new Point(outMinusAttack, 50),
+                        };
+                        BorderPoints3 = new PointCollection
+                        {
+                            new Point(outMinusAttack, 50),
+                            new Point(Out, 100),
+                            new Point(outMinusAttack, 100),
+                        };
+                        Points = new PointCollection
+                        {
+                            new Point(0, 100),
+                            new Point(0, 50),
+                            new Point(outMinusAttack, 50),
+                            new Point(Out, 100),
+                        };
+                    }
+                    else if (length - p_in < 10)
+                    {
+                        BorderPoints1 = new PointCollection
                         {
                             new Point(0, 100),
                             new Point(decay, 50),
                             new Point(decay, 100),
                         };
-                    BorderPoints2 = new PointCollection
+                        BorderPoints2 = new PointCollection
+                        {
+                            new Point(decay, 50),
+                            new Point(decay, 100),
+                            new Point(Out, 100),
+                            new Point(Out, 50),
+                        };
+                        Points = new PointCollection
+                        {
+                            new Point(0, 100),
+                            new Point(decay, 50),
+                            new Point(Out, 50),
+                            new Point(Out, 100),
+                        };
+                    }
+                    else
+                    {
+                        BorderPoints1 = new PointCollection
+                        {
+                            new Point(0, 100),
+                            new Point(decay, 50),
+                            new Point(decay, 100),
+                        };
+                        BorderPoints2 = new PointCollection
                         {
                             new Point(decay, 50),
                             new Point(decay, 100),
                             new Point(outMinusAttack, 100),
                             new Point(outMinusAttack, 50),
                         };
-                    BorderPoints3 = new PointCollection
+                        BorderPoints3 = new PointCollection
                         {
                             new Point(outMinusAttack, 50),
                             new Point(Out, 100),
                             new Point(outMinusAttack, 100),
                         };
-                    Points = new PointCollection
+                        Points = new PointCollection
                         {
                             new Point(0, 100),
                             new Point(decay, 50),
                             new Point(outMinusAttack, 50),
                             new Point(Out, 100),
                         };
+                    }
                     break;
             }
             RaisePropertiesChanged(

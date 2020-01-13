@@ -17,55 +17,11 @@
         <local:WavPoint />
     </d:UserControl.DataContext>-->
     <Canvas>
-        <Grid
-            Canvas.Left="{Binding Position, FallbackValue=0}"
-            VerticalAlignment="Stretch"
-            Height="100">
-
-            <Border 
-                Margin="0,0,0,0"
-                BorderBrush="{Binding Type, Converter={StaticResource PhonemeTypeToColor}}"
-                Background="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"
-                VerticalAlignment="Bottom">
-                <TextBlock
-                Name="TypeLabel"
-                Padding="0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Foreground="{Binding Type, Converter={StaticResource PhonemeTypeToColor}}"
-                Panel.ZIndex="5"
-                FontFamily="Century Gothic"
-                FontSize="14"
-                Text="{Binding VisualText, FallbackValue=Text, Mode=OneWay}" >
-                    <TextBlock.Style>
-                        <Style>
-                            <Setter Property="TextBlock.Margin" Value="5,1,4,1"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding VisualText, Mode=OneWay}" Value="">
-                                    <Setter Property="TextBlock.Margin" Value="0"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-                <Border.Style>
-                    <Style>
-                        <Setter Property="Border.BorderThickness" Value="0,1,1,0"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding VisualText, Mode=OneWay}" Value="">
-                                <Setter Property="Border.BorderThickness" Value="0"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-            </Border>
-        </Grid>
         <Thumb
             Canvas.Left="{Binding Position, FallbackValue=0}"
             ToolTip="{Binding PositionReal, FallbackValue=-1}"
             HorizontalAlignment="Left"
-            VerticalAlignment="Stretch"
-            Cursor="SizeWE">
+            VerticalAlignment="Stretch">
             <Thumb.Style>
                 <Style TargetType="{x:Type Thumb}">
                     <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
@@ -77,34 +33,112 @@
                             <ControlTemplate TargetType="{x:Type Thumb}">
                                 <Canvas>
                                     <Rectangle
-                            x:Name="Line"
-                            Canvas.Left="-1"
-                            Width="2"
-                            Height="100"
-                            Fill="{TemplateBinding BorderBrush}" />
+                                        x:Name="Line"
+                                        Canvas.Left="-1"
+                                        Width="2"
+                                        Cursor="SizeWE"
+                                        Height="100"
+                                        Fill="{TemplateBinding BorderBrush}" />
                                     <Grid Height="100" VerticalAlignment="Stretch">
-                                        <Polygon Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}">
+                                        <Polygon 
+                                            Visibility="{Binding IsLeft, Converter={StaticResource BooleanToVisibility}}"
+                                            Fill="{TemplateBinding Background}" 
+                                            Cursor="Hand"
+                                            Stroke="{TemplateBinding BorderBrush}">
                                             <Polygon.Points>
-                                                <Point X="-6" Y="0" />
-                                                <Point X="6" Y="0" />
-                                                <Point X="0" Y="6" />
+                                                <Point X="0" Y="0" />
+                                                <Point X="10" Y="0" />
+                                                <Point X="0" Y="10" />
+                                            </Polygon.Points>
+                                        </Polygon>
+                                        <Polygon 
+                                            Visibility="{Binding IsRight, Converter={StaticResource BooleanToVisibility}}"
+                                            Fill="{TemplateBinding Background}" 
+                                            Cursor="Hand"
+                                            Stroke="{TemplateBinding BorderBrush}">
+                                            <Polygon.Points>
+                                                <Point X="-10" Y="0" />
+                                                <Point X="0" Y="0" />
+                                                <Point X="0" Y="10" />
                                             </Polygon.Points>
                                         </Polygon>
                                         <Polygon
-                                x:Name="ControllerBottom"
-                                Width="15"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom"
-                                Cursor="Hand"
-                                Fill="{TemplateBinding Background}"
-                                RenderTransformOrigin="0.5,0.5"
-                                Stroke="{TemplateBinding BorderBrush}">
+                                                Visibility="Hidden"
+                                                x:Name="ControllerBottomRight"
+                                                Width="15"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Bottom"
+                                                Cursor="Hand"
+                                                Fill="{TemplateBinding Background}"
+                                                RenderTransformOrigin="0.5,0.5"
+                                                Stroke="{TemplateBinding BorderBrush}">
                                             <Polygon.Points>
-                                                <Point X="-6" Y="0" />
-                                                <Point X="6" Y="0" />
-                                                <Point X="0" Y="-6" />
+                                                <Point X="-10" Y="0" />
+                                                <Point X="0" Y="0" />
+                                                <Point X="0" Y="-10" />
                                             </Polygon.Points>
                                         </Polygon>
+                                        <Polygon
+                                                Visibility="{Binding IsLeft, Converter={StaticResource BooleanToVisibility}}"
+                                                x:Name="ControllerBottomLeft"
+                                                Width="15"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Bottom"
+                                                Cursor="Hand"
+                                                Fill="{TemplateBinding Background}"
+                                                RenderTransformOrigin="0.5,0.5"
+                                                Stroke="{TemplateBinding BorderBrush}">
+                                            <Polygon.Points>
+                                                <Point X="0" Y="0" />
+                                                <Point X="10" Y="0" />
+                                                <Point X="0" Y="-10" />
+                                            </Polygon.Points>
+                                        </Polygon>
+                                    </Grid>
+                                    <Grid
+                                        Canvas.Left="0"
+                                        VerticalAlignment="Stretch"
+                                        Visibility="{Binding IsLeft, Converter={StaticResource BooleanToVisibility}}"
+                                        Height="100">
+                                        <Border 
+                                            Margin="0,0,0,0"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            Background="{TemplateBinding Background}"
+                                            Cursor="Hand"
+                                            VerticalAlignment="Bottom">
+                                            <TextBlock
+                                                Name="TypeLabel"
+                                                Padding="0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Bottom"
+                                                Foreground="{TemplateBinding BorderBrush}"
+                                                Panel.ZIndex="5"
+                                                FontFamily="Century Gothic"
+                                                FontSize="14"
+                                                Text="{Binding VisualText, FallbackValue=Text, Mode=OneWay}" >
+                                                <TextBlock.Style>
+                                                    <Style>
+                                                        <Setter Property="TextBlock.Margin" Value="5,1,4,1"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding VisualText, Mode=OneWay}" Value="">
+                                                                <Setter Property="TextBlock.Margin" Value="0"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <Border.Style>
+                                                <Style>
+                                                    <Setter Property="Border.BorderThickness" Value="0,1,1,0"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding VisualText, Mode=OneWay}" Value="">
+                                                            <Setter Property="Border.BorderThickness" Value="0"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
+
                                     </Grid>
                                 </Canvas>
                                 <ControlTemplate.Triggers>

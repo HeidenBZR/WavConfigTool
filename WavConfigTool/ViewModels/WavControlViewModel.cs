@@ -67,7 +67,7 @@ namespace WavConfigTool.ViewModels
             points.Sort();
             for (int i = 0; i + 1 < points.Count; i += 2)
             {
-                zones.Add(new WavZoneViewModel(type, Settings.RealToViewX(points[i]), Settings.RealToViewX(points[i + 1])));
+                zones.Add(new WavZoneViewModel(type, Settings.RealToViewX(points[i]), Settings.RealToViewX(points[i + 1]), Settings.RealToViewX(Length)));
             }
             return zones;
         }
@@ -229,7 +229,7 @@ namespace WavConfigTool.ViewModels
         public string GetPointLabel(PhonemeType type, int i)
         {
             var phonemes = ProjectLine.Recline.PhonemesOfType(type);
-            return phonemes.Count * 2 > i && i % 2 == 0 ? phonemes[i / 2] : "";
+            return phonemes[i / 2];
         }
 
         private void FillPoints(PhonemeType type)
@@ -249,7 +249,7 @@ namespace WavConfigTool.ViewModels
         private WavPointViewModel CreatePoint(double p, PhonemeType type, int i)
         {
 
-            var point = new WavPointViewModel(p, type, GetPointLabel(type, i));
+            var point = new WavPointViewModel(p, type, GetPointLabel(type, i), PointIsLeft(type, i));
             point.WavPointChanged += delegate (double position1, double position2)
             {
                 MovePoint(position1, position2, type);
@@ -263,6 +263,11 @@ namespace WavConfigTool.ViewModels
                 RegenerateOtoRequest();
             };
             return point;
+        }
+
+        private bool PointIsLeft(PhonemeType type, int i)
+        {
+            return type == PhonemeType.Rest ? i % 2 == 1 : i % 2 == 0;
         }
 
         public double CheckPosition(double position)

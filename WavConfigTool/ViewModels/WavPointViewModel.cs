@@ -26,6 +26,9 @@ namespace WavConfigTool.ViewModels
         public event WavPointDeletedEventHandler WavPointDeleted = delegate { };
         public event SimpleHandler RegenerateOtoRequest = delegate { };
 
+        public bool IsLeft { get; set; }
+        public bool IsRight => !IsLeft;
+
         public bool IsLoaded { get; set; } = false;
 
         public WavPointViewModel()
@@ -33,11 +36,12 @@ namespace WavConfigTool.ViewModels
 
         }
 
-        public WavPointViewModel(double position, PhonemeType type, string text)
+        public WavPointViewModel(double position, PhonemeType type, string text, bool isLeft)
         {
             Position = position;
             Type = type;
             Text = text;
+            IsLeft = isLeft;
             // TODO: Переделать на StyleSelector
             switch (type)
             {
