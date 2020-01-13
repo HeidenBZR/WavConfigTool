@@ -23,21 +23,7 @@ namespace WavConfigTool.ViewModels
             set
             {
                 _projectLine = value;
-                _projectLine.ProjectLineChanged += delegate
-                {
-                    RaisePropertiesChanged(
-                        () => Filename,
-                        () => Phonemes,
-                        () => IsCompleted,
-                        () => WavImage
-                    );
-                    RaisePropertiesChanged(
-                        () => LoadingProperty,
-                        () => DisabledProperty,
-                        () => EnabledProperty
-                    );
-                    ApplyPoints();
-                };
+                _projectLine.ProjectLineChanged += HandleProjectLineChanged;
             }
         }
 
@@ -99,6 +85,10 @@ namespace WavConfigTool.ViewModels
                 }
             }
         }
+
+        public PhonemeType PhonemeTypeRest => PhonemeType.Rest;
+        public PhonemeType PhonemeTypeVowel => PhonemeType.Vowel;
+        public PhonemeType PhonemeTypeConsonant => PhonemeType.Consonant;
 
         public WavControlViewModel()
         {
@@ -205,44 +195,6 @@ namespace WavConfigTool.ViewModels
             return phonemes[i / 2];
         }
 
-        private void FillPoints(PhonemeType type)
-        {
-            var points = PointsOfType(type);
-            var projectPoints = ProjectLine.PointsOfType(type, virtuals:false);
-            points.Clear();
-            for (int i = 0; i < projectPoints.Count; i++)
-            {
-                var position = Settings.RealToViewX(projectPoints[i]);
-                var point = CreatePoint(position, type, i);
-                points.Add(point);
-            }
-
-        }
-
-        private WavPointViewModel CreatePoint(double p, PhonemeType type, int i)
-        {
-
-            var point = new WavPointViewModel(p, type, GetPointLabel(type, i), PointIsLeft(type, i));
-            point.WavPointChanged += delegate (double position1, double position2)
-            {
-                MovePoint(position1, position2, type);
-            };
-            point.WavPointDeleted += delegate (double position)
-            {
-                DeletePoint(position, type);
-            };
-            point.RegenerateOtoRequest += delegate
-            {
-                RegenerateOtoRequest();
-            };
-            return point;
-        }
-
-        private bool PointIsLeft(PhonemeType type, int i)
-        {
-            return type == PhonemeType.Rest ? i % 2 == 1 : i % 2 == 0;
-        }
-
         public double CheckPosition(double position)
         {
             if (position < 0)
@@ -303,6 +255,82 @@ namespace WavConfigTool.ViewModels
                 return $"{ProjectLine.Recline.Name} : WavControlViewModel";
         }
 
+        #region private
+
+        private void FillPoints(PhonemeType type)
+        {
+            var points = PointsOfType(type);
+            var projectPoints = ProjectLine.PointsOfType(type, virtuals: false);
+            points.Clear();
+            for (int i = 0; i < projectPoints.Count; i++)
+            {
+                var position = Settings.RealToViewX(projectPoints[i]);
+                var point = CreatePoint(position, type, i);
+                points.Add(point);
+            }
+
+        }
+
+        private WavPointViewModel CreatePoint(double p, PhonemeType type, int i)
+        {
+
+            var point = new WavPointViewModel(p, type, GetPointLabel(type, i), PointIsLeft(type, i));
+            point.WavPointChanged += delegate (double position1, double position2)
+            {
+                MovePoint(position1, position2, type);
+            };
+            point.WavPointDeleted += delegate (double position)
+            {
+                DeletePoint(position, type);
+            };
+            point.RegenerateOtoRequest += delegate
+            {
+                RegenerateOtoRequest();
+            };
+            return point;
+        }
+
+        private bool PointIsLeft(PhonemeType type, int i)
+        {
+            return type == PhonemeType.Rest ? i % 2 == 1 : i % 2 == 0;
+        }
+
+        private void ResetPoints(PhonemeType type)
+        {
+            ProjectLine.PointsOfType(type, false).Clear();
+            ProjectLine.ZonesOfType(type).Clear();
+            PointsOfType(type).Clear();
+            ZonesOfType(type).Clear();
+            FirePointsChanged();
+        }
+
+        private void ResetPoints()
+        {
+            ResetPoints(PhonemeType.Vowel);
+            ResetPoints(PhonemeType.Consonant);
+            ResetPoints(PhonemeType.Rest);
+        }
+
+        private void HandleProjectLineChanged()
+        {
+            RaisePropertiesChanged(
+                () => Filename,
+                () => Phonemes,
+                () => IsCompleted,
+                () => WavImage
+            );
+            RaisePropertiesChanged(
+                () => LoadingProperty,
+                () => DisabledProperty,
+                () => EnabledProperty
+            );
+            ApplyPoints();
+        }
+
+        #endregion
+
+        #region Commands
+
 
         public ICommand WavControlClickCommand
         {
@@ -333,5 +361,17 @@ namespace WavConfigTool.ViewModels
         {
             RegenerateOtoRequest();
         }, () => IsOtoBase);
+
+        public ICommand ResetPointsCommand => new DelegateCommand<PhonemeType>((PhonemeType type) =>
+        {
+            ResetPoints(type);
+        }, (type) => !IsLoading);
+
+        public ICommand ResetAllPointsCommand => new DelegateCommand(() =>
+        {
+            ResetPoints();
+        }, () => !IsLoading);
+
+        #endregion
     }
 }

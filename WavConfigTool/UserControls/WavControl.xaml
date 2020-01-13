@@ -172,13 +172,24 @@
 
                         <TextBlock.ContextMenu>
                             <ContextMenu Name="WavContextMenu">
-                                <MenuItem Header="Сбросить все маркеры в текущем аудио" Tag="All" />
+                                <MenuItem 
+                                    Header="Сбросить все маркеры в текущем аудио" 
+                                    Command="{Binding ResetAllPointsCommand}" />
                                 <Separator />
-                                <MenuItem Header="Сбросить все маркеры гласных (V) в текущем аудио" Tag="V" />
-                                <MenuItem Header="Сбросить все маркеры согласных (C) в текущем аудио" Tag="C" />
-                                <MenuItem Header="Сбросить все маркеры области данных (D) в текущем аудио" Tag="D" />
+                                <MenuItem 
+                                    Header="Сбросить все маркеры гласных (V) в текущем аудио"  
+                                    Command="{Binding ResetPointsCommand}" 
+                                    CommandParameter="{Binding PhonemeTypeVowel}" />
+                                <MenuItem 
+                                    Header="Сбросить все маркеры согласных (C) в текущем аудио"
+                                    Command="{Binding ResetPointsCommand}" 
+                                    CommandParameter="{Binding PhonemeTypeConsonant}" />
+                                <MenuItem 
+                                    Header="Сбросить все маркеры пауз (R) в текущем аудио"
+                                    Command="{Binding ResetPointsCommand}" 
+                                    CommandParameter="{Binding PhonemeTypeRest}" />
                                 <Separator />
-                                <MenuItem Header="Предпросмотр oto.ini" />
+                                <MenuItem Header="Предпросмотр oto.ini" Command="{Binding OtoModeCommand}" />
                             </ContextMenu>
                         </TextBlock.ContextMenu>
                     </TextBlock>
