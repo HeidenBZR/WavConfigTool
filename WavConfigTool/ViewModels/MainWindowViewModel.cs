@@ -68,6 +68,8 @@ namespace WavConfigTool.ViewModels
         public bool IsNotLoading { get => !IsLoading; }
         public bool IsOtoPreviewMode { get; set; } = false;
 
+        public static bool IsDebug { get; set; } = false;
+
         public string ProjectSavedString { get => Settings.IsUnsaved ? "*" : ""; }
         public string Title
         {
@@ -100,6 +102,9 @@ namespace WavConfigTool.ViewModels
 
         public MainWindowViewModel()
         {
+#if DEBUG
+            IsDebug = true;
+#endif
         }
 
         async void LoadProjectAsync()
@@ -291,7 +296,8 @@ namespace WavConfigTool.ViewModels
 
         public ICommand ReloadProjectCommand => new DelegateCommand(() =>
         {
-            PagerViewModel.UpdateImages();
+            if (PagerViewModel != null)
+                PagerViewModel.UpdateImages();
             ProjectManager.LoadProject();
             LoadProjectAsync();
             Refresh();
@@ -361,5 +367,22 @@ namespace WavConfigTool.ViewModels
             ReclistReader.Current.Write(saveFilename, reclist);
 
         }, Project != null && Project.Reclist != null && Project.Reclist.IsLoaded);
+
+        public ICommand DebugCommand => new DelegateCommand(() =>
+        {
+            foreach (var projectLine in Project.ProjectLines)
+            {
+                foreach (var type in new[] {PhonemeType.Consonant, PhonemeType.Rest, PhonemeType.Vowel})
+                {
+                    var points = projectLine.PointsOfType(type, false);
+                    for (var i = 0; i < points.Count; i++)
+                    {
+                        points[i] = (int)(points[i] / WaveForm.X_SCALE_ERROR);
+                    }
+                }
+            }
+            Project.FireSaveMe();
+            ReloadProjectCommand.Execute(0);
+        }, () => IsDebug);
     }
 }

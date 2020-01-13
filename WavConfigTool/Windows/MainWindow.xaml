@@ -126,6 +126,9 @@
                 <Separator />
                 <MenuItem Header="Toggle Tools Panel" InputGestureText="Ctrl+Backspace" Command="{Binding ToggleToolsPanelCommand}" />
             </MenuItem>
+            <MenuItem Header="Debug" Visibility="{Binding IsDebug, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}">
+                <MenuItem Header="Debug command" InputGestureText="Ctrl+Shift+Alt+D" Command="{Binding DebugCommand}" />
+            </MenuItem>
         </Menu>
 
         <Border

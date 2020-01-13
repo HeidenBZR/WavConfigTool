@@ -50,6 +50,8 @@ namespace WavConfigTool.Classes
         }
 
         private const float LINE_WEIGHT = 0.5f;
+        // HACK: can't find why it counts wrong, for not i'm just leaving this constant
+        public const double X_SCALE_ERROR = 1.379;
 
         private Bitmap DrawWaveform(AudioFileReader reader, int height, Color color)
         {
@@ -62,9 +64,7 @@ namespace WavConfigTool.Classes
             double yScale = Project.Current.WavAmplitudeMultiplayer;
             double yScaleBase = -((double)height - 3) / 2;
 
-            // HACK: can't find why it counts wrong, for not i'm just leaving this constant
-            double xScaleBase = 1.379;
-            double sampleWidth = Settings.RealToViewX(1.0 / reader.WaveFormat.BitsPerSample * reader.WaveFormat.Channels / xScaleBase);
+            double sampleWidth = Settings.RealToViewX(1.0 / reader.WaveFormat.BitsPerSample * reader.WaveFormat.Channels / X_SCALE_ERROR);
             double currPosition = 0;
             // Data for current column
             int currColumn = 0;
