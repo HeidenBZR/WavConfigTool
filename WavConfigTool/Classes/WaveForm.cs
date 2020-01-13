@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 using WavConfigTool.Tools;
 
 namespace WavConfigTool.Classes
@@ -34,6 +36,9 @@ namespace WavConfigTool.Classes
 
         public Exception GeneratingException;
 
+        public System.Windows.Media.ImageSource BitmapImage;
+        public string Name = "";
+
         public WaveForm(string path)
         {
             Path = path + ".wav";
@@ -43,10 +48,27 @@ namespace WavConfigTool.Classes
         public void MakeWaveForm(int height, string imagePath, Color color)
         {
             var reader = new AudioFileReader(Path);
-            Bitmap bitmap = DrawWaveform(reader, height, color);
-            bitmap.Save(imagePath);
-            bitmap.Dispose();
-            reader.Close();
+            var bitmap = DrawWaveform(reader, height, color);
+            BitmapImage = Bitmap2BitmapImage(bitmap);
+            Name = imagePath;
+        }
+
+        private BitmapImage Bitmap2BitmapImage(Bitmap bitmap)
+        {
+            using (var memory = new MemoryStream())
+            {
+                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
+                memory.Position = 0;
+
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+
+                return bitmapImage;
+            }
         }
 
         private const float LINE_WEIGHT = 0.5f;

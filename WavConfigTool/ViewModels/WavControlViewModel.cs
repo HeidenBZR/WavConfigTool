@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WavConfigTool.Classes;
 using WavConfigTool.Tools;
@@ -29,7 +29,6 @@ namespace WavConfigTool.ViewModels
                         () => Filename,
                         () => Phonemes,
                         () => IsCompleted,
-                        () => WavImagePath,
                         () => WavImage
                     );
                     RaisePropertiesChanged(
@@ -85,18 +84,14 @@ namespace WavConfigTool.ViewModels
         public int NumberView => Number + 1;
 
         public int Width => ProjectLine.IsEnabled ? ProjectLine.WaveForm.VisualWidth : 1000;
-        public string WavImagePath { get; set; } = "";
         public bool IsImageEnabled { get; set; } = false;
-        private BitmapImage wavImage;
-        public BitmapImage WavImage
+        public ImageSource WavImage
         {
             get
             {
                 if (IsImageEnabled)
                 {
-                    if (wavImage == null)
-                        wavImage = new BitmapImage(new Uri(WavImagePath));
-                    return wavImage;
+                    return ProjectLine.WaveForm.BitmapImage;
                 }
                 else
                 {
@@ -119,7 +114,7 @@ namespace WavConfigTool.ViewModels
 
         public override void ResetImage()
         {
-            wavImage = null;
+
         }
 
         public override void Load()
@@ -140,36 +135,14 @@ namespace WavConfigTool.ViewModels
         public void LoadImage()
         {
             IsImageEnabled = false;
-            wavImage = null;
             if (!ProjectLine.IsEnabled)
                 return;
-
-            string new_image = Path.Combine(Settings.TempDir, $"{ProjectLine.WavImageHash}.jpg");
-            if (new_image == WavImagePath)
-            {
-                if (File.Exists(WavImagePath))
-                    IsImageEnabled = true;
-                return;
-            }
-            if (File.Exists(WavImagePath))
-            {
-                try
-                {
-                    File.Delete(WavImagePath);
-                }
-                catch (UnauthorizedAccessException ex) { }
-            }
 
             IsLoading = true;
             RaisePropertyChanged(() => IsLoading);
 
-            WavImagePath = "";
-            ProjectLine.WaveForm.MakeWaveForm(100, new_image, System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR));
-            if (File.Exists(new_image))
-            {
-                WavImagePath = new_image;
-                IsImageEnabled = true;
-            }
+            ProjectLine.WaveForm.MakeWaveForm(100, ProjectLine.WavImageHash, System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR));
+            IsImageEnabled = true;
             RaisePropertyChanged(() => Width);
             RaisePropertyChanged(() => WavImage);
 
@@ -336,7 +309,7 @@ namespace WavConfigTool.ViewModels
             get
             {
                 return new DelegateCommand<Point>(
-                    delegate (Point point)
+                    delegate (System.Windows.Point point)
                     {
                         AddPoint((int)point.X, Settings.Mode);
                     },
