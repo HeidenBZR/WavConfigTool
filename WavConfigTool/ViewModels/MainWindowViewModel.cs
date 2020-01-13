@@ -17,6 +17,9 @@ namespace WavConfigTool.ViewModels
     class MainWindowViewModel : ViewModelBase
     {
         public static readonly Version Version = new Version(0, 2, 0, 0);
+        public int AlphaVersion => 9;
+
+        public ProjectViewModel ProjectViewModel { get; set; }
         public Project Project => ProjectManager.Project;
         public string ReclistName { get => Project == null || Project.Reclist == null ? null : Project.Reclist.Name; }
         public string VoicebankName { get => Project == null || Project.Voicebank == null ? null : Project.Voicebank.Name; }
@@ -70,22 +73,17 @@ namespace WavConfigTool.ViewModels
 
         public static bool IsDebug { get; set; } = false;
 
-        public string ProjectSavedString { get => Settings.IsUnsaved ? "*" : ""; }
-        public string Title
+        public string Title => GetTitle();
+
+        private string GetTitle()
         {
-            get
-            {
-                if (Project == null)
-                    return $"WavConfig v.{Version.ToString()} - {ProjectSavedString}";
-                if (Project.Voicebank == null)
-                    return $"WavConfig v.{Version.ToString()} - {ProjectSavedString}  : {Project.Reclist.Name}";
-                if (Project.Reclist == null)
-                    return $"WavConfig v.{Version.ToString()} - {ProjectSavedString}  [{Project.Voicebank.Name}]";
-                if (PagerViewModel == null || PagerViewModel.PagesTotal == 0)
-                    return $"WavConfig v.{Version.ToString()} - {ProjectSavedString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
-                return $"WavConfig v.{Version.ToString()} - {ProjectSavedString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
-                    $"Page {PagerViewModel.CurrentPage + 1}/{PagerViewModel.PagesTotal}";
-            }
+            var alphaString = $"(Alpha v.{AlphaVersion})";
+            if (Project == null)
+                return $"WavConfig v.{Version.ToString()} {alphaString}";
+            if (PagerViewModel == null || PagerViewModel.PagesTotal == 0)
+                return $"WavConfig v.{Version.ToString()} {alphaString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
+            return $"WavConfig v.{Version.ToString()} {alphaString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
+                $"Page {PagerViewModel.CurrentPage + 1}/{PagerViewModel.PagesTotal}";
         }
 
         public static double ControlHeight { get; set; } = 100;
@@ -217,6 +215,8 @@ namespace WavConfigTool.ViewModels
             Refresh();
         }
 
+        #region Commands
+
         public ICommand SetMode => new DelegateCommonCommand((obj) =>
         {
             Mode = (PhonemeType)obj;
@@ -254,8 +254,6 @@ namespace WavConfigTool.ViewModels
         "WavConfig Project Files|*.wcp|*|*",
         param => true,
         "voicebank");
-
-        public ProjectViewModel ProjectViewModel { get; set; }
         public ICommand CallProjectCommand => new DelegateCommonCommand((obj) =>
         {
             if (ProjectViewModel != null)
@@ -384,5 +382,7 @@ namespace WavConfigTool.ViewModels
             Project.FireSaveMe();
             ReloadProjectCommand.Execute(0);
         }, () => IsDebug);
+
+        #endregion
     }
 }
