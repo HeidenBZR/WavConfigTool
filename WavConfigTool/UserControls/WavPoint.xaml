@@ -62,6 +62,7 @@
         </Grid>
         <Thumb
             Canvas.Left="{Binding Position, FallbackValue=0}"
+            ToolTip="{Binding PositionReal, FallbackValue=-1}"
             HorizontalAlignment="Left"
             VerticalAlignment="Stretch"
             Cursor="SizeWE">

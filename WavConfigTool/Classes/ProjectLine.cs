@@ -45,7 +45,7 @@ namespace WavConfigTool.Classes
             }
         }
 
-        public int WavImageHash { get; set; }
+        public string WavImageHash { get; set; }
         public WaveForm WaveForm { get; set; }
 
         public delegate void ProjectLineChangedEventHandler();
@@ -113,7 +113,7 @@ namespace WavConfigTool.Classes
         {
             if (!IsEnabled)
                 return;
-            WavImageHash = $"{voicebank.Location}{Recline.Filename}{reclist.Name}{Settings.WAM}".GetHashCode();
+            WavImageHash = $"{voicebank.Name}_{reclist.Name}_{Settings.WAM}_{Project.Current.Prefix}_{Recline.Filename}_{Project.Current.Suffix}"; //.GetHashCode();
             WaveForm = new WaveForm(Path.Combine(voicebank.Location, Recline.Filename));
         }
 

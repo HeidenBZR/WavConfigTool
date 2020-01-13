@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using WavConfigTool.Classes;
+using WavConfigTool.Tools;
 
 namespace WavConfigTool.ViewModels
 {
@@ -13,6 +14,7 @@ namespace WavConfigTool.ViewModels
         public string Text { get => text; set { text = value; FireChanged(); } }
         public string VisualText => Type == PhonemeType.Rest ? "" : Text;
         public double Position { get; set; } = 0;
+        public int PositionReal => Settings.ViewToRealX(Position);
         public Brush BorderBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantBorderBrush"];
         public Brush BackgroundBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantBackBrush"];
         public PhonemeType Type { get; set; } = PhonemeType.Vowel;

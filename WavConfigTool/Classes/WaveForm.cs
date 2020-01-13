@@ -62,7 +62,9 @@ namespace WavConfigTool.Classes
             double yScale = Project.Current.WavAmplitudeMultiplayer;
             double yScaleBase = -((double)height - 3) / 2;
 
-            double sampleWidth = Settings.ScaleX / reader.WaveFormat.BitsPerSample * reader.WaveFormat.Channels;
+            // HACK: can't find why it counts wrong, for not i'm just leaving this constant
+            double xScaleBase = 1.379;
+            double sampleWidth = Settings.RealToViewX(1.0 / reader.WaveFormat.BitsPerSample * reader.WaveFormat.Channels / xScaleBase);
             double currPosition = 0;
             // Data for current column
             int currColumn = 0;
@@ -85,13 +87,6 @@ namespace WavConfigTool.Classes
 
                 while ((readCount = reader.Read(buffer, 0, 8192)) > 0)
                 {
-                    // Merge stereo samples to mono
-                    if (reader.WaveFormat.Channels == 2)
-                    {
-                        for (int i = 0, o = 0; i < readCount; i += 2, o++)
-                            buffer[o] = (buffer[i] + buffer[i + 1]) / 2;
-                        readCount >>= 1;
-                    }
 
                     // process samples
                     foreach (float sample in buffer.Take(readCount))
