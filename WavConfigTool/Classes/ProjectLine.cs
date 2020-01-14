@@ -206,7 +206,7 @@ namespace WavConfigTool.Classes
             return realPhonemes.IndexOf(position);
         }
 
-        void SetHasZone()
+        public void SetHasZone()
         {
             foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest })
             {

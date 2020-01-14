@@ -112,7 +112,7 @@
                                     <Style>
                                         <Setter Property="TextBlock.Foreground" Value="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"></Setter>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding HasZone, Mode=TwoWay}" Value="true">
+                                            <DataTrigger Binding="{Binding HasZone, Mode=OneWay}" Value="true">
                                                 <Setter Property="TextBlock.Foreground" Value="{Binding Type, Converter={StaticResource PhonemeTypeToColor}}"></Setter>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -124,7 +124,7 @@
                                     <Setter Property="Border.BorderBrush" Value="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"></Setter>
                                     <Setter Property="Border.BorderThickness" Value="1"></Setter>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding HasZone, Mode=TwoWay}" Value="true">
+                                        <DataTrigger Binding="{Binding HasZone, Mode=OneWay}" Value="true">
                                             <Setter Property="Border.BorderBrush" Value="{Binding Type, Converter={StaticResource PhonemeTypeToColor}}"></Setter>
                                             <Setter Property="Border.Background" Value="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"></Setter>
                                         </DataTrigger>

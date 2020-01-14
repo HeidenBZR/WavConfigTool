@@ -8,6 +8,7 @@ using System.Windows;
 using WavConfigTool.Classes;
 using WavConfigTool.Windows;
 using WavConfigTool.ViewModels;
+using System.Windows.Threading;
 
 namespace WavConfigTool
 {
@@ -16,9 +17,11 @@ namespace WavConfigTool
     /// </summary>
     public partial class App : Application
     {
+        public static Dispatcher MainDispatcher;
+
         public App()
         {
-
+            MainDispatcher = Dispatcher.CurrentDispatcher;
         }
     }
 }

@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
     xmlns:vt="clr-namespace:WavConfigTool.ViewTools"
+    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     Height="100"
     Margin="0,0,0,10"
     Background="{DynamicResource WavControlBackgroundBrush}"
@@ -18,7 +19,7 @@
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="Width" Value="{Binding Width, FallbackValue=1000}" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding DisabledProperty}" Value="True">
+                <DataTrigger Binding="{Binding IsEnabled, Converter={StaticResource BooleanToVisibility}}" Value="True">
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
                     <Setter Property="Width" Value="Auto" />
                 </DataTrigger>
@@ -81,74 +82,74 @@
         <local:CanvasLoading
             x:Name="CanvasLoading"
             HorizontalAlignment="Stretch"
-            Visibility="{Binding LoadingProperty}" />
+            Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}" />
         <Canvas
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Background="#22FF2222"
-            Visibility="{Binding DisabledProperty, TargetNullValue=Hidden}">
+            Visibility="{Binding IsDisabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}">
             <TextBlock
                 Margin="20,40"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Foreground="{DynamicResource RestBackBrush}"
-                Text="Sample is not avialable" />
+                Text="Sample is not available" />
         </Canvas>
         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Image
                 Name="WavImage"
                 Height="100"
                 HorizontalAlignment="Left"
+                Visibility="{Binding IsImageEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
                 Source="{Binding WavImage}" />
         </Canvas>
-        <ItemsControl
+        <Canvas 
+            Name = "Points"
+            Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}">
+
+            <ItemsControl
             Name="ConsonantZones"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavZoneItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding ConsonantZones, Mode=OneWay}"
-            Visibility="{Binding EnabledProperty}" />
-        <ItemsControl
+            ItemsSource="{Binding ConsonantZones, Mode=OneWay}" />
+            <ItemsControl
             Name="VowelZones"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavZoneItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding VowelZones, Mode=OneWay}"
-            Visibility="{Binding EnabledProperty}" />
-        <ItemsControl
+            ItemsSource="{Binding VowelZones, Mode=OneWay}" />
+            <ItemsControl
             Name="RestZones"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavZoneItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding RestZones, Mode=OneWay}"
-            Visibility="{Binding EnabledProperty}" />
-        <ItemsControl
+            ItemsSource="{Binding RestZones, Mode=OneWay}" />
+            <ItemsControl
             Name="ConsonantPoints"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding ConsonantPoints, Mode=OneWay}"
-            Visibility="{Binding EnabledProperty}" />
-        <ItemsControl
+            ItemsSource="{Binding ConsonantPoints, Mode=OneWay}" />
+            <ItemsControl
             Name="VowelPoints"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding VowelPoints, Mode=OneWay}"
-            Visibility="{Binding EnabledProperty}" />
-        <ItemsControl
+            ItemsSource="{Binding VowelPoints, Mode=OneWay}" />
+            <ItemsControl
             Name="RestPoints"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-            ItemsSource="{Binding RestPoints, Mode=OneWay}"
-            Visibility="{Binding EnabledProperty}" />
+            ItemsSource="{Binding RestPoints, Mode=OneWay}" />
+        </Canvas>
         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid
                 Canvas.Left="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}, Path=HorizontalOffset}"
@@ -193,7 +194,7 @@
                             </ContextMenu>
                         </TextBlock.ContextMenu>
                     </TextBlock>
-                    <ListView ItemsSource="{Binding Phonemes}" Style="{DynamicResource ListViewPhonemes}" ItemContainerStyle="{DynamicResource PhonemesItemStyle}">
+                    <ListView ItemsSource="{Binding Phonemes, Mode=OneWay}" Style="{DynamicResource ListViewPhonemes}" ItemContainerStyle="{DynamicResource PhonemesItemStyle}">
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Horizontal" />

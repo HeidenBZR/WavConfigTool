@@ -25,9 +25,20 @@ namespace WavConfigTool.ViewModels
             }
         }
 
+
+        public string Filename { get => ProjectLine.Recline.Filename; }
         public double Length => Settings.ViewToRealX(Width);
+        public ObservableCollection<Phoneme> Phonemes => new ObservableCollection<Phoneme>(ProjectLine.Recline.Phonemes);
 
         public bool IsOtoBase { get; set; } = false;
+        public bool IsLoading { get; set; } = false;
+        public bool IsLoaded { get; set; } = false;
+        public bool IsImageEnabled { get; set; } = false;
+
+        public bool IsCompleted => ProjectLine.IsCompleted;
+        public bool IsEnabled => ProjectLine != null && ProjectLine.IsEnabled;
+        public bool IsDisabled => !IsEnabled;
+        public bool EditEnabled => IsEnabled && !IsLoading && IsLoaded;
 
         public ObservableCollection<WavPointViewModel> ConsonantPoints { get; set; } = new ObservableCollection<WavPointViewModel>();
         public ObservableCollection<WavPointViewModel> VowelPoints { get; set; } = new ObservableCollection<WavPointViewModel>();
@@ -37,26 +48,15 @@ namespace WavConfigTool.ViewModels
         public List<WavZoneViewModel> VowelZones { get { return GetZones(PhonemeType.Vowel); } }
         public List<WavZoneViewModel> RestZones { get { return GetZones(PhonemeType.Rest); } }
 
-        public string Filename { get => ProjectLine.Recline.Filename; }
-        public List<Phoneme> Phonemes { get => ProjectLine.Recline.Phonemes; }
-
-        public Visibility LoadingProperty { get => IsLoading ? Visibility.Visible : Visibility.Hidden; }
-        public Visibility DisabledProperty { get => ProjectLine.IsEnabled ? Visibility.Hidden : Visibility.Visible; }
-        public Visibility EnabledProperty { get => ProjectLine.IsEnabled ? Visibility.Visible : Visibility.Hidden; }
-
-        public bool IsCompleted { get => ProjectLine.IsCompleted; }
-        public bool IsLoading { get; set; } = false;
         public int Number { get; set; }
         public int NumberView => Number + 1;
 
         public int Width => ProjectLine.IsEnabled ? ProjectLine.WaveForm.VisualWidth : 1000;
-        public bool IsImageEnabled { get; set; } = false;
         public ImageSource WavImage => IsImageEnabled ? ProjectLine.WaveForm.BitmapImage : null;
 
         public PhonemeType PhonemeTypeRest => PhonemeType.Rest;
         public PhonemeType PhonemeTypeVowel => PhonemeType.Vowel;
         public PhonemeType PhonemeTypeConsonant => PhonemeType.Consonant;
-
 
         public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
         public event OtoModeHandler OnOtoMode = delegate { };
@@ -65,6 +65,7 @@ namespace WavConfigTool.ViewModels
         public WavControlViewModel() : base()
         {
             PointsChanged += OnPointsChanged;
+            OnLoaded += HandleLoaded;
         }
 
         public WavControlViewModel(ProjectLine projectLine) : this()
@@ -74,13 +75,27 @@ namespace WavConfigTool.ViewModels
 
         public override void Load()
         {
-            LoadImageAsync();
-            foreach (var phoneme in ProjectLine.Recline.Phonemes)
+            App.MainDispatcher.Invoke(() =>
             {
-                phoneme.FireChanged(this);
-            }
-            ApplyPoints();
-            OnLoaded();
+                IsLoaded = false;
+                IsLoading = true;
+                IsImageEnabled = false;
+                RaisePropertiesChanged(() => IsLoading, () => IsLoaded, () => EditEnabled);
+            });
+            LoadImageAsync();
+            App.MainDispatcher.Invoke(() =>
+            {
+                ApplyPoints();
+                ProjectLine.SetHasZone();
+                //foreach (var phoneme in ProjectLine.Recline.Phonemes)
+                //{
+                //    phoneme.FireChanged();
+                //}
+                IsLoaded = true;
+                IsLoading = false;
+                RaisePropertiesChanged(() => IsLoading, () => IsLoaded, () => EditEnabled);
+                OnLoaded();
+            });
         }
 
         public async void LoadImageAsync()
@@ -90,20 +105,13 @@ namespace WavConfigTool.ViewModels
 
         public void LoadImage()
         {
-            IsImageEnabled = false;
             if (!ProjectLine.IsEnabled)
                 return;
-
-            IsLoading = true;
-            RaisePropertyChanged(() => IsLoading);
 
             ProjectLine.WaveForm.MakeWaveForm(100, ProjectLine.WavImageHash, System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR));
             IsImageEnabled = true;
             RaisePropertyChanged(() => Width);
             RaisePropertyChanged(() => WavImage);
-
-            IsLoading = false;
-            RaisePropertyChanged(() => IsLoading);
         }
 
 
@@ -128,7 +136,8 @@ namespace WavConfigTool.ViewModels
             RaisePropertiesChanged(
                 () => ConsonantZones,
                 () => VowelZones,
-                () => RestZones
+                () => RestZones,
+                () => Phonemes
             );
         }
 
@@ -292,16 +301,20 @@ namespace WavConfigTool.ViewModels
         {
             RaisePropertiesChanged(
                 () => Filename,
-                () => Phonemes,
                 () => IsCompleted,
                 () => WavImage
             );
             RaisePropertiesChanged(
-                () => LoadingProperty,
-                () => DisabledProperty,
-                () => EnabledProperty
+                () => EditEnabled,
+                () => IsEnabled,
+                () => IsDisabled
             );
             ApplyPoints();
+        }
+
+        private void HandleLoaded()
+        {
+            HandleProjectLineChanged();
         }
 
         #endregion

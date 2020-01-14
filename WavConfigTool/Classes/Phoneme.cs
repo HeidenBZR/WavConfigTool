@@ -1,5 +1,6 @@
 ﻿
 
+using DevExpress.Mvvm;
 using System.ComponentModel;
 
 namespace WavConfigTool.Classes
@@ -28,7 +29,7 @@ namespace WavConfigTool.Classes
         }
     }
 
-    public abstract class Phoneme : INotifyPropertyChanged
+    public abstract class Phoneme : ViewModelBase
     {
         public double Preutterance { get; set; }
         public double Overlap { get; set; }
@@ -59,10 +60,8 @@ namespace WavConfigTool.Classes
             }
         }
         private bool hasZone;
-        public bool HasZone { get => hasZone; set { hasZone = value; FireChanged(this); } }
+        public bool HasZone { get => hasZone; set { hasZone = value; FireChanged(); } }
         public Recline Recline;
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public bool IsConsonant { get { return Type == PhonemeType.Consonant; } }
         public bool IsVowel { get { return Type == PhonemeType.Vowel; } }
@@ -83,9 +82,9 @@ namespace WavConfigTool.Classes
             return phoneme.Alias;
         }
 
-        public void FireChanged(object sender)
+        public void FireChanged()
         {
-            PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("HasZone"));
+            RaisePropertyChanged(() => HasZone);
         }
     };
 
