@@ -57,6 +57,8 @@ namespace WavConfigTool.Classes
 
         public static Project Current { get; private set; }
 
+        public bool IsChangedAfterBackup { get; private set; }
+
         #endregion
 
 
@@ -91,14 +93,12 @@ namespace WavConfigTool.Classes
 
         private void Project_OnProjectChanged()
         {
-            if (IsLoaded)
-                FireSaveMe();
+            FireSaveMe();
         }
 
         private void Project_OnProjectLineChanged()
         {
-            if (IsLoaded)
-                FireSaveMe();
+            FireSaveMe();
         }
 
         public void SetVoicebank(Voicebank voicebank)
@@ -215,14 +215,17 @@ namespace WavConfigTool.Classes
             projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
             projectLine.ProjectLinePointsChanged += delegate { FireSaveMe(); };
         }
-
-        public void Save(string filename)
+        
+        public void HandleBackupSaved()
         {
-            Reader.ProjectReader.Current.Write(filename, this);
+            IsChangedAfterBackup = false;
         }
 
         public void FireSaveMe()
         {
+            if (!IsLoaded)
+                return;
+            IsChangedAfterBackup = true;
             BeforeSave();
             SaveMe();
             AfterSave();

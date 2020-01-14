@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace WavConfigTool.Tools
 {
@@ -31,6 +32,8 @@ namespace WavConfigTool.Tools
                 Directory.CreateDirectory(Reclist());
             if (!Directory.Exists(Settings.TempDir))
                 Directory.CreateDirectory(Settings.TempDir);
+            if (!Directory.Exists(Backup(true)))
+                Directory.CreateDirectory(Backup(true));
         }
 
         public string Reclist(string filename = "")
@@ -48,6 +51,18 @@ namespace WavConfigTool.Tools
             var filename = name == "" ? reclistName : $"{reclistName}__{name}";
             filename += REPLACEMENT_EXT;
             return Settings.GetResoucesPath(Path.Combine("WavConfigTool", "Settings", filename));
+        }
+
+        public string Backup(bool onlyFolder = false)
+        {
+            var folder = Path.Combine(Path.GetTempPath(), "WavConfigTool", "backups");
+            if (onlyFolder)
+            {
+                return folder;
+            }
+            string timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+            var filename = $"backup_{timeStamp}" + PROJECT_EXT;
+            return Path.Combine(folder, filename);
         }
     }
 }

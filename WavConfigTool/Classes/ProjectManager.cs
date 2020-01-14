@@ -13,6 +13,12 @@ namespace WavConfigTool.Classes
     class ProjectManager
     {
         public Project Project;
+
+        public ProjectManager()
+        {
+            WatchForBackup();
+        }
+
         public void CheckForBackup()
         {
             if (File.Exists(Settings.TempProject))
@@ -32,14 +38,10 @@ namespace WavConfigTool.Classes
         {
             Project = null;
             Settings.CheckPath();
-            CheckForBackup();
+            CheckForLast();
             if (Project == null)
             {
-                CheckForLast();
-                if (Project == null)
-                {
-                    CreateProject();
-                }
+                CreateProject();
             }
             Project.SetOtoGenerator(new OtoGenerator(Project.Reclist, Project, Project.Replacer));
             Project.SaveMe += Save;
@@ -95,6 +97,36 @@ namespace WavConfigTool.Classes
             Project = ProjectReader.Current.Read(Settings.TempProject);
         }
 
+        public void Reset()
+        {
+            Project = null;
+        }
+
+        private void WatchForBackup()
+        {
+            System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
+
+            timer.Tick += new EventHandler(MakeBackup);
+            timer.Interval = new TimeSpan(0, 1, 0);
+            timer.Start();
+        }
+
+        private void MakeBackup(object sender, EventArgs e)
+        {
+            if (Project != null && Project.IsLoaded && Project.IsChangedAfterBackup)
+            {
+                Reader.ProjectReader.Current.Write(PathResolver.Current.Backup(), Project);
+                Project.HandleBackupSaved();
+            }
+            var files = Directory.GetFiles(PathResolver.Current.Backup(onlyFolder: true), "backup*" + PathResolver.PROJECT_EXT).ToList();
+            files.Sort();
+            files.Reverse();
+            for (var i = 10; i < files.Count; i++)
+            {
+                File.Delete(files[i]);
+            }
+        }
+
         public MessageBoxConfirmationCommand MustRecoverCommand => new MessageBoxConfirmationCommand((obj) =>
         {
             Recover();
@@ -102,11 +134,6 @@ namespace WavConfigTool.Classes
            "Unsaved project found. Recover it?",
             (obj) => File.Exists(Settings.TempProject)
         );
-
-        public void Reset()
-        {
-            Project = null;
-        }
 
     }
 }
