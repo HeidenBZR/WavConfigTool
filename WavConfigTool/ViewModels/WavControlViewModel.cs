@@ -27,13 +27,7 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public double Length
-        {
-            get
-            {
-                return Settings.ViewToRealX(Width);
-            }
-        }
+        public double Length => Settings.ViewToRealX(Width);
 
         public bool IsOtoBase { get; set; } = false;
 
@@ -44,18 +38,6 @@ namespace WavConfigTool.ViewModels
         public List<WavZoneViewModel> ConsonantZones { get { return GetZones(PhonemeType.Consonant); } }
         public List<WavZoneViewModel> VowelZones { get { return GetZones(PhonemeType.Vowel); } }
         public List<WavZoneViewModel> RestZones { get { return GetZones(PhonemeType.Rest); } }
-
-        public List<WavZoneViewModel> GetZones(PhonemeType type)
-        {
-            var points = ProjectLine.PointsOfType(type).ShallowClone();
-            var zones = new List<WavZoneViewModel>();
-            points.Sort();
-            for (int i = 0; i + 1 < points.Count; i += 2)
-            {
-                zones.Add(new WavZoneViewModel(type, Settings.RealToViewX(points[i]), Settings.RealToViewX(points[i + 1]), Settings.RealToViewX(Length)));
-            }
-            return zones;
-        }
 
         public string Filename { get => ProjectLine.Recline.Filename; }
         public List<Phoneme> Phonemes { get => ProjectLine.Recline.Phonemes; }
@@ -71,40 +53,24 @@ namespace WavConfigTool.ViewModels
 
         public int Width => ProjectLine.IsEnabled ? ProjectLine.WaveForm.VisualWidth : 1000;
         public bool IsImageEnabled { get; set; } = false;
-        public ImageSource WavImage
-        {
-            get
-            {
-                if (IsImageEnabled)
-                {
-                    return ProjectLine.WaveForm.BitmapImage;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
+        public ImageSource WavImage => IsImageEnabled ? ProjectLine.WaveForm.BitmapImage : null;
 
         public PhonemeType PhonemeTypeRest => PhonemeType.Rest;
         public PhonemeType PhonemeTypeVowel => PhonemeType.Vowel;
         public PhonemeType PhonemeTypeConsonant => PhonemeType.Consonant;
 
-        public WavControlViewModel()
+
+        public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
+        public event OtoModeHandler OnOtoMode = delegate { };
+
+        public WavControlViewModel() : base()
         {
-            OnOtoMode += delegate { };
             PointsChanged += OnPointsChanged;
         }
 
-        public WavControlViewModel(ProjectLine projectLine) : base()
+        public WavControlViewModel(ProjectLine projectLine) : this()
         {
-            PointsChanged += OnPointsChanged;
             ProjectLine = projectLine;
-        }
-
-        public override void ResetImage()
-        {
-
         }
 
         public override void Load()
@@ -147,16 +113,6 @@ namespace WavConfigTool.ViewModels
             FillPoints(PhonemeType.Rest);
             FillPoints(PhonemeType.Vowel);
             FirePointsChanged();
-        }
-
-        internal ObservableCollection<WavControlBaseViewModel> GenerateOtoPreview()
-        {
-            var collection = new ObservableCollection<WavControlBaseViewModel>();
-            foreach (Oto oto in ProjectLine.Recline.OtoList)
-            {
-                collection.Add(new OtoPreviewControlViewModel(oto, WavImage));
-            }
-            return collection;
         }
 
         public event SimpleHandler RegenerateOtoRequest;
@@ -202,6 +158,17 @@ namespace WavConfigTool.ViewModels
             if (position > Width)
                 position = Width - 5;
             return position;
+        }
+        private List<WavZoneViewModel> GetZones(PhonemeType type)
+        {
+            var points = ProjectLine.PointsOfType(type).ShallowClone();
+            var zones = new List<WavZoneViewModel>();
+            points.Sort();
+            for (int i = 0; i + 1 < points.Count; i += 2)
+            {
+                zones.Add(new WavZoneViewModel(type, Settings.RealToViewX(points[i]), Settings.RealToViewX(points[i + 1]), Settings.RealToViewX(Length)));
+            }
+            return zones;
         }
 
         public void AddPoint(double position, PhonemeType type, bool checkRest = true)
@@ -256,6 +223,16 @@ namespace WavConfigTool.ViewModels
         }
 
         #region private
+
+        internal ObservableCollection<WavControlBaseViewModel> GenerateOtoPreview()
+        {
+            var collection = new ObservableCollection<WavControlBaseViewModel>();
+            foreach (Oto oto in ProjectLine.Recline.OtoList)
+            {
+                collection.Add(new OtoPreviewControlViewModel(oto, WavImage));
+            }
+            return collection;
+        }
 
         private void FillPoints(PhonemeType type)
         {
@@ -331,7 +308,6 @@ namespace WavConfigTool.ViewModels
 
         #region Commands
 
-
         public ICommand WavControlClickCommand
         {
             get
@@ -348,9 +324,6 @@ namespace WavConfigTool.ViewModels
                 );
             }
         }
-
-        public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
-        public event OtoModeHandler OnOtoMode;
 
         public ICommand OtoModeCommand => new DelegateCommand(() =>
         {

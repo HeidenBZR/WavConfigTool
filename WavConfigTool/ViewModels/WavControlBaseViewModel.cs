@@ -28,9 +28,5 @@ namespace WavConfigTool.ViewModels
         {
             PointsChanged();
         }
-
-        public virtual void ResetImage()
-        {
-        }
     }
 }

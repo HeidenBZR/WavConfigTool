@@ -294,8 +294,6 @@ namespace WavConfigTool.ViewModels
 
         public ICommand ReloadProjectCommand => new DelegateCommand(() =>
         {
-            if (PagerViewModel != null)
-                PagerViewModel.UpdateImages();
             ProjectManager.LoadProject();
             LoadProjectAsync();
             Refresh();
