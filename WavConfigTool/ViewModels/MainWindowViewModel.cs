@@ -124,7 +124,10 @@ namespace WavConfigTool.ViewModels
                 PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
                 Project.BeforeSave += () => { WriteProjectOptions(); };
                 await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() => 
-                    Parallel.ForEach(PagerViewModel.Collection, (model) => { (model as WavControlViewModel).Load(); })));
+                    Parallel.ForEach(PagerViewModel.Collection, (model) => 
+                    {
+                        model.Load(); 
+                    })));
             }
             IsLoading = false;
             Refresh();
@@ -170,8 +173,10 @@ namespace WavConfigTool.ViewModels
                 Project.ResetOto();
                 wavControl.ProjectLine.Recline.ResetOto();
                 OtoGenerator.Current.Generate(wavControl.ProjectLine);
-                OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreview());
-                OtoPagerViewModel.Base = wavControl;
+                OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreview())
+                {
+                    Base = wavControl
+                };
                 OtoPagerViewModel.OtoMode();
                 PagerViewModel = OtoPagerViewModel;
                 IsOtoPreviewMode = true;

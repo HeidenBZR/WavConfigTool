@@ -15,8 +15,6 @@ namespace WavConfigTool.ViewModels
 {
     public class WavControlViewModel : WavControlBaseViewModel
     {
-        private ProjectLine _projectLine;
-
         public ProjectLine ProjectLine
         {
             get => _projectLine;
@@ -62,6 +60,7 @@ namespace WavConfigTool.ViewModels
 
         public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
         public event OtoModeHandler OnOtoMode = delegate { };
+        public event SimpleHandler OnLoaded = delegate { };
 
         public WavControlViewModel() : base()
         {
@@ -81,6 +80,7 @@ namespace WavConfigTool.ViewModels
                 phoneme.FireChanged(this);
             }
             ApplyPoints();
+            OnLoaded();
         }
 
         public async void LoadImageAsync()
@@ -171,7 +171,7 @@ namespace WavConfigTool.ViewModels
             return zones;
         }
 
-        public void AddPoint(double position, PhonemeType type, bool checkRest = true)
+        public void AddPoint(double position, PhonemeType type)
         {
             position = CheckPosition(position);
             var i = ProjectLine.AddPoint(Settings.ViewToRealX(position), type);
@@ -222,9 +222,7 @@ namespace WavConfigTool.ViewModels
                 return $"{ProjectLine.Recline.Name} : WavControlViewModel";
         }
 
-        #region private
-
-        internal ObservableCollection<WavControlBaseViewModel> GenerateOtoPreview()
+        public ObservableCollection<WavControlBaseViewModel> GenerateOtoPreview()
         {
             var collection = new ObservableCollection<WavControlBaseViewModel>();
             foreach (Oto oto in ProjectLine.Recline.OtoList)
@@ -233,6 +231,9 @@ namespace WavConfigTool.ViewModels
             }
             return collection;
         }
+
+        #region private
+        private ProjectLine _projectLine;
 
         private void FillPoints(PhonemeType type)
         {
@@ -245,7 +246,6 @@ namespace WavConfigTool.ViewModels
                 var point = CreatePoint(position, type, i);
                 points.Add(point);
             }
-
         }
 
         private WavPointViewModel CreatePoint(double p, PhonemeType type, int i)

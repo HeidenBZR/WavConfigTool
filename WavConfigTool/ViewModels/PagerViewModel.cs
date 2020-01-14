@@ -1,4 +1,5 @@
 ﻿using DevExpress.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,86 +10,29 @@ namespace WavConfigTool.ViewModels
 {
     public class PagerViewModel : ViewModelBase
     {
-        private int _currentPage = 0;
-        private int _pageSize = 7;
+        public WavControlBaseViewModel Base { get; set; }
 
-        public ObservableCollection<WavControlBaseViewModel> Collection { get; private set; } = new ObservableCollection<WavControlBaseViewModel>();
-
+        public int PageSize { get => _pageSize; set => SetPageSizeCommand.Execute(value); }
         public int ItemsCount { get; set; } = 0;
-
-        // TODO: Проверить корректность
-        public int PagesTotal
-        {
-            get
-            {
-                if (ItemsCount == 0)
-                    return 1;
-                var realSize = IsOtoMode ? PageSize - 1 : PageSize;
-                var pages = ItemsCount / realSize;
-                if (ItemsCount % realSize > 0)
-                    pages++;
-                return pages;
-            }
-        }
+        public int PagesTotal => GetPagesTotal();
         public int CurrentPage
         {
             get => _currentPage;
             set => SetPageCommand.Execute(value);
         }
-        public int PageSize { get => _pageSize; set => SetPageSizeCommand.Execute(value); }
-        public delegate void SimpleHandler();
-        public event SimpleHandler PagerChanged;
-
-        public WavControlBaseViewModel Base { get; set; }
-        public bool IsHidden { get; set; } = false;
-
-        public bool IsOtoMode { get; set; } = false;
         public int CurrentPageView { get => CurrentPage + 1; set => CurrentPage = value - 1; }
+        public bool IsHidden { get; set; } = false;
+        public bool IsOtoMode { get; set; } = false;
 
-        private ObservableCollection<WavControlBaseViewModel> pageContent = new ObservableCollection<WavControlBaseViewModel>();
+        public ObservableCollection<WavControlBaseViewModel> Collection { get; private set; } = new ObservableCollection<WavControlBaseViewModel>();
+        public ObservableCollection<WavControlBaseViewModel> PageContent => GetPageContent();
 
-        public ObservableCollection<WavControlBaseViewModel> PageContent
-        {
-            get
-            {
-                if (IsHidden)
-                    return new ObservableCollection<WavControlBaseViewModel>();
-                if (IsOtoMode)
-                {
-                    if (pageContent.Count == 0)
-                    {
-                        pageContent.Add(Base);
-                    }
-                    else if (pageContent[0] != Base)
-                    {
-                        pageContent[0] = Base;
-                    }
-                    while (pageContent.Count > 1)
-                    {
-                        pageContent.RemoveAt(1);
-                    }
-                    var otosPageSize = PageSize - 1;
-                    for (int i = otosPageSize * CurrentPage; i < otosPageSize * (CurrentPage + 1) && i < Collection.Count; i++)
-                    {
-                        pageContent.Add(Collection[i]);
-                    }
-                }
-                else
-                {
-                    pageContent.Clear();
-                    for (int i = PageSize * CurrentPage; i < PageSize * (CurrentPage + 1); i++)
-                    {
-                        if (i < Collection.Count)
-                            pageContent.Add(Collection[i]);
-                    }
-                }
-                return pageContent;
-            }
-        }
+        public delegate void SimpleHandler();
+
+        public event SimpleHandler PagerChanged = delegate { };
 
         public PagerViewModel()
         {
-            PagerChanged += delegate { };
             RaisePropertyChanged(() => PageContent);
             IsHidden = false;
         }
@@ -101,7 +45,6 @@ namespace WavConfigTool.ViewModels
             RaisePropertyChanged(() => PagesTotal);
             IsHidden = false;
             ItemsCount = Collection.Count();
-            PagerChanged += delegate { };
         }
 
         public void Clear()
@@ -135,6 +78,92 @@ namespace WavConfigTool.ViewModels
             projectOptions.LastPage = CurrentPage;
             projectOptions.PageSize = PageSize;
         }
+
+        public void OtoMode()
+        {
+            CurrentPage = 0;
+            IsOtoMode = true;
+            Refresh();
+        }
+
+        public void UpdateOtoPreviewControls(ObservableCollection<WavControlBaseViewModel> controls)
+        {
+            while (Collection.Count > 0)
+            {
+                Collection.RemoveAt(Collection.Count - 1);
+            }
+            foreach (var control in controls)
+            {
+                Collection.Add(control);
+            }
+            IsHidden = false;
+            ItemsCount = Collection.Count();
+        }
+
+        #region private
+
+        private ObservableCollection<WavControlBaseViewModel> pageContent = new ObservableCollection<WavControlBaseViewModel>();
+        private int _currentPage = 0;
+        private int _pageSize = 7;
+
+        private ObservableCollection<WavControlBaseViewModel> GetPageContent()
+        {
+            if (IsHidden)
+                return new ObservableCollection<WavControlBaseViewModel>();
+            if (IsOtoMode)
+            {
+                if (pageContent.Count == 0)
+                {
+                    pageContent.Add(Base);
+                }
+                else if (pageContent[0] != Base)
+                {
+                    pageContent[0] = Base;
+                }
+                while (pageContent.Count > 1)
+                {
+                    pageContent.RemoveAt(1);
+                }
+                var otosPageSize = PageSize - 1;
+                for (int i = otosPageSize * CurrentPage; i < otosPageSize * (CurrentPage + 1) && i < Collection.Count; i++)
+                {
+                    pageContent.Add(Collection[i]);
+                }
+            }
+            else
+            {
+                pageContent.Clear();
+                for (int i = PageSize * CurrentPage; i < PageSize * (CurrentPage + 1); i++)
+                {
+                    if (i < Collection.Count)
+                        pageContent.Add(Collection[i]);
+                }
+            }
+            return pageContent;
+        }
+
+        private void Refresh()
+        {
+            RaisePropertyChanged(() => PageSize);
+            RaisePropertyChanged(() => PagesTotal);
+            RaisePropertyChanged(() => PageContent);
+            PagerChanged();
+        }
+
+        private int GetPagesTotal()
+        {
+            if (ItemsCount == 0)
+                return 1;
+            var realSize = IsOtoMode ? PageSize - 1 : PageSize;
+            var pages = ItemsCount / realSize;
+            if (ItemsCount % realSize > 0)
+                pages++;
+            return pages;
+        }
+
+        #endregion
+
+        #region commands
 
         public ICommand SetFirstPageCommand => new DelegateCommand(delegate
         {
@@ -175,33 +204,6 @@ namespace WavConfigTool.ViewModels
             Refresh();
         }, pageSize => pageSize > 0);
 
-        internal void OtoMode()
-        {
-            CurrentPage = 0;
-            IsOtoMode = true;
-            Refresh();
-        }
-
-        void Refresh()
-        {
-            RaisePropertyChanged(() => PageSize);
-            RaisePropertyChanged(() => PagesTotal);
-            RaisePropertyChanged(() => PageContent);
-            PagerChanged();
-        }
-
-        internal void UpdateOtoPreviewControls(ObservableCollection<WavControlBaseViewModel> controls)
-        {
-            while (Collection.Count > 0)
-            {
-                Collection.RemoveAt(Collection.Count - 1);
-            }
-            foreach (var control in controls)
-            {
-                Collection.Add(control);
-            }
-            IsHidden = false;
-            ItemsCount = Collection.Count();
-        }
+        #endregion
     }
 }

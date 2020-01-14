@@ -39,8 +39,7 @@ namespace WavConfigTool.Classes
                 double overlap = 0;
                 data = data[1].Split(',');
                 alias = data[0];
-                double result;
-                if (double.TryParse(data[1], out result))
+                if (double.TryParse(data[1], out double result))
                 {
                     offset = result;
                 }
@@ -70,7 +69,7 @@ namespace WavConfigTool.Classes
                     offset + overlap
                 );
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
