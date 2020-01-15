@@ -12,6 +12,7 @@ using System.Windows.Threading;
 
 namespace WavConfigTool
 {
+    public delegate void SimpleHandler();
     /// <summary>
     /// Логика взаимодействия для App.xaml
     /// </summary>

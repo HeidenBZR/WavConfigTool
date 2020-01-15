@@ -21,7 +21,6 @@ namespace WavConfigTool.ViewModels
 
         public delegate void WavPointChangedEventHandler(double position1, double position2);
         public delegate void WavPointDeletedEventHandler(double position1);
-        public delegate void SimpleHandler();
         public event WavPointChangedEventHandler WavPointChanged = delegate { };
         public event WavPointDeletedEventHandler WavPointDeleted = delegate { };
         public event SimpleHandler RegenerateOtoRequest = delegate { };

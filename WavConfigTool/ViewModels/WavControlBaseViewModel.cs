@@ -11,8 +11,6 @@ namespace WavConfigTool.ViewModels
 
         public event SimpleHandler PointsChanged;
 
-        public delegate void SimpleHandler();
-
         public static void SortPoints(ObservableCollection<WavPointViewModel> collection)
         {
             var sortableList = new List<WavPointViewModel>(collection);

@@ -27,8 +27,6 @@ namespace WavConfigTool.ViewModels
         public ObservableCollection<WavControlBaseViewModel> Collection { get; private set; } = new ObservableCollection<WavControlBaseViewModel>();
         public ObservableCollection<WavControlBaseViewModel> PageContent => GetPageContent();
 
-        public delegate void SimpleHandler();
-
         public event SimpleHandler PagerChanged = delegate { };
 
         public PagerViewModel()

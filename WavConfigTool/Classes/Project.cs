@@ -62,7 +62,6 @@ namespace WavConfigTool.Classes
         #endregion
 
 
-        public delegate void SimpleHandler();
         public event SimpleHandler ProjectChanged = delegate { };
         public event SimpleHandler ProjectLinesChanged = delegate { };
         public event SimpleHandler BeforeSave = delegate { };
@@ -82,16 +81,6 @@ namespace WavConfigTool.Classes
             ProjectLinesChanged += Project_OnProjectLineChanged;
             IsLoaded = false;
             ResetOto();
-        }
-
-        private void Project_OnProjectChanged()
-        {
-            FireSaveMe();
-        }
-
-        private void Project_OnProjectLineChanged()
-        {
-            FireSaveMe();
         }
 
         public void SetVoicebank(Voicebank voicebank)
@@ -189,21 +178,6 @@ namespace WavConfigTool.Classes
             return (newAlias, oto);
         }
 
-        private bool CheckForDuplicates(int i)
-        {
-            return i == 0 || Reclist.WavMask.MaxDuplicates == 0 || i < Reclist.WavMask.MaxDuplicates;
-        }
-
-        void NewProject(string reclist, string voicebank)
-        {
-            ProjectLines = new List<ProjectLine>();
-            Voicebank = new Voicebank(voicebank);
-            Reclist = Reader.ReclistReader.Current.Read(reclist);
-            if (Reclist.IsLoaded)
-                Reader.ReclistReader.Current.Write(reclist, Reclist);
-            FireSaveMe();
-        }
-
         public void ProcessLineAfterRead(ProjectLine projectLine)
         {
             projectLine.ReclistAndVoicebankCheck(Reclist, Voicebank);
@@ -268,5 +242,21 @@ namespace WavConfigTool.Classes
             var oto = GetOtoText();
             File.WriteAllText(filename, oto, Encoding.GetEncoding(932));
         }
+
+        private void Project_OnProjectChanged()
+        {
+            FireSaveMe();
+        }
+
+        private void Project_OnProjectLineChanged()
+        {
+            FireSaveMe();
+        }
+
+        private bool CheckForDuplicates(int i)
+        {
+            return i == 0 || Reclist.WavMask.MaxDuplicates == 0 || i < Reclist.WavMask.MaxDuplicates;
+        }
+
     }
 }

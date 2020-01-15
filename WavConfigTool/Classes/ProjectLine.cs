@@ -32,9 +32,8 @@ namespace WavConfigTool.Classes
         public string WavImageHash { get; set; }
         public WaveForm WaveForm { get; set; }
 
-        public delegate void ProjectLineChangedEventHandler();
-        public event ProjectLineChangedEventHandler ProjectLineChanged;
-        public event ProjectLineChangedEventHandler ProjectLinePointsChanged;
+        public event SimpleHandler ProjectLineChanged;
+        public event SimpleHandler ProjectLinePointsChanged;
 
         /// <summary>
         /// Возвращает true если файл существовал на момент чтения проекта или изменения голосового банка/реклиста
