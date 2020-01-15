@@ -18,7 +18,7 @@ namespace WavConfigTool
     /// </summary>
     public partial class App : Application
     {
-        public static Dispatcher MainDispatcher;
+        public static Dispatcher MainDispatcher { get; private set; }
 
         public App()
         {

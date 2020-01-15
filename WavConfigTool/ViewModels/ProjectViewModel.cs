@@ -44,8 +44,9 @@ namespace WavConfigTool.ViewModels
                 ProjectDataChanged();
             }
         }
-        public string VoicebankName => Project?.Voicebank?.Name;
+        public string VoicebankName => Project?.Voicebank?.GetFullName();
         public event SimpleHandler ProjectDataChanged;
+
 
         public ProjectViewModel()
         {

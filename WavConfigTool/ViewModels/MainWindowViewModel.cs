@@ -21,9 +21,10 @@ namespace WavConfigTool.ViewModels
 
         public ProjectViewModel ProjectViewModel { get; set; }
         public Project Project => ProjectManager.Project;
-        public string ReclistName { get => Project == null || Project.Reclist == null ? null : Project.Reclist.Name; }
-        public string VoicebankName { get => Project == null || Project.Voicebank == null ? null : Project.Voicebank.Name; }
-        public string VoicebankImagePath { get => Project.Voicebank.ImagePath; }
+        public string ReclistName  => Project != null && Project.Voicebank != null && Project.IsLoaded ? Project.Reclist.Name : null;
+        public string VoicebankName  => Project != null && Project.Voicebank != null && Project.IsLoaded ? Project.Voicebank.Name : null;
+        public string VoicebankImagePath => Project != null && Project.Voicebank != null && Project.IsLoaded ? Project.Voicebank.ImagePath : null;
+        public string VoicebankSubfolder => Project != null && Project.Voicebank != null && Project.IsLoaded ? Project.Voicebank.Subfolder : null;
         public BitmapImage VoicebankImage
         {
             get
@@ -119,7 +120,10 @@ namespace WavConfigTool.ViewModels
                     })));
             }
             IsLoading = false;
-            Refresh();
+            App.MainDispatcher.Invoke(() =>
+            {
+                Refresh();
+            });
         }
 
         private void WriteProjectOptions()
@@ -156,15 +160,18 @@ namespace WavConfigTool.ViewModels
                 return;
             RaisePropertiesChanged(
                 () => VoicebankName,
+                () => VoicebankSubfolder,
                 () => VoicebankImagePath,
-                () => PagerViewModel);
+                () => PagerViewModel
+            );
 
             RaisePropertiesChanged(
                 () => ConsonantAttack,
                 () => VowelAttack,
                 () => VowelDecay,
                 () => Prefix,
-                () => Suffix);
+                () => Suffix
+            );
 
             RaisePropertiesChanged(
                 () => WavAmplitudeMultiplayer,
@@ -188,12 +195,13 @@ namespace WavConfigTool.ViewModels
 
         private string GetTitle()
         {
+            var projectFileName = Project != null && Project.IsLoaded ? " " + Path.GetFileName(Settings.ProjectFile) : "";
             var alphaString = $"(Alpha v.{AlphaVersion})";
             if (Project == null)
-                return $"WavConfig v.{Version.ToString()} {alphaString}";
+                return $"WavConfig v.{Version.ToString()} {alphaString}{projectFileName}";
             if (PagerViewModel == null || PagerViewModel.PagesTotal == 0)
-                return $"WavConfig v.{Version.ToString()} {alphaString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
-            return $"WavConfig v.{Version.ToString()} {alphaString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
+                return $"WavConfig v.{Version.ToString()} {alphaString}{projectFileName}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
+            return $"WavConfig v.{Version.ToString()} {alphaString}{projectFileName} [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
                 $"Page {PagerViewModel.CurrentPage + 1}/{PagerViewModel.PagesTotal}";
         }
 
@@ -233,13 +241,28 @@ namespace WavConfigTool.ViewModels
             if (filename.Length > 0)
             {
                 ResetProject();
+                Settings.ProjectFile = filename;
                 ProjectManager.CreateProject();
                 CallProjectCommand.Execute(this);
-                ProjectManager.SaveAs(filename);
+                ProjectManager.Save();
                 LoadProjectAsync();
             }
         },
         "Save New Project",
+        "WavConfig Project Files|*.wcp|*|*",
+        param => true,
+        "voicebank");
+
+        public ICommand SaveProjectAsNewCommand => new SaveFileCommand((obj) =>
+        {
+            string filename = (string)obj;
+            if (filename.Length > 0)
+            {
+                ProjectManager.SaveAs((string)obj);
+                Refresh();
+            }
+        },
+        "Save Project As",
         "WavConfig Project Files|*.wcp|*|*",
         param => true,
         "voicebank");
@@ -259,6 +282,8 @@ namespace WavConfigTool.ViewModels
         "WavConfig Project Files|*.wcp|*|*",
         param => true,
         "voicebank");
+
+
         public ICommand CallProjectCommand => new DelegateCommonCommand((obj) =>
         {
             if (ProjectViewModel != null)

@@ -66,10 +66,6 @@ namespace WavConfigTool.Classes.Reader
         private IOProject GetIOProject(Project project)
         {
             var ioProject = new IOProject();
-            if (project.Voicebank != null)
-                ioProject.Voicebank = project.Voicebank.Location;
-            if (project.Reclist != null)
-                ioProject.Reclist = project.Reclist.Name;
             ioProject.WavOptions.WavPrefix = project.WavPrefix;
             ioProject.WavOptions.WavSuffix = project.WavSuffix;
             ioProject.WavOptions.WavAmplitudeMultiplayer = project.WavAmplitudeMultiplayer;
@@ -78,17 +74,25 @@ namespace WavConfigTool.Classes.Reader
             ioProject.OtoOptions.VowelDecay = project.VowelDecay;
             ioProject.OtoOptions.VowelAttack = project.VowelAttack;
             ioProject.OtoOptions.ConsonantAttack = project.ConsonantAttack;
-            ioProject.ProjectOptions = new IOProjectOptions();
-            ioProject.ProjectOptions.LastPage = project.ProjectOptions.LastPage;
-            ioProject.ProjectOptions.PageSize = project.ProjectOptions.PageSize;
+            ioProject.ProjectOptions = new IOProjectOptions
+            {
+                LastPage = project.ProjectOptions.LastPage,
+                PageSize = project.ProjectOptions.PageSize
+            };
+            if (project.Voicebank != null)
+                ioProject.Voicebank = project.Voicebank.Location;
+            if (project.Reclist != null)
+                ioProject.Reclist = project.Reclist.Name;
 
             var wavConfigsList = new List<IOWavConfig>();
             foreach (var projectLine in project.ProjectLines)
             {
-                var ioWavConfig = new IOWavConfig();
-                ioWavConfig.Rests = projectLine.RestPoints.ToArray();
-                ioWavConfig.Vowels = projectLine.VowelPoints.ToArray();
-                ioWavConfig.Consonants = projectLine.ConsonantPoints.ToArray();
+                var ioWavConfig = new IOWavConfig
+                {
+                    Rests = projectLine.RestPoints.ToArray(),
+                    Vowels = projectLine.VowelPoints.ToArray(),
+                    Consonants = projectLine.ConsonantPoints.ToArray()
+                };
                 if (projectLine.Recline != null)
                     ioWavConfig.File = projectLine.Recline.Filename;
                 wavConfigsList.Add(ioWavConfig);
@@ -100,17 +104,18 @@ namespace WavConfigTool.Classes.Reader
 
         private Project GetProject(IOProject ioProject)
         {
-            var project = new Project();
-
-            project.WavPrefix = ioProject.WavOptions.WavPrefix;
-            project.WavSuffix = ioProject.WavOptions.WavSuffix;
-            project.WavAmplitudeMultiplayer = ioProject.WavOptions.WavAmplitudeMultiplayer;
-            project.Prefix = ioProject.OtoOptions.OtoPrefix;
-            project.Suffix = ioProject.OtoOptions.OtoSuffix;
-            project.VowelDecay = ioProject.OtoOptions.VowelDecay;
-            project.VowelAttack = ioProject.OtoOptions.VowelAttack;
-            project.ConsonantAttack = ioProject.OtoOptions.ConsonantAttack;
-            project.ProjectOptions = new ProjectOptions();
+            var project = new Project
+            {
+                WavPrefix = ioProject.WavOptions.WavPrefix,
+                WavSuffix = ioProject.WavOptions.WavSuffix,
+                WavAmplitudeMultiplayer = ioProject.WavOptions.WavAmplitudeMultiplayer,
+                Prefix = ioProject.OtoOptions.OtoPrefix,
+                Suffix = ioProject.OtoOptions.OtoSuffix,
+                VowelDecay = ioProject.OtoOptions.VowelDecay,
+                VowelAttack = ioProject.OtoOptions.VowelAttack,
+                ConsonantAttack = ioProject.OtoOptions.ConsonantAttack,
+                ProjectOptions = new ProjectOptions()
+            };
             project.ProjectOptions.LastPage = ioProject.ProjectOptions.LastPage;
             project.ProjectOptions.PageSize = ioProject.ProjectOptions.PageSize;
 

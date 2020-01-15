@@ -27,7 +27,7 @@ namespace WavConfigTool.Classes.Reader
         public void Write(string path, Project project)
         {
             StringBuilder text = new StringBuilder();
-            text.Append($"$Voicebank={project.Voicebank.Location}\r\n");
+            text.Append($"$Voicebank={project.Voicebank.Fullpath}\r\n");
             text.Append($"$Reclist={project.Reclist.Name}\r\n");
             text.Append($"$Suffix={project.Suffix}\r\n");
             text.Append($"$Prefix={project.Prefix}\r\n");
@@ -108,7 +108,6 @@ namespace WavConfigTool.Classes.Reader
             string[] lines = File.ReadAllLines(location, Encoding.UTF8);
             project.Options = new Dictionary<string, string>();
             project.ProjectLines = new List<ProjectLine>();
-            var _projectLinesByFilename = new Dictionary<string, ProjectLine>();
             int i = 0;
             /// Совместимость со старыми сейвами без опций
             if (!lines[0].StartsWith("$"))

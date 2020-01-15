@@ -97,7 +97,7 @@ namespace WavConfigTool.Classes
             if (!IsEnabled)
                 return;
             WavImageHash = $"{voicebank.Name}_{reclist.Name}_{Settings.WAM}_{Project.Current.Prefix}_{Recline.Filename}_{Project.Current.Suffix}"; //.GetHashCode();
-            WaveForm = new WaveForm(Path.Combine(voicebank.Location, Recline.Filename));
+            WaveForm = new WaveForm(Path.Combine(voicebank.Fullpath, Recline.Filename));
         }
 
         public void CalculateZones()

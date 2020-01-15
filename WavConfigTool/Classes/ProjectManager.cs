@@ -30,6 +30,7 @@ namespace WavConfigTool.Classes
             if (File.Exists(Settings.ProjectFile))
             {
                 Project = ProjectReader.Current.Read(Settings.ProjectFile);
+                AfterProjectLoaded();
             }
             Settings.IsUnsaved = false;
         }
@@ -42,9 +43,8 @@ namespace WavConfigTool.Classes
             if (Project == null)
             {
                 CreateProject();
+                AfterProjectLoaded();
             }
-            Project.SetOtoGenerator(new OtoGenerator(Project.Reclist, Project, Project.Replacer));
-            Project.SaveMe += Save;
         }
 
         public void Open(string filename)
@@ -63,9 +63,12 @@ namespace WavConfigTool.Classes
                 project.SetVoicebank(Project.Voicebank);
                 project.SetOtoGenerator(Project.OtoGenerator);
             }
+            if (project.Voicebank != null && project.Voicebank.IsLoaded)
+            {
+                project.Suffix = project.Voicebank.Subfolder;
+            }
             Settings.IsUnsaved = false;
             this.Project = project;
-            Settings.ProjectFile = "";
         }
 
         public void SaveAs(string filename)
@@ -73,6 +76,8 @@ namespace WavConfigTool.Classes
             if (Settings.ProjectFile == filename)
                 return;
             Settings.ProjectFile = filename;
+            if (Project.Voicebank != null)
+                Project.Voicebank.UpdateLocations();
             Save();
         }
 
@@ -125,6 +130,12 @@ namespace WavConfigTool.Classes
             {
                 File.Delete(files[i]);
             }
+        }
+
+        private void AfterProjectLoaded()
+        {
+            Project.SetOtoGenerator(new OtoGenerator(Project.Reclist, Project, Project.Replacer));
+            Project.SaveMe += Save;
         }
 
         public MessageBoxConfirmationCommand MustRecoverCommand => new MessageBoxConfirmationCommand((obj) =>

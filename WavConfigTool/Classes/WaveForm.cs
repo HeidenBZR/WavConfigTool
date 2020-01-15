@@ -47,10 +47,12 @@ namespace WavConfigTool.Classes
 
         public void MakeWaveForm(int height, string imagePath, Color color)
         {
+            Name = imagePath;
+            if (!IsEnabled)
+                return;
             var reader = new AudioFileReader(Path);
             var bitmap = DrawWaveform(reader, height, color);
             BitmapImage = Bitmap2BitmapImage(bitmap);
-            Name = imagePath;
         }
 
         private BitmapImage Bitmap2BitmapImage(Bitmap bitmap)
