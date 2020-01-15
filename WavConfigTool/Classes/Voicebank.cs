@@ -73,6 +73,11 @@ namespace WavConfigTool.Classes
 
         private void ManageLocations(string location)
         {
+            if (Settings.ProjectFile == "")
+            {
+                IsLoaded = false;
+                return;
+            }
             var projectDir = Path.GetDirectoryName(Settings.ProjectFile);
             Fullpath = Path.Combine(projectDir, location);
             Subfolder = "";
