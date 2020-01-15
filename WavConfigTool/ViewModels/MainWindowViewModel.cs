@@ -75,17 +75,6 @@ namespace WavConfigTool.ViewModels
 
         public string Title => GetTitle();
 
-        private string GetTitle()
-        {
-            var alphaString = $"(Alpha v.{AlphaVersion})";
-            if (Project == null)
-                return $"WavConfig v.{Version.ToString()} {alphaString}";
-            if (PagerViewModel == null || PagerViewModel.PagesTotal == 0)
-                return $"WavConfig v.{Version.ToString()} {alphaString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
-            return $"WavConfig v.{Version.ToString()} {alphaString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
-                $"Page {PagerViewModel.CurrentPage + 1}/{PagerViewModel.PagesTotal}";
-        }
-
         public static double ControlHeight { get; set; } = 100;
 
         public string SymbolOfType(PhonemeType type)
@@ -126,7 +115,7 @@ namespace WavConfigTool.ViewModels
                 await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() => 
                     Parallel.ForEach(PagerViewModel.Collection, (model) => 
                     {
-                        model.Load(); 
+                        ExceptionCatcher.Current.CatchOnAsyncCallback(() => model.Load()); 
                     })));
             }
             IsLoading = false;
@@ -159,29 +148,6 @@ namespace WavConfigTool.ViewModels
                 }
             };
             return control;
-        }
-
-        void SetOtoMode(WavControlViewModel wavControl)
-        {
-            if (IsOtoPreviewMode)
-            {
-                SetWavConfigMode.Execute(null);
-            }
-            else
-            {
-                wavControl.IsOtoBase = true;
-                Project.ResetOto();
-                wavControl.ProjectLine.Recline.ResetOto();
-                OtoGenerator.Current.Generate(wavControl.ProjectLine);
-                OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreview())
-                {
-                    Base = wavControl
-                };
-                OtoPagerViewModel.OtoMode();
-                PagerViewModel = OtoPagerViewModel;
-                IsOtoPreviewMode = true;
-                Refresh();
-            }
         }
 
         public void Refresh()
@@ -218,6 +184,40 @@ namespace WavConfigTool.ViewModels
             ProjectManager.Reset();
             IsLoading = true;
             Refresh();
+        }
+
+        private string GetTitle()
+        {
+            var alphaString = $"(Alpha v.{AlphaVersion})";
+            if (Project == null)
+                return $"WavConfig v.{Version.ToString()} {alphaString}";
+            if (PagerViewModel == null || PagerViewModel.PagesTotal == 0)
+                return $"WavConfig v.{Version.ToString()} {alphaString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
+            return $"WavConfig v.{Version.ToString()} {alphaString}  [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
+                $"Page {PagerViewModel.CurrentPage + 1}/{PagerViewModel.PagesTotal}";
+        }
+
+        private void SetOtoMode(WavControlViewModel wavControl)
+        {
+            if (IsOtoPreviewMode)
+            {
+                SetWavConfigMode.Execute(null);
+            }
+            else
+            {
+                wavControl.IsOtoBase = true;
+                Project.ResetOto();
+                wavControl.ProjectLine.Recline.ResetOto();
+                OtoGenerator.Current.Generate(wavControl.ProjectLine);
+                OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreview())
+                {
+                    Base = wavControl
+                };
+                OtoPagerViewModel.OtoMode();
+                PagerViewModel = OtoPagerViewModel;
+                IsOtoPreviewMode = true;
+                Refresh();
+            }
         }
 
         #region Commands

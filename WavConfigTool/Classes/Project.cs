@@ -239,14 +239,19 @@ namespace WavConfigTool.Classes
         public void GenerateOto()
         {
             Sort();
+            ExceptionCatcher.Current.Assert(OtoGenerator != null, "Oto generator was null");
             OtoGenerator.Project = this;
             ResetOto();
+            ExceptionCatcher.Current.Assert(Reclist.Reclines != null, "Reclines was null");
             foreach (Recline recline in Reclist.Reclines)
             {
                 //if (!Voicebank.IsSampleEnabled(recline.Filename))
                 //    continue;
+                ExceptionCatcher.Current.Assert(recline != null, "recline was null");
                 recline.ResetOto();
+                ExceptionCatcher.Current.Assert(ProjectLinesByFilename != null, "ProjectLinesByFilename was null");
                 var projectLine = ProjectLinesByFilename[recline.Filename];
+                ExceptionCatcher.Current.Assert(projectLine != null, "projectLine was null");
                 projectLine.Sort();
                 OtoGenerator.Generate(projectLine);
             }

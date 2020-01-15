@@ -47,6 +47,16 @@ namespace WavConfigTool.Classes
 #endif
         }
 
+        public void Assert(bool passed, string message)
+        {
+#if !DEBUG
+            if (!passed)
+            {
+                throw new Exception(message);
+            }
+#endif
+        }
+
         public void Greeting()
         {
             MessageBox.Show("Crash catch is enabled", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
