@@ -63,11 +63,11 @@ namespace WavConfigTool.Classes
 
 
         public delegate void SimpleHandler();
-        public event SimpleHandler ProjectChanged;
-        public event SimpleHandler ProjectLinesChanged;
-        public event SimpleHandler BeforeSave;
-        public event SimpleHandler AfterSave;
-        public event SimpleHandler SaveMe;
+        public event SimpleHandler ProjectChanged = delegate { };
+        public event SimpleHandler ProjectLinesChanged = delegate { };
+        public event SimpleHandler BeforeSave = delegate { };
+        public event SimpleHandler AfterSave = delegate { };
+        public event SimpleHandler SaveMe = delegate { };
 
         public Project()
         {
@@ -80,15 +80,8 @@ namespace WavConfigTool.Classes
             Options = new Dictionary<string, string>();
             ProjectChanged += Project_OnProjectChanged;
             ProjectLinesChanged += Project_OnProjectLineChanged;
-            BeforeSave += () => { };
-            AfterSave += () => { };
-            SaveMe += () => { };
             IsLoaded = false;
-
-            string st;
-            st = "234";
-            st = null;
-            Console.WriteLine(st + "ser");
+            ResetOto();
         }
 
         private void Project_OnProjectChanged()
@@ -177,8 +170,10 @@ namespace WavConfigTool.Classes
 
         public (string, Oto) AddOto(Oto oto)
         {
+            ExceptionCatcher.Current.Assert(oto != null, "oto was null");
             var newAlias = oto.Alias;
             int i = 0;
+            ExceptionCatcher.Current.Assert(Otos != null, "Otos was null");
             if (Otos.ContainsKey(oto.Alias))
             {
                 do
