@@ -1,4 +1,5 @@
 ﻿using DevExpress.Mvvm;
+using System;
 using System.Windows;
 using System.Windows.Media;
 using WavConfigTool.Classes;
@@ -25,6 +26,8 @@ namespace WavConfigTool.ViewModels
         public Brush BorderBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantBackBrush"];
 
         public WavZoneViewModel() { }
+
+        public string Name => $"Zone [{string.Join(", ", Points)}]";
 
         public WavZoneViewModel(PhonemeType type, double p_in, double p_out, double length)
         {
@@ -130,7 +133,7 @@ namespace WavConfigTool.ViewModels
                             new Point(Out, 100),
                         };
                     }
-                    else if (length - p_in < 10)
+                    else if (Math.Abs(length - p_out) < 10)
                     {
                         BorderPoints1 = new PointCollection
                         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using WavConfigTool.Tools;
@@ -14,24 +15,7 @@ namespace WavConfigTool.Classes
         public List<Zone> ConsonantZones { get; private set; } = new List<Zone>();
         public List<Zone> RestZones { get; private set; } = new List<Zone>();
 
-        public List<int> VirtualRestPoints
-        {
-            get
-            {
-                var points = new List<int>();
-                if (RestPoints.Count > 0)
-                {
-                    points.Add(0);
-                }
-                if (RestPoints.Count > 1)
-                {
-                    points.AddRange(RestPoints.ShallowClone());
-                    if (WaveForm != null)
-                        points.Add(Settings.ViewToRealX(WaveForm.VisualWidth));
-                }
-                return points;
-            }
-        }
+        public List<int> VirtualRestPoints => GetVirtualRestPoints();
 
         public Recline Recline { get; set; }
         public bool IsCompleted
@@ -241,6 +225,23 @@ namespace WavConfigTool.Classes
             SetHasZone();
             ProjectLinePointsChanged();
             return i;
+        }
+
+        private List<int> GetVirtualRestPoints()
+        {
+            var points = new List<int>();
+            if (RestPoints.Count > 0)
+            {
+                points.Add(0);
+                points.Add(RestPoints[0]);
+            }
+            if (RestPoints.Count > 1)
+            {
+                points.AddRange(RestPoints.GetRange(1, RestPoints.Count - 1));
+                if (WaveForm != null && WaveForm.VisualWidth != 0)
+                    points.Add(Settings.ViewToRealX(WaveForm.VisualWidth));
+            }
+            return points;
         }
     }
 }

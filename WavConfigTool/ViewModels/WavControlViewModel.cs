@@ -27,7 +27,7 @@ namespace WavConfigTool.ViewModels
 
 
         public string Filename { get => ProjectLine.Recline.Filename; }
-        public double Length => Settings.ViewToRealX(Width);
+        public double Length =>  Settings.ViewToRealX(Width);
         public ObservableCollection<Phoneme> Phonemes => new ObservableCollection<Phoneme>(ProjectLine.Recline.Phonemes);
 
         public bool IsOtoBase { get; set; } = false;
@@ -51,7 +51,7 @@ namespace WavConfigTool.ViewModels
         public int Number { get; set; }
         public int NumberView => Number + 1;
 
-        public int Width => ProjectLine.IsEnabled ? ProjectLine.WaveForm.VisualWidth : 1000;
+        public int Width => ProjectLine.IsEnabled ? ProjectLine.WaveForm.VisualWidth : 4000;
         public ImageSource WavImage => IsImageEnabled ? ProjectLine.WaveForm.BitmapImage : null;
 
         public PhonemeType PhonemeTypeRest => PhonemeType.Rest;
@@ -80,22 +80,13 @@ namespace WavConfigTool.ViewModels
                 IsLoaded = false;
                 IsLoading = true;
                 IsImageEnabled = false;
-                RaisePropertiesChanged(() => IsLoading, () => IsLoaded, () => EditEnabled);
+                RaisePropertiesChanged(
+                    () => IsLoading,
+                    () => IsLoaded,
+                    () => EditEnabled
+                );
             });
             LoadImageAsync();
-            App.MainDispatcher.Invoke(() =>
-            {
-                ApplyPoints();
-                ProjectLine.SetHasZone();
-                //foreach (var phoneme in ProjectLine.Recline.Phonemes)
-                //{
-                //    phoneme.FireChanged();
-                //}
-                IsLoaded = true;
-                IsLoading = false;
-                RaisePropertiesChanged(() => IsLoading, () => IsLoaded, () => EditEnabled);
-                OnLoaded();
-            });
         }
 
         public async void LoadImageAsync()
@@ -108,10 +99,12 @@ namespace WavConfigTool.ViewModels
             if (!ProjectLine.IsEnabled)
                 return;
 
-            ProjectLine.WaveForm.MakeWaveForm(100, ProjectLine.WavImageHash, System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR));
+            ProjectLine.WaveForm.MakeWaveForm(100, ProjectLine.WavImageHash, 
+                System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR));
             IsImageEnabled = true;
             RaisePropertyChanged(() => Width);
             RaisePropertyChanged(() => WavImage);
+            OnLoaded();
         }
 
 
@@ -175,9 +168,11 @@ namespace WavConfigTool.ViewModels
             points.Sort();
             for (int i = 0; i + 1 < points.Count; i += 2)
             {
-                zones.Add(new WavZoneViewModel(type, Settings.RealToViewX(points[i]), Settings.RealToViewX(points[i + 1]), Settings.RealToViewX(Length)));
+                var pIn = Settings.RealToViewX(points[i]);
+                var pOut = Settings.RealToViewX(points[i + 1]);
+                zones.Add(new WavZoneViewModel(type, pIn, pOut, Width));
             }
-            return zones;
+            return zones;   
         }
 
         public void AddPoint(double position, PhonemeType type)
@@ -302,11 +297,14 @@ namespace WavConfigTool.ViewModels
             RaisePropertiesChanged(
                 () => Filename,
                 () => IsCompleted,
-                () => WavImage
+                () => WavImage,
+                () => EditEnabled
             );
             RaisePropertiesChanged(
                 () => EditEnabled,
                 () => IsEnabled,
+                () => IsLoaded,
+                () => IsLoading,
                 () => IsDisabled
             );
             ApplyPoints();
@@ -314,7 +312,14 @@ namespace WavConfigTool.ViewModels
 
         private void HandleLoaded()
         {
-            HandleProjectLineChanged();
+            App.MainDispatcher.Invoke(() =>
+            {
+                ApplyPoints();
+                ProjectLine.SetHasZone();
+                IsLoaded = true;
+                IsLoading = false;
+                HandleProjectLineChanged();
+            });
         }
 
         #endregion
