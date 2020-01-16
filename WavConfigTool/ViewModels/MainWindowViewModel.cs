@@ -118,11 +118,11 @@ namespace WavConfigTool.ViewModels
                     {
                         ExceptionCatcher.Current.CatchOnAsyncCallback(() => model.Load()); 
                     })));
+                PagerViewModel.ReadProjectOption(Project.ProjectOptions);
             }
             IsLoading = false;
             App.MainDispatcher.Invoke(() =>
             {
-                PagerViewModel.ReadProjectOption(Project.ProjectOptions);
                 Refresh();
             });
         }
