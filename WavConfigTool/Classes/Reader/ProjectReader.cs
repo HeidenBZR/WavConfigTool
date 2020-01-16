@@ -68,7 +68,8 @@ namespace WavConfigTool.Classes.Reader
             var ioProject = new IOProject();
             ioProject.WavOptions.WavPrefix = project.WavPrefix;
             ioProject.WavOptions.WavSuffix = project.WavSuffix;
-            ioProject.WavOptions.WavAmplitudeMultiplayer = project.WavAmplitudeMultiplayer;
+            ioProject.WavOptions.UserScaleY = project.UserScaleY;
+            ioProject.WavOptions.UserScaleX = project.UserScaleX;
             ioProject.OtoOptions.OtoPrefix = project.Prefix;
             ioProject.OtoOptions.OtoSuffix = project.Suffix;
             ioProject.OtoOptions.VowelDecay = project.VowelDecay;
@@ -108,7 +109,8 @@ namespace WavConfigTool.Classes.Reader
             {
                 WavPrefix = ioProject.WavOptions.WavPrefix,
                 WavSuffix = ioProject.WavOptions.WavSuffix,
-                WavAmplitudeMultiplayer = ioProject.WavOptions.WavAmplitudeMultiplayer,
+                UserScaleY = ioProject.WavOptions.UserScaleY,
+                UserScaleX = ioProject.WavOptions.UserScaleX,
                 Prefix = ioProject.OtoOptions.OtoPrefix,
                 Suffix = ioProject.OtoOptions.OtoSuffix,
                 VowelDecay = ioProject.OtoOptions.VowelDecay,

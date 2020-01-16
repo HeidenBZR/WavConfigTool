@@ -325,7 +325,7 @@
                         <TextBlock
                             Padding="0"
                             HorizontalAlignment="Center"
-                            Text="View" />
+                            Text="Image Render Options" />
                         <StackPanel
                             Height="25"
                             Margin="10"
@@ -334,14 +334,22 @@
 
                             <TextBlock
                                 Margin="3,0"
-                                Text="WAM:"
-                                ToolTip="Waveform Amplitude Multiplayer" />
+                                Text="Scale Y:" />
                             <TextBox
                                 Width="30"
                                 Padding="0"
                                 VerticalAlignment="Center"
                                 IsEnabled="{Binding IsNotLoading}"
-                                Text="{Binding WavAmplitudeMultiplayer, Mode=TwoWay}" />
+                                Text="{Binding UserScaleY, Mode=TwoWay}" />
+                            <TextBlock
+                                Margin="3,0"
+                                Text="Scale X:" />
+                            <TextBox
+                                Width="30"
+                                Padding="0"
+                                VerticalAlignment="Center"
+                                IsEnabled="{Binding IsNotLoading}"
+                                Text="{Binding UserScaleX, Mode=TwoWay}" />
 
                         </StackPanel>
                     </StackPanel>

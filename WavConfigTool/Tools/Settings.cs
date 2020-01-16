@@ -50,49 +50,6 @@ namespace WavConfigTool.Tools
                 path);
         }
 
-        public static int ItemsOnPage
-        {
-            get
-            {
-                return Properties.Settings.Default.ItemsOnPage;
-            }
-            set
-            {
-                Properties.Settings.Default.ItemsOnPage = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static int CurrentPage
-        {
-            get
-            {
-                return Properties.Settings.Default.CurrentPage;
-            }
-            set
-            {
-                Properties.Settings.Default.CurrentPage = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-
-        /// <summary>
-        /// Waveform Amplitude Multiplayer
-        /// </summary>
-        public static double WAM
-        {
-            get
-            {
-                return Properties.Settings.Default.WAM;
-            }
-            set
-            {
-                Properties.Settings.Default.WAM = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
         public static string ProjectFile
         {
             get
@@ -157,60 +114,27 @@ namespace WavConfigTool.Tools
             }
         }
 
-        public static bool IsUnsaved
-        {
-            get
-            {
-                return Properties.Settings.Default.IsUnsaved;
-            }
-            set
-            {
-                Properties.Settings.Default.IsUnsaved = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static double ScaleX
-        {
-            get
-            {
-                return Properties.Settings.Default.ScaleX;
-            }
-            set
-            {
-                Properties.Settings.Default.ScaleX = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static double ScaleY
-        {
-            get
-            {
-                return Properties.Settings.Default.ScaleY;
-            }
-            set
-            {
-                Properties.Settings.Default.ScaleY = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
         public static PhonemeType Mode { get; set; } = PhonemeType.Rest;
+
+        public static double ScaleX => 0.45;
+        public static double ScaleY => 60;
+
+        public static double UserScaleX => Project.Current != null ? Project.Current.UserScaleX : 1;
+        public static double UserScaleY => Project.Current != null ? Project.Current.UserScaleY : 1;
 
         public static double RealToViewX(int position)
         {
-            return position * ScaleX;
+            return position * ScaleX * UserScaleX;
         }
 
         public static double RealToViewX(double position)
         {
-            return position * ScaleX;
+            return position * ScaleX * UserScaleX;
         }
 
         public static int ViewToRealX(double position)
         {
-            return (int)Math.Round(position / ScaleX);
+            return (int)Math.Round(position / ScaleX / UserScaleX);
         }
 
         public static double RealToViewY(int position)

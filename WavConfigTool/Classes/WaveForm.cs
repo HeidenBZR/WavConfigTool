@@ -85,7 +85,7 @@ namespace WavConfigTool.Classes
                 return null;
             
             int yBase = height / 2;
-            double yScale = Project.Current.WavAmplitudeMultiplayer;
+            double yScale = Project.Current.UserScaleY;
             double yScaleBase = -((double)height - 3) / 2;
 
             double sampleWidth = Settings.RealToViewX(1.0 / reader.WaveFormat.BitsPerSample * reader.WaveFormat.Channels / X_SCALE_ERROR);

@@ -32,7 +32,6 @@ namespace WavConfigTool.Classes
                 Project = ProjectReader.Current.Read(Settings.ProjectFile);
                 AfterProjectLoaded();
             }
-            Settings.IsUnsaved = false;
         }
 
         public void LoadProject()
@@ -67,8 +66,7 @@ namespace WavConfigTool.Classes
             {
                 project.Suffix = project.Voicebank.Subfolder;
             }
-            Settings.IsUnsaved = false;
-            this.Project = project;
+            Project = project;
         }
 
         public void SaveAs(string filename)

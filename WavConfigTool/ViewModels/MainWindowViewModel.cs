@@ -17,7 +17,7 @@ namespace WavConfigTool.ViewModels
     class MainWindowViewModel : ViewModelBase
     {
         public static readonly Version Version = new Version(0, 2, 0, 0);
-        public int AlphaVersion => 15;
+        public int AlphaVersion => 16;
 
         public ProjectViewModel ProjectViewModel { get; set; }
         public Project Project => ProjectManager.Project;
@@ -49,8 +49,16 @@ namespace WavConfigTool.ViewModels
         public string Prefix { get => Project == null ? "" : Project.Prefix; set => Project.Prefix = value; }
         public string Suffix { get => Project == null ? "" : Project.Suffix; set => Project.Suffix = value; }
 
-        public double WavAmplitudeMultiplayer { get => Project == null ? 1 : Project.WavAmplitudeMultiplayer; 
-            set { Project.WavAmplitudeMultiplayer = value; ReloadProjectCommand.Execute(0); } }
+        public double UserScaleY 
+        { 
+            get => Settings.UserScaleY; 
+            set { Project.UserScaleY = value; ReloadProjectCommand.Execute(0); }
+        }
+        public double UserScaleX
+        {
+            get => Settings.UserScaleX;
+            set { Project.UserScaleX = value; ReloadProjectCommand.Execute(0); }
+        }
 
         public PhonemeType Mode { get => Settings.Mode; set => Settings.Mode = value; }
         public string ModeSymbol { get => SymbolOfType(Mode); }
@@ -175,7 +183,7 @@ namespace WavConfigTool.ViewModels
             );
 
             RaisePropertiesChanged(
-                () => WavAmplitudeMultiplayer,
+                () => UserScaleY,
                 () => Title,
                 () => ReclistName,
                 () => VoicebankImage,

@@ -12,7 +12,8 @@ namespace WavConfigTool.Classes.Reader
     {
         public string WavPrefix;
         public string WavSuffix;
-        public double WavAmplitudeMultiplayer = 1;
+        public double UserScaleY = 1;
+        public double UserScaleX = 1;
     }
     [Serializable]
     public class IOOtoOptions

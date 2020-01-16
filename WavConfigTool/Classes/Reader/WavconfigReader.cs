@@ -34,7 +34,7 @@ namespace WavConfigTool.Classes.Reader
             text.Append($"$VowelDecay={project.VowelDecay}\r\n");
             text.Append($"$VowelAttack={project.VowelAttack}\r\n");
             text.Append($"$ConsonantAttack={project.ConsonantAttack}\r\n");
-            text.Append($"$WavAmplitudeMultiplayer={project.WavAmplitudeMultiplayer.ToString("F2")}\r\n");
+            text.Append($"$WavAmplitudeMultiplayer={project.UserScaleY.ToString("F2")}\r\n");
             foreach (var key in project.Options.Keys)
             {
                 text.Append($"${key}={project.Options[key]}\r\n");
@@ -92,7 +92,7 @@ namespace WavConfigTool.Classes.Reader
 
                 case "WavAmplitudeMultiplayer":
                     if (double.TryParse(value, out double wavAmplitudeMultiplayer))
-                        project.WavAmplitudeMultiplayer = wavAmplitudeMultiplayer;
+                        project.UserScaleY = wavAmplitudeMultiplayer;
                     break;
 
                 default:
@@ -151,15 +151,6 @@ namespace WavConfigTool.Classes.Reader
         public async void SaveAsync(Project project, string path)
         {
             await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() => Write(path, project)));
-        }
-
-        public Project OpenBackup()
-        {
-            if (!Settings.IsUnsaved || !File.Exists(Settings.TempProject))
-                return null;
-            var project = Open(Settings.TempProject);
-            Settings.IsUnsaved = true;
-            return project;
         }
 
         public Project OpenLast()

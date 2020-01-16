@@ -17,11 +17,9 @@ namespace WavConfigTool.Classes
     public class Project
     {
         #region variables
-        private Reclist _reclist;
-        private Voicebank _voicebank;
-        private Replacer _replacer;
-        private List<ProjectLine> _projectLines;
-        private Dictionary<string, ProjectLine> _projectLinesByFilename;
+
+        public static Project Current { get; private set; }
+
         public Dictionary<string, string> Options;
         public Dictionary<string, Oto> Otos { get; set; }
         public Oto[] OtoList { get => Otos.Values.ToArray(); }
@@ -30,16 +28,10 @@ namespace WavConfigTool.Classes
         public Voicebank Voicebank { get => _voicebank; private set { _voicebank = value; ProjectChanged(); } }
         public Replacer Replacer { get => _replacer; private set { _replacer = value; ProjectChanged(); } }
         public OtoGenerator OtoGenerator { get; private set; }
-
-        private int _vowelDecay = 200;
-        private int _vowelAttack = 60;
-        private int _consonantAttack = 30;
-        private int _restAttack = 40;
-        private string _prefix = "";
-        private string _suffix = "";
-        private double _wavAmplitudeMultiplayer = 1;
-
         public ProjectOptions ProjectOptions { get; set; }
+
+        public bool IsLoaded { get; set; } = false;
+        public bool IsChangedAfterBackup { get; private set; }
 
         public int VowelDecay { get => _vowelDecay; set { _vowelDecay = value; ProjectChanged(); } }
         public int VowelAttack { get => _vowelAttack; set { _vowelAttack = value; ProjectChanged(); } }
@@ -52,12 +44,17 @@ namespace WavConfigTool.Classes
 
         public List<ProjectLine> ProjectLines { get => _projectLines; set { _projectLines = value; ProjectChanged(); } }
         public Dictionary<string, ProjectLine> ProjectLinesByFilename { get => _projectLinesByFilename; set { _projectLinesByFilename = value; ProjectChanged(); } }
-        public bool IsLoaded { get; set; } = false;
-        public double WavAmplitudeMultiplayer { get => _wavAmplitudeMultiplayer; set { _wavAmplitudeMultiplayer = value; ProjectChanged(); Settings.WAM = _wavAmplitudeMultiplayer; } }
 
-        public static Project Current { get; private set; }
-
-        public bool IsChangedAfterBackup { get; private set; }
+        public double UserScaleY 
+        { 
+            get => userScaleY;
+            set { userScaleY = value; ProjectChanged(); }
+        }
+        public double UserScaleX
+        {
+            get => userScaleX;
+            set { userScaleX = value; ProjectChanged(); }
+        }
 
         #endregion
 
@@ -243,6 +240,23 @@ namespace WavConfigTool.Classes
             File.WriteAllText(filename, oto, Encoding.GetEncoding(932));
         }
 
+        #region private
+
+        private Reclist _reclist;
+        private Voicebank _voicebank;
+        private Replacer _replacer;
+        private List<ProjectLine> _projectLines;
+        private Dictionary<string, ProjectLine> _projectLinesByFilename;
+
+        private int _vowelDecay = 200;
+        private int _vowelAttack = 60;
+        private int _consonantAttack = 30;
+        private int _restAttack = 40;
+        private string _prefix = "";
+        private string _suffix = "";
+        private double userScaleY = 1;
+        private double userScaleX = 1;
+
         private void Project_OnProjectChanged()
         {
             FireSaveMe();
@@ -258,5 +272,6 @@ namespace WavConfigTool.Classes
             return i == 0 || Reclist.WavMask.MaxDuplicates == 0 || i < Reclist.WavMask.MaxDuplicates;
         }
 
+        #endregion
     }
 }
