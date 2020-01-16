@@ -52,7 +52,8 @@ namespace WavConfigTool.ViewModels
                     BorderBrush = (SolidColorBrush)Application.Current.Resources["RestBackBrush"];
                     break;
             }
-            double outMinusAttack = Out - Settings.RealToViewX(Attack);
+            double attack = Settings.RealToViewX(Attack);
+            double outMinusAttack = Out - attack;
             outMinusAttack = outMinusAttack < 0 ? 0 : outMinusAttack;
             double decay = Settings.RealToViewX(Project.Current.VowelDecay);
             switch (Type)
@@ -80,32 +81,37 @@ namespace WavConfigTool.ViewModels
                         };
                     break;
                 case PhonemeType.Vowel:
+                    var minLength = 10;
+                    var totalLength = Out;
+                    var processedAttack = attack;
+                    var totalLengthMinusAttack = totalLength - processedAttack;
+                    var processedDecay = totalLengthMinusAttack - decay > minLength ? decay : totalLengthMinusAttack - minLength;
                     BorderPoints1 = new PointCollection
                         {
                             new Point(0, 100),
                             new Point(0, 0),
-                            new Point(decay, 50),
-                            new Point(decay, 100),
+                            new Point(processedDecay, 50),
+                            new Point(processedDecay, 100),
                         };
                     BorderPoints2 = new PointCollection
                         {
-                            new Point(decay, 50),
-                            new Point(outMinusAttack, 50),
-                            new Point(outMinusAttack, 100),
-                            new Point(decay, 100),
+                            new Point(processedDecay, 50),
+                            new Point(totalLengthMinusAttack, 50),
+                            new Point(totalLengthMinusAttack, 100),
+                            new Point(processedDecay, 100),
                         };
                     BorderPoints3 = new PointCollection
                         {
-                            new Point(outMinusAttack, 50),
+                            new Point(totalLengthMinusAttack, 50),
                             new Point(Out, 100),
-                            new Point(outMinusAttack, 100),
+                            new Point(totalLengthMinusAttack, 100),
                         };
                     Points = new PointCollection
                         {
                             new Point(0, 100),
                             new Point(0, 0),
-                            new Point(decay, 50),
-                            new Point(outMinusAttack, 50),
+                            new Point(processedDecay, 50),
+                            new Point(totalLengthMinusAttack, 50),
                             new Point(Out, 100),
                         };
                     break;

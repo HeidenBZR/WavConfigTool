@@ -194,7 +194,10 @@
                             </ContextMenu>
                         </TextBlock.ContextMenu>
                     </TextBlock>
-                    <ListView ItemsSource="{Binding Phonemes, Mode=OneWay}" Style="{DynamicResource ListViewPhonemes}" ItemContainerStyle="{DynamicResource PhonemesItemStyle}">
+                    <ListView 
+                        ItemsSource="{Binding Phonemes, Mode=OneWay}" 
+                        Style="{DynamicResource ListViewPhonemes}" 
+                        ItemContainerStyle="{DynamicResource PhonemesItemStyle}">
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Horizontal" />

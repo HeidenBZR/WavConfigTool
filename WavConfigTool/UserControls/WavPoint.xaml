@@ -10,6 +10,7 @@
     Width="50"
     Height="100"
     d:DesignHeight="100"
+    Panel.ZIndex="{Binding IndexX, FallbackValue=1}"
     d:DesignWidth="50"
     SnapsToDevicePixels="True"
     mc:Ignorable="d">
@@ -41,7 +42,7 @@
                                         Fill="{TemplateBinding BorderBrush}" />
                                     <Grid Height="100" VerticalAlignment="Stretch">
                                         <Polygon 
-                                            Visibility="{Binding IsLeft, Converter={StaticResource BooleanToVisibility}}"
+                                            Visibility="{Binding HasTopRightCorner, Converter={StaticResource BooleanToVisibility}}"
                                             Fill="{TemplateBinding Background}" 
                                             Cursor="Hand"
                                             Stroke="{TemplateBinding BorderBrush}">
@@ -52,7 +53,7 @@
                                             </Polygon.Points>
                                         </Polygon>
                                         <Polygon 
-                                            Visibility="{Binding IsRight, Converter={StaticResource BooleanToVisibility}}"
+                                            Visibility="{Binding HasTopLeftCorner, Converter={StaticResource BooleanToVisibility}}"
                                             Fill="{TemplateBinding Background}" 
                                             Cursor="Hand"
                                             Stroke="{TemplateBinding BorderBrush}">
@@ -63,7 +64,7 @@
                                             </Polygon.Points>
                                         </Polygon>
                                         <Polygon
-                                                Visibility="Hidden"
+                                                Visibility="{Binding HasBottomLeftCorner, Converter={StaticResource BooleanToVisibility}}"
                                                 x:Name="ControllerBottomRight"
                                                 Width="15"
                                                 HorizontalAlignment="Left"
@@ -79,7 +80,7 @@
                                             </Polygon.Points>
                                         </Polygon>
                                         <Polygon
-                                                Visibility="{Binding IsLeft, Converter={StaticResource BooleanToVisibility}}"
+                                                Visibility="{Binding HasBottomRightCorner, Converter={StaticResource BooleanToVisibility}}"
                                                 x:Name="ControllerBottomLeft"
                                                 Width="15"
                                                 HorizontalAlignment="Left"

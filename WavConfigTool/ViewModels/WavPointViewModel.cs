@@ -27,6 +27,12 @@ namespace WavConfigTool.ViewModels
 
         public bool IsLeft { get; set; }
         public bool IsRight => !IsLeft;
+        
+        public bool HasTopLeftCorner { get; private set; }
+        public bool HasTopRightCorner { get; private set; }
+        public bool HasBottomLeftCorner { get; private set; }
+        public bool HasBottomRightCorner { get; private set; }
+        public int IndexZ => IsLeft ? 10 : 1;
 
         public bool IsLoaded { get; set; } = false;
 
@@ -47,16 +53,34 @@ namespace WavConfigTool.ViewModels
                 case PhonemeType.Vowel:
                     BorderBrush = (SolidColorBrush)Application.Current.Resources["VowelBorderBrush"];
                     BackgroundBrush = (SolidColorBrush)Application.Current.Resources["VowelBackBrush"];
+                    if (IsRight)
+                    {
+                        HasTopLeftCorner = true;
+                    }
                     break;
 
                 case PhonemeType.Consonant:
                     BorderBrush = (SolidColorBrush)Application.Current.Resources["ConsonantBorderBrush"];
                     BackgroundBrush = (SolidColorBrush)Application.Current.Resources["ConsonantBackBrush"];
+                    if (IsRight)
+                    {
+                        HasTopLeftCorner = true;
+                    }
                     break;
 
                 case PhonemeType.Rest:
                     BorderBrush = (SolidColorBrush)Application.Current.Resources["RestBorderBrush"];
                     BackgroundBrush = (SolidColorBrush)Application.Current.Resources["RestBackBrush"];
+                    if (IsRight)
+                    {
+                        HasTopLeftCorner = true;
+                        HasBottomLeftCorner = true;
+                    }
+                    else
+                    {
+                        HasTopRightCorner = true;
+                        HasBottomRightCorner = true;
+                    }
                     break;
             }
             RaisePropertiesChanged(
