@@ -52,23 +52,10 @@ namespace WavConfigTool.ViewModels
             IsHidden = true;
         }
 
-        public void ReadProjectOption(string key, string value)
+        public void ReadProjectOption(ProjectOptions projectOptions)
         {
-            switch (key)
-            {
-                case "Pager.PageSize":
-                    if (int.TryParse(value, out int pageSize))
-                    {
-                        SetPageSizeCommand.Execute(pageSize);
-                    }
-                    break;
-                case "Pager.CurrentPage":
-                    if (int.TryParse(value, out int page))
-                    {
-                        SetPageCommand.Execute(page);
-                    }
-                    break;
-            }
+            SetPageSizeCommand.Execute(projectOptions.PageSize);
+            SetPageCommand.Execute(projectOptions.LastPage);
         }
 
         public void WriteProjectOptions(ProjectOptions projectOptions)
