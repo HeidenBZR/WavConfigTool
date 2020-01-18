@@ -354,7 +354,7 @@ namespace WavConfigTool.ViewModels
                 filename = (string)obj;
             },
             "Open Wavconfig",
-            "Wavconfig Project Files|*.wavconfig|*|*",
+            "Wavconfig Project Files|*.wconfig|*|*",
             param => true).Execute(true);
             if (filename == null || filename == "")
                 return;
