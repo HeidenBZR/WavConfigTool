@@ -123,15 +123,18 @@ namespace WavConfigTool.Classes.Reader
                 ReadOption(project, lines[i]);
 
             }
+            // TODO: select reclist to import
+            project.SetReclist(ReclistReader.Current.Read("CVC RUS"));
             project.ProjectLines = new List<ProjectLine>();
             var usedReclines = new List<Recline>();
             /// Чтение строк реклиста из проекта
             for (; i + 3 < lines.Length; i += 4)
             {
-                var recline = project.Reclist.GetRecline(lines[i]);
+                var file = lines[i].Replace(".wav", "");
+                var recline = project.Reclist.GetRecline(file);
                 usedReclines.Add(recline);
                 var projectLine = ProjectLine.Read(recline, lines[i + 1], lines[i + 2], lines[i + 3]);
-                project.ProcessLineAfterRead(projectLine);
+                project.AddProjectLine(file, projectLine);
             }
             /// Чтение строк реклиста, которых нет в проекте 
             if (project.Reclist != null)

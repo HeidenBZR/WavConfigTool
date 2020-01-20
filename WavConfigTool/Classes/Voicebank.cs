@@ -20,6 +20,7 @@ namespace WavConfigTool.Classes
 
         public Voicebank(string location)
         {
+            Location = location;
             ManageLocations(location);
             if (CharacterPath != null)
             {
@@ -73,7 +74,7 @@ namespace WavConfigTool.Classes
 
         private void ManageLocations(string location)
         {
-            if (Settings.ProjectFile == "")
+            if (Settings.ProjectFile == "" || location == null)
             {
                 IsLoaded = false;
                 return;
