@@ -47,14 +47,14 @@ namespace WavConfigTool.Classes
                         Image = pair[1];
                 }
             }
-            ImagePath = CharacterPath != null && Image != null && Image != "" ? Path.Combine(CharacterPath, Image) : "";
+            ImagePath = CharacterPath != null && Image != null && Image != "" ? Path.Combine(Path.GetDirectoryName(CharacterPath), Image) : "";
         }
 
         public bool IsSampleEnabled(string sample)
         {
             if (!IsLoaded)
                 return false;
-            return File.Exists(Path.Combine(Fullpath, sample + ".wav"));
+            return File.Exists(Path.Combine(Fullpath, Project.Current.WavPrefix + sample + Project.Current.WavSuffix + ".wav"));
         }
 
         public string GetFullName()

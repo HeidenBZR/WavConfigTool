@@ -17,7 +17,7 @@ namespace WavConfigTool.ViewModels
     class MainWindowViewModel : ViewModelBase
     {
         public static readonly Version Version = new Version(0, 2, 0, 0);
-        public int AlphaVersion => 17;
+        public int AlphaVersion => 18;
 
         public ProjectViewModel ProjectViewModel { get; set; }
         public Project Project => ProjectManager.Project;
@@ -46,8 +46,11 @@ namespace WavConfigTool.ViewModels
         public int RestAttack { get => Project == null ? 0 : Project.RestAttack; set => Project.RestAttack = value; }
         public int VowelDecay { get => Project == null ? 0 : Project.VowelDecay; set => Project.VowelDecay = value; }
 
-        public string Prefix { get => Project == null ? "" : Project.Prefix; set => Project.Prefix = value; }
-        public string Suffix { get => Project == null ? "" : Project.Suffix; set => Project.Suffix = value; }
+        public string Prefix { get => Project?.Prefix; set => Project.Prefix = value; }
+        public string Suffix { get => Project?.Suffix; set => Project.Suffix = value; }
+
+        public string WavPrefix { get => Project?.WavPrefix; set { Project.WavPrefix = value; ReloadProjectCommand.Execute(0); } }
+        public string WavSuffix { get => Project?.WavSuffix; set { Project.WavSuffix = value; ReloadProjectCommand.Execute(0); } }
 
         public double UserScaleY 
         { 
@@ -181,6 +184,11 @@ namespace WavConfigTool.ViewModels
                 () => VowelDecay,
                 () => Prefix,
                 () => Suffix
+            );
+
+            RaisePropertiesChanged(
+                () => WavPrefix,
+                () => WavSuffix
             );
 
             RaisePropertiesChanged(

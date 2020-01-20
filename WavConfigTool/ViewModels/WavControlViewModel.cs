@@ -150,7 +150,7 @@ namespace WavConfigTool.ViewModels
         public string GetPointLabel(PhonemeType type, int i)
         {
             var phonemes = ProjectLine.Recline.PhonemesOfType(type);
-            return phonemes[i / 2];
+            return phonemes.Count > i / 2 ? phonemes[i / 2] : "/PH/";
         }
 
         public double CheckPosition(double position)

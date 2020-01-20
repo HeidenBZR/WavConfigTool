@@ -325,6 +325,37 @@
                         <TextBlock
                             Padding="0"
                             HorizontalAlignment="Center"
+                            Text="Wave Options" />
+                        <StackPanel
+                            Height="25"
+                            Margin="10"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <TextBlock Margin="3,0" Text="Wav Prefix:" />
+                            <TextBox
+                                Width="40"
+                                Padding="0"
+                                VerticalAlignment="Center"
+                                Text="{Binding WavPrefix, Mode=TwoWay, FallbackValue=''}" />
+
+                            <TextBlock Margin="3,0" Text="Wav Suffix:" />
+                            <TextBox
+                                Width="40"
+                                Padding="0"
+                                VerticalAlignment="Center"
+                                Text="{Binding WavSuffix, Mode=TwoWay, FallbackValue=''}" />
+
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border
+                    Margin="4,4,0,4"
+                    BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                    BorderThickness="1">
+                    <StackPanel Height="60">
+                        <TextBlock
+                            Padding="0"
+                            HorizontalAlignment="Center"
                             Text="Image Render Options" />
                         <StackPanel
                             Height="25"
