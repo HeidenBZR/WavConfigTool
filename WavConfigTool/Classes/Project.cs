@@ -39,14 +39,18 @@ namespace WavConfigTool.Classes
         public int RestAttack { get => _restAttack; set { _restAttack = value; ProjectChanged(); } }
         public string Prefix { get => _prefix; set { _prefix = value; ProjectChanged(); } }
         public string Suffix { get => _suffix; set { _suffix = value; ProjectChanged(); } }
-        public string WavPrefix { get; set; } = "";
-        public string WavSuffix { get; set; } = "";
-
-        public List<ProjectLine> ProjectLines { get => _projectLines; set { _projectLines = value; ProjectChanged(); } }
-        public Dictionary<string, ProjectLine> ProjectLinesByFilename { get => _projectLinesByFilename; set { _projectLinesByFilename = value; ProjectChanged(); } }
-
-        public double UserScaleY 
-        { 
+        public string WavPrefix
+        {
+            get => wavPrefix;
+            set { wavPrefix = value; ProjectChanged(); }
+        }
+        public string WavSuffix
+        {
+            get => wavSuffix;
+            set { wavSuffix = value; ProjectChanged(); }
+        }
+        public double UserScaleY
+        {
             get => userScaleY;
             set { userScaleY = value; ProjectChanged(); }
         }
@@ -55,6 +59,10 @@ namespace WavConfigTool.Classes
             get => userScaleX;
             set { userScaleX = value; ProjectChanged(); }
         }
+
+        public List<ProjectLine> ProjectLines { get => _projectLines; set { _projectLines = value; ProjectChanged(); } }
+        public Dictionary<string, ProjectLine> ProjectLinesByFilename { get => _projectLinesByFilename; set { _projectLinesByFilename = value; ProjectChanged(); } }
+
 
         #endregion
 
@@ -115,7 +123,7 @@ namespace WavConfigTool.Classes
         {
             if (!IsLoaded)
                 return;
-            
+
             foreach (var projectLine in ProjectLines)
             {
                 projectLine.IsEnabled = false;
@@ -181,7 +189,7 @@ namespace WavConfigTool.Classes
             projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
             projectLine.ProjectLinePointsChanged += delegate { FireSaveMe(); };
         }
-        
+
         public void HandleBackupSaved()
         {
             IsChangedAfterBackup = false;
@@ -256,6 +264,8 @@ namespace WavConfigTool.Classes
         private string _suffix = "";
         private double userScaleY = 1;
         private double userScaleX = 1;
+        private string wavPrefix = "";
+        private string wavSuffix = "";
 
         private void Project_OnProjectChanged()
         {

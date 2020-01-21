@@ -17,7 +17,7 @@ namespace WavConfigTool.ViewModels
     class MainWindowViewModel : ViewModelBase
     {
         public static readonly Version Version = new Version(0, 2, 0, 0);
-        public int AlphaVersion => 18;
+        public int AlphaVersion => 19;
 
         public ProjectViewModel ProjectViewModel { get; set; }
         public Project Project => ProjectManager.Project;
@@ -49,8 +49,24 @@ namespace WavConfigTool.ViewModels
         public string Prefix { get => Project?.Prefix; set => Project.Prefix = value; }
         public string Suffix { get => Project?.Suffix; set => Project.Suffix = value; }
 
-        public string WavPrefix { get => Project?.WavPrefix; set { Project.WavPrefix = value; ReloadProjectCommand.Execute(0); } }
-        public string WavSuffix { get => Project?.WavSuffix; set { Project.WavSuffix = value; ReloadProjectCommand.Execute(0); } }
+        public string WavPrefix 
+        { 
+            get => Project?.WavPrefix; 
+            set 
+            { 
+                Project.WavPrefix = value; 
+                ReloadProjectCommand.Execute(0); 
+            } 
+        }
+        public string WavSuffix 
+        { 
+            get => Project?.WavSuffix; 
+            set 
+            { 
+                Project.WavSuffix = value; 
+                ReloadProjectCommand.Execute(0); 
+            } 
+        }
 
         public double UserScaleY 
         { 
