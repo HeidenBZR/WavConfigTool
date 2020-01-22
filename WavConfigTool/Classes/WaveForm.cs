@@ -30,7 +30,7 @@ namespace WavConfigTool.Classes
         public Exception GeneratingException;
 
         public System.Windows.Media.ImageSource BitmapImage;
-        public string Name = "";
+        public string BitmapImageHash;
 
         public WaveForm(string path)
         {
@@ -38,14 +38,18 @@ namespace WavConfigTool.Classes
             IsEnabled = File.Exists(Path);
         }
 
-        public void MakeWaveForm(int height, string imagePath, Color color)
+        public void MakeWaveForm(int height, string hash, Color color)
         {
-            Name = imagePath;
             if (!IsEnabled)
+            {
+                BitmapImageHash = null;
+                BitmapImage = null;
                 return;
+            }
             var reader = new AudioFileReader(Path);
             var bitmap = DrawWaveform(reader, height, color);
             BitmapImage = Bitmap2BitmapImage(bitmap);
+            BitmapImageHash = hash;
         }
 
         private BitmapImage Bitmap2BitmapImage(Bitmap bitmap)

@@ -34,6 +34,7 @@ namespace WavConfigTool.ViewModels
         public bool IsLoading { get; set; } = false;
         public bool IsLoaded { get; set; } = false;
         public bool IsImageEnabled { get; set; } = false;
+        public bool IsReady { get; set; } = false;
 
         public bool IsCompleted => ProjectLine.IsCompleted;
         public bool IsEnabled => ProjectLine != null && ProjectLine.IsEnabled;
@@ -52,7 +53,7 @@ namespace WavConfigTool.ViewModels
         public int NumberView => Number + 1;
 
         public int Width => ProjectLine.IsEnabled ? ProjectLine.WaveForm.VisualWidth : 4000;
-        public ImageSource WavImage => IsImageEnabled ? ProjectLine.WaveForm.BitmapImage : null;
+        public ImageSource WavImage => GetWavImage();
 
         public PhonemeType PhonemeTypeRest => PhonemeType.Rest;
         public PhonemeType PhonemeTypeVowel => PhonemeType.Vowel;
@@ -77,20 +78,13 @@ namespace WavConfigTool.ViewModels
             ProjectLine = projectLine;
         }
 
-        public override void Load()
+        public override void Ready()
         {
-            App.MainDispatcher.Invoke(() =>
-            {
-                IsLoaded = false;
-                IsLoading = true;
-                IsImageEnabled = false;
-                RaisePropertiesChanged(
-                    () => IsLoading,
-                    () => IsLoaded,
-                    () => EditEnabled
-                );
-            });
-            LoadImageAsync();
+            IsReady = true;
+            RaisePropertiesChanged(
+                () => IsReady,
+                () => WavImage
+            );
         }
 
         public async void LoadImageAsync()
@@ -165,6 +159,32 @@ namespace WavConfigTool.ViewModels
                 position = Width - 5;
             return position;
         }
+
+        private void Load()
+        {
+            App.MainDispatcher.Invoke(() =>
+            {
+                IsLoaded = false;
+                IsLoading = true;
+                IsImageEnabled = false;
+                RaisePropertiesChanged(
+                    () => IsLoading,
+                    () => IsLoaded,
+                    () => EditEnabled
+                );
+            });
+            LoadImageAsync();
+        }
+
+        private ImageSource GetWavImage()
+        {
+            if (IsImageEnabled && ProjectLine?.WavImageHash == ProjectLine?.WaveForm?.BitmapImageHash)
+                return ProjectLine.WaveForm.BitmapImage;
+            if (!IsLoading && ProjectLine?.WavImageHash != ProjectLine?.WaveForm?.BitmapImageHash && ProjectLine?.WavImageHash != null)
+                Load();
+            return null;
+        }
+
         private List<WavZoneViewModel> GetZones(PhonemeType type)
         {
             var points = ProjectLine.PointsOfType(type).ShallowClone();

@@ -17,7 +17,7 @@ namespace WavConfigTool.ViewModels
     class MainWindowViewModel : ViewModelBase
     {
         public static readonly Version Version = new Version(0, 2, 0, 0);
-        public int AlphaVersion => 20;
+        public int AlphaVersion => 21;
 
         public ProjectViewModel ProjectViewModel { get; set; }
         public Project Project => ProjectManager.Project;
@@ -140,11 +140,10 @@ namespace WavConfigTool.ViewModels
                 PagerViewModel = WavControlsPagerViewModel;
                 PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
                 Project.BeforeSave += () => { WriteProjectOptions(); };
-                await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() => 
-                    Parallel.ForEach(PagerViewModel.Collection, (model) => 
-                    {
-                        ExceptionCatcher.Current.CatchOnAsyncCallback(() => model.Load()); 
-                    })));
+                foreach (var control in PagerViewModel.Collection)
+                {
+                    control.Ready();
+                }
                 PagerViewModel.ReadProjectOption(Project.ProjectOptions);
             }
             IsLoading = false;

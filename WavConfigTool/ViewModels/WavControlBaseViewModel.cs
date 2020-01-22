@@ -7,7 +7,7 @@ namespace WavConfigTool.ViewModels
 {
     public abstract class WavControlBaseViewModel : ViewModelBase
     {
-        public abstract void Load();
+        public abstract void Ready();
 
         public event SimpleHandler PointsChanged;
 
