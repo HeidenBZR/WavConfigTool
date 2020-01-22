@@ -147,7 +147,6 @@ namespace WavConfigTool.Classes.Reader
                     }
                 }
             }
-            // TODO: сортировать по реклисту
             return project;
         }
 
