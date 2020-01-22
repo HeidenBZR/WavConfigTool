@@ -31,34 +31,16 @@ namespace WavConfigTool.Classes
 
     public abstract class Phoneme : ViewModelBase
     {
-        public double Preutterance { get; set; }
-        public double Overlap { get; set; }
-        public double Length { get { return Zone.Out - Zone.In; } }
-        public virtual double Attack { get; set; }
+        public double Length => Zone.Out - Zone.In;
+
+        public abstract double Attack { get; }
+        public abstract int LocalIndex { get; }
 
         public string Alias { get; set; }
         public string Letter { get; set; }
         public PhonemeType Type { get; set; }
         public Zone Zone { get; set; }
-        public int GlobalIndex
-        {
-            get
-            {
-                return Recline == null ? -1 : Recline.Phonemes.IndexOf(this);
-            }
-        }
-        public int LocalIndex
-        {
-            get
-            {
-                if (IsConsonant)
-                    return Recline == null ? -1 : Recline.Consonants.IndexOf(this);
-                else if (IsVowel)
-                    return Recline == null ? -1 : Recline.Vowels.IndexOf(this);
-                else
-                    return Recline == null ? -1 : Recline.Rests.IndexOf(this);
-            }
-        }
+        public int GlobalIndex => Recline == null ? -1 : Recline.Phonemes.IndexOf(this);
         private bool hasZone;
         public bool HasZone { get => hasZone; set { hasZone = value; FireChanged(); } }
         public Recline Recline;
@@ -67,7 +49,11 @@ namespace WavConfigTool.Classes
         public bool IsVowel { get { return Type == PhonemeType.Vowel; } }
         public bool IsRest { get { return Type == PhonemeType.Rest; } }
 
-        public Phoneme(string l, string letter = "") { Alias = l; Letter = letter; Preutterance = 60; Overlap = 30; }
+        public Phoneme(string l, string letter = "") 
+        { 
+            Alias = l; 
+            Letter = letter; 
+        }
 
 
         public abstract Phoneme Clone();
@@ -92,30 +78,25 @@ namespace WavConfigTool.Classes
     public class Consonant : Phoneme
     {
         public override double Attack { get => Project.Current.ConsonantAttack; }
+        public override int LocalIndex => Recline == null ? -1 : Recline.Consonants.IndexOf(this);
         public Consonant(string l, string letter = "") : base(l, letter) { Type = PhonemeType.Consonant; }
-
         public override Phoneme Clone() { return new Consonant(Alias, Letter); }
     };
-
+    
 
     public class Vowel : Phoneme
     {
-        public override double Attack { get => Project.Current.VowelAttack; }
-        public Vowel(string l, string letter = "") : base(l, letter)
-        {
-            Type = PhonemeType.Vowel;
-            Overlap = 50;
-            Preutterance = 60;
-        }
-
+        public override double Attack => Project.Current.VowelAttack;
+        public override int LocalIndex => Recline == null ? -1 : Recline.Vowels.IndexOf(this);
+        public Vowel(string l, string letter = "") : base(l, letter) { Type = PhonemeType.Vowel; }
         public override Phoneme Clone() { return new Vowel(Alias, Letter); }
     }
-
-
+    
     public class Rest : Phoneme
     {
         public const string ALIAS = "-";
-        public override double Attack { get => Project.Current.RestAttack; }
+        public override double Attack => Project.Current.RestAttack;
+        public override int LocalIndex => Recline == null ? -1 : Recline.Rests.IndexOf(this);
 
         public static Rest Create(Recline recline = null)
         {
@@ -124,7 +105,6 @@ namespace WavConfigTool.Classes
         private Rest(string l, string letter = "") : base(l, letter)
         {
             Type = PhonemeType.Rest;
-            Attack = 0;
         }
         public Rest(string l, double zoneIn, double zoneOut, Recline recline, string letter = "") : this(l, letter)
         {

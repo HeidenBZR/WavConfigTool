@@ -197,14 +197,15 @@ namespace WavConfigTool.ViewModels
             RaisePropertiesChanged(
                 () => ConsonantAttack,
                 () => VowelAttack,
-                () => VowelDecay,
-                () => Prefix,
-                () => Suffix
+                () => RestAttack,
+                () => VowelDecay
             );
 
             RaisePropertiesChanged(
                 () => WavPrefix,
-                () => WavSuffix
+                () => WavSuffix,
+                () => Prefix,
+                () => Suffix
             );
 
             RaisePropertiesChanged(
