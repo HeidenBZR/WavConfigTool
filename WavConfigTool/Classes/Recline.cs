@@ -97,12 +97,12 @@ namespace WavConfigTool.Classes
             Otos[alias] = oto;
         }
 
-        public string WriteOto(string prefix = "", string suffix = "")
+        public string WriteOto(string prefix = "", string suffix = "", string wavPrefix = "", string wavSuffix = "")
         {
             var text = new StringBuilder();
             foreach (var oto in OtoList)
             {
-                text.AppendLine(oto.Write(suffix, prefix));
+                text.AppendLine(oto.Write(suffix, prefix, wavPrefix, wavSuffix));
             }
             return text.ToString();
         }

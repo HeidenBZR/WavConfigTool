@@ -12,20 +12,13 @@ namespace WavConfigTool.Classes
 {
     public class WaveForm
     {
-        public static int PointSkip = 5;
         public const string WAV_ZONE_COLOR = "#64c864";
-        //public static SolidBrush WavZoneBrush = new SolidBrush(System.Drawing.Color.FromArgb(250, 100, 200, 100));
-        //public static System.Drawing.Pen PEN = new System.Drawing.Pen(WavZoneBrush);
 
         public string Path;
-        public int SampleRate;
-        public int BitRate;
-        //public List<double> Ds = new List<double>();
+
+        public WaveFormat WaveFormat;
         public double MostLeft;
         public int VisualWidth;
-
-        public long Length;
-        public float[] Data;
 
         public double Threshold = 0.001;
         public double DataThreshold = 0.05;
@@ -79,8 +72,9 @@ namespace WavConfigTool.Classes
 
         private Bitmap DrawWaveform(AudioFileReader reader, int height, Color color)
         {
+            WaveFormat = reader.WaveFormat;
             // calculate number of samples
-            long nSamples = reader.Length / ((reader.WaveFormat.BitsPerSample * reader.WaveFormat.Channels) / 8);
+            long nSamples = reader.Length / ((WaveFormat.BitsPerSample * WaveFormat.Channels) / 8);
             if (nSamples < 2)
                 return null;
             
@@ -88,7 +82,7 @@ namespace WavConfigTool.Classes
             double yScale = Project.Current.UserScaleY;
             double yScaleBase = -((double)height - 3) / 2;
 
-            double sampleWidth = Settings.RealToViewX(1.0 / reader.WaveFormat.BitsPerSample * reader.WaveFormat.Channels / X_SCALE_ERROR);
+            double sampleWidth = Settings.RealToViewX(1.0 / WaveFormat.BitsPerSample * WaveFormat.Channels / X_SCALE_ERROR);
             double currPosition = 0;
             // Data for current column
             int currColumn = 0;

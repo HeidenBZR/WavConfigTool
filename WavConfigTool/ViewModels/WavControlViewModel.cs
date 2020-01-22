@@ -44,9 +44,9 @@ namespace WavConfigTool.ViewModels
         public ObservableCollection<WavPointViewModel> VowelPoints { get; set; } = new ObservableCollection<WavPointViewModel>();
         public ObservableCollection<WavPointViewModel> RestPoints { get; set; } = new ObservableCollection<WavPointViewModel>();
 
-        public List<WavZoneViewModel> ConsonantZones { get { return GetZones(PhonemeType.Consonant); } }
-        public List<WavZoneViewModel> VowelZones { get { return GetZones(PhonemeType.Vowel); } }
-        public List<WavZoneViewModel> RestZones { get { return GetZones(PhonemeType.Rest); } }
+        public List<WavZoneViewModel> ConsonantZones => GetZones(PhonemeType.Consonant);
+        public List<WavZoneViewModel> VowelZones => GetZones(PhonemeType.Vowel);
+        public List<WavZoneViewModel> RestZones => GetZones(PhonemeType.Rest);
 
         public int Number { get; set; }
         public int NumberView => Number + 1;
@@ -57,6 +57,10 @@ namespace WavConfigTool.ViewModels
         public PhonemeType PhonemeTypeRest => PhonemeType.Rest;
         public PhonemeType PhonemeTypeVowel => PhonemeType.Vowel;
         public PhonemeType PhonemeTypeConsonant => PhonemeType.Consonant;
+
+        public string WavChannels => GetChannelsString(ProjectLine?.WaveForm?.WaveFormat?.Channels);
+        public string WavBitRate => ProjectLine?.WaveForm?.WaveFormat?.BitsPerSample.ToString();
+        public string WavSampleRate => ProjectLine?.WaveForm?.WaveFormat?.SampleRate.ToString();
 
         public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
         public event OtoModeHandler OnOtoMode = delegate { };
@@ -301,6 +305,11 @@ namespace WavConfigTool.ViewModels
                 () => EditEnabled
             );
             RaisePropertiesChanged(
+                () => WavChannels,
+                () => WavBitRate,
+                () => WavSampleRate
+            );
+            RaisePropertiesChanged(
                 () => EditEnabled,
                 () => IsEnabled,
                 () => IsLoaded,
@@ -320,6 +329,11 @@ namespace WavConfigTool.ViewModels
                 IsLoading = false;
                 HandleProjectLineChanged();
             });
+        }
+
+        private string GetChannelsString(int? channels)
+        {
+            return !channels.HasValue ? "" : channels.Value == 1 ? "Mono" : channels.Value == 2 ? "Stereo" : channels.Value.ToString();
         }
 
         #endregion

@@ -19,7 +19,7 @@
             <Rectangle
             HorizontalAlignment="Left"
             Width="{Binding Offset}"
-    Height="{Binding Height}"
+            Height="{Binding Height}"
             Fill="#FF003344" />
         </Canvas>
         <Canvas
@@ -28,7 +28,7 @@
             Canvas.Left="{Binding Offset}"
             Width="{Binding ConsonantLength}"
             HorizontalAlignment="Left"
-    Height="{Binding Height}"
+            Height="{Binding Height}"
             Fill="#FF403200" />
         </Canvas>
         <Canvas
@@ -36,7 +36,7 @@
             <Rectangle
             Canvas.Left="{Binding Cutoff}"
             Width="{Binding CutoffLength}"
-    Height="{Binding Height}"
+            Height="{Binding Height}"
             HorizontalAlignment="Right"
             Fill="#FF003344" />
         </Canvas>
@@ -62,7 +62,7 @@
             Canvas.Left="{Binding Overlap}"
             Width="1"
             Height="100"
-                VerticalAlignment="Center"
+            VerticalAlignment="Center"
             HorizontalAlignment="Left"
             Fill="#FF4BAE43"
             SnapsToDevicePixels="True" />
@@ -81,17 +81,25 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Orientation="Horizontal">
-                    <TextBlock Margin="0" Text="{Binding Filename, TargetNullValue=FILENAME}" />
-                    <TextBlock Margin="0" Text=" = " />
-                    <TextBlock Margin="0" Text="{Binding Alias, TargetNullValue=ALIAS}"/>
+                    <TextBlock Margin="0" Text="{Binding WavPrefix, FallbackValue=PREFIX_}"  />
+                    <TextBlock Margin="0" Text="{Binding Filename, FallbackValue=FILENAME}" FontWeight="Bold" />
+                    <TextBlock Margin="0" Text="{Binding WavSuffix, FallbackValue=_SUFFIX}" />
+                    <TextBlock Margin="0" Text="=" />
+                    <TextBlock Margin="0" Text="{Binding Prefix, FallbackValue=PREFIX_}"/>
+                    <TextBlock Margin="0" Text="{Binding Alias, FallbackValue=ALIAS}" FontWeight="Bold"/>
+                    <TextBlock Margin="0" Text="{Binding Suffix, FallbackValue=_SUFIX}"/>
                     <TextBlock Margin="0,0,5,0" Text="{Binding NumberView}"/>
                     <TextBlock Margin="0" Text="[" />
-                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.OffsetWrite, TargetNullValue=100}"/>
-                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.ConsonantWrite, TargetNullValue=100}"/>
-                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.CutoffWrite, TargetNullValue=-150}"/>
-                    <TextBlock Margin="0,0,5,0" Text="{Binding Oto.PreutteranceWrite, TargetNullValue=50}"/>
-                    <TextBlock Margin="0,0,0,0" Text="{Binding Oto.OverlapWrite, TargetNullValue=30}"/>
-                    <TextBlock Margin="0,0,5,0" Text="]"/>
+                    <TextBlock Margin="0" Text="{Binding Oto.OffsetWrite, FallbackValue=100}"/>
+                    <TextBlock Margin="0" Text="," />
+                    <TextBlock Margin="0" Text="{Binding Oto.ConsonantWrite, FallbackValue=100}" />
+                    <TextBlock Margin="0" Text="," />
+                    <TextBlock Margin="0" Text="{Binding Oto.CutoffWrite, FallbackValue=-150}" />
+                    <TextBlock Margin="0" Text="," />
+                    <TextBlock Margin="0" Text="{Binding Oto.PreutteranceWrite, FallbackValue=50}"/>
+                    <TextBlock Margin="0" Text="," />
+                    <TextBlock Margin="0" Text="{Binding Oto.OverlapWrite, FallbackValue=30}"/>
+                    <TextBlock Margin="0" Text="]"/>
                 </StackPanel>
             </Grid>
         </Canvas>

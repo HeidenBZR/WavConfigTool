@@ -237,7 +237,7 @@ namespace WavConfigTool.Classes
             var text = new StringBuilder();
             foreach (Recline recline in Reclist.Reclines)
             {
-                text.Append(recline.WriteOto(Suffix, Prefix));
+                text.Append(recline.WriteOto(Suffix, Prefix, WavPrefix, WavSuffix));
             }
             return text.ToString();
         }

@@ -81,10 +81,10 @@ namespace WavConfigTool.Classes
         public double PreutteranceWrite => Preutterance - Offset;
         public double OverlapWrite => Overlap - Offset;
 
-        public string Write(string prefix = "", string suffix = "")
+        public string Write(string prefix = "", string suffix = "", string wavPrefix = "", string wavSuffix = "")
         {
             // Relative values
-            return $"{Filename}.wav={prefix}{Alias}{NumberView}{suffix},{OffsetWrite},{ConsonantWrite},{CutoffWrite},{PreutteranceWrite},{OverlapWrite}";
+            return $"{wavPrefix}{Filename}{wavSuffix}.wav={prefix}{Alias}{NumberView}{suffix},{OffsetWrite},{ConsonantWrite},{CutoffWrite},{PreutteranceWrite},{OverlapWrite}";
         }
 
         public void Smarty()
