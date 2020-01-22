@@ -183,10 +183,10 @@ namespace WavConfigTool.ViewModels
 
         public ICommand SetPageSizeCommand => new DelegateCommand<int>((pageSize) =>
         {
+            var current = _pageSize * _currentPage;
             _pageSize = pageSize;
-            // TODO: Проверка на допустимость страницы? 
-            // TODO: Переход к странице с объектом на прежней странице
             Refresh();
+            SetPageCommand.Execute(current / pageSize);
         }, pageSize => pageSize > 0);
 
         #endregion
