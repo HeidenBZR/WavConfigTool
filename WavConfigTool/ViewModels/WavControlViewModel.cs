@@ -333,7 +333,7 @@ namespace WavConfigTool.ViewModels
 
         private string GetChannelsString(int? channels)
         {
-            return !channels.HasValue ? "" : channels.Value == 1 ? "Mono" : channels.Value == 2 ? "Stereo" : channels.Value.ToString();
+            return !channels.HasValue ? null : channels.Value == 1 ? "Mono" : channels.Value == 2 ? "Stereo" : channels.Value.ToString();
         }
 
         #endregion
