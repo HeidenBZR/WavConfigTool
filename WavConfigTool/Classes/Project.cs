@@ -39,26 +39,10 @@ namespace WavConfigTool.Classes
         public int RestAttack { get => _restAttack; set { _restAttack = value; ProjectChanged(); } }
         public string Prefix { get => _prefix; set { _prefix = value; ProjectChanged(); } }
         public string Suffix { get => _suffix; set { _suffix = value; ProjectChanged(); } }
-        public string WavPrefix
-        {
-            get => wavPrefix;
-            set { wavPrefix = value; ProjectChanged(); }
-        }
-        public string WavSuffix
-        {
-            get => wavSuffix;
-            set { wavSuffix = value; ProjectChanged(); }
-        }
-        public double UserScaleY
-        {
-            get => userScaleY;
-            set { userScaleY = value; ProjectChanged(); }
-        }
-        public double UserScaleX
-        {
-            get => userScaleX;
-            set { userScaleX = value; ProjectChanged(); }
-        }
+        public string WavPrefix { get => wavPrefix; set { wavPrefix = value; ProjectChanged(); } }
+        public string WavSuffix { get => wavSuffix; set { wavSuffix = value; ProjectChanged(); } }
+        public double UserScaleY { get => userScaleY; set { userScaleY = value; ProjectChanged(); } }
+        public double UserScaleX { get => userScaleX; set { userScaleX = value; ProjectChanged(); } }
 
         public List<ProjectLine> ProjectLines { get => _projectLines; set { _projectLines = value; ProjectChanged(); } }
         public Dictionary<string, ProjectLine> ProjectLinesByFilename { get => _projectLinesByFilename; set { _projectLinesByFilename = value; ProjectChanged(); } }
