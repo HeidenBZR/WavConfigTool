@@ -425,7 +425,7 @@
                         </MultiTrigger>
                         <Trigger SourceName="PART_Popup" Property="HasDropShadow" Value="true">
                             <Setter TargetName="Shdw" Property="Margin" Value="0,0,5,5" />
-                            <Setter TargetName="Shdw" Property="Color" Value="#71000000" />
+                            <Setter TargetName="Shdw" Property="Color" Value="#DD000000" />
                         </Trigger>
                         <Trigger SourceName="DropDownScrollViewer" Property="ScrollViewer.CanContentScroll" Value="false">
                             <Setter TargetName="OpaqueRect" Property="Canvas.Top" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}" />
