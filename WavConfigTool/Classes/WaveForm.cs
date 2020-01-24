@@ -6,19 +6,21 @@ using System.IO;
 using System.Linq;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
-using WavConfigTool.Tools;
+using WavConfigCore;
 
 namespace WavConfigTool.Classes
 {
     public class WaveForm
     {
+        public int VisualWidth { get; set; }
+        public int Width { get; set; }
+
         public const string WAV_ZONE_COLOR = "#64c864";
 
         public string Path;
 
         public WaveFormat WaveFormat;
         public double MostLeft;
-        public int VisualWidth;
 
         public double Threshold = 0.001;
         public double DataThreshold = 0.05;
@@ -30,11 +32,11 @@ namespace WavConfigTool.Classes
         public Exception GeneratingException;
 
         public System.Windows.Media.ImageSource BitmapImage;
-        public string BitmapImageHash;
+        public string ImageHash;
 
         public WaveForm(string path)
         {
-            Path = path + ".wav";
+            Path = path;
             IsEnabled = File.Exists(Path);
         }
 
@@ -42,14 +44,14 @@ namespace WavConfigTool.Classes
         {
             if (!IsEnabled)
             {
-                BitmapImageHash = null;
+                ImageHash = null;
                 BitmapImage = null;
                 return;
             }
             var reader = new AudioFileReader(Path);
             var bitmap = DrawWaveform(reader, height, color);
             BitmapImage = Bitmap2BitmapImage(bitmap);
-            BitmapImageHash = hash;
+            ImageHash = hash;
         }
 
         private BitmapImage Bitmap2BitmapImage(Bitmap bitmap)
@@ -146,6 +148,7 @@ namespace WavConfigTool.Classes
                 }
 
                 VisualWidth = (int)currPosition;
+                Width = Settings.ViewToRealX(VisualWidth);
                 res = new Bitmap(VisualWidth, height);
 
                 using (Graphics g = Graphics.FromImage(res))

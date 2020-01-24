@@ -8,9 +8,6 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WavConfigTool.UserControls;
-using WavConfigTool.ViewModels;
-using WavConfigTool.Tools;
-using WavConfigTool.Classes;
 using System.Windows.Media;
 using System.Windows.Controls;
 

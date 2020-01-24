@@ -3,7 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 using WavConfigTool.Classes;
-using WavConfigTool.Tools;
+using WavConfigCore;
 
 namespace WavConfigTool.ViewModels
 {

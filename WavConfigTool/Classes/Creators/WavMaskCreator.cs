@@ -1,4 +1,6 @@
-﻿namespace WavConfigTool.Classes.Creators
+﻿using WavConfigCore;
+
+namespace WavConfigTool.Classes.Creators
 {
     static class WavMaskCreator
     {
@@ -40,7 +42,7 @@
             wavMask.AddGroup(CV_VC_Cgroup);
             wavMask.AddGroup(V_group);
 
-            Reader.WavMaskReader.Current.Write("cvc_rus.mask", wavMask);
+            WavConfigCore.Reader.WavMaskReader.Current.Write("cvc_rus.mask", wavMask);
         }
     }
 }

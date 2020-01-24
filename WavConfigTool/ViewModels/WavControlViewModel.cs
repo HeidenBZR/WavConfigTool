@@ -9,7 +9,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WavConfigTool.Classes;
-using WavConfigTool.Tools;
+using WavConfigCore;
+using WavConfigCore.Tools;
 
 namespace WavConfigTool.ViewModels
 {
@@ -24,6 +25,7 @@ namespace WavConfigTool.ViewModels
                 _projectLine.ProjectLineChanged += HandleProjectLineChanged;
             }
         }
+        public WaveForm WaveForm { get; set; }
 
 
         public string Filename { get => ProjectLine.Recline.Filename; }
@@ -52,16 +54,16 @@ namespace WavConfigTool.ViewModels
         public int Number { get; set; }
         public int NumberView => Number + 1;
 
-        public int Width => ProjectLine.IsEnabled ? ProjectLine.WaveForm.VisualWidth : 4000;
+        public int Width => ProjectLine != null ? ProjectLine.Width : 4000;
         public ImageSource WavImage => GetWavImage();
 
         public PhonemeType PhonemeTypeRest => PhonemeType.Rest;
         public PhonemeType PhonemeTypeVowel => PhonemeType.Vowel;
         public PhonemeType PhonemeTypeConsonant => PhonemeType.Consonant;
 
-        public string WavChannels => GetChannelsString(ProjectLine?.WaveForm?.WaveFormat?.Channels);
-        public string WavBitRate => ProjectLine?.WaveForm?.WaveFormat?.BitsPerSample.ToString();
-        public string WavSampleRate => ProjectLine?.WaveForm?.WaveFormat?.SampleRate.ToString();
+        public string WavChannels => GetChannelsString(WaveForm?.WaveFormat?.Channels);
+        public string WavBitRate => WaveForm?.WaveFormat?.BitsPerSample.ToString();
+        public string WavSampleRate => WaveForm?.WaveFormat?.SampleRate.ToString();
 
         public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
         public event OtoModeHandler OnOtoMode = delegate { };
@@ -97,7 +99,8 @@ namespace WavConfigTool.ViewModels
             if (!ProjectLine.IsEnabled)
                 return;
 
-            ProjectLine.WaveForm.MakeWaveForm(100, ProjectLine.WavImageHash, 
+            WaveForm = new WaveForm(Project.Current.Voicebank.GetSamplePath(ProjectLine.Recline.Filename));
+            WaveForm.MakeWaveForm(100, GetImageHash(), 
                 System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR));
             IsImageEnabled = true;
             RaisePropertyChanged(() => Width);
@@ -178,9 +181,10 @@ namespace WavConfigTool.ViewModels
 
         private ImageSource GetWavImage()
         {
-            if (IsImageEnabled && ProjectLine?.WavImageHash == ProjectLine?.WaveForm?.BitmapImageHash)
-                return ProjectLine.WaveForm.BitmapImage;
-            if (!IsLoading && ProjectLine?.WavImageHash != ProjectLine?.WaveForm?.BitmapImageHash && ProjectLine?.WavImageHash != null)
+            var imageHash = GetImageHash();
+            if (IsImageEnabled && imageHash == WaveForm?.ImageHash)
+                return WaveForm.BitmapImage;
+            if (!IsLoading && imageHash != WaveForm?.ImageHash && imageHash != null)
                 Load();
             return null;
         }
@@ -343,6 +347,7 @@ namespace WavConfigTool.ViewModels
         {
             App.MainDispatcher.Invoke(() =>
             {
+                ProjectLine.Width = WaveForm.Width;
                 ApplyPoints();
                 ProjectLine.SetHasZone();
                 IsLoaded = true;
@@ -354,6 +359,12 @@ namespace WavConfigTool.ViewModels
         private string GetChannelsString(int? channels)
         {
             return !channels.HasValue ? null : channels.Value == 1 ? "Mono" : channels.Value == 2 ? "Stereo" : channels.Value.ToString();
+        }
+
+        private string GetImageHash()
+        {
+            var project = Project.Current;
+            return $"{project.Voicebank.Name}_{project.Reclist.Name}_{Settings.UserScaleX}x{Settings.UserScaleY}_{Project.Current.Prefix}_{ProjectLine.Recline.Filename}_{Project.Current.Suffix}"; //.GetHashCode();
         }
 
         #endregion

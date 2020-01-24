@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using WavConfigTool.Classes;
-using WavConfigTool.Classes.Reader;
-using WavConfigTool.Tools;
 using WavConfigTool.ViewTools;
+using WavConfigCore;
+using WavConfigCore.Reader;
+using WavConfigCore.Tools;
 
 namespace WavConfigTool.ViewModels
 {
@@ -82,7 +83,7 @@ namespace WavConfigTool.ViewModels
         public ICommand ChangeVoicebankCommand => new OpenFileCommand((obj) =>
         {
             var location = Path.GetDirectoryName((string)obj);
-            Project.SetVoicebank(new Voicebank(location));
+            Project.SetVoicebank(new Voicebank(Path.GetDirectoryName(Settings.ProjectFile), location));
             ProjectDataChanged();
         },
         "Select voicebank samples",

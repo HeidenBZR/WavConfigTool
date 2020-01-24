@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using WavConfigTool.Classes;
-using WavConfigTool.Classes.Reader;
-using WavConfigTool.Tools;
 using WavConfigTool.ViewTools;
+using WavConfigCore;
+using WavConfigCore.Reader;
 
 namespace WavConfigTool.ViewModels
 {
@@ -278,7 +278,7 @@ namespace WavConfigTool.ViewModels
                 Settings.ProjectFile = filename;
                 ProjectManager.CreateProject();
                 CallProjectCommand.Execute(this);
-                ProjectManager.Save();
+                ProjectManager.Save(Settings.ProjectFile);
                 LoadProjectAsync();
             }
         },
@@ -307,7 +307,8 @@ namespace WavConfigTool.ViewModels
             if (filename.Length > 0)
             {
                 ResetProject();
-                ProjectManager.Open((string)obj);
+                Settings.ProjectFile = filename;
+                ProjectManager.Open(Settings.ProjectFile);
                 CallProjectCommand.Execute(this);
                 LoadProjectAsync();
             }
@@ -351,14 +352,14 @@ namespace WavConfigTool.ViewModels
 
         public ICommand LoadedCommand => new DelegateCommand(() =>
         {
-            ProjectManager.LoadProject();
+            ProjectManager.LoadProject(Settings.ProjectFile);
             LoadProjectAsync();
             Refresh();
         }, () => true);
 
         public ICommand ReloadProjectCommand => new DelegateCommand(() =>
         {
-            ProjectManager.LoadProject();
+            ProjectManager.LoadProject(Settings.ProjectFile);
             LoadProjectAsync();
             Refresh();
         }, () => !IsLoading);
