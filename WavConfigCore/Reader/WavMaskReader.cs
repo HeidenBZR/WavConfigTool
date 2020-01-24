@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Json;
 using System.Text;
-using System.Xml.Serialization;
 using WavConfigCore.Reader.IO;
 using YamlDotNet.Serialization;
 
@@ -113,48 +111,6 @@ namespace WavConfigCore.Reader
                 wavMask.AddGroup(wavGroup);
             }
             return wavMask;
-        }
-
-        /// deprecated
-
-        private WavMask ReadJson(string filename)
-        {
-            using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
-            {
-                var serializer = new DataContractJsonSerializer(typeof(IOWavMask));
-                var ioWavMask = serializer.ReadObject(fileStream) as IOWavMask;
-                return ioWavMask == null ? null : GetWavMask(ioWavMask);
-            }
-        }
-
-        private WavMask ReadXml(string filename)
-        {
-            using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
-            {
-                var serializer = new XmlSerializer(typeof(IOWavMask));
-                var ioWavMask = serializer.Deserialize(fileStream) as IOWavMask;
-                return ioWavMask == null ? null : GetWavMask(ioWavMask);
-            }
-        }
-
-        private void WriteJson(string filename, WavMask wavMask)
-        {
-            using (var fileStream = new FileStream(filename, FileMode.Create))
-            {
-                var ioWavMask = GetIOWavMask(wavMask);
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IOWavMask));
-                serializer.WriteObject(fileStream, ioWavMask);
-            }
-        }
-
-        private void WriteXml(string filename, WavMask wavMask)
-        {
-            using (var fileStream = new FileStream(filename, FileMode.Create))
-            {
-                var ioWavMask = GetIOWavMask(wavMask);
-                var serializer = new XmlSerializer(typeof(IOWavMask));
-                serializer.Serialize(fileStream, ioWavMask);
-            }
         }
     }
 }
