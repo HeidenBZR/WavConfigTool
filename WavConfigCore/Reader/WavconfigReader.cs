@@ -174,7 +174,6 @@ namespace WavConfigCore.Reader
                 return null;
             var project = Read(project_path);
             project.IsLoaded = project.Reclist.IsLoaded && project.Voicebank.IsLoaded;
-            project.SetOtoGenerator(new OtoGenerator(project.Reclist, project, project.Replacer));
             return project;
         }
     }

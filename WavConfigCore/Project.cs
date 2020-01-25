@@ -28,7 +28,6 @@ namespace WavConfigCore
         public Reclist Reclist { get => reclist; private set { reclist = value; ProjectChanged(); } }
         public Voicebank Voicebank { get => voicebank; private set { voicebank = value; ProjectChanged(); } }
         public Replacer Replacer { get => replacer; private set { replacer = value; ProjectChanged(); } }
-        public OtoGenerator OtoGenerator { get; private set; } // TODO: Move to MainWindowViewModel
         public ProjectOptions ProjectOptions { get; set; }
 
         public bool IsLoaded { get; set; } = false;
@@ -134,12 +133,6 @@ namespace WavConfigCore
             ProcessLineAfterRead(projectLine);
         }
 
-        public void SetOtoGenerator(OtoGenerator otoGenerator)
-        {
-            OtoGenerator = otoGenerator;
-            ProjectChanged();
-        }
-
         public void ResetOto()
         {
             Otos = new Dictionary<string, Oto>();
@@ -183,43 +176,6 @@ namespace WavConfigCore
             BeforeSave();
             SaveMe();
             AfterSave();
-        }
-
-        public void Sort()
-        {
-            foreach (var line in ProjectLines)
-                line.Sort();
-        }
-
-        public void GenerateOto()
-        {
-            Sort();
-            OtoGenerator.Project = this;
-            ResetOto();
-            foreach (Recline recline in Reclist.Reclines)
-            {
-                recline.ResetOto();
-                var projectLine = ProjectLinesByFilename[recline.Name];
-                projectLine.Sort();
-                OtoGenerator.Generate(projectLine);
-            }
-        }
-
-        public string GetOtoText()
-        {
-            GenerateOto();
-            var text = new StringBuilder();
-            foreach (Recline recline in Reclist.Reclines)
-            {
-                text.Append(recline.WriteOto(Suffix, Prefix, WavPrefix, WavSuffix));
-            }
-            return text.ToString();
-        }
-
-        public void GenerateOto(string filename)
-        {
-            var oto = GetOtoText();
-            File.WriteAllText(filename, oto, Encoding.GetEncoding(932));
         }
 
         #region private

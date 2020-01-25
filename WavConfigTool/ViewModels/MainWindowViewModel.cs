@@ -25,21 +25,13 @@ namespace WavConfigTool.ViewModels
         public string VoicebankName  => Project != null && Project.Voicebank != null && Project.IsLoaded ? Project.Voicebank.Name : null;
         public string VoicebankImagePath => Project != null && Project.Voicebank != null && Project.IsLoaded ? Project.Voicebank.ImagePath : null;
         public string VoicebankSubfolder => Project != null && Project.Voicebank != null && Project.IsLoaded ? Project.Voicebank.Subfolder : null;
-        public BitmapImage VoicebankImage
-        {
-            get
-            {
-                if (Project != null && Project.Voicebank != null && Project.Voicebank.ImagePath != "")
-                    return new BitmapImage(new Uri(Project.Voicebank.ImagePath));
-                else
-                    return null;
-            }
-        }
+        public BitmapImage VoicebankImage => GetVoicebankImage();
 
         public PagerViewModel PagerViewModel { get; set; }
         public PagerViewModel WavControlsPagerViewModel { get; set; }
         public PagerViewModel OtoPagerViewModel { get; set; }
         public ProjectManager ProjectManager { get; private set; } = new ProjectManager();
+        public OtoGenerator OtoGenerator { get; private set; }
 
         public int ConsonantAttack { get => Project == null ? 0 : Project.ConsonantAttack; set => Project.ConsonantAttack = value; }
         public int VowelAttack { get => Project == null ? 0 : Project.VowelAttack; set => Project.VowelAttack = value; }
@@ -145,6 +137,7 @@ namespace WavConfigTool.ViewModels
                     control.Ready();
                 }
                 PagerViewModel.ReadProjectOption(Project.ProjectOptions);
+                OtoGenerator = new OtoGenerator(Project);
             }
             IsLoading = false;
             App.MainDispatcher.Invoke(() =>
@@ -173,7 +166,7 @@ namespace WavConfigTool.ViewModels
                 {
                     Project.ResetOto();
                     projectLine.Recline.ResetOto();
-                    Project.OtoGenerator.Generate(projectLine);
+                    OtoGenerator.GenerateFromProjectLine(projectLine);
                     OtoPagerViewModel.UpdateOtoPreviewControls(control.GenerateOtoPreview());
                     RaisePropertyChanged(() => PagerViewModel);
                 }
@@ -250,7 +243,7 @@ namespace WavConfigTool.ViewModels
                 wavControl.IsOtoBase = true;
                 Project.ResetOto();
                 wavControl.ProjectLine.Recline.ResetOto();
-                Project.OtoGenerator.Generate(wavControl.ProjectLine);
+                OtoGenerator.GenerateFromProjectLine(wavControl.ProjectLine);
                 OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreview())
                 {
                     Base = wavControl
@@ -260,6 +253,14 @@ namespace WavConfigTool.ViewModels
                 IsOtoPreviewMode = true;
                 Refresh();
             }
+        }
+
+        private BitmapImage GetVoicebankImage()
+        {
+            if (Project != null && Project.Voicebank != null && Project.Voicebank.ImagePath != "")
+                return new BitmapImage(new Uri(Project.Voicebank.ImagePath));
+            else
+                return null;
         }
 
         #region Commands
@@ -339,7 +340,7 @@ namespace WavConfigTool.ViewModels
             string filename = (string)obj;
             if (filename.Length > 0)
             {
-                Project.GenerateOto(filename);
+                OtoGenerator.GenerateAllAndSave(filename);
             }
         },
         "Save Oto",

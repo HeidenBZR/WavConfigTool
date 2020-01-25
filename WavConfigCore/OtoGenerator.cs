@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -9,20 +10,33 @@ namespace WavConfigCore
 {
     public class OtoGenerator
     {
-        public Reclist Reclist { get; set; }
         public Project Project { get; set; }
-        public Replacer Replacer { get; set; }
 
         public bool MustGeneratePreoto { get; set; } = true;
 
-        public OtoGenerator(Reclist reclist, Project project, Replacer replacer)
+        public OtoGenerator(Project project)
         {
-            Reclist = reclist;
             Project = project;
-            Replacer = replacer;
         }
 
-        public void Generate(ProjectLine projectLine)
+        public void GenerateAllAndSave(string filename)
+        {
+            Project.ResetOto();
+            var text = new StringBuilder();
+
+            foreach (Recline recline in Project.Reclist.Reclines)
+            {
+                recline.ResetOto();
+                var projectLine = Project.ProjectLinesByFilename[recline.Name];
+                projectLine.Sort();
+                GenerateFromProjectLine(projectLine);
+
+                text.Append(recline.WriteOto(Project.Suffix, Project.Prefix, Project.WavPrefix, Project.WavSuffix));
+            }
+            File.WriteAllText(filename, text.ToString(), Encoding.GetEncoding(932));
+        }
+
+        public void GenerateFromProjectLine(ProjectLine projectLine)
         {
             var recline = projectLine.Recline;
             projectLine.CalculateZones();
@@ -69,12 +83,12 @@ namespace WavConfigCore
             double offset = 0, consonant = 0, cutoff = 0, preutterance = 0, overlap = 0;
             bool hasZones = projectLine.ApplyZones(phonemesOfType[p1.Type], p1) && projectLine.ApplyZones(phonemesOfType[p2.Type], p2);
             AliasType aliasType = AliasTypeResolver.Current.GetAliasType(GetAliasType(phonemes));
-            bool masked = aliasType != AliasType.undefined && Reclist.WavMask.CanGenerateOnPosition(projectLine.Recline.Name, aliasType, position);
+            bool masked = aliasType != AliasType.undefined && Project.Reclist.WavMask.CanGenerateOnPosition(projectLine.Recline.Name, aliasType, position);
 
             if (!masked)
                 return null;
 
-            string alias = Replacer.MakeAlias(phonemes, aliasType);
+            string alias = Project.Replacer.MakeAlias(phonemes, aliasType);
             if (alias == null)
                 return null;
 

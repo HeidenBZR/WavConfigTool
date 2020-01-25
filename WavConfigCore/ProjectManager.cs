@@ -42,7 +42,6 @@ namespace WavConfigCore
             {
                 project.SetReclist(Project.Reclist);
                 project.SetVoicebank(Project.Voicebank);
-                project.SetOtoGenerator(Project.OtoGenerator);
             }
             if (project.Voicebank != null && project.Voicebank.IsLoaded)
             {
@@ -107,7 +106,6 @@ namespace WavConfigCore
 
         private void AfterProjectLoaded(string projectDir)
         {
-            Project.SetOtoGenerator(new OtoGenerator(Project.Reclist, Project, Project.Replacer));
             Project.SaveMe += () => Save(projectDir);
         }
 
