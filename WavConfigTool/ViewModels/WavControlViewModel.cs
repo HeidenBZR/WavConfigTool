@@ -21,7 +21,6 @@ namespace WavConfigTool.ViewModels
 
 
         public string Filename { get => ProjectLine.Recline.Name; }
-        public double Length =>  Settings.ViewToRealX(Width);
         public ObservableCollection<Phoneme> Phonemes => new ObservableCollection<Phoneme>(ProjectLine.Recline.Phonemes);
 
         public bool IsOtoBase { get; set; } = false;
@@ -46,7 +45,7 @@ namespace WavConfigTool.ViewModels
         public int Number { get; set; }
         public int NumberView => Number + 1;
 
-        public int Width => ProjectLine != null ? ProjectLine.Width : 4000;
+        public int Width => WaveForm != null ? WaveForm.VisualWidth : 4000;
         public ImageSource WavImage => GetWavImage();
 
         public PhonemeType PhonemeTypeRest => PhonemeType.Rest;
@@ -60,10 +59,11 @@ namespace WavConfigTool.ViewModels
         public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
         public event OtoModeHandler OnOtoMode = delegate { };
         public event SimpleHandler OnLoaded = delegate { };
+        public event SimpleHandler RegenerateOtoRequest = delegate { };
 
         public WavControlViewModel() : base()
         {
-            PointsChanged += OnPointsChanged;
+            PointsChanged += HandlePointsChanged;
             OnLoaded += HandleLoaded;
         }
 
@@ -96,8 +96,6 @@ namespace WavConfigTool.ViewModels
             WaveForm.MakeWaveForm(100, GetImageHash(), 
                 System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR));
             IsImageEnabled = true;
-            RaisePropertyChanged(() => Width);
-            RaisePropertyChanged(() => WavImage);
             OnLoaded();
         }
 
@@ -108,24 +106,6 @@ namespace WavConfigTool.ViewModels
             FillPoints(PhonemeType.Rest);
             FillPoints(PhonemeType.Vowel);
             FirePointsChanged();
-        }
-
-        public event SimpleHandler RegenerateOtoRequest;
-
-        public void OnPointsChanged()
-        {
-            RaisePropertiesChanged(
-                () => ConsonantPoints,
-                () => VowelPoints,
-                () => RestPoints,
-                () => IsCompleted
-            );
-            RaisePropertiesChanged(
-                () => ConsonantZones,
-                () => VowelZones,
-                () => RestZones,
-                () => Phonemes
-            );
         }
 
         public IList<WavPointViewModel> PointsOfType(PhonemeType type)
@@ -335,11 +315,29 @@ namespace WavConfigTool.ViewModels
             ApplyPoints();
         }
 
+        private void HandlePointsChanged()
+        {
+            RaisePropertiesChanged(
+                () => ConsonantPoints,
+                () => VowelPoints,
+                () => RestPoints,
+                () => IsCompleted
+            );
+            RaisePropertiesChanged(
+                () => ConsonantZones,
+                () => VowelZones,
+                () => RestZones,
+                () => Phonemes
+            );
+        }
+
         private void HandleLoaded()
         {
             App.MainDispatcher.Invoke(() =>
             {
                 ProjectLine.Width = WaveForm.Width;
+                RaisePropertyChanged(() => Width);
+                RaisePropertyChanged(() => WavImage);
                 ApplyPoints();
                 ProjectLine.SetHasZone();
                 IsLoaded = true;
