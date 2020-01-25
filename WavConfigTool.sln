@@ -1,20 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WavConfigTool", "WavConfigTool\WavConfigTool.csproj", "{CECCC279-7BCE-477F-976E-0A2BB35D0290}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5} = {9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WavConfigCore", "WavConfigCore\WavConfigCore.csproj", "{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Test|Any CPU = Test|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{CECCC279-7BCE-477F-976E-0A2BB35D0290}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CECCC279-7BCE-477F-976E-0A2BB35D0290}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CECCC279-7BCE-477F-976E-0A2BB35D0290}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CECCC279-7BCE-477F-976E-0A2BB35D0290}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CECCC279-7BCE-477F-976E-0A2BB35D0290}.Test|Any CPU.ActiveCfg = Test|Any CPU
+		{CECCC279-7BCE-477F-976E-0A2BB35D0290}.Test|Any CPU.Build.0 = Test|Any CPU
+		{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}.Test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
