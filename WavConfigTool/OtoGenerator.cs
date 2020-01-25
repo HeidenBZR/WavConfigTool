@@ -170,8 +170,8 @@ namespace WavConfigTool
                     offset = p2.Zone.In - p2.Attack;
                     overlap = p2.Zone.In;
                     preutterance = p2.Zone.Out;
-                    consonant = p2.Zone.Out + 50;
-                    cutoff = p2.Zone.Out + 60;
+                    consonant = p2.Zone.Out;
+                    cutoff = p2.Zone.Out + p2.Attack;
                     break;
 
                 // Ends with Rest

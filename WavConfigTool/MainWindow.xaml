@@ -264,7 +264,8 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             LostFocus="FadeChanged"
-                            Tag="V" />
+                            Tag="V"
+                            Text="30" />
 
                         <Label Margin="3,0" Content="C:" />
                         <TextBox
@@ -273,7 +274,8 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             LostFocus="FadeChanged"
-                            Tag="C" />
+                            Tag="C"
+                            Text="10" />
 
                         <Label Margin="3,0" Content="D:" />
                         <TextBox
@@ -282,7 +284,8 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             LostFocus="FadeChanged"
-                            Tag="D" />
+                            Tag="D"
+                            Text="200" />
                     </StackPanel>
                 </StackPanel>
             </Border>
