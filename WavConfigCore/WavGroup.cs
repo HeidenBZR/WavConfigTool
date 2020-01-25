@@ -8,39 +8,42 @@ namespace WavConfigCore
     public class WavGroup
     {
         public string Name;
-        private List<string> wavs = new List<string>();
-        private Dictionary<AliasType, AliasTypeMask> aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
 
-        public WavGroup() { }
-        public WavGroup(string name, Dictionary<AliasType, AliasTypeMask> aliasTypes, string[] wavFiles)
+        internal List<string> Wavs { get; private set; }
+        internal Dictionary<AliasType, AliasTypeMask> AliasTypes { get; private set; }
+
+        public WavGroup() 
+        {
+            Wavs = new List<string>();
+            AliasTypes = new Dictionary<AliasType, AliasTypeMask>();
+        }
+
+        public WavGroup(string name, Dictionary<AliasType, AliasTypeMask> aliasTypes, string[] wavFiles) : this()
         {
             Name = name;
-            this.aliasTypes = aliasTypes;
-            this.wavs = wavFiles.ToList();
+            AliasTypes = aliasTypes;
+            Wavs = wavFiles.ToList();
         }
 
         public bool HasWav(string filename)
         {
-            return wavs.Contains(filename);
+            return Wavs.Contains(filename);
+        }
+
+        public bool CanGenerateOnPosition(AliasType aliasType, int position)
+        {
+            return AliasTypes.ContainsKey(aliasType) ? AliasTypes[aliasType].IsAllowedOnPosition(position) : false;
         }
 
         public void AddWav(string filename)
         {
-            wavs.Add(filename);
+            Wavs.Add(filename);
         }
 
         public void AddAliasTypeMask(AliasType aliasType, AliasTypeMask aliasTypeMask = null)
         {
-            aliasTypes[aliasType] = aliasTypeMask == null ? new AliasTypeMask() : aliasTypeMask;
+            AliasTypes[aliasType] = aliasTypeMask ?? new AliasTypeMask();
         }
 
-        public Dictionary<AliasType, AliasTypeMask> GetAliasTypes() => aliasTypes;
-
-        public List<string> GetWavs() => wavs;
-
-        internal bool CanGenerateOnPosition(AliasType aliasType, int position)
-        {
-            return aliasTypes.ContainsKey(aliasType) ? aliasTypes[aliasType].IsAllowedOnPosition(position) : false;
-        }
     }
 }

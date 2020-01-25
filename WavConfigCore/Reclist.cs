@@ -10,51 +10,51 @@ namespace WavConfigCore
 
     public class Reclist
     {
-        public List<Phoneme> Phonemes;
-        public List<Recline> Reclines;
-        public List<Phoneme> Vowels { get { return Phonemes.Where(n => n.IsVowel).ToList(); } }
-        public List<Phoneme> Consonants { get { return Phonemes.Where(n => n.IsConsonant).ToList(); } }
+        public List<Phoneme> Phonemes { get; private set; }
+        public List<Phoneme> Vowels { get; private set; }
+        public List<Phoneme> Consonants { get; private set; }
 
-        public string Name { get; set; } = "(Reclist is not avialable)";
-        public string Location { get; set; }
+        public List<Recline> Reclines { get; private set; }
 
-        private Dictionary<string, Recline> _reclineByFilename;
-
+        public string Name { get; set; }
+        public WavMask WavMask { get; set; }
         public bool IsLoaded { get; set; }
 
-
-        public WavMask WavMask { get; set; } = new WavMask(false);
+        public const string EMPTY_NAME = "(Reclist is not avialable)";
 
         public Reclist()
         {
+            Name = EMPTY_NAME;
+            WavMask = new WavMask(false);
             Phonemes = new List<Phoneme>();
             Reclines = new List<Recline>();
-            _reclineByFilename = new Dictionary<string, Recline>();
+            reclineByFilename = new Dictionary<string, Recline>();
             IsLoaded = true;
         }
 
         public void AddRecline(Recline recline)
         {
-            _reclineByFilename[recline.Filename] = recline;
+            reclineByFilename[recline.Name] = recline;
             Reclines.Add(recline);
         }
 
-        Recline AddUnknownRecline(string filename)
+        public void SetPhonemes(List<Phoneme> phonemes)
         {
-            var recline = new Recline(this, filename);
-            AddRecline(recline);
-            return recline;
+            Phonemes = phonemes;
+            Vowels = Phonemes.Where(n => n.IsVowel).ToList();
+            Consonants = Phonemes.Where(n => n.IsConsonant).ToList();
         }
 
         public Phoneme GetPhoneme(string rawAlias)
         {
             // HACK: can't find how to escape ~ in yaml
-            var alias = rawAlias != null ? rawAlias : "~";
+            var alias = rawAlias ?? "~";
             var phoneme = Phonemes.Find(n => n.Alias == alias);
             if (phoneme is null)
             {
-                Phonemes.Add(new Consonant(alias));
-                phoneme = Phonemes.Find(n => n.Alias == alias);
+                phoneme = new Consonant(alias);
+                Phonemes.Add(phoneme);
+                Consonants.Add(phoneme);
             }
             var clone = phoneme.Clone();
             return clone;
@@ -62,16 +62,23 @@ namespace WavConfigCore
 
         public Recline GetRecline(string filename)
         {
-            if (_reclineByFilename.TryGetValue(filename, out Recline recline))
+            if (reclineByFilename.TryGetValue(filename, out Recline recline))
                 return recline;
             else
-                return AddUnknownRecline(filename);
+                return CreateUnknownRecline(filename);
         }
 
-        internal void SetReclines(List<Recline> reclines, Dictionary<string, Recline> reclineByFilename)
+        #region private
+
+        private readonly Dictionary<string, Recline> reclineByFilename;
+
+        private Recline CreateUnknownRecline(string filename)
         {
-            Reclines = reclines;
-            _reclineByFilename = reclineByFilename;
+            var recline = new Recline(this, filename);
+            AddRecline(recline);
+            return recline;
         }
+
+        #endregion
     }
 }

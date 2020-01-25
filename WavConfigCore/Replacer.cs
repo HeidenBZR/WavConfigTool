@@ -13,6 +13,9 @@ namespace WavConfigCore
         public string Name = "";
         public List<string> FormatStrings;
 
+        internal Dictionary<string, string> Replacements = new Dictionary<string, string>();
+        internal Dictionary<AliasType, string> Formats = new Dictionary<AliasType, string>();
+
         public Replacer()
         {
             InitFormats();
@@ -20,24 +23,24 @@ namespace WavConfigCore
 
         public void SetReplacement(string key, string value)
         {
-            replacements[key] = value;
+            Replacements[key] = value;
         }
 
         public void SetFormat(AliasType key, string value)
         {
-            formats[key] = value;
+            Formats[key] = value;
         }
 
         public string Replace(string alias)
         {
-            foreach (KeyValuePair<string, string> entry in replacements)
+            foreach (KeyValuePair<string, string> entry in Replacements)
                 alias = Regex.Replace(alias.ToString(), entry.Key, entry.Value);
             return alias;
         }
 
         public string MakeAlias(Phoneme[] phonemes, AliasType aliasType)
         {
-            var alias = formats[aliasType];
+            var alias = Formats[aliasType];
             var multiconsonants = new List<string>();
             for (var i = 0; i < phonemes.Count(); i++)
             {
@@ -54,7 +57,7 @@ namespace WavConfigCore
                     }
                     if (!isCorrect || i == phonemes.Count() - 1)
                     {
-                        alias = new Regex(EcraneMask(mask)).Replace(alias, string.Join(formats[AliasType.CmC], multiconsonants), 1);
+                        alias = new Regex(EcraneMask(mask)).Replace(alias, string.Join(Formats[AliasType.CmC], multiconsonants), 1);
                         multiconsonants.Clear();
                         if (!isCorrect)
                         {
@@ -81,25 +84,14 @@ namespace WavConfigCore
             return Replace(alias);
         }
 
-        public Dictionary<string, string> GetReplacements()
-        {
-            return replacements;
-        }
+        #region private
 
-        public Dictionary<AliasType, string> GetFormats()
-        {
-            return formats;
-        }
+        private const string VOWEL_MASK = "$V";
+        private const string CONSONANT_MASK = "$C";
+        private const string MULTICONSONANT_MASK = "$C*";
+        private const string REST_MASK = "$R";
 
-        const string VOWEL_MASK = "$V";
-        const string CONSONANT_MASK = "$C";
-        const string MULTICONSONANT_MASK = "$C*";
-        const string REST_MASK = "$R";
-
-        private Dictionary<string, string> replacements = new Dictionary<string, string>();
-        private Dictionary<AliasType, string> formats = new Dictionary<AliasType, string>();
-
-        string ExtractFirstPhonemeMask(string format)
+        private string ExtractFirstPhonemeMask(string format)
         {
             for (var i = 0; i + 1 < format.Length; i++)
             {
@@ -112,33 +104,36 @@ namespace WavConfigCore
             return null;
         }
 
-        string EcraneMask(string mask)
+        private string EcraneMask(string mask)
         {
             return mask.Replace("$", "\\$").Replace("*", "\\*");
         }
 
-        bool IsPhonemeTypeCorrect(string mask, PhonemeType phonemeType)
+        private bool IsPhonemeTypeCorrect(string mask, PhonemeType phonemeType)
         {
             return mask == VOWEL_MASK && phonemeType == PhonemeType.Vowel || mask == REST_MASK && phonemeType == PhonemeType.Rest || 
                 (mask == CONSONANT_MASK || mask == MULTICONSONANT_MASK) && phonemeType == PhonemeType.Consonant;
         }
-        void InitFormats()
+
+        private void InitFormats()
         {
             FormatStrings = new List<string>();
             foreach (AliasType aliasType in Enum.GetValues(typeof(AliasType)))
             {
                 if (aliasType == AliasType.CmC)
                 {
-                    formats[AliasType.CmC] = " ";
+                    Formats[AliasType.CmC] = " ";
                 }
                 else
                 {
                     var aliasTypeString = AliasTypeResolver.Current.GetAliasTypeFormat(aliasType);
                     aliasTypeString = aliasTypeString.Replace("$C $V", "$C$V");
-                    formats[aliasType] = aliasTypeString;
+                    Formats[aliasType] = aliasTypeString;
                 }
                 FormatStrings.Add(aliasType.ToString());
             }
         }
+
+        #endregion
     }
 }

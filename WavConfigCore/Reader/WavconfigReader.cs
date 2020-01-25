@@ -9,6 +9,8 @@ namespace WavConfigCore.Reader
 {
     public class WavconfigReader
     {
+        #region singleton base
+
         private static WavconfigReader current;
         private WavconfigReader() { }
 
@@ -23,6 +25,8 @@ namespace WavConfigCore.Reader
                 return current;
             }
         }
+
+        #endregion
 
         public void Write(string path, Project project)
         {
@@ -44,7 +48,7 @@ namespace WavConfigCore.Reader
             {
                 if (projectLine.RestPoints.Count == 0 && projectLine.VowelPoints.Count == 0 && projectLine.ConsonantPoints.Count == 0)
                     continue;
-                text.Append($"{projectLine.Recline.Filename}\r\n");
+                text.Append($"{projectLine.Recline.Name}\r\n");
                 text.Append($"{String.Join(" ", projectLine.RestPoints)}\r\n");
                 text.Append($"{String.Join(" ", projectLine.VowelPoints) }\r\n");
                 text.Append($"{String.Join(" ", projectLine.ConsonantPoints)}\r\n");

@@ -48,8 +48,6 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public OtoPreviewControlViewModel(string otoLine, double length, ImageSource image) : this(Oto.Read(otoLine, length), image) { }
-
         public override void Ready()
         {
 

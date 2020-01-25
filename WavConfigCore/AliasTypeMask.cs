@@ -4,26 +4,23 @@ namespace WavConfigCore
 {
     public class AliasTypeMask
     {
-        private int[] positions;
-        private bool canTakeAllPositions;
+        internal int[] Positions { get; private set; }
+        internal bool CanTakeAllPositions { get; private set; }
 
         public AliasTypeMask()
         {
-            canTakeAllPositions = true;
+            CanTakeAllPositions = true;
         }
 
         public AliasTypeMask(int[] positions)
         {
-            this.positions = positions;
-            canTakeAllPositions = positions == null || positions.Length == 0;
+            Positions = positions;
+            CanTakeAllPositions = Positions == null || Positions.Length == 0;
         }
 
         public bool IsAllowedOnPosition(int position)
         {
-            return canTakeAllPositions || positions.Contains(position);
+            return CanTakeAllPositions || Positions.Contains(position);
         }
-
-        public bool GetCanTakeAllPositions() => canTakeAllPositions;
-        public int[] GetPositions() => positions.Clone() as int[];
     }
 }

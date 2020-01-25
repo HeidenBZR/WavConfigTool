@@ -10,6 +10,8 @@ namespace WavConfigCore.Reader
 {
     public class ReplacerReader
     {
+        #region singleton base
+
         private static ReplacerReader current;
         private ReplacerReader() { }
 
@@ -24,6 +26,8 @@ namespace WavConfigCore.Reader
                 return current;
             }
         }
+
+        #endregion
 
         public Replacer Read(string name, Reclist reclist)
         {
@@ -66,14 +70,14 @@ namespace WavConfigCore.Reader
         {
             var filename = PathResolver.Current.Replacer(reclist.Name, replacer.Name);
             var text = new StringBuilder();
-            foreach (var format in replacer.GetFormats())
+            foreach (var format in replacer.Formats)
             {
                 if (format.Key == AliasType.undefined)
                     continue;
                 text.AppendLine($"{format.Key} = {(format.Value == " " ? "\\s" : format.Value)}");
             }
 
-            foreach (var replacement in replacer.GetReplacements())
+            foreach (var replacement in replacer.Replacements)
             {
                 var key = replacement.Key;
                 key = key.Replace($"({(string.Join("|", reclist.Vowels.Select(n => n.Alias)))})", "%V%");

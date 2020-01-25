@@ -69,6 +69,8 @@ namespace WavConfigCore
             Project.ResetCurrent();
         }
 
+        #region private
+
         private void WatchForBackup()
         {
             System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
@@ -109,5 +111,6 @@ namespace WavConfigCore
             Project.SaveMe += () => Save(projectDir);
         }
 
+        #endregion
     }
 }

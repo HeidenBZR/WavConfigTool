@@ -16,41 +16,39 @@ namespace WavConfigCore
 
     public class Project
     {
-        #region variables
-
         public static Project Current { get; private set; }
         public static void ResetCurrent() { Current = null; }
+
+        #region variables
 
         public Dictionary<string, string> Options;
         public Dictionary<string, Oto> Otos { get; set; }
         public Oto[] OtoList { get => Otos.Values.ToArray(); }
 
-        public Reclist Reclist { get => _reclist; private set { _reclist = value; ProjectChanged(); } }
-        public Voicebank Voicebank { get => _voicebank; private set { _voicebank = value; ProjectChanged(); } }
-        public Replacer Replacer { get => _replacer; private set { _replacer = value; ProjectChanged(); } }
-        public OtoGenerator OtoGenerator { get; private set; }
+        public Reclist Reclist { get => reclist; private set { reclist = value; ProjectChanged(); } }
+        public Voicebank Voicebank { get => voicebank; private set { voicebank = value; ProjectChanged(); } }
+        public Replacer Replacer { get => replacer; private set { replacer = value; ProjectChanged(); } }
+        public OtoGenerator OtoGenerator { get; private set; } // TODO: Move to MainWindowViewModel
         public ProjectOptions ProjectOptions { get; set; }
 
         public bool IsLoaded { get; set; } = false;
         public bool IsChangedAfterBackup { get; private set; }
 
-        public int VowelDecay { get => _vowelDecay; set { _vowelDecay = value; ProjectChanged(); } }
-        public int VowelAttack { get => _vowelAttack; set { _vowelAttack = value; ProjectChanged(); } }
-        public int ConsonantAttack { get => _consonantAttack; set { _consonantAttack = value; ProjectChanged(); } }
-        public int RestAttack { get => _restAttack; set { _restAttack = value; ProjectChanged(); } }
-        public string Prefix { get => _prefix; set { _prefix = value; ProjectChanged(); } }
-        public string Suffix { get => _suffix; set { _suffix = value; ProjectChanged(); } }
+        public int VowelDecay { get => vowelDecay; set { vowelDecay = value; ProjectChanged(); } }
+        public int VowelAttack { get => vowelAttack; set { vowelAttack = value; ProjectChanged(); } }
+        public int ConsonantAttack { get => consonantAttack; set { consonantAttack = value; ProjectChanged(); } }
+        public int RestAttack { get => restAttack; set { restAttack = value; ProjectChanged(); } }
+        public string Prefix { get => prefix; set { prefix = value; ProjectChanged(); } }
+        public string Suffix { get => suffix; set { suffix = value; ProjectChanged(); } }
         public string WavPrefix { get => wavPrefix; set { wavPrefix = value; ProjectChanged(); } }
         public string WavSuffix { get => wavSuffix; set { wavSuffix = value; ProjectChanged(); } }
         public double UserScaleY { get => userScaleY; set { userScaleY = value; ProjectChanged(); } }
         public double UserScaleX { get => userScaleX; set { userScaleX = value; ProjectChanged(); } }
 
-        public List<ProjectLine> ProjectLines { get => _projectLines; set { _projectLines = value; ProjectChanged(); } }
-        public Dictionary<string, ProjectLine> ProjectLinesByFilename { get => _projectLinesByFilename; set { _projectLinesByFilename = value; ProjectChanged(); } }
-
+        public List<ProjectLine> ProjectLines { get => projectLines; set { projectLines = value; ProjectChanged(); } }
+        public Dictionary<string, ProjectLine> ProjectLinesByFilename { get => projectLinesByFilename; set { projectLinesByFilename = value; ProjectChanged(); } }
 
         #endregion
-
 
         public event SimpleHandler ProjectChanged = delegate { };
         public event SimpleHandler ProjectLinesChanged = delegate { };
@@ -61,14 +59,14 @@ namespace WavConfigCore
         public Project()
         {
             ProjectOptions = new ProjectOptions();
-            _voicebank = new Voicebank("", "");
-            _reclist = new Reclist();
+            voicebank = new Voicebank("", "");
+            reclist = new Reclist();
             Current = this;
-            _projectLines = new List<ProjectLine>();
-            _projectLinesByFilename = new Dictionary<string, ProjectLine>();
+            projectLines = new List<ProjectLine>();
+            projectLinesByFilename = new Dictionary<string, ProjectLine>();
             Options = new Dictionary<string, string>();
-            ProjectChanged += Project_OnProjectChanged;
-            ProjectLinesChanged += Project_OnProjectLineChanged;
+            ProjectChanged += HandleProjectChanged;
+            ProjectLinesChanged += HandleProjectLineChanged;
             IsLoaded = false;
             ResetOto();
         }
@@ -97,6 +95,7 @@ namespace WavConfigCore
             CheckEnabled();
             ProjectChanged();
         }
+
         public void SetReplacer(Replacer replacer)
         {
             Replacer = replacer;
@@ -115,14 +114,14 @@ namespace WavConfigCore
             }
             foreach (var recline in Reclist.Reclines)
             {
-                if (!ProjectLinesByFilename.ContainsKey(recline.Filename))
+                if (!ProjectLinesByFilename.ContainsKey(recline.Name))
                 {
-                    AddProjectLine(recline.Filename, new ProjectLine());
+                    AddProjectLine(recline.Name, new ProjectLine());
                 }
-                if (ProjectLinesByFilename.TryGetValue(recline.Filename, out var projectLine))
+                if (ProjectLinesByFilename.TryGetValue(recline.Name, out var projectLine))
                 {
                     projectLine.Recline = recline;
-                    projectLine.IsEnabled = Voicebank.IsSampleEnabled(projectLine.Recline.Filename);
+                    projectLine.IsEnabled = Voicebank.IsSampleEnabled(projectLine.Recline.Name);
                     ProcessLineAfterRead(projectLine);
                 }
             }
@@ -134,7 +133,6 @@ namespace WavConfigCore
             ProjectLinesByFilename[filename] = projectLine;
             ProcessLineAfterRead(projectLine);
         }
-
 
         public void SetOtoGenerator(OtoGenerator otoGenerator)
         {
@@ -186,6 +184,7 @@ namespace WavConfigCore
             SaveMe();
             AfterSave();
         }
+
         public void Sort()
         {
             foreach (var line in ProjectLines)
@@ -200,7 +199,7 @@ namespace WavConfigCore
             foreach (Recline recline in Reclist.Reclines)
             {
                 recline.ResetOto();
-                var projectLine = ProjectLinesByFilename[recline.Filename];
+                var projectLine = ProjectLinesByFilename[recline.Name];
                 projectLine.Sort();
                 OtoGenerator.Generate(projectLine);
             }
@@ -225,29 +224,29 @@ namespace WavConfigCore
 
         #region private
 
-        private Reclist _reclist;
-        private Voicebank _voicebank;
-        private Replacer _replacer;
-        private List<ProjectLine> _projectLines;
-        private Dictionary<string, ProjectLine> _projectLinesByFilename;
+        private Reclist reclist;
+        private Voicebank voicebank;
+        private Replacer replacer;
+        private List<ProjectLine> projectLines;
+        private Dictionary<string, ProjectLine> projectLinesByFilename;
 
-        private int _vowelDecay = 200;
-        private int _vowelAttack = 60;
-        private int _consonantAttack = 30;
-        private int _restAttack = 40;
-        private string _prefix = "";
-        private string _suffix = "";
+        private int vowelDecay = 200;
+        private int vowelAttack = 60;
+        private int consonantAttack = 30;
+        private int restAttack = 40;
+        private string prefix = "";
+        private string suffix = "";
         private double userScaleY = 1;
         private double userScaleX = 1;
         private string wavPrefix = "";
         private string wavSuffix = "";
 
-        private void Project_OnProjectChanged()
+        private void HandleProjectChanged()
         {
             FireSaveMe();
         }
 
-        private void Project_OnProjectLineChanged()
+        private void HandleProjectLineChanged()
         {
             FireSaveMe();
         }

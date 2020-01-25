@@ -12,38 +12,14 @@ namespace WavConfigCore
         public Reclist Reclist { get; set; }
         public Project Project { get; set; }
         public Replacer Replacer { get; set; }
-        public List<string> EmptyAliases { get; set; }
 
         public bool MustGeneratePreoto { get; set; } = true;
-
-        public static OtoGenerator Current { get; private set; }
 
         public OtoGenerator(Reclist reclist, Project project, Replacer replacer)
         {
             Reclist = reclist;
             Project = project;
             Replacer = replacer;
-            Current = this;
-        }
-
-        public string Oto(double of, double con, double cut, double pre, double ov)
-        {
-            string f = "f0";
-            // Relative values
-            ov -= of;
-            pre -= of;
-            con -= of;
-            if (cut != 0)
-                cut = -(cut - of);
-            else
-                cut = 10;
-
-            return $"{of.ToString(f)},{con.ToString(f)},{cut.ToString(f)},{pre.ToString(f)},{ov.ToString(f)}";
-        }
-
-        public string GetAliasType(params Phoneme[] phonemes)
-        {
-            return String.Join("", phonemes.Select(n => n.Type.ToString().Substring(0, 1)));
         }
 
         public void Generate(ProjectLine projectLine)
@@ -53,10 +29,12 @@ namespace WavConfigCore
             var position = 0;
             var reclinePhonemes = recline.GetPhonemesForGeneration();
 
-            var phonemesOfType = new Dictionary<PhonemeType, List<Phoneme>>();
-            phonemesOfType[PhonemeType.Vowel] = new List<Phoneme>();
-            phonemesOfType[PhonemeType.Consonant] = new List<Phoneme>();
-            phonemesOfType[PhonemeType.Rest] = new List<Phoneme>();
+            var phonemesOfType = new Dictionary<PhonemeType, List<Phoneme>>
+            {
+                [PhonemeType.Vowel] = new List<Phoneme>(),
+                [PhonemeType.Consonant] = new List<Phoneme>(),
+                [PhonemeType.Rest] = new List<Phoneme>()
+            };
             foreach (var phoneme in reclinePhonemes)
                 phonemesOfType[phoneme.Type].Add(phoneme);
 
@@ -65,9 +43,7 @@ namespace WavConfigCore
                 for (int count = 1; count < 6 && i + count - 1 < reclinePhonemes.Count; count++)
                 {
                     var phonemes = reclinePhonemes.GetRange(i, count);
-                    var prev = i - 1 >= 0 ? reclinePhonemes[i - 1] : null;
-                    var next = i + count + 1 < reclinePhonemes.Count ? reclinePhonemes[i + count + 1] : null;
-                    var otoRaw = Generate(projectLine, position, phonemes.ToArray(), prev, next, phonemesOfType);
+                    var otoRaw = GenerateSingleOto(projectLine, position, phonemes.ToArray(), phonemesOfType);
                     if (otoRaw != null)
                     {
                         (var alias, var oto) = Project.AddOto(otoRaw);
@@ -82,7 +58,9 @@ namespace WavConfigCore
             }
         }
 
-        public Oto Generate(ProjectLine projectLine, int position, Phoneme[] phonemes, Phoneme prev, Phoneme next, Dictionary<PhonemeType, List<Phoneme>> phonemesOfType)
+        #region private
+
+        private Oto GenerateSingleOto(ProjectLine projectLine, int position, Phoneme[] phonemes, Dictionary<PhonemeType, List<Phoneme>> phonemesOfType)
         {
             var recline = projectLine.Recline;
 
@@ -91,7 +69,7 @@ namespace WavConfigCore
             double offset = 0, consonant = 0, cutoff = 0, preutterance = 0, overlap = 0;
             bool hasZones = projectLine.ApplyZones(phonemesOfType[p1.Type], p1) && projectLine.ApplyZones(phonemesOfType[p2.Type], p2);
             AliasType aliasType = AliasTypeResolver.Current.GetAliasType(GetAliasType(phonemes));
-            bool masked = aliasType != AliasType.undefined && Reclist.WavMask.CanGenerateOnPosition(projectLine.Recline.Filename, aliasType, position);
+            bool masked = aliasType != AliasType.undefined && Reclist.WavMask.CanGenerateOnPosition(projectLine.Recline.Name, aliasType, position);
 
             if (!masked)
                 return null;
@@ -191,16 +169,23 @@ namespace WavConfigCore
             {
                 if (hasZones)
                 {
-                    var oto = new Oto(recline.Filename, alias, offset, consonant, cutoff, preutterance, overlap);
+                    var oto = new Oto(recline.Name, alias, offset, consonant, cutoff, preutterance, overlap);
                     oto.Smarty();
                     return oto;
                 }
                 else if (MustGeneratePreoto)
                 {
-                    return new Oto(recline.Filename, alias, 10, 100, 150, 60, 40);
+                    return new Oto(recline.Name, alias, 10, 100, 150, 60, 40);
                 }
             }
             return null;
         }
+
+        private string GetAliasType(params Phoneme[] phonemes)
+        {
+            return String.Join("", phonemes.Select(n => n.Type.ToString().Substring(0, 1)));
+        }
+
+        #endregion
     }
 }

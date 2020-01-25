@@ -16,18 +16,9 @@ namespace WavConfigCore
         public List<Zone> RestZones { get; private set; } = new List<Zone>();
 
         public List<int> VirtualRestPoints => GetVirtualRestPoints();
+        public int Width { get; set; }
 
         public Recline Recline { get; set; }
-        public bool IsCompleted
-        {
-            get
-            {
-                return RestPoints != null && VowelPoints != null && ConsonantPoints != null &&
-                    VirtualRestPoints.Count >= Recline.Rests.Count * 2 &&
-                    ConsonantPoints.Count >= Recline.Consonants.Count * 2 &&
-                    VowelPoints.Count >= Recline.Vowels.Count * 2;
-            }
-        }
 
         public event SimpleHandler ProjectLineChanged;
         public event SimpleHandler ProjectLinePointsChanged;
@@ -36,34 +27,6 @@ namespace WavConfigCore
         /// Возвращает true если файл существовал на момент чтения проекта или изменения голосового банка/реклиста
         /// </summary>
         public bool IsEnabled { get; set; } = false;
-
-        public int Width { get; set; }
-
-        public ProjectLine()
-        {
-            ProjectLineChanged += delegate { CalculateZones(); };
-            ProjectLinePointsChanged += delegate { CalculateZones(); SetHasZone(); };
-        }
-
-        public void SetPoints(IEnumerable<int> vowels, IEnumerable<int> consonants, IEnumerable<int> rests)
-        {
-            VowelPoints = vowels.ToList();
-            ConsonantPoints = consonants.ToList();
-            RestPoints = rests.ToList();
-        }
-
-        public void SetRecline(Recline recline)
-        {
-            Recline = recline;
-            SetHasZone();
-            ProjectLineChanged();
-            ProjectLinePointsChanged();
-        }
-
-        public void CallChanged()
-        {
-            ProjectLineChanged();
-        }
 
         public static ProjectLine Read(Recline recline, string pds, string pvs, string pcs)
         {
@@ -89,6 +52,27 @@ namespace WavConfigCore
                 Recline = recline
             };
             return projectLine;
+        }
+
+        public ProjectLine()
+        {
+            ProjectLineChanged += delegate { CalculateZones(); };
+            ProjectLinePointsChanged += delegate { CalculateZones(); SetHasZone(); };
+        }
+
+        public void SetPoints(IEnumerable<int> vowels, IEnumerable<int> consonants, IEnumerable<int> rests)
+        {
+            VowelPoints = vowels.ToList();
+            ConsonantPoints = consonants.ToList();
+            RestPoints = rests.ToList();
+        }
+
+        public bool IsCompleted()
+        {
+            return RestPoints != null && VowelPoints != null && ConsonantPoints != null &&
+                VirtualRestPoints.Count >= Recline.Rests.Count * 2 &&
+                ConsonantPoints.Count >= Recline.Consonants.Count * 2 &&
+                VowelPoints.Count >= Recline.Vowels.Count * 2;
         }
 
         public void CalculateZones()
@@ -119,11 +103,6 @@ namespace WavConfigCore
                 if (type == PhonemeType.Rest)
                     zones.Add(new Zone(0, 0));
             }
-        }
-
-        public override string ToString()
-        {
-            return $"{{{Recline.Filename} ({(VowelPoints.Count + ConsonantPoints.Count + RestPoints.Count)})}}";
         }
 
         /// <summary>
@@ -217,6 +196,13 @@ namespace WavConfigCore
             return i;
         }
 
+        public override string ToString()
+        {
+            return $"{{{Recline.Name} ({(VowelPoints.Count + ConsonantPoints.Count + RestPoints.Count)})}}";
+        }
+
+        #region private
+
         // TODO: move to WavConfigTool
         private List<int> GetVirtualRestPoints()
         {
@@ -234,5 +220,15 @@ namespace WavConfigCore
             }
             return points;
         }
+
+        private void SetRecline(Recline recline)
+        {
+            Recline = recline;
+            SetHasZone();
+            ProjectLineChanged();
+            ProjectLinePointsChanged();
+        }
+
+        #endregion
     }
 }

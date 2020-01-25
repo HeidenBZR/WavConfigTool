@@ -7,14 +7,18 @@ namespace WavConfigCore
 {
     public class Recline
     {
-        public string Filename;
+        public string Name;
         public string Description { get; set; }
-        public List<Phoneme> PhonemesRaw;
-        public List<Phoneme> Phonemes;
-        public List<Phoneme> Vowels { get { return Phonemes.Where(n => n.IsVowel).ToList(); } }
-        public List<Phoneme> Consonants { get { return Phonemes.Where(n => n.IsConsonant).ToList(); } }
-        public List<Phoneme> Rests { get { return Phonemes.Where(n => n.IsRest).ToList(); } }
+        public List<Phoneme> PhonemesRaw { get; private set; }
+        public List<Phoneme> Phonemes { get; private set; }
+        public List<Phoneme> Vowels { get; private set; }
+        public List<Phoneme> Consonants { get; private set; }
+        public List<Phoneme> Rests { get; private set; }
         public Reclist Reclist;
+
+        public Dictionary<string, Oto> Otos { get; set; }
+        public Oto[] OtoList => Otos.Values.ToArray();
+        public string InfoString { get; private set; }
 
         /// <summary>
         /// Определяет, присутствует ли фактически строка в реклисте, или это рудимент от старого, чтобы не потерять данные.
@@ -22,24 +26,37 @@ namespace WavConfigCore
         /// </summary>
         public bool IsEnabled { get; set; } = false;
 
-        public Dictionary<string, Oto> Otos { get; set; }
-        public Oto[] OtoList { get => Otos.Values.ToArray(); }
-        public string Name
-        {
-            get
-            {
-                int ind = Reclist.Reclines.IndexOf(this) + 1;
-                return $"{ind}. {Description} [{String.Join(" ", Phonemes.Select(n => n.Alias))}]";
-            }
-        }
-
-        public Recline(Reclist reclist, string filename)
+        public Recline(Reclist reclist, string name)
         {
             Reclist = reclist;
-            Filename = filename;
+            Name = name;
             Phonemes = new List<Phoneme>();
             Description = "(Unknown Recline)";
             Otos = new Dictionary<string, Oto>();
+            Phonemes = new List<Phoneme>();
+            PhonemesRaw = new List<Phoneme>();
+
+            int ind = Reclist.Reclines.IndexOf(this) + 1;
+            InfoString = $"{ind}. {Description} [{String.Join(" ", Phonemes.Select(n => n.Alias))}]";
+        }
+
+        public Recline(Reclist reclist, string name, List<Phoneme> phonemes, string description) : this(reclist, name)
+        {
+            Description = description;
+
+            Phonemes.Add(Rest.Create(this));
+            foreach (var phoneme in phonemes)
+            {
+                Phonemes.Add(phoneme);
+                PhonemesRaw.Add(phoneme);
+            }
+            Phonemes.Add(Rest.Create(this));
+
+            Vowels = Phonemes.Where(n => n.IsVowel).ToList();
+            Consonants = Phonemes.Where(n => n.IsConsonant).ToList();
+            Rests = Phonemes.Where(n => n.IsRest).ToList();
+
+            IsEnabled = true;
         }
 
         public List<Phoneme> GetPhonemesForGeneration()
@@ -63,23 +80,6 @@ namespace WavConfigCore
             }
             return phonemesForGeneration;
         } 
-        public Recline(Reclist reclist, string filename, List<Phoneme> phonemes, string description)
-        {
-            Reclist = reclist;
-            Filename = filename;
-            Description = description;
-            Phonemes = new List<Phoneme>();
-            PhonemesRaw = new List<Phoneme>();
-            Phonemes.Add(Rest.Create(this));
-            foreach (var phoneme in phonemes)
-            {
-                Phonemes.Add(phoneme);
-                PhonemesRaw.Add(phoneme);
-            }
-            Phonemes.Add(Rest.Create(this));
-            Otos = new Dictionary<string, Oto>();
-            IsEnabled = true;
-        }
 
         public List<Phoneme> PhonemesOfType(PhonemeType type)
         {
@@ -112,9 +112,9 @@ namespace WavConfigCore
             if (Phonemes is null)
                 return "Recline: {undefined}";
             else if (Description is null)
-                return $"Recline: [{String.Join(" ", Phonemes)}]";
+                return $"Recline: [{string.Join(" ", Phonemes)}]";
             else
-                return $"Recline: {Description} [{String.Join(" ", Phonemes.Select(n => n.Alias))}]";
+                return $"Recline: {Description} [{string.Join(" ", Phonemes.Select(n => n.Alias))}]";
         }
 
     }

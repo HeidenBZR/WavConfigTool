@@ -11,6 +11,8 @@ namespace WavConfigCore.Reader
 
     public class ProjectReader
     {
+        #region singleton base
+
         private static ProjectReader current;
         private ProjectReader() { }
 
@@ -25,6 +27,8 @@ namespace WavConfigCore.Reader
                 return current;
             }
         }
+
+        #endregion
 
         public Project Read(string filename)
         {
@@ -94,7 +98,7 @@ namespace WavConfigCore.Reader
                     Consonants = projectLine.ConsonantPoints.ToArray()
                 };
                 if (projectLine.Recline != null)
-                    ioWavConfig.File = projectLine.Recline.Filename;
+                    ioWavConfig.File = projectLine.Recline.Name;
                 wavConfigsList.Add(ioWavConfig);
             }
             ioProject.WavConfigs = wavConfigsList.ToArray();

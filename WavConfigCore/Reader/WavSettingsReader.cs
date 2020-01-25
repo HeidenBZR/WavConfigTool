@@ -10,6 +10,8 @@ namespace WavConfigCore.Reader
 {
     public class WavSettingsReader
     {
+        #region singleton base
+
         private static WavSettingsReader current;
         private WavSettingsReader() { }
 
@@ -25,6 +27,8 @@ namespace WavConfigCore.Reader
             }
         }
 
+        #endregion
+
         public Reclist Read(string filename)
         {
             var reclist = new Reclist();
@@ -33,7 +37,6 @@ namespace WavConfigCore.Reader
                 return reclist;
 
             reclist.Name = Path.GetFileNameWithoutExtension(filename);
-            reclist.Location = filename;
             reclist.WavMask = WavMaskReader.Current.Read(PathResolver.Current.Reclist(reclist.Name + ".mask"));
 
             string[] lines = File.ReadAllLines(filename, Encoding.UTF8);
@@ -49,7 +52,7 @@ namespace WavConfigCore.Reader
             };
             foreach (string v in vs) phonemes.Add(new Vowel(v));
             foreach (string c in cs) phonemes.Add(new Consonant(c));
-            reclist.Phonemes = phonemes;
+            reclist.SetPhonemes(phonemes);
 
             for (int i = 2; i < lines.Length; i++)
             {

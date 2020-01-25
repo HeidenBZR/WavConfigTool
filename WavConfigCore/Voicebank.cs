@@ -81,6 +81,8 @@ namespace WavConfigCore
             return Path.Combine(Fullpath, Project.Current.WavPrefix + sample + Project.Current.WavSuffix + ".wav");
         }
 
+        #region private
+
         private void ManageLocations(string projectDir, string location)
         {
             if (projectDir == "" || location == null)
@@ -125,5 +127,7 @@ namespace WavConfigCore
 
             IsLoaded = true;
         }
+
+        #endregion
     }
 }

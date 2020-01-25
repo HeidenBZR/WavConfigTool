@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace WavConfigCore
 {
-    [Serializable]
     public class WavMask
     {
-        private Dictionary<string, List<WavGroup>> wavGroupsByFilename;
-        private List<WavGroup> wavGroups;
         public int MaxDuplicates;
+
+        internal List<WavGroup> WavGroups { get; private set; }
 
         public WavMask(bool init = true)
         {
             if (init)
             {
-                wavGroups = new List<WavGroup>();
+                WavGroups = new List<WavGroup>();
                 wavGroupsByFilename = new Dictionary<string, List<WavGroup>>();
             }
         }
@@ -25,22 +23,9 @@ namespace WavConfigCore
             var aliasTypes = new List<string>();
             foreach (var wavGroup in wavGroupsByFilename[filename])
             {
-                aliasTypes.AddRange(wavGroup.GetAliasTypes().Select(n => n.ToString()));
+                aliasTypes.AddRange(wavGroup.AliasTypes.Select(n => n.ToString()));
             }
             return aliasTypes;
-        }
-
-        public void AddGroup(WavGroup wavGroup)
-        {
-            wavGroups.Add(wavGroup);
-            foreach (var wav in wavGroup.GetWavs())
-            {
-                if (!wavGroupsByFilename.ContainsKey(wav))
-                {
-                    wavGroupsByFilename[wav] = new List<WavGroup>();
-                }
-                wavGroupsByFilename[wav].Add(wavGroup);
-            }
         }
 
         public bool CanGenerateOnPosition(string filename, AliasType aliasType, int position)
@@ -58,6 +43,23 @@ namespace WavConfigCore
             return false;
         }
 
-        public List<WavGroup> GetWavGroups() => wavGroups;
+        public void AddGroup(WavGroup wavGroup)
+        {
+            WavGroups.Add(wavGroup);
+            foreach (var wav in wavGroup.Wavs)
+            {
+                if (!wavGroupsByFilename.ContainsKey(wav))
+                {
+                    wavGroupsByFilename[wav] = new List<WavGroup>();
+                }
+                wavGroupsByFilename[wav].Add(wavGroup);
+            }
+        }
+
+        #region private
+
+        private Dictionary<string, List<WavGroup>> wavGroupsByFilename;
+
+        #endregion
     }
 }

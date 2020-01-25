@@ -12,6 +12,8 @@ namespace WavConfigCore.Reader
 {
     public class ReclistReader
     {
+        #region singleton base
+
         private static ReclistReader current;
         private ReclistReader() { }
 
@@ -26,6 +28,8 @@ namespace WavConfigCore.Reader
                 return current;
             }
         }
+
+        #endregion
 
         public Reclist Read(string name)
         {
@@ -95,7 +99,7 @@ namespace WavConfigCore.Reader
                 else
                     phonemes.Add(new Vowel(phoneme));
             }
-            reclist.Phonemes = phonemes;
+            reclist.SetPhonemes(phonemes);
 
             foreach (var file in ioReclist.Files)
             {
@@ -121,7 +125,7 @@ namespace WavConfigCore.Reader
             {
                 var wavParams = new IOWavParams()
                 {
-                    Filename = recline.Filename,
+                    Filename = recline.Name,
                     Description = recline.Description,
                     Phonemes = recline.PhonemesRaw == null ? new string[0] : recline.PhonemesRaw.Select(n => n.Alias).ToArray()
                 };

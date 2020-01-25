@@ -28,7 +28,7 @@ namespace WavConfigTool.ViewModels
         public WaveForm WaveForm { get; set; }
 
 
-        public string Filename { get => ProjectLine.Recline.Filename; }
+        public string Filename { get => ProjectLine.Recline.Name; }
         public double Length =>  Settings.ViewToRealX(Width);
         public ObservableCollection<Phoneme> Phonemes => new ObservableCollection<Phoneme>(ProjectLine.Recline.Phonemes);
 
@@ -38,7 +38,7 @@ namespace WavConfigTool.ViewModels
         public bool IsImageEnabled { get; set; } = false;
         public bool IsReady { get; set; } = false;
 
-        public bool IsCompleted => ProjectLine.IsCompleted;
+        public bool IsCompleted => ProjectLine.IsCompleted();
         public bool IsEnabled => ProjectLine != null && ProjectLine.IsEnabled;
         public bool IsDisabled => !IsEnabled;
         public bool EditEnabled => IsEnabled && !IsLoading && IsLoaded;
@@ -99,7 +99,7 @@ namespace WavConfigTool.ViewModels
             if (!ProjectLine.IsEnabled)
                 return;
 
-            WaveForm = new WaveForm(Project.Current.Voicebank.GetSamplePath(ProjectLine.Recline.Filename));
+            WaveForm = new WaveForm(Project.Current.Voicebank.GetSamplePath(ProjectLine.Recline.Name));
             WaveForm.MakeWaveForm(100, GetImageHash(), 
                 System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR));
             IsImageEnabled = true;
@@ -251,7 +251,7 @@ namespace WavConfigTool.ViewModels
             if (ProjectLine == null || ProjectLine.Recline == null)
                 return "{WavControlViewModel}";
             else
-                return $"{ProjectLine.Recline.Name} : WavControlViewModel";
+                return $"{ProjectLine.Recline.InfoString} : WavControlViewModel";
         }
 
         public ObservableCollection<WavControlBaseViewModel> GenerateOtoPreview()
@@ -364,7 +364,7 @@ namespace WavConfigTool.ViewModels
         private string GetImageHash()
         {
             var project = Project.Current;
-            return $"{project.Voicebank.Name}_{project.Reclist.Name}_{Settings.UserScaleX}x{Settings.UserScaleY}_{Project.Current.Prefix}_{ProjectLine.Recline.Filename}_{Project.Current.Suffix}"; //.GetHashCode();
+            return $"{project.Voicebank.Name}_{project.Reclist.Name}_{Settings.UserScaleX}x{Settings.UserScaleY}_{Project.Current.Prefix}_{ProjectLine.Recline.Name}_{Project.Current.Suffix}"; //.GetHashCode();
         }
 
         #endregion
@@ -382,7 +382,7 @@ namespace WavConfigTool.ViewModels
                     },
                     delegate (Point point)
                     {
-                        return ProjectLine.IsEnabled && !ProjectLine.IsCompleted;
+                        return ProjectLine.IsEnabled && !ProjectLine.IsCompleted();
                     }
                 );
             }

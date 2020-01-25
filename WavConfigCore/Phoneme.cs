@@ -13,10 +13,10 @@ namespace WavConfigCore
         public double In;
         public double Out;
 
-        public Zone(double p_in, double p_out)
+        public Zone(double pIn, double pOut)
         {
-            In = p_in;
-            Out = p_out;
+            In = pIn;
+            Out = pOut;
         }
 
         public override string ToString()
@@ -37,8 +37,7 @@ namespace WavConfigCore
         public PhonemeType Type { get; set; }
         public Zone Zone { get; set; }
         public int GlobalIndex => Recline == null ? -1 : Recline.Phonemes.IndexOf(this);
-        private bool hasZone;
-        public bool HasZone { get => hasZone; set { hasZone = value; FireChanged(); } }
+        public bool HasZone { get; set; }
         public Recline Recline;
 
         public bool IsConsonant { get { return Type == PhonemeType.Consonant; } }
@@ -51,7 +50,6 @@ namespace WavConfigCore
             Letter = letter; 
         }
 
-
         public abstract Phoneme Clone();
 
         public override string ToString()
@@ -62,11 +60,6 @@ namespace WavConfigCore
         public static implicit operator string(Phoneme phoneme)
         {
             return phoneme.Alias;
-        }
-
-        public void FireChanged()
-        {
-            // TODO: Make phoneme view model?
         }
     };
 
@@ -98,10 +91,12 @@ namespace WavConfigCore
         {
             return new Rest(Rest.ALIAS) { Recline = recline };
         }
+
         private Rest(string l, string letter = "") : base(l, letter)
         {
             Type = PhonemeType.Rest;
         }
+
         public Rest(string l, double zoneIn, double zoneOut, Recline recline, string letter = "") : this(l, letter)
         {
             Zone = new Zone()
@@ -113,7 +108,6 @@ namespace WavConfigCore
         }
 
         public override Phoneme Clone() { return new Rest(Alias, Letter); }
-
 
     };
 }

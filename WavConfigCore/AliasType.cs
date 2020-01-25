@@ -32,6 +32,8 @@ namespace WavConfigCore
 
     class AliasTypeResolver
     {
+        #region singleton base
+
         private static AliasTypeResolver current;
         private AliasTypeResolver() { }
 
@@ -46,6 +48,8 @@ namespace WavConfigCore
                 return current;
             }
         }
+
+        #endregion
 
         public AliasType GetAliasType(string aliasTypeString)
         {

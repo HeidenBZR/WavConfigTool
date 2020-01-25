@@ -10,6 +10,8 @@ namespace WavConfigCore.Reader
 
     public class WavMaskReader
     {
+        #region singleton base
+
         private static WavMaskReader current;
         private WavMaskReader() { }
 
@@ -25,6 +27,8 @@ namespace WavConfigCore.Reader
             }
         }
 
+        #endregion
+
         public WavMask Read(string filename)
         {
             var wavMask = ReadYaml(filename);
@@ -33,7 +37,7 @@ namespace WavConfigCore.Reader
 
         public void Write(string filename, WavMask wavMask)
         {
-            if (wavMask == null || wavMask.GetWavGroups() == null)
+            if (wavMask == null || wavMask.WavGroups == null)
                 return;
             WriteYaml(filename, wavMask);
         }
@@ -65,26 +69,30 @@ namespace WavConfigCore.Reader
 
         private IOWavMask GetIOWavMask(WavMask wavMask)
         {
-            var ioWavMask = new IOWavMask();
-            ioWavMask.MaxDuplicates = wavMask.MaxDuplicates;
+            var ioWavMask = new IOWavMask
+            {
+                MaxDuplicates = wavMask.MaxDuplicates
+            };
             var list = new List<IOWavGroup>();
-            foreach (var wavGroup in wavMask.GetWavGroups())
+            foreach (var wavGroup in wavMask.WavGroups)
             {
                 var ioWavGroup = new IOWavGroup();
                 var iOAliasTypes = new List<IOAliasType>();
-                foreach (var pair in wavGroup.GetAliasTypes())
+                foreach (var pair in wavGroup.AliasTypes)
                 {
-                    var ioAliasType = new IOAliasType();
-                    ioAliasType.Name = pair.Key.ToString();
-                    ioAliasType.CanTakeFromAllPositions = pair.Value.GetCanTakeAllPositions();
+                    var ioAliasType = new IOAliasType
+                    {
+                        Name = pair.Key.ToString(),
+                        CanTakeFromAllPositions = pair.Value.CanTakeAllPositions
+                    };
                     if (!ioAliasType.CanTakeFromAllPositions)
                     {
-                        ioAliasType.Positions = pair.Value.GetPositions();
+                        ioAliasType.Positions = pair.Value.Positions;
                     }
                     iOAliasTypes.Add(ioAliasType);
                 }
                 ioWavGroup.AliasTypes = iOAliasTypes.ToArray();
-                ioWavGroup.WavFiles = wavGroup.GetWavs().ToArray();
+                ioWavGroup.WavFiles = wavGroup.Wavs.ToArray();
                 ioWavGroup.Name = wavGroup.Name;
                 list.Add(ioWavGroup);
             }
@@ -94,8 +102,10 @@ namespace WavConfigCore.Reader
 
         private WavMask GetWavMask(IOWavMask ioWavMask)
         {
-            var wavMask = new WavMask();
-            wavMask.MaxDuplicates = ioWavMask.MaxDuplicates;
+            var wavMask = new WavMask
+            {
+                MaxDuplicates = ioWavMask.MaxDuplicates
+            };
             foreach (var iOWavGroup in ioWavMask.WavGroups)
             {
                 var aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
