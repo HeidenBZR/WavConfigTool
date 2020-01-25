@@ -20,8 +20,8 @@ namespace WavConfigCore
 
         public Recline Recline { get; set; }
 
-        public event SimpleHandler ProjectLineChanged;
-        public event SimpleHandler ProjectLinePointsChanged;
+        public event SimpleHandler ProjectLineChanged = delegate { };
+        public event SimpleHandler ProjectLinePointsChanged = delegate { };
 
         /// <summary>
         /// Возвращает true если файл существовал на момент чтения проекта или изменения голосового банка/реклиста

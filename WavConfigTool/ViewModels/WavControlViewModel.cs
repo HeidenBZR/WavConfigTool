@@ -16,15 +16,7 @@ namespace WavConfigTool.ViewModels
 {
     public class WavControlViewModel : WavControlBaseViewModel
     {
-        public ProjectLine ProjectLine
-        {
-            get => _projectLine;
-            set
-            {
-                _projectLine = value;
-                _projectLine.ProjectLineChanged += HandleProjectLineChanged;
-            }
-        }
+        public ProjectLine ProjectLine { get; private set; }
         public WaveForm WaveForm { get; set; }
 
 
@@ -78,6 +70,7 @@ namespace WavConfigTool.ViewModels
         public WavControlViewModel(ProjectLine projectLine) : this()
         {
             ProjectLine = projectLine;
+            ProjectLine.ProjectLineChanged += HandleProjectLineChanged;
         }
 
         public override void Ready()
@@ -265,7 +258,6 @@ namespace WavConfigTool.ViewModels
         }
 
         #region private
-        private ProjectLine _projectLine;
 
         private void FillPoints(PhonemeType type)
         {
