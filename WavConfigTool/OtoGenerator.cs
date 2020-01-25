@@ -10,8 +10,6 @@ namespace WavConfigTool
     public class OtoGenerator
     {
 
-
-        public Dictionary<string, int> Duplicates;
         public Dictionary<string, string> Replacement { get; private set; }
 
         public static OtoGenerator Current { get; private set; }
@@ -25,11 +23,6 @@ namespace WavConfigTool
         public static void Init(string vocebankType)
         {
             Current = new OtoGenerator(vocebankType);
-        }
-
-        public void ResetDuplicates()
-        {
-            Duplicates = new Dictionary<string, int>();
         }
 
         public Dictionary<string, string> ReadReplacementFile(string path)
@@ -91,12 +84,10 @@ namespace WavConfigTool
 
 
             foreach (KeyValuePair<string, string> entry in Replacement)
-            {
                 alias = Regex.Replace(alias.ToString(), entry.Key, entry.Value);
-            }
             return alias;
         }
-        
+
         public string GetAlias(params Phoneme[] phonemes)
         {
             var alias = new StringBuilder(phonemes[0].Alias);
@@ -132,8 +123,8 @@ namespace WavConfigTool
         public string Generate(string filename, params Phoneme[] phonemes)
         {
             string alias = GetAlias(phonemes);
-            //if (MainWindow.Current.Reclist.Aliases.Contains(alias))
-            //    return "";
+            if (MainWindow.Current.Reclist.Aliases.Contains(alias))
+                return "";
 
             double offset, consonant, cutoff, preutterance, overlap;
             Phoneme p1 = phonemes.First();
@@ -158,7 +149,7 @@ namespace WavConfigTool
                     offset = p1.Zone.Out - p1.Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.In + WavControl.VowelSustain;
+                    consonant = p2.Zone.Out - WavControl.VowelSustain - p2.Attack;
                     cutoff = p2.Zone.Out - p2.Attack;
                     break;
 
@@ -168,7 +159,7 @@ namespace WavConfigTool
                     offset = p1.Zone.In;
                     overlap = p1.Zone.Out + p1.Attack;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.In + WavControl.VowelSustain;
+                    consonant = p2.Zone.Out - WavControl.VowelSustain - p2.Attack;
                     cutoff = p2.Zone.Out - p2.Attack;
                     break;
 
@@ -226,24 +217,9 @@ namespace WavConfigTool
                 default:
                     return "";
             }
-            var duplicate = GetDuplicateString(alias);
             MainWindow.Current.Reclist.Aliases.Add(alias);
-            var oto = $"{filename}={WavControl.Prefix}{alias}{duplicate}{WavControl.Suffix},{Oto(offset, consonant, cutoff, preutterance, overlap)}\r\n";
+            var oto = $"{filename}={WavControl.Prefix}{alias}{WavControl.Suffix},{Oto(offset, consonant, cutoff, preutterance, overlap)}\r\n";
             return oto;
-        }
-
-        public string GetDuplicateString(string alias)
-        {
-            if (!Duplicates.ContainsKey(alias))
-            {
-                Duplicates[alias] = 1;
-                return "";
-            }
-            else
-            {
-                Duplicates[alias]++;
-                return $"{Duplicates[alias]}";
-            }
         }
     }
 }
