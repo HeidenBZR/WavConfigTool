@@ -163,15 +163,12 @@ namespace WavConfigTool
                     cutoff = p2.Zone.Out - p2.Attack;
                     break;
 
-                case "RC":
-                case "RCC":
-                case "RCCC":
                 case "RCCCC":
-                    offset = p2.Zone.In - p2.Attack;
-                    overlap = p2.Zone.In;
-                    preutterance = p2.Zone.Out;
-                    consonant = p2.Zone.Out;
-                    cutoff = p2.Zone.Out + p2.Attack;
+                    offset = p1.Zone.In;
+                    overlap = p1.Zone.Out + p1.Attack;
+                    preutterance = p2.Zone.In;
+                    consonant = p2.Zone.Out - p2.Attack;
+                    cutoff = p2.Zone.Out;
                     break;
 
                 // Ends with Rest

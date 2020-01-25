@@ -37,7 +37,7 @@ namespace WavConfigTool
         List<WavControl> WavControls;
         public static WavConfigPoint Mode = WavConfigPoint.V;
 
-        public readonly Version Version = new Version(0, 1, 6, 1);
+        public readonly Version Version = new Version(0, 1, 6, 0);
 
         public static string TempDir
         {
@@ -113,10 +113,10 @@ namespace WavConfigTool
                 ProjectLoaded += delegate
                 {
                     SetTitle();
-                    //LabelCurrentSettings.Content = System.IO.Path.GetFileName(Settings.WavSettings);
+                    LabelCurrentSettings.Content = System.IO.Path.GetFileName(Settings.WavSettings);
                     if (Reclist != null && Reclist.IsLoaded)
                     {
-                        //LabelCurrentVoicebank.Content = System.IO.Path.GetFileName(Reclist.VoicebankPath);
+                        LabelCurrentVoicebank.Content = System.IO.Path.GetFileName(Reclist.VoicebankPath);
                         InitWavcontrolsAsync(true);
                         DrawPageAsync();
                     }
