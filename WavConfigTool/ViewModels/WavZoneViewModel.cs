@@ -12,8 +12,7 @@ namespace WavConfigTool.ViewModels
         public double In { get; set; } = 0;
         public double Out { get; set; } = 100;
         public PhonemeType Type { get; set; } = PhonemeType.Consonant;
-        public double Attack => Type == PhonemeType.Consonant ? Project.Current.ConsonantAttack :
-                                (Type == PhonemeType.Vowel ? Project.Current.VowelAttack : Project.Current.RestAttack);
+        public double Attack => GetAttack();
 
         public double Width => Out + Attack;
         public double Decay => Type == PhonemeType.Vowel ? Project.Current.VowelDecay : Attack;
@@ -201,5 +200,14 @@ namespace WavConfigTool.ViewModels
             );
         }
 
+        #region private
+
+        private double GetAttack()
+        {
+            return Type == PhonemeType.Consonant ? Project.Current.ConsonantAttack :
+                (Type == PhonemeType.Vowel ? Project.Current.VowelAttack : Project.Current.RestAttack);
+        }
+
+        #endregion
     }
 }

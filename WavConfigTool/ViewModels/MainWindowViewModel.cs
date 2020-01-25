@@ -17,6 +17,7 @@ namespace WavConfigTool.ViewModels
     class MainWindowViewModel : ViewModelBase
     {
         public static readonly Version Version = new Version(0, 2, 0, 0);
+
         public int AlphaVersion => 23;
 
         public ProjectViewModel ProjectViewModel { get; set; }
@@ -84,7 +85,6 @@ namespace WavConfigTool.ViewModels
 
         public double ToolsPanelHeight { get; set; } = 80;
         public const int TOOLS_PANEL_OPENED_HEIGHT = 80;
-        private bool _isToolsPanelShown = true;
         public bool IsToolsPanelShown { get => _isToolsPanelShown; set { _isToolsPanelShown = value; RaisePropertyChanged(() => IsToolsPanelShown); } }
 
         public bool IsLoading { get; set; } = false;
@@ -95,17 +95,8 @@ namespace WavConfigTool.ViewModels
 
         public string Title => GetTitle();
 
-        public static double ControlHeight { get; set; } = 100;
-
-        public string SymbolOfType(PhonemeType type)
-        {
-            return type.ToString().Substring(0, 1);
-        }
-
         public ObservableCollection<WavControlBaseViewModel> WavControlViewModels { get => PagerViewModel.Collection; }
         public ObservableCollection<WavControlBaseViewModel> WavControlViewModelsPage { get => PagerViewModel.PageContent; }
-
-
 
         public MainWindowViewModel()
         {
@@ -114,7 +105,11 @@ namespace WavConfigTool.ViewModels
 #endif
         }
 
-        async void LoadProjectAsync()
+        #region private
+
+        private bool _isToolsPanelShown = true;
+
+        private async void LoadProjectAsync()
         {
             IsLoading = true;
             RaisePropertyChanged(() => IsLoading);
@@ -152,7 +147,7 @@ namespace WavConfigTool.ViewModels
             // дозаписать свои если есть
         }
 
-        WavControlViewModel CreateWavControl(int i)
+        private WavControlViewModel CreateWavControl(int i)
         {
             var projectLine = Project.ProjectLines[i];
             var control = new WavControlViewModel(projectLine) { Number = i };
@@ -174,7 +169,7 @@ namespace WavConfigTool.ViewModels
             return control;
         }
 
-        public void Refresh()
+        private void Refresh()
         {
             if (Project == null)
                 return;
@@ -211,7 +206,7 @@ namespace WavConfigTool.ViewModels
         }
 
 
-        public void ResetProject()
+        private void ResetProject()
         {
             if (PagerViewModel != null)
                 PagerViewModel.Clear();
@@ -262,6 +257,13 @@ namespace WavConfigTool.ViewModels
             else
                 return null;
         }
+
+        private string SymbolOfType(PhonemeType type)
+        {
+            return type.ToString().Substring(0, 1);
+        }
+
+        #endregion
 
         #region Commands
 

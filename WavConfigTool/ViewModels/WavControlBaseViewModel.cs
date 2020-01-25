@@ -8,9 +8,11 @@ namespace WavConfigTool.ViewModels
 {
     public abstract class WavControlBaseViewModel : ViewModelBase
     {
-        public abstract void Ready();
+        // TODO: Move base things here
 
-        public event SimpleHandler PointsChanged;
+        public virtual void Ready() { }
+
+        public event SimpleHandler PointsChanged = delegate { };
 
         public static void SortPoints(ObservableCollection<WavPointViewModel> collection)
         {

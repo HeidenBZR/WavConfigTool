@@ -11,7 +11,7 @@ namespace WavConfigTool.ViewModels
     {
         private string text = "Text";
 
-        public string Text { get => text; set { text = value; FireChanged(); } }
+        public string Text { get => text; set { text = value; RaisePropertyChanged(() => VisualText); } }
         public string VisualText => Type == PhonemeType.Rest ? "" : Text;
         public double Position { get; set; } = 0;
         public int PositionReal => Settings.ViewToRealX(Position);
@@ -89,6 +89,13 @@ namespace WavConfigTool.ViewModels
             );
         }
 
+        public override string ToString()
+        {
+            return $"{{{Position}}} {Text}";
+        }
+
+        #region commands
+
         public ICommand PointMovedCommand
         {
             get
@@ -117,14 +124,6 @@ namespace WavConfigTool.ViewModels
             () => true
         );
 
-        public override string ToString()
-        {
-            return $"{{{Position}}} {Text}";
-        }
-
-        public void FireChanged()
-        {
-            RaisePropertyChanged("VisualText");
-        }
+        #endregion
     }
 }

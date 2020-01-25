@@ -82,32 +82,6 @@ namespace WavConfigTool.ViewModels
             );
         }
 
-        public async void LoadImageAsync()
-        {
-            await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(LoadImage)).ConfigureAwait(true);
-        }
-
-        public void LoadImage()
-        {
-            if (!ProjectLine.IsEnabled)
-                return;
-
-            WaveForm = new WaveForm(Project.Current.Voicebank.GetSamplePath(ProjectLine.Recline.Name));
-            WaveForm.MakeWaveForm(100, GetImageHash(), 
-                System.Drawing.ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR));
-            IsImageEnabled = true;
-            OnLoaded();
-        }
-
-
-        public void ApplyPoints()
-        {
-            FillPoints(PhonemeType.Consonant);
-            FillPoints(PhonemeType.Rest);
-            FillPoints(PhonemeType.Vowel);
-            FirePointsChanged();
-        }
-
         public IList<WavPointViewModel> PointsOfType(PhonemeType type)
         {
             return type == PhonemeType.Consonant ? ConsonantPoints :
@@ -119,61 +93,6 @@ namespace WavConfigTool.ViewModels
         {
             return type == PhonemeType.Consonant ? ConsonantZones :
                 (type == PhonemeType.Rest ? RestZones : VowelZones);
-        }
-
-        public string GetPointLabel(PhonemeType type, int i)
-        {
-            var phonemes = ProjectLine.Recline.PhonemesOfType(type);
-            return phonemes.Count > i / 2 ? phonemes[i / 2] : "/PH/";
-        }
-
-        public double CheckPosition(double position)
-        {
-            if (position < 0)
-                position = 5;
-            if (position > Width)
-                position = Width - 5;
-            return position;
-        }
-
-        private void Load()
-        {
-            App.MainDispatcher.Invoke(() =>
-            {
-                IsLoaded = false;
-                IsLoading = true;
-                IsImageEnabled = false;
-                RaisePropertiesChanged(
-                    () => IsLoading,
-                    () => IsLoaded,
-                    () => EditEnabled
-                );
-            });
-            LoadImageAsync();
-        }
-
-        private ImageSource GetWavImage()
-        {
-            var imageHash = GetImageHash();
-            if (IsImageEnabled && imageHash == WaveForm?.ImageHash)
-                return WaveForm.BitmapImage;
-            if (!IsLoading && imageHash != WaveForm?.ImageHash && imageHash != null)
-                Load();
-            return null;
-        }
-
-        private List<WavZoneViewModel> GetZones(PhonemeType type)
-        {
-            var points = ProjectLine.PointsOfType(type).ShallowClone();
-            var zones = new List<WavZoneViewModel>();
-            points.Sort();
-            for (int i = 0; i + 1 < points.Count; i += 2)
-            {
-                var pIn = Settings.RealToViewX(points[i]);
-                var pOut = Settings.RealToViewX(points[i + 1]);
-                zones.Add(new WavZoneViewModel(type, pIn, pOut, Width));
-            }
-            return zones;   
         }
 
         public void AddPoint(double position, PhonemeType type)
@@ -219,14 +138,6 @@ namespace WavConfigTool.ViewModels
             FirePointsChanged();
         }
 
-        public override string ToString()
-        {
-            if (ProjectLine == null || ProjectLine.Recline == null)
-                return "{WavControlViewModel}";
-            else
-                return $"{ProjectLine.Recline.InfoString} : WavControlViewModel";
-        }
-
         public ObservableCollection<WavControlBaseViewModel> GenerateOtoPreview()
         {
             var collection = new ObservableCollection<WavControlBaseViewModel>();
@@ -237,7 +148,71 @@ namespace WavConfigTool.ViewModels
             return collection;
         }
 
+        public override string ToString()
+        {
+            if (ProjectLine == null || ProjectLine.Recline == null)
+                return "{WavControlViewModel}";
+            else
+                return $"{ProjectLine.Recline.InfoString} : WavControlViewModel";
+        }
+
         #region private
+
+        private async void Load()
+        {
+            App.MainDispatcher.Invoke(() =>
+            {
+                IsLoaded = false;
+                IsLoading = true;
+                IsImageEnabled = false;
+                RaisePropertiesChanged(
+                    () => IsLoading,
+                    () => IsLoaded,
+                    () => EditEnabled
+                );
+            });
+
+            await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
+            {
+                if (!ProjectLine.IsEnabled)
+                    return;
+
+                WaveForm = new WaveForm(Project.Current.Voicebank.GetSamplePath(ProjectLine.Recline.Name));
+                WaveForm.MakeWaveForm(100, GetImageHash());
+                IsImageEnabled = true;
+                OnLoaded();
+            })).ConfigureAwait(true);
+        }
+
+        private List<WavZoneViewModel> GetZones(PhonemeType type)
+        {
+            var points = ProjectLine.PointsOfType(type).ShallowClone();
+            var zones = new List<WavZoneViewModel>();
+            points.Sort();
+            for (int i = 0; i + 1 < points.Count; i += 2)
+            {
+                var pIn = Settings.RealToViewX(points[i]);
+                var pOut = Settings.RealToViewX(points[i + 1]);
+                zones.Add(new WavZoneViewModel(type, pIn, pOut, Width));
+            }
+            return zones;
+        }
+
+        private ImageSource GetWavImage()
+        {
+            var imageHash = GetImageHash();
+            if (IsImageEnabled && imageHash == WaveForm?.ImageHash)
+                return WaveForm.BitmapImage;
+            if (!IsLoading && imageHash != WaveForm?.ImageHash && imageHash != null)
+                Load();
+            return null;
+        }
+
+        private string GetPointLabel(PhonemeType type, int i)
+        {
+            var phonemes = ProjectLine.Recline.PhonemesOfType(type);
+            return phonemes.Count > i / 2 ? phonemes[i / 2] : "/PH/";
+        }
 
         private void FillPoints(PhonemeType type)
         {
@@ -269,6 +244,14 @@ namespace WavConfigTool.ViewModels
                 RegenerateOtoRequest();
             };
             return point;
+        }
+
+        private void ApplyPoints()
+        {
+            FillPoints(PhonemeType.Consonant);
+            FillPoints(PhonemeType.Rest);
+            FillPoints(PhonemeType.Vowel);
+            FirePointsChanged();
         }
 
         private bool PointIsLeft(PhonemeType type, int i)
@@ -355,6 +338,15 @@ namespace WavConfigTool.ViewModels
         {
             var project = Project.Current;
             return $"{project.Voicebank.Name}_{project.Reclist.Name}_{Settings.UserScaleX}x{Settings.UserScaleY}_{Project.Current.Prefix}_{ProjectLine.Recline.Name}_{Project.Current.Suffix}"; //.GetHashCode();
+        }
+
+        private double CheckPosition(double position)
+        {
+            if (position < 0)
+                position = 5;
+            if (position > Width)
+                position = Width - 5;
+            return position;
         }
 
         #endregion

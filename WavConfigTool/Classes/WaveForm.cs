@@ -40,8 +40,9 @@ namespace WavConfigTool.Classes
             IsEnabled = File.Exists(Path);
         }
 
-        public void MakeWaveForm(int height, string hash, Color color)
+        public void MakeWaveForm(int height, string hash)
         {
+            var color = ColorTranslator.FromHtml(WaveForm.WAV_ZONE_COLOR);
             if (!IsEnabled)
             {
                 ImageHash = null;

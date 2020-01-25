@@ -11,31 +11,17 @@ using WavConfigTool.ViewTools;
 using WavConfigCore;
 using WavConfigCore.Reader;
 using WavConfigCore.Tools;
+using System;
 
 namespace WavConfigTool.ViewModels
 {
     public class ProjectViewModel : ViewModelBase
     {
-        private Project _project = new Project();
 
-        public Project Project
-        {
-            get => _project;
-            set
-            {
-                _project = value;
-                if (_project == null)
-                    return;
-                _project.ProjectChanged += () =>
-                {
-                    RaisePropertiesChanged(
-                        () => VoicebankName,
-                        () => SelectedReclist
-                    );
-                };
-            }
-        }
+        public Project Project { get => _project; set { SetProject(value); } }
+        public string VoicebankName => Project?.Voicebank?.GetFullName();
         public ObservableCollection<string> Reclists { get; private set; } = new ObservableCollection<string>() { "(Reclist)" };
+        
         public string SelectedReclist
         {
             get => Project?.Reclist?.Name;
@@ -45,9 +31,8 @@ namespace WavConfigTool.ViewModels
                 ProjectDataChanged();
             }
         }
-        public string VoicebankName => Project?.Voicebank?.GetFullName();
-        public event SimpleHandler ProjectDataChanged;
 
+        public event SimpleHandler ProjectDataChanged;
 
         public ProjectViewModel()
         {
@@ -67,7 +52,11 @@ namespace WavConfigTool.ViewModels
             GetReclistsAsync();
         }
 
-        void GetReclists()
+        #region private
+
+        private Project _project = new Project();
+
+        private void GetReclists()
         {
             var list = new List<string>();
             string path = PathResolver.Current.Reclist();
@@ -80,6 +69,29 @@ namespace WavConfigTool.ViewModels
             Reclists = new ObservableCollection<string>(list);
         }
 
+        private async void GetReclistsAsync()
+        {
+            await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(GetReclists));
+        }
+
+        private void SetProject(Project project)
+        {
+            _project = project;
+            if (_project == null)
+                return;
+            _project.ProjectChanged += () =>
+            {
+                RaisePropertiesChanged(
+                    () => VoicebankName,
+                    () => SelectedReclist
+                );
+            };
+        }
+
+        #endregion
+
+        #region commands
+
         public ICommand ChangeVoicebankCommand => new OpenFileCommand((obj) =>
         {
             var location = Path.GetDirectoryName((string)obj);
@@ -90,9 +102,6 @@ namespace WavConfigTool.ViewModels
         "Voicebank Files|*.wav;*.ini|*|*",
         param => (param != null));
 
-        async void GetReclistsAsync()
-        {
-            await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(GetReclists));
-        }
+        #endregion
     }
 }
