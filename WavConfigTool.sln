@@ -10,6 +10,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WavConfigTool", "WavConfigT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WavConfigCore", "WavConfigCore\WavConfigCore.csproj", "{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WavConfigHelper", "WavConfigHelper\WavConfigHelper.csproj", "{B7B775A9-2214-4B8B-A0F8-E29B436B8BE3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5} = {9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +34,12 @@ Global
 		{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}.Test|Any CPU.Build.0 = Release|Any CPU
+		{B7B775A9-2214-4B8B-A0F8-E29B436B8BE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7B775A9-2214-4B8B-A0F8-E29B436B8BE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7B775A9-2214-4B8B-A0F8-E29B436B8BE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7B775A9-2214-4B8B-A0F8-E29B436B8BE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7B775A9-2214-4B8B-A0F8-E29B436B8BE3}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{B7B775A9-2214-4B8B-A0F8-E29B436B8BE3}.Test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -127,7 +127,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Classes\Creators\WavMaskCreator.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Classes\ExceptionCatcher.cs" />
     <Compile Include="Styles\Styles.cs" />
