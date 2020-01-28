@@ -10,7 +10,7 @@ namespace WavConfigHelper
     {
         static void Main(string[] args)
         {
-            var app = new ConsoleApplication();
+            var app = new MainProgram();
             app.Run();
         }
     }

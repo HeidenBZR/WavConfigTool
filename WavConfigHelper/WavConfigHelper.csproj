@@ -58,7 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleApplication.cs" />
+    <Compile Include="MainProgram.cs" />
     <Compile Include="Creators\WavMaskCreator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProgramBase.cs" />
