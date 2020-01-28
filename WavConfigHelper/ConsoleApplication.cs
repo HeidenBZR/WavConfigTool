@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WavConfigHelper.Properties;
 
 namespace WavConfigHelper
 {
@@ -11,16 +12,16 @@ namespace WavConfigHelper
     {
         public ConsoleApplication()
         {
+            Localization.Culture = System.Globalization.CultureInfo.CurrentCulture;
             commandList = new string[]
             {
                 CONSOLE_COMMAND_EXIT,
                 CONSOLE_COMMAND_HELP
             };
-            // TODO: move to localization
             commandListHelp = new Dictionary<string, string>
             {
-                [CONSOLE_COMMAND_EXIT] = "exit helper",
-                [CONSOLE_COMMAND_HELP] = "get command list"
+                [CONSOLE_COMMAND_EXIT] = Localization.STR_COMMAND_EXIT_DESC,
+                [CONSOLE_COMMAND_HELP] = Localization.STR_COMMAND_HELP_DESC
             };
         }
 
@@ -52,6 +53,10 @@ namespace WavConfigHelper
 
         private void Action(string command)
         {
+            if (command == null)
+            {
+                return;
+            }
             var commandParams = command.Split(' ');
             if (commandParams.Length > 0)
             {
@@ -78,13 +83,13 @@ namespace WavConfigHelper
 
         private void Hello()
         {
-            Console.WriteLine("Hello! Welcome to WavConfigHelper. Type 'help' to get commands list, or 'exit' to exit.");
+            Console.WriteLine(Localization.STR_COMMAND_HELLO);
         }
 
         private void Bye()
         {
             Console.WriteLine();
-            Console.WriteLine("Bye-bye!");
+            Console.WriteLine(Localization.STR_COMMAND_BYE);
             Thread.Sleep(1000);
         }
 
