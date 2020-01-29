@@ -18,7 +18,7 @@ namespace WavConfigTool.ViewModels
     {
         public static readonly Version Version = new Version(0, 2, 0, 0);
 
-        public int AlphaVersion => 23;
+        public int AlphaVersion => 24;
 
         public ProjectViewModel ProjectViewModel { get; set; }
         public Project Project => ProjectManager.Project;
@@ -373,64 +373,6 @@ namespace WavConfigTool.ViewModels
             IsOtoPreviewMode = false;
             Refresh();
         }, () => IsOtoPreviewMode);
-
-        public ICommand ConvertWavconfigToWspCommand => new DelegateCommand(() =>
-        {
-            string filename = "";
-            new OpenFileCommand((obj) =>
-            {
-                filename = (string)obj;
-            },
-            "Open Wavconfig",
-            "Wavconfig Project Files|*.wconfig|*|*",
-            param => true).Execute(true);
-            if (filename == null || filename == "")
-                return;
-            var project = WavconfigReader.Current.Read(filename);
-
-            var saveFilename = "";
-            new SaveFileCommand((obj) =>
-            {
-                saveFilename = (string)obj;
-            },
-            "Save WCP",
-            "WCP Files|*.wcp|*|*",
-            param => true).Execute(true);
-            if (saveFilename == null || saveFilename == "")
-                return;
-
-            ProjectReader.Current.Write(saveFilename, project);
-
-        }, Project != null && Project.IsLoaded);
-
-        public ICommand ConvertWsettingsToReclistCommand => new DelegateCommand(() =>
-        {
-            string filename = "";
-            new OpenFileCommand((obj) =>
-            {
-                filename = (string)obj;
-            },
-            "Open Wsettings",
-            "Wsettings Files|*.wsettings|*|*",
-            param => true).Execute(true);
-            if (filename == null || filename == "")
-                return;
-            var reclist = WavSettingsReader.Current.Read(filename);
-
-            var saveFilename = "";
-            new SaveFileCommand((obj) =>
-            {
-                saveFilename = (string)obj;
-            },
-            "Save Reclist",
-            "Reclist Files|*.reclist|*|*",
-            param => true).Execute(true);
-            if (saveFilename == null || saveFilename == "")
-                return;
-
-            ReclistReader.Current.Write(saveFilename, reclist);
-
-        }, Project != null && Project.Reclist != null && Project.Reclist.IsLoaded);
 
         public ICommand DebugCommand => new DelegateCommand(() =>
         {

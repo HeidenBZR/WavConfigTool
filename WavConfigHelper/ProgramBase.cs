@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using WavConfigHelper.Properties;
 
 namespace WavConfigHelper
 {
@@ -11,6 +13,7 @@ namespace WavConfigHelper
     {
         public void Run()
         {
+            UnknownCommandString = Localization.STR_UNKNOWN_COMMAND;
             isRunning = true;
             Hello();
 
@@ -31,23 +34,24 @@ namespace WavConfigHelper
         protected string HelloString;
         protected string ByeString;
 
+        private string UnknownCommandString;
         private bool isRunning;
 
-        private void PrepareAction(string command)
+        private void PrepareAction(string line)
         {
-            if (command == null)
+            if (line == null)
             {
                 return;
             }
-            var commandParams = command.Split(' ');
-            if (commandParams.Length > 0)
+            var splited = GetCommandParams(line);
+            if (splited.Length > 0)
             {
-                var keyWord = commandParams[0];
-                var actualParams = commandParams.Length > 1 ? commandParams.Skip(1).ToArray() : new string[0];
-                var gotCommand = TryGetAction(keyWord, actualParams);
+                var command = splited[0];
+                var commandParams = splited.Length > 1 ? splited.Skip(1).ToArray() : new string[0];
+                var gotCommand = TryGetAction(command, commandParams);
                 if (!gotCommand)
                 {
-                    Console.WriteLine($"Unknown command '{keyWord}'");
+                    Console.WriteLine(string.Format(UnknownCommandString, command));
                 }
             }
         }
@@ -71,6 +75,13 @@ namespace WavConfigHelper
                 Thread.Sleep(1000);
             }
             isRunning = false;
+        }
+
+        private string[] GetCommandParams(string line)
+        {
+            return Regex.Split(line, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*) (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")
+                .Select(n => n.Trim('\"'))
+                .ToArray();
         }
 
         private void Hello()

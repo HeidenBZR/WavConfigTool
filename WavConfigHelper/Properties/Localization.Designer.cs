@@ -70,11 +70,65 @@ namespace WavConfigHelper.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на exit helper.
+        ///   Ищет локализованную строку, похожую на File &apos;{0}&apos; already exists!.
+        /// </summary>
+        internal static string STR_COMMAND_ERROR_FILE_ALREADY_EXISTS {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_ERROR_FILE_ALREADY_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на File &apos;{0}&apos; doesn&apos;t exist!.
+        /// </summary>
+        internal static string STR_COMMAND_ERROR_FILE_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_ERROR_FILE_NOT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Reclist &apos;{0}&apos; already exists!.
+        /// </summary>
+        internal static string STR_COMMAND_ERROR_RECLIST_ALREADY_EXISTS {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_ERROR_RECLIST_ALREADY_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Reclist &apos;{0}&apos; doesn&apos;t exist!.
+        /// </summary>
+        internal static string STR_COMMAND_ERROR_RECLIST_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_ERROR_RECLIST_NOT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Wrong arguments count!.
+        /// </summary>
+        internal static string STR_COMMAND_ERROR_WRONG_ARGS_COUNT {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_ERROR_WRONG_ARGS_COUNT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Exit helper.
         /// </summary>
         internal static string STR_COMMAND_EXIT_DESC {
             get {
                 return ResourceManager.GetString("STR_COMMAND_EXIT_DESC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Command failed..
+        /// </summary>
+        internal static string STR_COMMAND_FAILED {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_FAILED", resourceCulture);
             }
         }
         
@@ -88,11 +142,92 @@ namespace WavConfigHelper.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на get command list.
+        ///   Ищет локализованную строку, похожую на Get command list.
         /// </summary>
         internal static string STR_COMMAND_HELP_DESC {
             get {
                 return ResourceManager.GetString("STR_COMMAND_HELP_DESC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Import 0.1 WavConfigTool project.
+        /// </summary>
+        internal static string STR_COMMAND_IMPORT_PROJECT_DESC {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_IMPORT_PROJECT_DESC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на import_project %project file% %Reclist name in new version% %output filename%.
+        /// </summary>
+        internal static string STR_COMMAND_IMPORT_PROJECT_EXAMPLE1 {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_IMPORT_PROJECT_EXAMPLE1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на import_project &quot;C:\voicebank.wconfig&quot; &quot;CVC RUS&quot; &quot;C:\voicebank.wsp&quot;.
+        /// </summary>
+        internal static string STR_COMMAND_IMPORT_PROJECT_EXAMPLE2 {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_IMPORT_PROJECT_EXAMPLE2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Import .wsettings to .reclist.
+        /// </summary>
+        internal static string STR_COMMAND_IMPORT_RECLIST_DESC {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_IMPORT_RECLIST_DESC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на import_reclist %wsettings name% %output reclist name%.
+        /// </summary>
+        internal static string STR_COMMAND_IMPORT_RECLIST_EXAMPLE1 {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_IMPORT_RECLIST_EXAMPLE1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на import_reclist &quot;C:\vccv_eng.wsettings&quot; &quot;VCCV English&quot;.
+        /// </summary>
+        internal static string STR_COMMAND_IMPORT_RECLIST_EXAMPLE2 {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_IMPORT_RECLIST_EXAMPLE2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Command succeeded..
+        /// </summary>
+        internal static string STR_COMMAND_SUCCESS {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_SUCCESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Examples:.
+        /// </summary>
+        internal static string STR_EXAMPLE {
+            get {
+                return ResourceManager.GetString("STR_EXAMPLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Unknown command &apos;{0}&apos;.
+        /// </summary>
+        internal static string STR_UNKNOWN_COMMAND {
+            get {
+                return ResourceManager.GetString("STR_UNKNOWN_COMMAND", resourceCulture);
             }
         }
     }

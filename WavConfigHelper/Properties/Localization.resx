@@ -120,13 +120,58 @@
   <data name="STR_COMMAND_BYE" xml:space="preserve">
     <value>Bye!</value>
   </data>
+  <data name="STR_COMMAND_ERROR_FILE_ALREADY_EXISTS" xml:space="preserve">
+    <value>File '{0}' already exists!</value>
+  </data>
+  <data name="STR_COMMAND_ERROR_FILE_NOT_EXISTS" xml:space="preserve">
+    <value>File '{0}' doesn't exist!</value>
+  </data>
+  <data name="STR_COMMAND_ERROR_RECLIST_ALREADY_EXISTS" xml:space="preserve">
+    <value>Reclist '{0}' already exists!</value>
+  </data>
+  <data name="STR_COMMAND_ERROR_RECLIST_NOT_EXISTS" xml:space="preserve">
+    <value>Reclist '{0}' doesn't exist!</value>
+  </data>
+  <data name="STR_COMMAND_ERROR_WRONG_ARGS_COUNT" xml:space="preserve">
+    <value>Wrong arguments count!</value>
+  </data>
   <data name="STR_COMMAND_EXIT_DESC" xml:space="preserve">
-    <value>exit helper</value>
+    <value>Exit helper</value>
+  </data>
+  <data name="STR_COMMAND_FAILED" xml:space="preserve">
+    <value>Command failed.</value>
   </data>
   <data name="STR_COMMAND_HELLO" xml:space="preserve">
     <value>Hello! Welcome to WavConfigHelper. Type 'help' to get commands list, or 'exit' to exit.</value>
   </data>
   <data name="STR_COMMAND_HELP_DESC" xml:space="preserve">
-    <value>get command list</value>
+    <value>Get command list</value>
+  </data>
+  <data name="STR_COMMAND_IMPORT_PROJECT_DESC" xml:space="preserve">
+    <value>Import 0.1 WavConfigTool project</value>
+  </data>
+  <data name="STR_COMMAND_IMPORT_PROJECT_EXAMPLE1" xml:space="preserve">
+    <value>import_project %project file% %Reclist name in new version% %output filename%</value>
+  </data>
+  <data name="STR_COMMAND_IMPORT_PROJECT_EXAMPLE2" xml:space="preserve">
+    <value>import_project "C:\voicebank.wconfig" "CVC RUS" "C:\voicebank.wsp"</value>
+  </data>
+  <data name="STR_COMMAND_IMPORT_RECLIST_DESC" xml:space="preserve">
+    <value>Import .wsettings to .reclist</value>
+  </data>
+  <data name="STR_COMMAND_IMPORT_RECLIST_EXAMPLE1" xml:space="preserve">
+    <value>import_reclist %wsettings name% %output reclist name%</value>
+  </data>
+  <data name="STR_COMMAND_IMPORT_RECLIST_EXAMPLE2" xml:space="preserve">
+    <value>import_reclist "C:\vccv_eng.wsettings" "VCCV English"</value>
+  </data>
+  <data name="STR_COMMAND_SUCCESS" xml:space="preserve">
+    <value>Command succeeded.</value>
+  </data>
+  <data name="STR_EXAMPLE" xml:space="preserve">
+    <value>Examples:</value>
+  </data>
+  <data name="STR_UNKNOWN_COMMAND" xml:space="preserve">
+    <value>Unknown command '{0}'</value>
   </data>
 </root>

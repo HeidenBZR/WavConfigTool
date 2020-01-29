@@ -106,7 +106,7 @@ namespace WavConfigCore.Reader
             }
         }
 
-        public Project Read(string location)
+        public Project Read(string location, string reclistName)
         {
             var project = new Project();
             string[] lines = File.ReadAllLines(location, Encoding.UTF8);
@@ -128,7 +128,7 @@ namespace WavConfigCore.Reader
 
             }
             // TODO: select reclist to import
-            project.SetReclist(ReclistReader.Current.Read("CVC RUS"));
+            project.SetReclist(ReclistReader.Current.Read(reclistName));
             project.ProjectLines = new List<ProjectLine>();
             var usedReclines = new List<Recline>();
             /// Чтение строк реклиста из проекта
@@ -151,29 +151,6 @@ namespace WavConfigCore.Reader
                     }
                 }
             }
-            return project;
-        }
-
-        public async void SaveAsync(Project project, string path)
-        {
-            await Task.Run(() => Write(path, project));
-        }
-
-        public Project OpenLast(string lastProject)
-        {
-            if (!File.Exists(lastProject))
-                return null;
-            var project = Open(lastProject);
-            return project;
-        }
-
-        public Project Open(string project_path)
-        {
-
-            if (!File.Exists(project_path))
-                return null;
-            var project = Read(project_path);
-            project.IsLoaded = project.Reclist.IsLoaded && project.Voicebank.IsLoaded;
             return project;
         }
     }

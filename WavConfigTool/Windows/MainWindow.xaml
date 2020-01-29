@@ -52,8 +52,6 @@
         <dxmvvm:KeyToCommand Command="{Binding CallProjectCommand}" KeyGesture="CTRL+P" />
         <dxmvvm:KeyToCommand Command="{Binding OpenProjectCommand}" KeyGesture="CTRL+O" />
         <dxmvvm:KeyToCommand Command="{Binding NewProjectCommand}" KeyGesture="CTRL+N" />
-        <dxmvvm:KeyToCommand Command="{Binding ConvertWavconfigToWspCommand}" KeyGesture="CTRL+ALT+P" />
-        <dxmvvm:KeyToCommand Command="{Binding ConvertWsettingsToReclistCommand}" KeyGesture="CTRL+ALT+R" />
     </dxmvvm:Interaction.Behaviors>
     <Grid>
         <Grid.RowDefinitions>
@@ -90,9 +88,6 @@
                 <MenuItem Header="_Open Project..." InputGestureText="Ctrl+O" Command="{Binding OpenProjectCommand}" />
                 <Separator />
                 <MenuItem Header="Save Project As..." InputGestureText="Shift+Ctrl+S" Command="{Binding SaveProjectAsNewCommand}" />
-                <Separator />
-                <MenuItem Header="_Convert Old WavConfig to New..." InputGestureText="Ctrl+Alt+P" Command="{Binding ConvertWavconfigToWspCommand}" />
-                <MenuItem Header="_Convert Wsettings to Reclist..." InputGestureText="Ctrl+Alt+R" Command="{Binding ConvertWsettingsToReclistCommand}" />
                 <Separator />
                 <MenuItem Header="Find Wav" InputGestureText="Ctrl+F" IsEnabled="False" />
                 <MenuItem Header="Find Uncompleted" InputGestureText="Ctrl+U" IsEnabled="False" />
