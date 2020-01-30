@@ -8,6 +8,9 @@ namespace WavConfigTool.ViewModels
 {
     public abstract class WavControlBaseViewModel : ViewModelBase
     {
+        public static int Height => 100;
+        public static int Space => 10;
+
         // TODO: Move base things here
 
         public virtual void Ready() { }

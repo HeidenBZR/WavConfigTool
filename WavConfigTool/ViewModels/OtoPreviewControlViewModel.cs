@@ -29,7 +29,6 @@ namespace WavConfigTool.ViewModels
         public double ConsonantLength { get => Consonant - Offset; }
 
         public string NumberView => Oto.NumberView;
-        public double Height { get; } = 100; // TODO: All Height:100 must be moved to some variable
         public ImageSource WavImage { get; set; }
         public Oto Oto { get; set; }
 

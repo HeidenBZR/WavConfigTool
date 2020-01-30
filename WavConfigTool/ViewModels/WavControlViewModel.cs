@@ -61,6 +61,8 @@ namespace WavConfigTool.ViewModels
         public event SimpleHandler OnLoaded = delegate { };
         public event SimpleHandler RegenerateOtoRequest = delegate { };
 
+        public static int MetaInfoHeight => Height - 18;
+
         public WavControlViewModel() : base()
         {
             PointsChanged += HandlePointsChanged;
@@ -178,7 +180,7 @@ namespace WavConfigTool.ViewModels
                     return;
 
                 WaveForm = new WaveForm(Project.Current.Voicebank.GetSamplePath(ProjectLine.Recline.Name));
-                WaveForm.MakeWaveForm(100, GetImageHash());
+                WaveForm.MakeWaveForm(Height, GetImageHash());
                 IsImageEnabled = true;
                 OnLoaded();
             })).ConfigureAwait(true);

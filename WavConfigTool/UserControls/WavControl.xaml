@@ -9,9 +9,9 @@
     xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
     xmlns:vt="clr-namespace:WavConfigTool.ViewTools"
     xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-    Height="100"
-    Margin="0,0,0,10"
     Background="{DynamicResource WavControlBackgroundBrush}"
+    Height="{Binding Height, FallbackValue=100}"
+    Margin="{Binding Space, Converter={StaticResource WavControlMargin}}"
     Focusable="False"
     mc:Ignorable="d">
     <UserControl.Style>
@@ -98,7 +98,7 @@
         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Image
                 Name="WavImage"
-                Height="100"
+                Height="{Binding Height, FallbackValue=100}"
                 HorizontalAlignment="Left"
                 Visibility="{Binding IsImageEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
                 Source="{Binding WavImage}" />
@@ -208,7 +208,7 @@
             <StackPanel 
                 Canvas.Left="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}, Path=HorizontalOffset}"
                 HorizontalAlignment="Left"
-                Margin="10,82,0,0">
+                Margin="{Binding MetaInfoHeight, Converter={StaticResource MetaInfoMargin}}">
                 <StackPanel Orientation="Horizontal" Opacity="0.2">
                     <TextBlock Margin="0,0,0,0" Text="{Binding WavBitRate, FallbackValue=BitRate}"/>
                     <TextBlock Margin="0,0,3,0" Text="bit"/>

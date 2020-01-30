@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WavConfigTool", "WavConfigTool\WavConfigTool.csproj", "{CECCC279-7BCE-477F-976E-0A2BB35D0290}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5} = {9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}
+		{B7B775A9-2214-4B8B-A0F8-E29B436B8BE3} = {B7B775A9-2214-4B8B-A0F8-E29B436B8BE3}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WavConfigCore", "WavConfigCore\WavConfigCore.csproj", "{9245B491-55C2-49DF-A9EB-9E1C77DD2DD5}"

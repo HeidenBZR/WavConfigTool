@@ -28,6 +28,9 @@ namespace WavConfigTool.ViewModels
 
         public string Name => $"Zone [{string.Join(", ", Points)}]";
 
+        public int Height => WavControlBaseViewModel.Height;
+        public int Middle => Height / 2;
+
         public WavZoneViewModel(PhonemeType type, double p_in, double p_out, double length)
         {
             In = p_in;
@@ -58,25 +61,28 @@ namespace WavConfigTool.ViewModels
             switch (Type)
             {
                 case PhonemeType.Consonant:
-                    BorderPoints1 = new PointCollection
+                    if (outMinusAttack > 0)
+                    {
+                        BorderPoints1 = new PointCollection
                         {
-                            new Point(0, 100),
-                            new Point(0, 50),
-                            new Point(outMinusAttack, 50),
-                            new Point(outMinusAttack, 100),
+                            new Point(0, Height),
+                            new Point(0, Middle),
+                            new Point(outMinusAttack, Middle),
+                            new Point(outMinusAttack, Height),
                         };
+                    }
                     BorderPoints2 = new PointCollection
                         {
-                            new Point(outMinusAttack, 100),
-                            new Point(outMinusAttack, 50),
-                            new Point(Out, 100),
+                            new Point(outMinusAttack, Height),
+                            new Point(outMinusAttack, Middle),
+                            new Point(Out, Height),
                         };
                     Points = new PointCollection
                         {
-                            new Point(0, 100),
-                            new Point(0, 50),
-                            new Point(outMinusAttack, 50),
-                            new Point(Out, 100),
+                            new Point(0, Height),
+                            new Point(0, Middle),
+                            new Point(outMinusAttack, Middle),
+                            new Point(Out, Height),
                         };
                     break;
                 case PhonemeType.Vowel:
@@ -87,31 +93,31 @@ namespace WavConfigTool.ViewModels
                     var processedDecay = totalLengthMinusAttack - decay > minLength ? decay : totalLengthMinusAttack - minLength;
                     BorderPoints1 = new PointCollection
                         {
-                            new Point(0, 100),
+                            new Point(0, Height),
                             new Point(0, 0),
-                            new Point(processedDecay, 50),
-                            new Point(processedDecay, 100),
+                            new Point(processedDecay, Middle),
+                            new Point(processedDecay, Height),
                         };
                     BorderPoints2 = new PointCollection
                         {
-                            new Point(processedDecay, 50),
-                            new Point(totalLengthMinusAttack, 50),
-                            new Point(totalLengthMinusAttack, 100),
-                            new Point(processedDecay, 100),
+                            new Point(processedDecay, Middle),
+                            new Point(totalLengthMinusAttack, Middle),
+                            new Point(totalLengthMinusAttack, Height),
+                            new Point(processedDecay, Height),
                         };
                     BorderPoints3 = new PointCollection
                         {
-                            new Point(totalLengthMinusAttack, 50),
-                            new Point(Out, 100),
-                            new Point(totalLengthMinusAttack, 100),
+                            new Point(totalLengthMinusAttack, Middle),
+                            new Point(Out, Height),
+                            new Point(totalLengthMinusAttack, Height),
                         };
                     Points = new PointCollection
                         {
-                            new Point(0, 100),
+                            new Point(0, Height),
                             new Point(0, 0),
-                            new Point(processedDecay, 50),
-                            new Point(totalLengthMinusAttack, 50),
-                            new Point(Out, 100),
+                            new Point(processedDecay, Middle),
+                            new Point(totalLengthMinusAttack, Middle),
+                            new Point(Out, Height),
                         };
                     break;
                 case PhonemeType.Rest:
@@ -119,75 +125,75 @@ namespace WavConfigTool.ViewModels
                     {
                         BorderPoints2 = new PointCollection
                         {
-                            new Point(0, 50),
-                            new Point(0, 100),
-                            new Point(outMinusAttack, 100),
-                            new Point(outMinusAttack, 50),
+                            new Point(0, Middle),
+                            new Point(0, Height),
+                            new Point(outMinusAttack, Height),
+                            new Point(outMinusAttack, Middle),
                         };
                         BorderPoints3 = new PointCollection
                         {
-                            new Point(outMinusAttack, 50),
-                            new Point(Out, 100),
-                            new Point(outMinusAttack, 100),
+                            new Point(outMinusAttack, Middle),
+                            new Point(Out, Height),
+                            new Point(outMinusAttack, Height),
                         };
                         Points = new PointCollection
                         {
-                            new Point(0, 100),
-                            new Point(0, 50),
-                            new Point(outMinusAttack, 50),
-                            new Point(Out, 100),
+                            new Point(0, Height),
+                            new Point(0, Middle),
+                            new Point(outMinusAttack, Middle),
+                            new Point(Out, Height),
                         };
                     }
                     else if (Math.Abs(length - p_out) < 10)
                     {
                         BorderPoints1 = new PointCollection
                         {
-                            new Point(0, 100),
-                            new Point(decay, 50),
-                            new Point(decay, 100),
+                            new Point(0, Height),
+                            new Point(decay, Middle),
+                            new Point(decay, Height),
                         };
                         BorderPoints2 = new PointCollection
                         {
-                            new Point(decay, 50),
-                            new Point(decay, 100),
-                            new Point(Out, 100),
-                            new Point(Out, 50),
+                            new Point(decay, Middle),
+                            new Point(decay, Height),
+                            new Point(Out, Height),
+                            new Point(Out, Middle),
                         };
                         Points = new PointCollection
                         {
-                            new Point(0, 100),
-                            new Point(decay, 50),
-                            new Point(Out, 50),
-                            new Point(Out, 100),
+                            new Point(0, Height),
+                            new Point(decay, Middle),
+                            new Point(Out, Middle),
+                            new Point(Out, Height),
                         };
                     }
                     else
                     {
                         BorderPoints1 = new PointCollection
                         {
-                            new Point(0, 100),
-                            new Point(decay, 50),
-                            new Point(decay, 100),
+                            new Point(0, Height),
+                            new Point(decay, Middle),
+                            new Point(decay, Height),
                         };
                         BorderPoints2 = new PointCollection
                         {
-                            new Point(decay, 50),
-                            new Point(decay, 100),
-                            new Point(outMinusAttack, 100),
-                            new Point(outMinusAttack, 50),
+                            new Point(decay, Middle),
+                            new Point(decay, Height),
+                            new Point(outMinusAttack, Height),
+                            new Point(outMinusAttack, Middle),
                         };
                         BorderPoints3 = new PointCollection
                         {
-                            new Point(outMinusAttack, 50),
-                            new Point(Out, 100),
-                            new Point(outMinusAttack, 100),
+                            new Point(outMinusAttack, Middle),
+                            new Point(Out, Height),
+                            new Point(outMinusAttack, Height),
                         };
                         Points = new PointCollection
                         {
-                            new Point(0, 100),
-                            new Point(decay, 50),
-                            new Point(outMinusAttack, 50),
-                            new Point(Out, 100),
+                            new Point(0, Height),
+                            new Point(decay, Middle),
+                            new Point(outMinusAttack, Middle),
+                            new Point(Out, Height),
                         };
                     }
                     break;

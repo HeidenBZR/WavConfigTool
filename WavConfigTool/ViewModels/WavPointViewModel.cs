@@ -36,6 +36,8 @@ namespace WavConfigTool.ViewModels
 
         public bool IsLoaded { get; set; } = false;
 
+        public int Height => WavControlBaseViewModel.Height;
+
         public WavPointViewModel()
         {
 

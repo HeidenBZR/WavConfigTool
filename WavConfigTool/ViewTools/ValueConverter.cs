@@ -31,6 +31,7 @@ namespace WavConfigTool.ViewTools
             throw new NotImplementedException();
         }
     }
+
     public class PhonemeTypeToBorderColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -62,6 +63,34 @@ namespace WavConfigTool.ViewTools
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class WavControlMarginConverter : IValueConverter
+    {
+
+        public object Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return new Thickness(0, System.Convert.ToDouble(value), 0, 0);
+        }
+
+        public object ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class MetaInfoMarginConverter : IValueConverter
+    {
+
+        public object Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return new Thickness(10, System.Convert.ToDouble(value), 0, 0);
+        }
+
+        public object ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
         }
     }
 }

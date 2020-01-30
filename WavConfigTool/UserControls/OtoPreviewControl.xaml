@@ -6,9 +6,9 @@
     xmlns:local="clr-namespace:WavConfigTool.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
-    Height="{Binding Height}"
+    Height="{Binding Height, FallbackValue=100}"
+    Margin="{Binding Space, Converter={StaticResource WavControlMargin}}"
     d:DesignWidth="600"
-    Margin="0,10,0,0"
     mc:Ignorable="d">
     <d:UserControl.DataContext>
         <vm:OtoPreviewControlViewModel />
@@ -43,14 +43,14 @@
         <Image
             Name="ImageWav"
             Source="{Binding WavImage}"
-            Height="100"
+            Height="{Binding Height, FallbackValue=100}"
             HorizontalAlignment="Left" />
         <Canvas
             Name="Preutterance">
             <Rectangle
             Canvas.Left="{Binding Preutterance}"
             Width="1"
-            Height="100"
+            Height="{Binding Height, FallbackValue=100}"
             HorizontalAlignment="Left"
             Fill="#FFCF1A1A"
                 VerticalAlignment="Center"

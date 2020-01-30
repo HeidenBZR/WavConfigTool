@@ -22,6 +22,8 @@
             <viewtools:PhonemeTypeToColorConverter x:Key="PhonemeTypeToColor" />
             <viewtools:PhonemeTypeToBorderColorConverter x:Key="PhonemeTypeToBorderColor" />
             <viewtools:BooleanToFontWeightConverter x:Key="BooleanToFontWeight" />
+            <viewtools:WavControlMarginConverter x:Key="WavControlMargin" />
+            <viewtools:MetaInfoMarginConverter x:Key="MetaInfoMargin" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
