@@ -35,9 +35,9 @@ namespace WavConfigCore
             CheckForLast(filename);
         }
 
-        public void CreateProject()
+        public void CreateProject(string filename = "")
         {
-            var project = new Project();
+            var project = new Project(filename);
             if (Project != null)
             {
                 project.SetReclist(Project.Reclist);

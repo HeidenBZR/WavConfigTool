@@ -75,7 +75,7 @@ namespace WavConfigTool.Classes
 
         private const float LINE_WEIGHT = 0.5f;
         // HACK: can't find why it counts wrong, for now i'm just leaving this constant
-        public const double X_SCALE_ERROR = 1.4;
+        public const double X_SCALE_ERROR = 1.375;
 
         private Bitmap DrawWaveform(AudioFileReader reader, int height, Color color)
         {
@@ -121,7 +121,7 @@ namespace WavConfigTool.Classes
                         currPosition += sampleWidth;
 
                         // on column change, draw to bitmap
-                        if ((int)currPosition > currColumn)
+                        if ((int)currPosition >= currColumn)
                         {
                             if (!float.IsInfinity(minVal) && !float.IsInfinity(maxVal))
                             {
@@ -141,7 +141,7 @@ namespace WavConfigTool.Classes
                             }
 
                             // update column number and reset accumulators
-                            currColumn = (int)currPosition;
+                            currColumn++;
                             minVal = float.PositiveInfinity;
                             maxVal = float.NegativeInfinity;
                         }

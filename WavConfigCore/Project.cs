@@ -55,10 +55,11 @@ namespace WavConfigCore
         public event SimpleHandler AfterSave = delegate { };
         public event SimpleHandler SaveMe = delegate { };
 
-        public Project()
+        public Project(string filename = "")
         {
             ProjectOptions = new ProjectOptions();
-            voicebank = new Voicebank("", "");
+            var projectDir = Directory.Exists(filename) ? Path.GetDirectoryName(filename) : "";
+            voicebank = new Voicebank(projectDir, "");
             reclist = new Reclist();
             Current = this;
             projectLines = new List<ProjectLine>();

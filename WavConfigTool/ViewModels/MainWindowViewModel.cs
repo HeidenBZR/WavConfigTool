@@ -279,7 +279,7 @@ namespace WavConfigTool.ViewModels
             {
                 ResetProject();
                 Settings.ProjectFile = filename;
-                ProjectManager.CreateProject();
+                ProjectManager.CreateProject(filename);
                 CallProjectCommand.Execute(this);
                 ProjectManager.Save(Settings.ProjectFile);
                 LoadProjectAsync();
@@ -383,7 +383,7 @@ namespace WavConfigTool.ViewModels
                     var points = projectLine.PointsOfType(type, false);
                     for (var i = 0; i < points.Count; i++)
                     {
-                        points[i] = (int)(points[i] / WaveForm.X_SCALE_ERROR);
+                        points[i] = (int)(points[i] * 1.4 / WaveForm.X_SCALE_ERROR);
                     }
                 }
             }
