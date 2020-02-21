@@ -18,7 +18,7 @@ namespace WavConfigTool.ViewModels
     {
         public static readonly Version Version = new Version(0, 2, 0, 0);
 
-        public int AlphaVersion => 24;
+        public int AlphaVersion => 25;
 
         public ProjectViewModel ProjectViewModel { get; set; }
         public Project Project => ProjectManager.Project;
