@@ -75,7 +75,7 @@ namespace WavConfigTool.Classes
 
         private const float LINE_WEIGHT = 0.5f;
         // HACK: can't find why it counts wrong, for now i'm just leaving this constant
-        public const double X_SCALE_ERROR = 1.375;
+        public const double X_SCALE_ERROR = 1.3782;
 
         private Bitmap DrawWaveform(AudioFileReader reader, int height, Color color)
         {
