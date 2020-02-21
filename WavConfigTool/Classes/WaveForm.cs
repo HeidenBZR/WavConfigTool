@@ -51,6 +51,7 @@ namespace WavConfigTool.Classes
             }
             var reader = new AudioFileReader(Path);
             var bitmap = DrawWaveform(reader, height, color);
+            reader.Close();
             BitmapImage = Bitmap2BitmapImage(bitmap);
             ImageHash = hash;
         }
