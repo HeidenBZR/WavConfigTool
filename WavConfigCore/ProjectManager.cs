@@ -11,12 +11,29 @@ namespace WavConfigCore
 {
     public class ProjectManager
     {
-        public Project Project;
+        #region singleton base
 
-        public ProjectManager()
+        private static ProjectManager current;
+        private ProjectManager()
         {
             WatchForBackup();
         }
+
+        public static ProjectManager Current
+        {
+            get
+            {
+                if (current == null)
+                {
+                    current = new ProjectManager();
+                }
+                return current;
+            }
+        }
+
+        #endregion
+
+        public Project Project;
 
         public void LoadProject(string lastProject)
         {
@@ -65,7 +82,6 @@ namespace WavConfigCore
         public void Reset()
         {
             Project = null;
-            Project.ResetCurrent();
         }
 
         #region private

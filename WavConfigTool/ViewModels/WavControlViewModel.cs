@@ -63,16 +63,21 @@ namespace WavConfigTool.ViewModels
 
         public static int MetaInfoHeight => Height - 18;
 
+        public readonly string SampleName = "";
+        public readonly string Hash = "";
+
         public WavControlViewModel() : base()
         {
             PointsChanged += HandlePointsChanged;
             OnLoaded += HandleLoaded;
         }
 
-        public WavControlViewModel(ProjectLine projectLine) : this()
+        public WavControlViewModel(ProjectLine projectLine, string sampleName, string hash) : this()
         {
             ProjectLine = projectLine;
             ProjectLine.ProjectLineChanged += HandleProjectLineChanged;
+            SampleName = sampleName;
+            Hash = hash;
         }
 
         public override void Ready()
@@ -179,8 +184,8 @@ namespace WavConfigTool.ViewModels
                 if (!ProjectLine.IsEnabled)
                     return;
 
-                WaveForm = new WaveForm(Project.Current.Voicebank.GetSamplePath(ProjectLine.Recline.Name));
-                WaveForm.MakeWaveForm(Height, GetImageHash());
+                WaveForm = new WaveForm(SampleName);
+                WaveForm.MakeWaveForm(Height, Hash);
                 IsImageEnabled = true;
                 OnLoaded();
             })).ConfigureAwait(true);
@@ -202,10 +207,9 @@ namespace WavConfigTool.ViewModels
 
         private ImageSource GetWavImage()
         {
-            var imageHash = GetImageHash();
-            if (IsImageEnabled && imageHash == WaveForm?.ImageHash)
+            if (IsImageEnabled && Hash == WaveForm?.ImageHash)
                 return WaveForm.BitmapImage;
-            if (!IsLoading && imageHash != WaveForm?.ImageHash && imageHash != null)
+            if (!IsLoading && Hash != WaveForm?.ImageHash && Hash != null)
                 Load();
             return null;
         }
@@ -334,12 +338,6 @@ namespace WavConfigTool.ViewModels
         private string GetChannelsString(int? channels)
         {
             return !channels.HasValue ? null : channels.Value == 1 ? "Mono" : channels.Value == 2 ? "Stereo" : channels.Value.ToString();
-        }
-
-        private string GetImageHash()
-        {
-            var project = Project.Current;
-            return $"{project.Voicebank.Name}_{project.Reclist.Name}_{Settings.UserScaleX}x{Settings.UserScaleY}_{Project.Current.Prefix}_{ProjectLine.Recline.Name}_{Project.Current.Suffix}"; //.GetHashCode();
         }
 
         private double CheckPosition(double position)

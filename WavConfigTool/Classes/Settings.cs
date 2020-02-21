@@ -118,9 +118,8 @@ namespace WavConfigTool.Classes
 
         public static double ScaleX => 0.45;
         public static double ScaleY => 60;
-
-        public static double UserScaleX => Project.Current != null ? Project.Current.UserScaleX : 1;
-        public static double UserScaleY => Project.Current != null ? Project.Current.UserScaleY : 1;
+        public static double UserScaleX => ProjectManager.Current.Project != null ? ProjectManager.Current.Project.UserScaleX : 1;
+        public static double UserScaleY => ProjectManager.Current.Project != null ? ProjectManager.Current.Project.UserScaleY : 1;
 
         public static double RealToViewX(int position)
         {

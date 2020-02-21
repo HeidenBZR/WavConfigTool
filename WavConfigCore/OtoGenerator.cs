@@ -84,6 +84,8 @@ namespace WavConfigCore
             bool hasZones = projectLine.ApplyZones(phonemesOfType[p1.Type], p1) && projectLine.ApplyZones(phonemesOfType[p2.Type], p2);
             AliasType aliasType = AliasTypeResolver.Current.GetAliasType(GetAliasType(phonemes));
             bool masked = aliasType != AliasType.undefined && Project.Reclist.WavMask.CanGenerateOnPosition(projectLine.Recline.Name, aliasType, position);
+            var p1Attack = Project.AttackOfType(p1.Type);
+            var p2Attack = Project.AttackOfType(p2.Type);
 
             if (!masked)
                 return null;
@@ -97,11 +99,11 @@ namespace WavConfigCore
             {
                 // Absolute values, relative ones are made in Oto on write (!)
                 case AliasType.V:
-                    offset = p1.Zone.In + Project.VowelDecay - p1.Attack;
+                    offset = p1.Zone.In + Project.VowelDecay - p1Attack;
                     overlap = p1.Zone.In + Project.VowelDecay;
                     preutterance = overlap - 5;
                     consonant = overlap;
-                    cutoff = p1.Zone.Out - p1.Attack;
+                    cutoff = p1.Zone.Out - p1Attack;
                     break;
 
                 // Ends with vowel
@@ -110,33 +112,33 @@ namespace WavConfigCore
                 case AliasType.CmV:
                 case AliasType.VCV:
                 case AliasType.VCmV:
-                    offset = p1.Zone.Out - p1.Attack < p1.Zone.In ? p1.Zone.In : p1.Zone.Out - p1.Attack;
+                    offset = p1.Zone.Out - p1Attack < p1.Zone.In ? p1.Zone.In : p1.Zone.Out - p1Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.In + Project.VowelDecay;
-                    cutoff = p2.Zone.Out - p2.Attack;
+                    cutoff = p2.Zone.Out - p2Attack;
                     break;
 
                 case AliasType.RV:
-                    offset = p1.Zone.Out - p1.Attack;
+                    offset = p1.Zone.Out - p1Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.In + Project.VowelDecay;
-                    cutoff = p2.Zone.Out - p2.Attack;
+                    cutoff = p2.Zone.Out - p2Attack;
                     break;
 
                 case AliasType.RCV:
                 case AliasType.RCmV:
-                    offset = p1.Zone.Out - p1.Attack;
+                    offset = p1.Zone.Out - p1Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.In + Project.VowelDecay;
-                    cutoff = p2.Zone.Out - p2.Attack;
+                    cutoff = p2.Zone.Out - p2Attack;
                     break;
 
                 case AliasType.RC:
                 case AliasType.RCm:
-                    offset = p1.Zone.In - p1.Attack;
+                    offset = p1.Zone.In - p1Attack;
                     overlap = p1.Zone.In;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.Out + 80;
@@ -148,7 +150,7 @@ namespace WavConfigCore
                 case AliasType.VR:
                 case AliasType.VCR:
                 case AliasType.VCmR:
-                    offset = p1.Zone.Out - p1.Attack;
+                    offset = p1.Zone.Out - p1Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.Out + Project.VowelDecay;
@@ -168,10 +170,10 @@ namespace WavConfigCore
                 case AliasType.VC:
                 case AliasType.VCm:
                 case AliasType.Cm:
-                    offset = p1.Zone.Out - p1.Attack;
+                    offset = p1.Zone.Out - p1Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out - p2.Attack;
+                    consonant = p2.Zone.Out - p2Attack;
                     cutoff = p2.Zone.Out;
                     break;
 

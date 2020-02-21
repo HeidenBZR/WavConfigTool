@@ -12,10 +12,10 @@ namespace WavConfigTool.ViewModels
         public double In { get; set; } = 0;
         public double Out { get; set; } = 100;
         public PhonemeType Type { get; set; } = PhonemeType.Consonant;
-        public double Attack => GetAttack();
+        public double Attack => ProjectManager.Current.Project.AttackOfType(Type);
 
         public double Width => Out + Attack;
-        public double Decay => Type == PhonemeType.Vowel ? Project.Current.VowelDecay : Attack;
+        public double Decay => Type == PhonemeType.Vowel ? ProjectManager.Current.Project.VowelDecay : Attack;
 
         public PointCollection Points { get; private set; }
         public PointCollection BorderPoints1 { get; private set; }
@@ -57,7 +57,7 @@ namespace WavConfigTool.ViewModels
             double attack = Settings.RealToViewX(Attack);
             double outMinusAttack = Out - attack;
             outMinusAttack = outMinusAttack < 0 ? 0 : outMinusAttack;
-            double decay = Settings.RealToViewX(Project.Current.VowelDecay);
+            double decay = Settings.RealToViewX(ProjectManager.Current.Project.VowelDecay);
             switch (Type)
             {
                 case PhonemeType.Consonant:
@@ -205,15 +205,5 @@ namespace WavConfigTool.ViewModels
                 () => Points
             );
         }
-
-        #region private
-
-        private double GetAttack()
-        {
-            return Type == PhonemeType.Consonant ? Project.Current.ConsonantAttack :
-                (Type == PhonemeType.Vowel ? Project.Current.VowelAttack : Project.Current.RestAttack);
-        }
-
-        #endregion
     }
 }

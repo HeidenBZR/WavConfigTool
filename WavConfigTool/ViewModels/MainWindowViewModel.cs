@@ -31,7 +31,7 @@ namespace WavConfigTool.ViewModels
         public PagerViewModel PagerViewModel { get; set; }
         public PagerViewModel WavControlsPagerViewModel { get; set; }
         public PagerViewModel OtoPagerViewModel { get; set; }
-        public ProjectManager ProjectManager { get; private set; } = new ProjectManager();
+        public ProjectManager ProjectManager { get; private set; } = ProjectManager.Current;
         public OtoGenerator OtoGenerator { get; private set; }
 
         public int ConsonantAttack { get => Project == null ? 0 : Project.ConsonantAttack; set => Project.ConsonantAttack = value; }
@@ -150,7 +150,9 @@ namespace WavConfigTool.ViewModels
         private WavControlViewModel CreateWavControl(int i)
         {
             var projectLine = Project.ProjectLines[i];
-            var control = new WavControlViewModel(projectLine) { Number = i };
+            var sampleName = Project.Voicebank.GetSamplePath(projectLine.Recline.Name, Project.WavPrefix, Project.WavSuffix);
+            var hash = $"{Project.Voicebank.Name}_{Project.Reclist.Name}_{Settings.UserScaleX}x{Settings.UserScaleY}_{sampleName}"; //.GetHashCode();
+            var control = new WavControlViewModel(projectLine, sampleName, hash) { Number = i };
             control.OnOtoMode += delegate
             {
                 SetOtoMode(control);

@@ -9,10 +9,10 @@ namespace WavConfigTool.ViewModels
         public string Filename { get => Oto.Filename; }
         public string Alias { get => Oto.Alias; }
 
-        public string Suffix => Project.Current?.Suffix;
-        public string Prefix => Project.Current?.Prefix;
-        public string WavSuffix => Project.Current?.WavSuffix;
-        public string WavPrefix => Project.Current?.WavPrefix;
+        public string Suffix => ProjectManager.Current.Project?.Suffix;
+        public string Prefix => ProjectManager.Current.Project?.Prefix;
+        public string WavSuffix => ProjectManager.Current.Project?.WavSuffix;
+        public string WavPrefix => ProjectManager.Current.Project?.WavPrefix;
 
         public double Offset { get => Settings.RealToViewX(Oto.Offset); set => Oto.Offset = value / Settings.ScaleX; }
         public double Consonant { get => Settings.RealToViewX(Oto.Consonant); set => Oto.Consonant = value / Settings.ScaleX; }

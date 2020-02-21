@@ -16,9 +16,6 @@ namespace WavConfigCore
 
     public class Project
     {
-        public static Project Current { get; private set; }
-        public static void ResetCurrent() { Current = null; }
-
         #region variables
 
         public Dictionary<string, string> Options;
@@ -61,7 +58,6 @@ namespace WavConfigCore
             var projectDir = Directory.Exists(filename) ? Path.GetDirectoryName(filename) : "";
             voicebank = new Voicebank(projectDir, "");
             reclist = new Reclist();
-            Current = this;
             projectLines = new List<ProjectLine>();
             projectLinesByFilename = new Dictionary<string, ProjectLine>();
             Options = new Dictionary<string, string>();
@@ -121,7 +117,7 @@ namespace WavConfigCore
                 if (ProjectLinesByFilename.TryGetValue(recline.Name, out var projectLine))
                 {
                     projectLine.Recline = recline;
-                    projectLine.IsEnabled = Voicebank.IsSampleEnabled(projectLine.Recline.Name);
+                    projectLine.IsEnabled = Voicebank.IsSampleEnabled(projectLine.Recline.Name, wavPrefix, wavSuffix);
                     ProcessLineAfterRead(projectLine);
                 }
             }
@@ -156,6 +152,16 @@ namespace WavConfigCore
             if (CheckForDuplicates(i))
                 Otos[newAlias] = oto;
             return (newAlias, oto);
+        }
+
+        public int AttackOfType(PhonemeType type)
+        {
+            if (type == PhonemeType.Consonant)
+                return ConsonantAttack;
+            else if (type == PhonemeType.Vowel)
+                return VowelAttack;
+            else
+                return RestAttack;
         }
 
         public void ProcessLineAfterRead(ProjectLine projectLine)

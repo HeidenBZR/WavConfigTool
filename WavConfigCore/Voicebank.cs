@@ -50,11 +50,11 @@ namespace WavConfigCore
             ImagePath = CharacterPath != null && Image != null && Image != "" ? Path.Combine(Path.GetDirectoryName(CharacterPath), Image) : "";
         }
 
-        public bool IsSampleEnabled(string sample)
+        public bool IsSampleEnabled(string sample, string wavPrefix, string wavSuffix)
         {
             if (!IsLoaded)
                 return false;
-            return File.Exists(GetSamplePath(sample));
+            return File.Exists(GetSamplePath(sample, wavPrefix, wavSuffix));
         }
 
         public string GetFullName()
@@ -72,13 +72,13 @@ namespace WavConfigCore
                 ReadCharacter();
         }
 
-        public string GetSamplePath(string sample)
+        public string GetSamplePath(string sample, string wavPrefix, string wavSuffix)
         {
             if (Fullpath == null)
             {
                 throw new Exception("Voicebank is not loaded");
             }
-            return Path.Combine(Fullpath, Project.Current.WavPrefix + sample + Project.Current.WavSuffix + ".wav");
+            return Path.Combine(Fullpath, string.Format("{0}{1}{2}.wav", wavPrefix, sample, wavSuffix));
         }
 
         #region private

@@ -29,7 +29,7 @@ namespace WavConfigCore
     {
         public double Length => Zone.Out - Zone.In;
 
-        public abstract double Attack { get; }
+        public abstract PhonemeType PhonemeType { get; }
         public abstract int LocalIndex { get; }
 
         public string Alias { get; set; }
@@ -66,7 +66,7 @@ namespace WavConfigCore
 
     public class Consonant : Phoneme
     {
-        public override double Attack { get => Project.Current.ConsonantAttack; }
+        public override PhonemeType PhonemeType => PhonemeType.Consonant;
         public override int LocalIndex => Recline == null ? -1 : Recline.Consonants.IndexOf(this);
         public Consonant(string l, string letter = "") : base(l, letter) { Type = PhonemeType.Consonant; }
         public override Phoneme Clone() { return new Consonant(Alias, Letter); }
@@ -75,7 +75,7 @@ namespace WavConfigCore
 
     public class Vowel : Phoneme
     {
-        public override double Attack => Project.Current.VowelAttack;
+        public override PhonemeType PhonemeType => PhonemeType.Vowel;
         public override int LocalIndex => Recline == null ? -1 : Recline.Vowels.IndexOf(this);
         public Vowel(string l, string letter = "") : base(l, letter) { Type = PhonemeType.Vowel; }
         public override Phoneme Clone() { return new Vowel(Alias, Letter); }
@@ -84,7 +84,7 @@ namespace WavConfigCore
     public class Rest : Phoneme
     {
         public const string ALIAS = "-";
-        public override double Attack => Project.Current.RestAttack;
+        public override PhonemeType PhonemeType => PhonemeType.Rest;
         public override int LocalIndex => Recline == null ? -1 : Recline.Rests.IndexOf(this);
 
         public static Rest Create(Recline recline = null)

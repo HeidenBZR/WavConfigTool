@@ -166,5 +166,29 @@ namespace WavConfigTool.Properties {
                 this["LastReclist"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double UserScaleX {
+            get {
+                return ((double)(this["UserScaleX"]));
+            }
+            set {
+                this["UserScaleX"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double UserScaleY {
+            get {
+                return ((double)(this["UserScaleY"]));
+            }
+            set {
+                this["UserScaleY"] = value;
+            }
+        }
     }
 }
