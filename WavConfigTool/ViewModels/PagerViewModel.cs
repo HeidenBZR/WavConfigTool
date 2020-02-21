@@ -85,6 +85,27 @@ namespace WavConfigTool.ViewModels
             ItemsCount = Collection.Count();
         }
 
+        public void WaitForPageLoadedAndLoadRest()
+        {
+            var pageContentLocal = pageContent.ToArray();
+            foreach (var control in pageContentLocal)
+            {
+                var wavControl = control as WavControlViewModel;
+                if (wavControl == null)
+                    return;
+                wavControl.OnLoaded += () =>
+                {
+                    foreach (var innerControl in pageContentLocal)
+                    {
+                        var innerWavControl = control as WavControlViewModel;
+                        if (innerWavControl == null || !innerWavControl.IsLoaded)
+                            return;
+                        LoadRest();
+                    }
+                };
+            }
+        }
+
         #region private
 
         private ObservableCollection<WavControlBaseViewModel> pageContent = new ObservableCollection<WavControlBaseViewModel>();
@@ -144,6 +165,18 @@ namespace WavConfigTool.ViewModels
             if (ItemsCount % realSize > 0)
                 pages++;
             return pages;
+        }
+
+        private void LoadRest()
+        {
+            foreach (var control in Collection)
+            {
+                var wavControl = control as WavControlViewModel;
+                if (wavControl == null || wavControl.IsLoaded || wavControl.IsLoading)
+                    continue;
+                wavControl.LoadExternal();
+            }
+
         }
 
         #endregion

@@ -155,6 +155,11 @@ namespace WavConfigTool.ViewModels
             return collection;
         }
 
+        public void LoadExternal()
+        {
+            Load();
+        }
+
         public override string ToString()
         {
             if (ProjectLine == null || ProjectLine.Recline == null)

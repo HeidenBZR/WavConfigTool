@@ -132,6 +132,7 @@ namespace WavConfigTool.ViewModels
                     control.Ready();
                 }
                 PagerViewModel.ReadProjectOption(Project.ProjectOptions);
+                PagerViewModel.WaitForPageLoadedAndLoadRest();
                 OtoGenerator = new OtoGenerator(Project);
             }
             IsLoading = false;
