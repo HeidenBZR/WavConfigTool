@@ -20,6 +20,7 @@ namespace WavConfigTool.Classes
         public string Path;
 
         public WaveFormat WaveFormat;
+        public int? RealBitsPerSample => WaveFormat?.BitsPerSample / WaveFormat?.BlockAlign * 2;
         public double MostLeft;
 
         public double Threshold = 0.001;

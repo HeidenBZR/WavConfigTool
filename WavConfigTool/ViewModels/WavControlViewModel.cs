@@ -53,7 +53,7 @@ namespace WavConfigTool.ViewModels
         public PhonemeType PhonemeTypeConsonant => PhonemeType.Consonant;
 
         public string WavChannels => GetChannelsString(WaveForm?.WaveFormat?.Channels);
-        public string WavBitRate => WaveForm?.WaveFormat?.BitsPerSample.ToString();
+        public string WavBitRate => WaveForm?.RealBitsPerSample?.ToString();
         public string WavSampleRate => WaveForm?.WaveFormat?.SampleRate.ToString();
 
         public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
