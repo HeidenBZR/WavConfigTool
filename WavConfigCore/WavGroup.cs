@@ -18,7 +18,12 @@ namespace WavConfigCore
             AliasTypes = new Dictionary<AliasType, AliasTypeMask>();
         }
 
-        public WavGroup(string name, Dictionary<AliasType, AliasTypeMask> aliasTypes, string[] wavFiles) : this()
+        public WavGroup(Dictionary<AliasType, AliasTypeMask> aliasTypes) : this()
+        {
+            AliasTypes = aliasTypes;
+        }
+
+        public WavGroup(string name, Dictionary<AliasType, AliasTypeMask> aliasTypes, string[] wavFiles) : this(aliasTypes)
         {
             Name = name;
             AliasTypes = aliasTypes;

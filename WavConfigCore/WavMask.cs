@@ -8,6 +8,7 @@ namespace WavConfigCore
         public int MaxDuplicates;
 
         internal List<WavGroup> WavGroups { get; private set; }
+        internal WavGroup Default { get; private set; }
 
         public WavMask(bool init = true)
         {
@@ -30,7 +31,7 @@ namespace WavConfigCore
 
         public bool CanGenerateOnPosition(string filename, AliasType aliasType, int position)
         {
-            if (wavGroupsByFilename == null || wavGroupsByFilename.Count == 0)
+            if (Default == null && (wavGroupsByFilename == null || wavGroupsByFilename.Count == 0))
                 return true; // without mask file we generate all possible
             if (wavGroupsByFilename.ContainsKey(filename))
             {
@@ -40,7 +41,12 @@ namespace WavConfigCore
                         return true;
                 }
             }
-            return false;
+            return Default.CanGenerateOnPosition(aliasType, position);
+        }
+
+        public void SetDefaultAliasTypes(WavGroup wavGroup)
+        {
+            Default = wavGroup;
         }
 
         public void AddGroup(WavGroup wavGroup)

@@ -106,9 +106,22 @@ namespace WavConfigCore.Reader
             {
                 MaxDuplicates = ioWavMask.MaxDuplicates
             };
+
+            var aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
+            foreach (IOAliasType iOAliasType in ioWavMask.Default.AliasTypes)
+            {
+                var aliasType = AliasTypeResolver.Current.GetAliasType(iOAliasType.Name);
+                if (aliasType != AliasType.undefined)
+                {
+                    aliasTypes[aliasType] = iOAliasType.CanTakeFromAllPositions ? new AliasTypeMask() : new AliasTypeMask(iOAliasType.Positions);
+                }
+            }
+            var wavGroup = new WavGroup(aliasTypes);
+            wavMask.SetDefaultAliasTypes(wavGroup);
+
             foreach (var iOWavGroup in ioWavMask.WavGroups)
             {
-                var aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
+                aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
                 foreach (IOAliasType iOAliasType in iOWavGroup.AliasTypes)
                 {
                     var aliasType = AliasTypeResolver.Current.GetAliasType(iOAliasType.Name);
@@ -117,7 +130,7 @@ namespace WavConfigCore.Reader
                         aliasTypes[aliasType] = iOAliasType.CanTakeFromAllPositions ? new AliasTypeMask() : new AliasTypeMask(iOAliasType.Positions);
                     }
                 }
-                var wavGroup = new WavGroup(iOWavGroup.Name, aliasTypes, iOWavGroup.WavFiles);
+                wavGroup = new WavGroup(iOWavGroup.Name, aliasTypes, iOWavGroup.WavFiles);
                 wavMask.AddGroup(wavGroup);
             }
             return wavMask;

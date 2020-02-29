@@ -27,6 +27,7 @@ namespace WavConfigCore.Reader.IO
     public class IOWavMask
     {
         public IOWavGroup[] WavGroups = new IOWavGroup[0];
+        public IOWavGroup Default = new IOWavGroup();
         public int MaxDuplicates;
     }
 }
