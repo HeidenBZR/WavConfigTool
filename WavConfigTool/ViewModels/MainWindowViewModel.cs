@@ -388,6 +388,7 @@ namespace WavConfigTool.ViewModels
             ProjectManager.LoadProject(Settings.ProjectFile);
             LoadProjectAsync();
             Refresh();
+            PagerViewModel.RequestUpdateCollection();
         }, () => !IsLoading);
 
         public ICommand SetWavConfigMode => new DelegateCommand(() =>
