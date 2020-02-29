@@ -64,6 +64,7 @@ namespace WavConfigTool.ViewModels
             ProjectOptions = projectOptions;
             SetPageSizeCommand.Execute(projectOptions.PageSize);
             SetPageCommand.Execute(projectOptions.LastPage);
+            Refresh();
         }
 
         public void WriteProjectOptions(ProjectOptions projectOptions)

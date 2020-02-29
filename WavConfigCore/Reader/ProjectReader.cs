@@ -82,7 +82,9 @@ namespace WavConfigCore.Reader
             ioProject.ProjectOptions = new IOProjectOptions
             {
                 LastPage = project.ProjectOptions.LastPage,
-                PageSize = project.ProjectOptions.PageSize
+                PageSize = project.ProjectOptions.PageSize,
+                MustHideNotEnabled = project.ProjectOptions.MustHideNotEnabled,
+                MustHideCompleted = project.ProjectOptions.MustHideCompleted
             };
             if (project.Voicebank != null)
                 ioProject.Voicebank = project.Voicebank.Location;
@@ -125,6 +127,8 @@ namespace WavConfigCore.Reader
             };
             project.ProjectOptions.LastPage = ioProject.ProjectOptions.LastPage;
             project.ProjectOptions.PageSize = ioProject.ProjectOptions.PageSize;
+            project.ProjectOptions.MustHideNotEnabled = ioProject.ProjectOptions.MustHideNotEnabled;
+            project.ProjectOptions.MustHideCompleted = ioProject.ProjectOptions.MustHideCompleted;
 
             project.SetVoicebank(new Voicebank(Path.GetDirectoryName(projectDir), ioProject.Voicebank));
             project.SetReclist(ReclistReader.Current.Read(ioProject.Reclist));

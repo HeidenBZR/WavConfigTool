@@ -40,6 +40,8 @@ namespace WavConfigCore.Reader
     {
         public int PageSize = 5;
         public int LastPage = 0;
+        public bool MustHideCompleted;
+        public bool MustHideNotEnabled;
     }
 
     [Serializable]

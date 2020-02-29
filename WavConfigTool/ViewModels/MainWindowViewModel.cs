@@ -142,6 +142,7 @@ namespace WavConfigTool.ViewModels
                     control.Ready();
                 }
                 PagerViewModel.ReadProjectOption(Project.ProjectOptions);
+                PagerViewModel.RequestUpdateCollection();
                 PagerViewModel.WaitForPageLoadedAndLoadRest();
                 OtoGenerator = new OtoGenerator(Project);
             }
@@ -218,6 +219,11 @@ namespace WavConfigTool.ViewModels
                 () => Title,
                 () => ReclistName,
                 () => VoicebankImage
+            );
+
+            RaisePropertiesChanged(
+                () => MustHideCompleted,
+                () => MustHideNotEnabled
             );
             RaisePropertyChanged(() => IsLoading);
         }
