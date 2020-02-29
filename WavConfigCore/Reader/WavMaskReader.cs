@@ -107,21 +107,21 @@ namespace WavConfigCore.Reader
                 MaxDuplicates = ioWavMask.MaxDuplicates
             };
 
-            var aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
+            var defaultAliasTypes = new Dictionary<AliasType, AliasTypeMask>();
             foreach (IOAliasType iOAliasType in ioWavMask.Default.AliasTypes)
             {
                 var aliasType = AliasTypeResolver.Current.GetAliasType(iOAliasType.Name);
                 if (aliasType != AliasType.undefined)
                 {
-                    aliasTypes[aliasType] = iOAliasType.CanTakeFromAllPositions ? new AliasTypeMask() : new AliasTypeMask(iOAliasType.Positions);
+                    defaultAliasTypes[aliasType] = iOAliasType.CanTakeFromAllPositions ? new AliasTypeMask() : new AliasTypeMask(iOAliasType.Positions);
                 }
             }
-            var wavGroup = new WavGroup(aliasTypes);
-            wavMask.SetDefaultAliasTypes(wavGroup);
+            var defaultWavGroup = new WavGroup(defaultAliasTypes);
+            wavMask.SetDefaultAliasTypes(defaultWavGroup);
 
             foreach (var iOWavGroup in ioWavMask.WavGroups)
             {
-                aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
+                var aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
                 foreach (IOAliasType iOAliasType in iOWavGroup.AliasTypes)
                 {
                     var aliasType = AliasTypeResolver.Current.GetAliasType(iOAliasType.Name);
@@ -130,7 +130,7 @@ namespace WavConfigCore.Reader
                         aliasTypes[aliasType] = iOAliasType.CanTakeFromAllPositions ? new AliasTypeMask() : new AliasTypeMask(iOAliasType.Positions);
                     }
                 }
-                wavGroup = new WavGroup(iOWavGroup.Name, aliasTypes, iOWavGroup.WavFiles);
+                var wavGroup = new WavGroup(iOWavGroup.Name, aliasTypes, iOWavGroup.WavFiles);
                 wavMask.AddGroup(wavGroup);
             }
             return wavMask;
