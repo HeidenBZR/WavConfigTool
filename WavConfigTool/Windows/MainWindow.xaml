@@ -22,27 +22,27 @@
         <dxmvvm:EventToCommand Event="Loaded" Command="{Binding LoadedCommand}"/>
         <dxmvvm:KeyToCommand Command="{Binding GenerateOtoCommand}" KeyGesture="CTRL+G" />
         <dxmvvm:KeyToCommand
-            Command="{Binding SetMode}"
+            Command="{Binding SetPhonemeModeCommand}"
             CommandParameter="{Binding ModeR}"
             KeyGesture="ALT+R" />
         <dxmvvm:KeyToCommand
-            Command="{Binding SetMode}"
+            Command="{Binding SetPhonemeModeCommand}"
             CommandParameter="{Binding ModeV}"
             KeyGesture="ALT+V" />
         <dxmvvm:KeyToCommand
-            Command="{Binding SetMode}"
+            Command="{Binding SetPhonemeModeCommand}"
             CommandParameter="{Binding ModeC}"
             KeyGesture="ALT+C" />
         <dxmvvm:KeyToCommand
-            Command="{Binding SetMode}"
+            Command="{Binding SetPhonemeModeCommand}"
             CommandParameter="{Binding ModeR}"
             KeyGesture="ALT+1" />
         <dxmvvm:KeyToCommand
-            Command="{Binding SetMode}"
+            Command="{Binding SetPhonemeModeCommand}"
             CommandParameter="{Binding ModeV}"
             KeyGesture="ALT+2" />
         <dxmvvm:KeyToCommand
-            Command="{Binding SetMode}"
+            Command="{Binding SetPhonemeModeCommand}"
             CommandParameter="{Binding ModeC}"
             KeyGesture="ALT+3" />
         <dxmvvm:KeyToCommand Command="{Binding PagerViewModel.SetPreiousPageCommand}" KeyGesture="OemOpenBrackets" />
