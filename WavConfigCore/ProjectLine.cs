@@ -22,6 +22,7 @@ namespace WavConfigCore
 
         public event SimpleHandler ProjectLineChanged = delegate { };
         public event SimpleHandler ProjectLinePointsChanged = delegate { };
+        public event SimpleHandler OnUpdateEnabledRequested = delegate { };
 
         /// <summary>
         /// Возвращает true если файл существовал на момент чтения проекта или изменения голосового банка/реклиста
@@ -40,6 +41,11 @@ namespace WavConfigCore
                 projectLine.ConsonantPoints = pcs.Split(' ').Select(n => int.Parse(n)).ToList();
 
             return projectLine;
+        }
+
+        public void UpdateEnabled()
+        {
+            OnUpdateEnabledRequested();
         }
 
         public static ProjectLine CreateNewFromRecline(Recline recline)

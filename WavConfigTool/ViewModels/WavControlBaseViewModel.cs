@@ -11,6 +11,9 @@ namespace WavConfigTool.ViewModels
         public static int Height => 100;
         public static int Space => 10;
 
+        public virtual bool IsCompleted => false;
+        public virtual bool IsEnabled => true;
+
         // TODO: Move base things here
 
         public virtual void Ready() { }

@@ -13,7 +13,7 @@ namespace WavConfigTool.ViewModels
         public WavControlBaseViewModel Base { get; set; }
 
         public int PageSize { get => _pageSize; set => SetPageSizeCommand.Execute(value); }
-        public int ItemsCount { get; set; } = 0;
+        public int ItemsCount => Collection != null ? Collection.Count : 0;
         public int PagesTotal => GetPagesTotal();
         public int CurrentPage
         {
@@ -24,6 +24,7 @@ namespace WavConfigTool.ViewModels
         public bool IsHidden { get; set; } = false;
         public bool IsOtoMode { get; set; } = false;
 
+        public List<WavControlBaseViewModel> SourceCollection { get; private set; } = new List<WavControlBaseViewModel>();
         public ObservableCollection<WavControlBaseViewModel> Collection { get; private set; } = new ObservableCollection<WavControlBaseViewModel>();
         public ObservableCollection<WavControlBaseViewModel> PageContent => GetPageContent();
 
@@ -35,14 +36,20 @@ namespace WavConfigTool.ViewModels
             IsHidden = false;
         }
 
-        public PagerViewModel(ObservableCollection<WavControlBaseViewModel> collection)
+        public PagerViewModel(List<WavControlBaseViewModel> collection)
         {
-            Collection = collection;
+            SourceCollection = collection;
+            UpdateCollection();
             RaisePropertyChanged(() => PageContent);
             RaisePropertyChanged(() => CurrentPageView);
             RaisePropertyChanged(() => PagesTotal);
             IsHidden = false;
-            ItemsCount = Collection.Count();
+        }
+
+        public void RequestUpdateCollection()
+        {
+            UpdateCollection();
+            SetPageSizeCommand.Execute(PageSize);
         }
 
         public void Clear()
@@ -54,6 +61,7 @@ namespace WavConfigTool.ViewModels
 
         public void ReadProjectOption(ProjectOptions projectOptions)
         {
+            ProjectOptions = projectOptions;
             SetPageSizeCommand.Execute(projectOptions.PageSize);
             SetPageCommand.Execute(projectOptions.LastPage);
         }
@@ -71,18 +79,11 @@ namespace WavConfigTool.ViewModels
             Refresh();
         }
 
-        public void UpdateOtoPreviewControls(ObservableCollection<WavControlBaseViewModel> controls)
+        public void UpdateOtoPreviewControls(List<WavControlBaseViewModel> controls)
         {
-            while (Collection.Count > 0)
-            {
-                Collection.RemoveAt(Collection.Count - 1);
-            }
-            foreach (var control in controls)
-            {
-                Collection.Add(control);
-            }
+            SourceCollection = controls;
             IsHidden = false;
-            ItemsCount = Collection.Count();
+            UpdateCollection();
         }
 
         public void WaitForPageLoadedAndLoadRest()
@@ -111,6 +112,7 @@ namespace WavConfigTool.ViewModels
         private ObservableCollection<WavControlBaseViewModel> pageContent = new ObservableCollection<WavControlBaseViewModel>();
         private int _currentPage = 0;
         private int _pageSize = 7;
+        private ProjectOptions ProjectOptions;
 
         private ObservableCollection<WavControlBaseViewModel> GetPageContent()
         {
@@ -179,6 +181,26 @@ namespace WavConfigTool.ViewModels
 
         }
 
+        private void UpdateCollection()
+        {
+            Collection.Clear();
+            foreach (var control in SourceCollection)
+            {
+                if (IsOtoMode)
+                    Collection.Add(control);
+                else
+                {
+                    if (ProjectOptions != null && ProjectOptions.MustHideNotEnabled && !control.IsEnabled)
+                        continue;
+                    if (ProjectOptions != null && ProjectOptions.MustHideCompleted && control.IsCompleted)
+                        continue;
+                    Collection.Add(control);
+                }
+            }
+            Refresh();
+            RaisePropertiesChanged(() => Collection, () => CurrentPage);
+        }
+
         #endregion
 
         #region commands
@@ -217,6 +239,8 @@ namespace WavConfigTool.ViewModels
         public ICommand SetPageSizeCommand => new DelegateCommand<int>((pageSize) =>
         {
             var current = _pageSize * _currentPage;
+            if (current >= PagesTotal)
+                current = PagesTotal - 1;
             _pageSize = pageSize;
             Refresh();
             SetPageCommand.Execute(current / pageSize);

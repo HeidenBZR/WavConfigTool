@@ -89,7 +89,7 @@
             Background="#22FF2222"
             Visibility="{Binding IsDisabled, Converter={StaticResource BooleanToVisibility}, FallbackValue=Hidden}">
             <TextBlock
-                Margin="20,40"
+                Margin="10,50"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Foreground="{DynamicResource RestBackBrush}"
@@ -151,9 +151,10 @@
             ItemsSource="{Binding RestPoints, Mode=OneWay}" />
         </Canvas>
         <StackPanel 
-                Canvas.Left="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}, Path=HorizontalOffset}"
-                HorizontalAlignment="Left"
-                Margin="{Binding MetaInfoHeight, Converter={StaticResource MetaInfoMargin}}">
+            Canvas.Left="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}, Path=HorizontalOffset}"
+            HorizontalAlignment="Left"
+            Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibility}}"
+            Margin="{Binding MetaInfoHeight, Converter={StaticResource MetaInfoMargin}}">
             <StackPanel Orientation="Horizontal" Opacity="0.2">
                 <TextBlock Margin="0,0,0,0" Text="{Binding WavBitRate, FallbackValue=BitRate}"/>
                 <TextBlock Margin="0,0,3,0" Text="bit"/>

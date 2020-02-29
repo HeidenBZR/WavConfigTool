@@ -12,6 +12,8 @@ namespace WavConfigCore
     {
         public int PageSize = 5;
         public int LastPage = 0;
+        public bool MustHideCompleted;
+        public bool MustHideNotEnabled;
     }
 
     public class Project
@@ -117,7 +119,11 @@ namespace WavConfigCore
                 if (ProjectLinesByFilename.TryGetValue(recline.Name, out var projectLine))
                 {
                     projectLine.Recline = recline;
-                    projectLine.IsEnabled = Voicebank.IsSampleEnabled(projectLine.Recline.Name, wavPrefix, wavSuffix);
+                    projectLine.OnUpdateEnabledRequested += () =>
+                    {
+                        projectLine.IsEnabled = Voicebank.IsSampleEnabled(projectLine.Recline.Name, wavPrefix, wavSuffix);
+                    };
+                    projectLine.UpdateEnabled();
                     ProcessLineAfterRead(projectLine);
                 }
             }

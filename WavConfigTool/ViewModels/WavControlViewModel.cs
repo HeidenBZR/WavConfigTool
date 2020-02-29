@@ -29,8 +29,8 @@ namespace WavConfigTool.ViewModels
         public bool IsImageEnabled { get; set; } = false;
         public bool IsReady { get; set; } = false;
 
-        public bool IsCompleted => ProjectLine.IsCompleted();
-        public bool IsEnabled => (bool)ProjectLine?.IsEnabled;
+        public override bool IsCompleted => ProjectLine.IsCompleted();
+        public override bool IsEnabled => (bool)ProjectLine?.IsEnabled;
         public bool IsDisabled => !IsEnabled;
         public bool EditEnabled => IsEnabled && !IsLoading && IsLoaded;
 
@@ -145,9 +145,9 @@ namespace WavConfigTool.ViewModels
             FirePointsChanged();
         }
 
-        public ObservableCollection<WavControlBaseViewModel> GenerateOtoPreview()
+        public List<WavControlBaseViewModel> GenerateOtoPreview()
         {
-            var collection = new ObservableCollection<WavControlBaseViewModel>();
+            var collection = new List<WavControlBaseViewModel>();
             foreach (Oto oto in ProjectLine.Recline.OtoList)
             {
                 collection.Add(new OtoPreviewControlViewModel(oto, WavImage));
@@ -186,8 +186,12 @@ namespace WavConfigTool.ViewModels
 
             await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
             {
+                ProjectLine.UpdateEnabled();
                 if (!ProjectLine.IsEnabled)
+                {
+                    IsLoading = false;
                     return;
+                }
 
                 WaveForm = new WaveForm(SampleName);
                 WaveForm.MakeWaveForm(Height, Hash);
@@ -214,7 +218,7 @@ namespace WavConfigTool.ViewModels
         {
             if (IsImageEnabled && Hash == WaveForm?.ImageHash)
                 return WaveForm.BitmapImage;
-            if (!IsLoading && Hash != WaveForm?.ImageHash && Hash != null)
+            if (IsEnabled && !IsLoading && Hash != WaveForm?.ImageHash && Hash != null)
                 Load();
             return null;
         }
