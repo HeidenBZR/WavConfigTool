@@ -165,7 +165,7 @@ namespace WavConfigTool.ViewModels
             if (ProjectLine == null || ProjectLine.Recline == null)
                 return "{WavControlViewModel}";
             else
-                return $"{ProjectLine.Recline.InfoString} : WavControlViewModel";
+                return $"{Filename} : WavControlViewModel";
         }
 
         #region private

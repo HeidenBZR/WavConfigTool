@@ -88,6 +88,7 @@ namespace WavConfigTool.ViewModels
 
         public void WaitForPageLoadedAndLoadRest()
         {
+            isLoadRestAllowed = true;
             var pageContentLocal = pageContent.ToArray();
             foreach (var control in pageContentLocal)
             {
@@ -96,13 +97,15 @@ namespace WavConfigTool.ViewModels
                     return;
                 wavControl.OnLoaded += () =>
                 {
+                    if (!isLoadRestAllowed)
+                        return;
                     foreach (var innerControl in pageContentLocal)
                     {
                         var innerWavControl = control as WavControlViewModel;
                         if (innerWavControl == null || !innerWavControl.IsLoaded)
                             return;
-                        LoadRest();
                     }
+                    LoadRest();
                 };
             }
         }
@@ -113,6 +116,7 @@ namespace WavConfigTool.ViewModels
         private int _currentPage = 0;
         private int _pageSize = 7;
         private ProjectOptions ProjectOptions;
+        private bool isLoadRestAllowed = false;
 
         private ObservableCollection<WavControlBaseViewModel> GetPageContent()
         {
@@ -171,6 +175,7 @@ namespace WavConfigTool.ViewModels
 
         private void LoadRest()
         {
+            isLoadRestAllowed = false;
             foreach (var control in Collection)
             {
                 var wavControl = control as WavControlViewModel;
@@ -178,7 +183,6 @@ namespace WavConfigTool.ViewModels
                     continue;
                 wavControl.LoadExternal();
             }
-
         }
 
         private void UpdateCollection()
