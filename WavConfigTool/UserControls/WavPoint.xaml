@@ -154,6 +154,10 @@
 
             <dxmvvm:Interaction.Behaviors>
                 <dxmvvm:EventToCommand
+                    Command="{Binding RegenerateOtoRequestCommand}"
+                    EventName="MouseLeftButtonDown">
+                </dxmvvm:EventToCommand>
+                <dxmvvm:EventToCommand
                     Command="{Binding PointMovedCommand}"
                     EventName="DragDelta"
                     PassEventArgsToCommand="True">

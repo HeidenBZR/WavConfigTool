@@ -59,7 +59,8 @@ namespace WavConfigTool.ViewModels
         public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
         public event OtoModeHandler OnOtoMode = delegate { };
         public event SimpleHandler OnLoaded = delegate { };
-        public event SimpleHandler RegenerateOtoRequest = delegate { };
+        public event SimpleHandler OnGenerateOtoRequested = delegate { };
+        public event PhonemeTypeArgHandler OnChangePhonemeModeRequested = delegate {};
 
         public static int MetaInfoHeight => Height - 18;
 
@@ -256,7 +257,8 @@ namespace WavConfigTool.ViewModels
             };
             point.RegenerateOtoRequest += delegate
             {
-                RegenerateOtoRequest();
+                OnChangePhonemeModeRequested(point.Type);
+                OnGenerateOtoRequested();
             };
             return point;
         }
@@ -386,7 +388,7 @@ namespace WavConfigTool.ViewModels
 
         public ICommand RegenerateOtoCommand => new DelegateCommand(() =>
         {
-            RegenerateOtoRequest();
+            OnGenerateOtoRequested();
         }, () => IsOtoBase);
 
         public ICommand ResetPointsCommand => new DelegateCommand<PhonemeType>((PhonemeType type) =>

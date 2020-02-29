@@ -139,7 +139,7 @@
                         Margin="3,0"
                         Background="{DynamicResource ButtonRestBrush}"
                         BorderBrush="{DynamicResource ButtonRestBrush}"
-                        Command="{Binding SetMode}"
+                        Command="{Binding SetPhonemeModeCommand}"
                         CommandParameter="{Binding ModeR}"
                         Content="{Binding ModeRSymbol}" />
                     <Button
@@ -147,7 +147,7 @@
                         Margin="3,0"
                         Background="{DynamicResource ButtonVowelBrush}"
                         BorderBrush="{DynamicResource ButtonVowelBrush}"
-                        Command="{Binding SetMode}"
+                        Command="{Binding SetPhonemeModeCommand}"
                         CommandParameter="{Binding ModeV}"
                         Content="{Binding ModeVSymbol}" />
                     <Button
@@ -155,7 +155,7 @@
                         Margin="3,0"
                         Background="{DynamicResource ButtonConsonantBrush}"
                         BorderBrush="{DynamicResource ButtonConsonantBrush}"
-                        Command="{Binding SetMode}"
+                        Command="{Binding SetPhonemeModeCommand}"
                         CommandParameter="{Binding ModeC}"
                         Content="{Binding ModeCSymbol}" />
                     <TextBlock Margin="13,0,0,0" Text="Current: " />

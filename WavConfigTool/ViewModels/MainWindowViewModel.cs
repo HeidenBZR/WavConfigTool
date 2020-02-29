@@ -168,7 +168,7 @@ namespace WavConfigTool.ViewModels
             {
                 SetOtoMode(control);
             };
-            control.RegenerateOtoRequest += delegate
+            control.OnGenerateOtoRequested += delegate
             {
                 if (IsOtoPreviewMode)
                 {
@@ -178,6 +178,10 @@ namespace WavConfigTool.ViewModels
                     OtoPagerViewModel.UpdateOtoPreviewControls(control.GenerateOtoPreview());
                     RaisePropertyChanged(() => PagerViewModel);
                 }
+            };
+            control.OnChangePhonemeModeRequested += delegate (PhonemeType type)
+            {
+                SetPhonemeModeCommand.Execute(type);
             };
             return control;
         }
@@ -280,7 +284,7 @@ namespace WavConfigTool.ViewModels
 
         #region Commands
 
-        public ICommand SetMode => new DelegateCommonCommand((obj) =>
+        public ICommand SetPhonemeModeCommand => new DelegateCommonCommand((obj) =>
         {
             Mode = (PhonemeType)obj;
         }, param => (param != null));

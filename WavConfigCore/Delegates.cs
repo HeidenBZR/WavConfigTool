@@ -7,4 +7,5 @@ using System.Threading.Tasks;
 namespace WavConfigCore
 {
     public delegate void SimpleHandler();
+    public delegate void PhonemeTypeArgHandler(PhonemeType type);
 }
