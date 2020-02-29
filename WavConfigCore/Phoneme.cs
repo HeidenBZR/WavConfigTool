@@ -47,7 +47,7 @@ namespace WavConfigCore
         public Phoneme(string l, string letter = "") 
         { 
             Alias = l; 
-            Letter = letter; 
+            Letter = letter;
         }
 
         public abstract Phoneme Clone();
@@ -63,7 +63,6 @@ namespace WavConfigCore
         }
     };
 
-
     public class Consonant : Phoneme
     {
         public override PhonemeType PhonemeType => PhonemeType.Consonant;
@@ -71,7 +70,6 @@ namespace WavConfigCore
         public Consonant(string l, string letter = "") : base(l, letter) { Type = PhonemeType.Consonant; }
         public override Phoneme Clone() { return new Consonant(Alias, Letter); }
     };
-    
 
     public class Vowel : Phoneme
     {

@@ -78,6 +78,7 @@ namespace WavConfigCore.Reader
             ioProject.OtoOptions.VowelDecay = project.VowelDecay;
             ioProject.OtoOptions.VowelAttack = project.VowelAttack;
             ioProject.OtoOptions.ConsonantAttack = project.ConsonantAttack;
+            ioProject.OtoOptions.RestAttack = project.RestAttack;
             ioProject.ProjectOptions = new IOProjectOptions
             {
                 LastPage = project.ProjectOptions.LastPage,
@@ -119,6 +120,7 @@ namespace WavConfigCore.Reader
                 VowelDecay = ioProject.OtoOptions.VowelDecay,
                 VowelAttack = ioProject.OtoOptions.VowelAttack,
                 ConsonantAttack = ioProject.OtoOptions.ConsonantAttack,
+                RestAttack = ioProject.OtoOptions.RestAttack,
                 ProjectOptions = new ProjectOptions()
             };
             project.ProjectOptions.LastPage = ioProject.ProjectOptions.LastPage;

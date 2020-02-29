@@ -30,7 +30,7 @@ namespace WavConfigTool.ViewModels
         public bool IsReady { get; set; } = false;
 
         public bool IsCompleted => ProjectLine.IsCompleted();
-        public bool IsEnabled => ProjectLine != null && ProjectLine.IsEnabled;
+        public bool IsEnabled => (bool)ProjectLine?.IsEnabled;
         public bool IsDisabled => !IsEnabled;
         public bool EditEnabled => IsEnabled && !IsLoading && IsLoaded;
 
@@ -393,6 +393,11 @@ namespace WavConfigTool.ViewModels
         public ICommand ResetAllPointsCommand => new DelegateCommand(() =>
         {
             ResetPoints();
+        }, () => !IsLoading);
+
+        public ICommand ReloadCommand => new DelegateCommand(() =>
+        {
+            Load();
         }, () => !IsLoading);
 
         #endregion

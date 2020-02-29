@@ -23,6 +23,7 @@ namespace WavConfigCore.Reader
         public int VowelDecay = 80;
         public int VowelAttack = 60;
         public int ConsonantAttack = 40;
+        public int RestAttack = 50;
     }
 
     [Serializable]

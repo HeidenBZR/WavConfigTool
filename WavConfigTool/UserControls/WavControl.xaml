@@ -58,7 +58,7 @@
             Name="WavCompleted"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Background="#0710FF22"
+            Background="#1710FF22"
             BorderBrush="#FF159B00"
             BorderThickness="0,1,0,1">
             <Border.Style>
@@ -150,6 +150,18 @@
             ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
             ItemsSource="{Binding RestPoints, Mode=OneWay}" />
         </Canvas>
+        <StackPanel 
+                Canvas.Left="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}, Path=HorizontalOffset}"
+                HorizontalAlignment="Left"
+                Margin="{Binding MetaInfoHeight, Converter={StaticResource MetaInfoMargin}}">
+            <StackPanel Orientation="Horizontal" Opacity="0.2">
+                <TextBlock Margin="0,0,0,0" Text="{Binding WavBitRate, FallbackValue=BitRate}"/>
+                <TextBlock Margin="0,0,3,0" Text="bit"/>
+                <TextBlock Margin="0,0,3,0" Text="{Binding WavChannels, FallbackValue=Channels}"/>
+                <TextBlock Margin="0,0,0,0" Text="{Binding WavSampleRate, FallbackValue=SampleRate}"/>
+                <TextBlock Margin="0,0,3,0" Text="Hz"/>
+            </StackPanel>
+        </StackPanel>
         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid
                 Canvas.Left="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}, Path=HorizontalOffset}"
@@ -172,6 +184,10 @@
 
                         <TextBlock.ContextMenu>
                             <ContextMenu Name="WavContextMenu">
+                                <MenuItem
+                                    Header="Reload Wav"
+                                    Command="{Binding ReloadCommand}" />
+                                <Separator/>
                                 <MenuItem 
                                     Header="Сбросить все маркеры в текущем аудио" 
                                     Command="{Binding ResetAllPointsCommand}" />
@@ -205,18 +221,6 @@
                     </ListView>
                 </StackPanel>
             </Grid>
-            <StackPanel 
-                Canvas.Left="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}, Path=HorizontalOffset}"
-                HorizontalAlignment="Left"
-                Margin="{Binding MetaInfoHeight, Converter={StaticResource MetaInfoMargin}}">
-                <StackPanel Orientation="Horizontal" Opacity="0.2">
-                    <TextBlock Margin="0,0,0,0" Text="{Binding WavBitRate, FallbackValue=BitRate}"/>
-                    <TextBlock Margin="0,0,3,0" Text="bit"/>
-                    <TextBlock Margin="0,0,3,0" Text="{Binding WavChannels, FallbackValue=Channels}"/>
-                    <TextBlock Margin="0,0,0,0" Text="{Binding WavSampleRate, FallbackValue=SampleRate}"/>
-                    <TextBlock Margin="0,0,3,0" Text="Hz"/>
-                </StackPanel>
-            </StackPanel>
         </Canvas>
     </Grid>
 </local:WavControlBase>
