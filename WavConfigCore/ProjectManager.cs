@@ -58,8 +58,9 @@ namespace WavConfigCore
             if (Project != null)
             {
                 project.SetReclist(Project.Reclist);
-                project.SetVoicebank(Project.Voicebank);
             }
+            project.SetVoicebank(new Voicebank(Path.GetDirectoryName(filename), ""));
+            project.SetReplacer(new Replacer());
             if (project.Voicebank != null && project.Voicebank.IsLoaded)
             {
                 project.Suffix = project.Voicebank.Subfolder;

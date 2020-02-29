@@ -37,7 +37,7 @@ namespace WavConfigTool.ViewModels
         public OtoPreviewControlViewModel(Oto oto, ImageSource image)
         {
             WavImage = image;
-            Length = image.Width;
+            Length = image != null ? image.Width : 1880;
             if (oto != null)
             {
                 Oto = oto;
