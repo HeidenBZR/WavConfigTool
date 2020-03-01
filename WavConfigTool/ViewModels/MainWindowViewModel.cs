@@ -275,7 +275,7 @@ namespace WavConfigTool.ViewModels
 
         private BitmapImage GetVoicebankImage()
         {
-            if (Project != null && Project.Voicebank != null && Project.Voicebank.ImagePath != "")
+            if (Project != null && Project.Voicebank != null && Project.Voicebank.ImagePath != "" && File.Exists(Project.Voicebank.ImagePath))
                 return new BitmapImage(new Uri(Project.Voicebank.ImagePath));
             else
                 return null;
