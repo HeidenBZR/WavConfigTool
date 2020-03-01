@@ -59,7 +59,8 @@ namespace WavConfigCore
             {
                 project.SetReclist(Project.Reclist);
             }
-            project.SetVoicebank(new Voicebank(Path.GetDirectoryName(filename), ""));
+            var directoryName = filename != "" ? Path.GetDirectoryName(filename) : "";
+            project.SetVoicebank(new Voicebank(directoryName, ""));
             project.SetReplacer(new Replacer());
             if (project.Voicebank != null && project.Voicebank.IsLoaded)
             {
