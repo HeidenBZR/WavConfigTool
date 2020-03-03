@@ -47,17 +47,18 @@ namespace WavConfigCore
         public bool MustSkipPhoneme(string filename, PhonemeType phonemeType, int position)
         {
             if (Default == null && (wavGroupsByFilename == null || wavGroupsByFilename.Count == 0))
-                return true; // without mask file we generate all possible
+                return false; // without mask file we generate all possible
 
             if (wavGroupsByFilename.ContainsKey(filename))
             {
-                foreach (var wavGroup in wavGroupsByFilename[filename])
+                var groups = wavGroupsByFilename[filename];
+                foreach (var wavGroup in groups)
                 {
-                    if (wavGroup.MustSkipPhoneme(phonemeType, position))
-                        return true;
+                    if (!wavGroup.MustSkipPhoneme(phonemeType, position))
+                        return false;
                 }
             }
-            return Default.MustSkipPhoneme(phonemeType, position);
+            return true; // skip only if all groups ask for it
         }
 
         public void SetDefaultAliasTypes(WavGroup wavGroup)
