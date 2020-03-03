@@ -49,5 +49,15 @@ namespace WavConfigCore
             AliasTypes[aliasType] = aliasTypeMask ?? new AliasTypeMask();
         }
 
+        public bool MustSkipPhoneme(PhonemeType phonemeType, int position)
+        {
+            if (phonemeType == PhonemeType.Consonant)
+                return SkipC.Contains(position);
+
+            if (phonemeType == PhonemeType.Vowel)
+                return SkipV.Contains(position);
+
+            return SkipR.Contains(position);
+        }
     }
 }

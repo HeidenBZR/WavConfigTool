@@ -68,9 +68,89 @@ namespace WavConfigCore
                 return CreateUnknownRecline(filename);
         }
 
+        public void ApplyZones(ProjectLine projectLine)
+        {
+            var completed = true;
+            completed &= ApplyZonesAndReturnCompleted(projectLine, PhonemeType.Vowel);
+            completed &= ApplyZonesAndReturnCompleted(projectLine, PhonemeType.Consonant);
+            completed &= ApplyZonesAndReturnCompleted(projectLine, PhonemeType.Rest);
+            projectLine.IsCompleted = completed;
+        }
+
+
+
         #region private
 
         private readonly Dictionary<string, Recline> reclineByFilename;
+
+        private bool ApplyZonesAndReturnCompleted(ProjectLine projectLine, PhonemeType type)
+        {
+            var points = projectLine.PointsOfType(type, false);
+            var zones = projectLine.ZonesOfType(type);
+            var phonemes = projectLine.Recline.PhonemesOfType(type);
+            var filename = projectLine.Recline.Name;
+
+            zones.Clear();
+            var completed = true;
+
+            int pointI = 0;
+            if (type == PhonemeType.Rest)
+            {
+                for (int i = 0; i < phonemes.Count; i++)
+                {
+                    while (!WavMask.MustSkipPhoneme(filename, type, i))
+                        i++;
+                    if (i >= phonemes.Count)
+                        return true;
+                    var phoneme = phonemes[i];
+
+                    if (pointI >= points.Count)
+                    {
+                        completed = false;
+                        phoneme.Zone = new Zone();
+                        phoneme.HasZone = false;
+                    }
+                    else
+                    {
+                        var pointIn = points[pointI];
+                        var pointOut = points[pointI];
+                        pointI++;
+                        phoneme.Zone = new Zone(pointIn, pointOut);
+                        phoneme.HasZone = true;
+                        zones.Add(phoneme.Zone);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < phonemes.Count; i++)
+                {
+                    while (!WavMask.MustSkipPhoneme(filename, type, i))
+                        i++;
+                    if (i >= phonemes.Count)
+                        return true;
+                    var phoneme = phonemes[i];
+
+                    if (pointI + 1 >= points.Count)
+                    {
+                        completed = false;
+                        phoneme.Zone = new Zone();
+                        phoneme.HasZone = false;
+                    }
+                    else
+                    {
+                        var pointIn = points[pointI];
+                        pointI++;
+                        var pointOut = points[pointI];
+                        pointI++;
+                        phoneme.Zone = new Zone(pointIn, pointOut);
+                        phoneme.HasZone = true;
+                        zones.Add(phoneme.Zone);
+                    }
+                }
+            }
+            return completed;
+        }
 
         private Recline CreateUnknownRecline(string filename)
         {

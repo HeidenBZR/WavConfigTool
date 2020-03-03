@@ -70,6 +70,8 @@ namespace WavConfigCore
                     var r2 = Rest.Create(this);
                     r1.Zone = new Zone(phoneme.Zone.In, phoneme.Zone.In);
                     r2.Zone = new Zone(phoneme.Zone.Out, phoneme.Zone.Out);
+                    r1.HasZone = true;
+                    r2.HasZone = true;
                     phonemesForGeneration.Add(r1);
                     phonemesForGeneration.Add(r2);
                 }

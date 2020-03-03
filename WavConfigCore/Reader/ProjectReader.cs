@@ -142,6 +142,7 @@ namespace WavConfigCore.Reader
                 }
                 var projectLine = project.ProjectLinesByFilename[ioWavConfig.File];
                 projectLine.SetPoints(ioWavConfig.Vowels, ioWavConfig.Consonants, ioWavConfig.Rests);
+                projectLine.UpdateZones();
             }
 
             return project;

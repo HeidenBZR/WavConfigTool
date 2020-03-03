@@ -123,7 +123,12 @@ namespace WavConfigCore
                     {
                         projectLine.IsEnabled = Voicebank.IsSampleEnabled(projectLine.Recline.Name, wavPrefix, wavSuffix);
                     };
+                    projectLine.OnUpdateZonesRequested += () =>
+                    {
+                        Reclist.ApplyZones(projectLine);
+                    };
                     projectLine.UpdateEnabled();
+                    projectLine.UpdateZones();
                     ProcessLineAfterRead(projectLine);
                 }
             }

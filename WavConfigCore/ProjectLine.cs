@@ -23,11 +23,13 @@ namespace WavConfigCore
         public event SimpleHandler ProjectLineChanged = delegate { };
         public event SimpleHandler ProjectLinePointsChanged = delegate { };
         public event SimpleHandler OnUpdateEnabledRequested = delegate { };
+        public event SimpleHandler OnUpdateZonesRequested = delegate { };
 
         /// <summary>
         /// Возвращает true если файл существовал на момент чтения проекта или изменения голосового банка/реклиста
         /// </summary>
         public bool IsEnabled { get; set; } = false;
+        public bool IsCompleted { get; set; } = false;
 
         public static ProjectLine Read(Recline recline, string pds, string pvs, string pcs)
         {
@@ -48,6 +50,11 @@ namespace WavConfigCore
             OnUpdateEnabledRequested();
         }
 
+        public void UpdateZones()
+        {
+            OnUpdateZonesRequested();
+        }
+
         public static ProjectLine CreateNewFromRecline(Recline recline)
         {
             var projectLine = new ProjectLine()
@@ -62,8 +69,7 @@ namespace WavConfigCore
 
         public ProjectLine()
         {
-            ProjectLineChanged += delegate { CalculateZones(); };
-            ProjectLinePointsChanged += delegate { CalculateZones(); SetHasZone(); };
+
         }
 
         public void SetPoints(IEnumerable<int> vowels, IEnumerable<int> consonants, IEnumerable<int> rests)
@@ -71,63 +77,6 @@ namespace WavConfigCore
             VowelPoints = vowels.ToList();
             ConsonantPoints = consonants.ToList();
             RestPoints = rests.ToList();
-        }
-
-        public bool IsCompleted()
-        {
-            return RestPoints != null && VowelPoints != null && ConsonantPoints != null &&
-                VirtualRestPoints.Count >= Recline.Rests.Count * 2 &&
-                ConsonantPoints.Count >= Recline.Consonants.Count * 2 &&
-                VowelPoints.Count >= Recline.Vowels.Count * 2;
-        }
-
-        public void CalculateZones()
-        {
-            Sort();
-            VowelZones = new List<Zone>();
-            foreach (PhonemeType type in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest })
-            {
-                var points = PointsOfType(type, false);
-                var zones = ZonesOfType(type);
-                zones.Clear();
-                // HACK: Rests currently are working as Zone=Point when others are two points for zone.
-                // So there are fake zones for start and end rest zones. Should be made better
-                if (type == PhonemeType.Rest)
-                    zones.Add(new Zone(0, 0));
-                for (int i = 0; i + 1 < points.Count; i += 2)
-                {
-                    if (type == PhonemeType.Rest)
-                    {
-                        zones.Add(new Zone(points[i], points[i]));
-                        zones.Add(new Zone(points[i + 1], points[i + 1]));
-                    }
-                    else
-                    {
-                        zones.Add(new Zone(points[i], points[i + 1]));
-                    }
-                }
-                if (type == PhonemeType.Rest)
-                    zones.Add(new Zone(0, 0));
-            }
-        }
-
-        /// <summary>
-        /// Распределяет зоны в фонемы. Возвращает false если в строке проекта нет такой фонемы или недостаточо зон.
-        /// </summary>
-        /// <param name="phoneme"></param>
-        /// <returns></returns>
-        public bool ApplyZones(List<Phoneme> phonemes, Phoneme phoneme)
-        {
-            int i = phonemes.IndexOf(phoneme);
-            if (i < 0)
-                return false;
-            var zones = ZonesOfType(phoneme.Type);
-            if (zones.Count > i)
-            {
-                phoneme.Zone = zones[i];
-                return true;
-            }
-            return false;
         }
 
         public void Sort()
@@ -161,21 +110,9 @@ namespace WavConfigCore
             var realPhonemes = PointsOfType(type, virtuals: false);
             realPhonemes.Add(position);
             realPhonemes.Sort();
+            UpdateZones();
             ProjectLinePointsChanged();
             return realPhonemes.IndexOf(position);
-        }
-
-        public void SetHasZone()
-        {
-            foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest })
-            {
-                var points = PointsOfType(phonemeType);
-                var phonemes = Recline.PhonemesOfType(phonemeType);
-                for (int i = 0; i < phonemes.Count; i++)
-                {
-                    phonemes[i].HasZone = points.Count >= i * 2 + 2;
-                }
-            }
         }
 
         public (int, int) MovePoint(int position1, int position2, PhonemeType type)
@@ -187,7 +124,7 @@ namespace WavConfigCore
                 points[i] = position2;
             }
             points.Sort();
-            SetHasZone();
+            UpdateZones();
             ProjectLinePointsChanged();
             return (i, points.IndexOf(position2));
         }
@@ -197,7 +134,7 @@ namespace WavConfigCore
             var points = PointsOfType(type, virtuals:false);
             var i = points.IndexOf(position);
             points.Remove(position);
-            SetHasZone();
+            UpdateZones();
             ProjectLinePointsChanged();
             return i;
         }
@@ -230,7 +167,7 @@ namespace WavConfigCore
         private void SetRecline(Recline recline)
         {
             Recline = recline;
-            SetHasZone();
+            OnUpdateZonesRequested();
             ProjectLineChanged();
             ProjectLinePointsChanged();
         }

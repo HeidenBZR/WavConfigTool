@@ -29,7 +29,7 @@ namespace WavConfigTool.ViewModels
         public bool IsImageEnabled { get; set; } = false;
         public bool IsReady { get; set; } = false;
 
-        public override bool IsCompleted => ProjectLine.IsCompleted();
+        public override bool IsCompleted => ProjectLine.IsCompleted;
         public override bool IsEnabled => (bool)ProjectLine?.IsEnabled;
         public bool IsDisabled => !IsEnabled;
         public bool EditEnabled => IsEnabled && !IsLoading && IsLoaded;
@@ -339,7 +339,6 @@ namespace WavConfigTool.ViewModels
                 RaisePropertyChanged(() => Width);
                 RaisePropertyChanged(() => WavImage);
                 ApplyPoints();
-                ProjectLine.SetHasZone();
                 IsLoaded = true;
                 IsLoading = false;
                 HandleProjectLineChanged();
@@ -375,7 +374,7 @@ namespace WavConfigTool.ViewModels
                     },
                     delegate (Point point)
                     {
-                        return ProjectLine.IsEnabled && !ProjectLine.IsCompleted();
+                        return ProjectLine.IsEnabled && !ProjectLine.IsCompleted;
                     }
                 );
             }

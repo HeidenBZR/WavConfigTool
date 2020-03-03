@@ -39,7 +39,6 @@ namespace WavConfigCore
         public void GenerateFromProjectLine(ProjectLine projectLine)
         {
             var recline = projectLine.Recline;
-            projectLine.CalculateZones();
             var position = 0;
             var reclinePhonemes = recline.GetPhonemesForGeneration();
 
@@ -81,7 +80,7 @@ namespace WavConfigCore
             Phoneme p1 = phonemes.First();
             Phoneme p2 = phonemes.Last();
             double offset = 0, consonant = 0, cutoff = 0, preutterance = 0, overlap = 0;
-            bool hasZones = projectLine.ApplyZones(phonemesOfType[p1.Type], p1) && projectLine.ApplyZones(phonemesOfType[p2.Type], p2);
+            bool hasZones = p1.HasZone && p2.HasZone;
             AliasType aliasType = AliasTypeResolver.Current.GetAliasType(GetAliasType(phonemes));
             bool masked = aliasType != AliasType.undefined && Project.Reclist.WavMask.CanGenerateOnPosition(projectLine.Recline.Name, aliasType, position);
             var p1Attack = Project.AttackOfType(p1.Type);
