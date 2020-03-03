@@ -21,6 +21,9 @@ namespace WavConfigCore.Reader.IO
         public string Name;
         public string[] WavFiles = new string[0];
         public IOAliasType[] AliasTypes = new IOAliasType[0];
+        internal int[] SkipV = new int[0];
+        internal int[] SkipC = new int[0];
+        internal int[] SkipR = new int[0];
     }
 
     [Serializable]

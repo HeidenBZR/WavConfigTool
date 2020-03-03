@@ -12,18 +12,17 @@ namespace WavConfigCore
         internal List<string> Wavs { get; private set; }
         internal Dictionary<AliasType, AliasTypeMask> AliasTypes { get; private set; }
 
+        internal List<int> SkipV { get; set; } = new List<int>();
+        internal List<int> SkipC { get; set; } = new List<int>();
+        internal List<int> SkipR { get; set; } = new List<int>();
+
         public WavGroup() 
         {
             Wavs = new List<string>();
             AliasTypes = new Dictionary<AliasType, AliasTypeMask>();
         }
 
-        public WavGroup(Dictionary<AliasType, AliasTypeMask> aliasTypes) : this()
-        {
-            AliasTypes = aliasTypes;
-        }
-
-        public WavGroup(string name, Dictionary<AliasType, AliasTypeMask> aliasTypes, string[] wavFiles) : this(aliasTypes)
+        public WavGroup(string name, Dictionary<AliasType, AliasTypeMask> aliasTypes, string[] wavFiles) : this()
         {
             Name = name;
             AliasTypes = aliasTypes;

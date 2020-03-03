@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using WavConfigCore.Reader.IO;
 using YamlDotNet.Serialization;
@@ -77,25 +78,11 @@ namespace WavConfigCore.Reader
             foreach (var wavGroup in wavMask.WavGroups)
             {
                 var ioWavGroup = new IOWavGroup();
-                var iOAliasTypes = new List<IOAliasType>();
-                foreach (var pair in wavGroup.AliasTypes)
-                {
-                    var ioAliasType = new IOAliasType
-                    {
-                        Name = pair.Key.ToString(),
-                        CanTakeFromAllPositions = pair.Value.CanTakeAllPositions
-                    };
-                    if (!ioAliasType.CanTakeFromAllPositions)
-                    {
-                        ioAliasType.Positions = pair.Value.Positions;
-                    }
-                    iOAliasTypes.Add(ioAliasType);
-                }
-                ioWavGroup.AliasTypes = iOAliasTypes.ToArray();
-                ioWavGroup.WavFiles = wavGroup.Wavs.ToArray();
-                ioWavGroup.Name = wavGroup.Name;
+                FillIOWavGroup(ioWavGroup, wavGroup);
                 list.Add(ioWavGroup);
             }
+            var defaultIOGroup = new IOWavGroup();
+            FillIOWavGroup(defaultIOGroup, wavMask.Default);
             ioWavMask.WavGroups = list.ToArray();
             return ioWavMask;
         }
@@ -106,34 +93,61 @@ namespace WavConfigCore.Reader
             {
                 MaxDuplicates = ioWavMask.MaxDuplicates
             };
+            ioWavMask.Default.WavFiles = new string[0]; // wav files are not needed for default
+            var defaultWavGroup = FillWavGroup(ioWavMask.Default);
+            wavMask.SetDefaultAliasTypes(defaultWavGroup);
 
-            var defaultAliasTypes = new Dictionary<AliasType, AliasTypeMask>();
-            foreach (IOAliasType iOAliasType in ioWavMask.Default.AliasTypes)
+            foreach (var ioWavGroup in ioWavMask.WavGroups)
+            {
+                var wavGroup = FillWavGroup(ioWavGroup);
+                wavMask.AddGroup(wavGroup);
+            }
+            return wavMask;
+        }
+
+        private void FillIOWavGroup(IOWavGroup ioWavGroup, WavGroup wavGroup)
+        {
+            if (wavGroup == null)
+                return;
+            var iOAliasTypes = new List<IOAliasType>();
+            foreach (var pair in wavGroup.AliasTypes)
+            {
+                var ioAliasType = new IOAliasType
+                {
+                    Name = pair.Key.ToString(),
+                    CanTakeFromAllPositions = pair.Value.CanTakeAllPositions
+                };
+                if (!ioAliasType.CanTakeFromAllPositions)
+                {
+                    ioAliasType.Positions = pair.Value.Positions;
+                }
+                iOAliasTypes.Add(ioAliasType);
+            }
+            ioWavGroup.AliasTypes = iOAliasTypes.ToArray();
+            ioWavGroup.WavFiles = wavGroup.Wavs.ToArray();
+            ioWavGroup.Name = wavGroup.Name;
+            ioWavGroup.SkipC = wavGroup.SkipC.ToArray();
+            ioWavGroup.SkipV = wavGroup.SkipV.ToArray();
+            ioWavGroup.SkipR = wavGroup.SkipR.ToArray();
+        }
+
+
+        private WavGroup FillWavGroup(IOWavGroup ioWavGroup)
+        {
+            var aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
+            foreach (IOAliasType iOAliasType in ioWavGroup.AliasTypes)
             {
                 var aliasType = AliasTypeResolver.Current.GetAliasType(iOAliasType.Name);
                 if (aliasType != AliasType.undefined)
                 {
-                    defaultAliasTypes[aliasType] = iOAliasType.CanTakeFromAllPositions ? new AliasTypeMask() : new AliasTypeMask(iOAliasType.Positions);
+                    aliasTypes[aliasType] = iOAliasType.CanTakeFromAllPositions ? new AliasTypeMask() : new AliasTypeMask(iOAliasType.Positions);
                 }
             }
-            var defaultWavGroup = new WavGroup(defaultAliasTypes);
-            wavMask.SetDefaultAliasTypes(defaultWavGroup);
-
-            foreach (var iOWavGroup in ioWavMask.WavGroups)
-            {
-                var aliasTypes = new Dictionary<AliasType, AliasTypeMask>();
-                foreach (IOAliasType iOAliasType in iOWavGroup.AliasTypes)
-                {
-                    var aliasType = AliasTypeResolver.Current.GetAliasType(iOAliasType.Name);
-                    if (aliasType != AliasType.undefined)
-                    {
-                        aliasTypes[aliasType] = iOAliasType.CanTakeFromAllPositions ? new AliasTypeMask() : new AliasTypeMask(iOAliasType.Positions);
-                    }
-                }
-                var wavGroup = new WavGroup(iOWavGroup.Name, aliasTypes, iOWavGroup.WavFiles);
-                wavMask.AddGroup(wavGroup);
-            }
-            return wavMask;
+            var wavGroup = new WavGroup(ioWavGroup.Name, aliasTypes, ioWavGroup.WavFiles);
+            wavGroup.SkipC = ioWavGroup.SkipC.ToList();
+            wavGroup.SkipR = ioWavGroup.SkipR.ToList();
+            wavGroup.SkipV = ioWavGroup.SkipV.ToList();
+            return wavGroup;
         }
     }
 }
