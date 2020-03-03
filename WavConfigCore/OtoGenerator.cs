@@ -120,8 +120,8 @@ namespace WavConfigCore
                     break;
 
                 case AliasType.RV:
-                    offset = p1.Zone.Out - p1Attack;
-                    overlap = p1.Zone.Out;
+                    offset = p1.Zone.Out;
+                    overlap = p1.Zone.Out + p1Attack;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.In + Project.VowelDecay;
                     cutoff = p2.Zone.Out - p2Attack;
@@ -129,8 +129,8 @@ namespace WavConfigCore
 
                 case AliasType.RCV:
                 case AliasType.RCmV:
-                    offset = p1.Zone.Out - p1Attack;
-                    overlap = p1.Zone.Out;
+                    offset = p1.Zone.Out;
+                    overlap = p1.Zone.Out + p1Attack;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.In + Project.VowelDecay;
                     cutoff = p2.Zone.Out - p2Attack;
@@ -138,8 +138,8 @@ namespace WavConfigCore
 
                 case AliasType.RC:
                 case AliasType.RCm:
-                    offset = p1.Zone.In - p1Attack;
-                    overlap = p2.Zone.In;
+                    offset = p1.Zone.In;
+                    overlap = p2.Zone.In + p1Attack;
                     preutterance = p2.Zone.Out;
                     consonant = p2.Zone.Out + Project.VowelDecay;
                     cutoff = p2.Zone.Out + Project.VowelDecay + 10;

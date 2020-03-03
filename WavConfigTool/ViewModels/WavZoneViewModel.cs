@@ -56,6 +56,8 @@ namespace WavConfigTool.ViewModels
             }
             double attack = Settings.RealToViewX(Attack);
             double outMinusAttack = Out - attack;
+            double inMinusAttack = Math.Max(In - attack, 0);
+            double outPlusAttack = Math.Min(Out + attack, length);
             outMinusAttack = outMinusAttack < 0 ? 0 : outMinusAttack;
             double decay = Settings.RealToViewX(ProjectManager.Current.Project.VowelDecay);
             switch (Type)
@@ -127,21 +129,21 @@ namespace WavConfigTool.ViewModels
                         {
                             new Point(0, Middle),
                             new Point(0, Height),
-                            new Point(outMinusAttack, Height),
-                            new Point(outMinusAttack, Middle),
+                            new Point(Out, Height),
+                            new Point(Out, Middle),
                         };
                         BorderPoints3 = new PointCollection
                         {
-                            new Point(outMinusAttack, Middle),
+                            new Point(Out, Middle),
+                            new Point(outPlusAttack, Height),
                             new Point(Out, Height),
-                            new Point(outMinusAttack, Height),
                         };
                         Points = new PointCollection
                         {
                             new Point(0, Height),
                             new Point(0, Middle),
-                            new Point(outMinusAttack, Middle),
-                            new Point(Out, Height),
+                            new Point(Out, Middle),
+                            new Point(outPlusAttack, Height),
                         };
                     }
                     else if (Math.Abs(length - p_out) < 10)
@@ -179,21 +181,21 @@ namespace WavConfigTool.ViewModels
                         {
                             new Point(decay, Middle),
                             new Point(decay, Height),
-                            new Point(outMinusAttack, Height),
-                            new Point(outMinusAttack, Middle),
+                            new Point(Out, Height),
+                            new Point(Out, Middle),
                         };
                         BorderPoints3 = new PointCollection
                         {
-                            new Point(outMinusAttack, Middle),
+                            new Point(Out, Middle),
+                            new Point(outPlusAttack, Height),
                             new Point(Out, Height),
-                            new Point(outMinusAttack, Height),
                         };
                         Points = new PointCollection
                         {
                             new Point(0, Height),
                             new Point(decay, Middle),
-                            new Point(outMinusAttack, Middle),
-                            new Point(Out, Height),
+                            new Point(Out, Middle),
+                            new Point(outPlusAttack, Height),
                         };
                     }
                     break;
