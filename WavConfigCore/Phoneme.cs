@@ -38,6 +38,7 @@ namespace WavConfigCore
         public Zone Zone { get; set; }
         public int GlobalIndex => Recline == null ? -1 : Recline.Phonemes.IndexOf(this);
         public bool HasZone { get; set; }
+        public bool IsSkipped { get; set; }
         public Recline Recline;
 
         public bool IsConsonant { get { return Type == PhonemeType.Consonant; } }

@@ -166,7 +166,7 @@
         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid
                 Canvas.Left="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}, Path=HorizontalOffset}"
-                Canvas.Top="-27"
+                Canvas.Top="-28"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top">
                 <Border

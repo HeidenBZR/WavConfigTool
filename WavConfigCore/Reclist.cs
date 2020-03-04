@@ -99,10 +99,14 @@ namespace WavConfigCore
                 for (int i = 0; i < phonemes.Count; i++)
                 {
                     while (WavMask.MustSkipPhoneme(filename, type, i) && i <= phonemes.Count)
+                    {
+                        phonemes[i].IsSkipped = true;
                         i++;
+                    }
                     if (i >= phonemes.Count)
                         return completed;
                     var phoneme = phonemes[i];
+                    phoneme.IsSkipped = false;
 
                     if (pointI >= points.Count)
                     {
@@ -126,10 +130,14 @@ namespace WavConfigCore
                 for (int i = 0; i < phonemes.Count; i++)
                 {
                     while (WavMask.MustSkipPhoneme(filename, type, i) && i <= phonemes.Count)
+                    {
+                        phonemes[i].IsSkipped = true;
                         i++;
+                    }
                     if (i >= phonemes.Count)
                         return completed;
                     var phoneme = phonemes[i];
+                    phoneme.IsSkipped = false;
 
                     if (pointI + 1 >= points.Count)
                     {
