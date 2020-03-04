@@ -150,12 +150,16 @@ namespace WavConfigCore
         private List<int> GetVirtualRestPoints()
         {
             var points = new List<int>();
+            var firstSkipped = Recline.Phonemes.Count > 0 && Recline.Phonemes[0].IsSkipped;
             if (RestPoints.Count > 0)
             {
-                points.Add(0);
+                if (!firstSkipped)
+                {
+                    points.Add(0);
+                }
                 points.Add(RestPoints[0]);
             }
-            if (RestPoints.Count > 1)
+            if (RestPoints.Count > 1 || firstSkipped && RestPoints.Count > 0)
             {
                 points.AddRange(RestPoints.GetRange(1, RestPoints.Count - 1));
                 if (Width != 0)
