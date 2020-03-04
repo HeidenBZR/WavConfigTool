@@ -22,6 +22,7 @@ namespace WavConfigTool
         public App()
         {
             MainDispatcher = Dispatcher.CurrentDispatcher;
+            FileAssociation.AssociateIfNeeded();
         }
     }
 }

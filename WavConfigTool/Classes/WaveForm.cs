@@ -81,6 +81,9 @@ namespace WavConfigTool.Classes
 
         private Bitmap DrawWaveform(AudioFileReader reader, int height, Color color)
         {
+
+            ////////////// STACK OVERFLOW //////////////
+            
             WaveFormat = reader.WaveFormat;
             // calculate number of samples
             long nSamples = reader.Length / ((WaveFormat.BitsPerSample * WaveFormat.Channels) / 8);
@@ -165,6 +168,8 @@ namespace WavConfigTool.Classes
                 }
             }
 
+            ////////////// END STACK OVERFLOW //////////////
+            
             return res;
         }
 
