@@ -15,23 +15,30 @@ namespace WavConfigTool.Classes
             AssociateIfNeeded(
                 @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\Resources\project.ico",
                 @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\bin\Debug\WavConfigTool.exe",
-                "WavConfigTool.Project",
+                "WavConfig.Tool.Project",
                 ".wcp",
                 "WavConfigTool Project File"
             );
             AssociateIfNeeded(
                 @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\Resources\reclist.ico",
                 @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\bin\Debug\WavConfigTool.exe",
-                "WavConfigTool.Reclist",
+                "WavConfig.Reclist",
                 ".reclist",
-                "WavConfigTool Reclist File"
+                "WavConfig Reclist File"
             );
             AssociateIfNeeded(
                 @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\Resources\mask.ico",
                 @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\bin\Debug\WavConfigTool.exe",
-                "WavConfigTool.Mask",
+                "WavConfig.Mask",
                 ".mask",
-                "WavConfigTool Mask File"
+                "WavConfig Mask File"
+            );
+            AssociateIfNeeded(
+                @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\Resources\txt.ico",
+                @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\bin\Debug\WavConfigTool.exe",
+                "WavConfig.TextReplace",
+                ".wtr",
+                "WavConfig Text Replace File"
             );
 
         }

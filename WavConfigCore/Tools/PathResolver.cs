@@ -6,7 +6,7 @@ namespace WavConfigCore.Tools
     public class PathResolver
     {
         public const string SETTINGS_EXT = ".reclist";
-        public const string REPLACEMENT_EXT = ".txt";
+        public const string REPLACEMENT_EXT = ".wtr";
         public const string PROJECT_EXT = ".wcp";
         public const string MASK_EXT = ".mask";
 
@@ -66,6 +66,11 @@ namespace WavConfigCore.Tools
             string timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
             var filename = $"backup_{timeStamp}" + PROJECT_EXT;
             return Path.Combine(folder, filename);
+        }
+
+        public bool IsProjectFile(string filename)
+        {
+            return filename != null && filename != "" && Path.GetExtension(filename) == PROJECT_EXT;
         }
     }
 }
