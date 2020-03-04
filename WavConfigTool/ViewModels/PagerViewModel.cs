@@ -70,7 +70,14 @@ namespace WavConfigTool.ViewModels
         public void WriteProjectOptions(ProjectOptions projectOptions)
         {
             projectOptions.LastPage = CurrentPage;
-            projectOptions.PageSize = PageSize;
+            if (IsOtoMode)
+            {
+                projectOptions.OtoPageSize = PageSize;
+            }
+            else
+            {
+                projectOptions.PageSize = PageSize;
+            }
         }
 
         public void OtoMode()
@@ -249,6 +256,7 @@ namespace WavConfigTool.ViewModels
             _pageSize = pageSize;
             Refresh();
             SetPageCommand.Execute(current / pageSize);
+            PagerChanged();
         }, pageSize => pageSize > 0);
 
         #endregion

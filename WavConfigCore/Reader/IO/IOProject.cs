@@ -39,6 +39,7 @@ namespace WavConfigCore.Reader
     public class IOProjectOptions
     {
         public int PageSize = 5;
+        public int OtoPageSize = 5;
         public int LastPage = 0;
         public bool MustHideCompleted;
         public bool MustHideNotEnabled;

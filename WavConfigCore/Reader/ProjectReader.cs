@@ -83,6 +83,7 @@ namespace WavConfigCore.Reader
             {
                 LastPage = project.ProjectOptions.LastPage,
                 PageSize = project.ProjectOptions.PageSize,
+                OtoPageSize = project.ProjectOptions.OtoPageSize,
                 MustHideNotEnabled = project.ProjectOptions.MustHideNotEnabled,
                 MustHideCompleted = project.ProjectOptions.MustHideCompleted
             };
@@ -127,6 +128,7 @@ namespace WavConfigCore.Reader
             };
             project.ProjectOptions.LastPage = ioProject.ProjectOptions.LastPage;
             project.ProjectOptions.PageSize = ioProject.ProjectOptions.PageSize;
+            project.ProjectOptions.OtoPageSize = ioProject.ProjectOptions.OtoPageSize;
             project.ProjectOptions.MustHideNotEnabled = ioProject.ProjectOptions.MustHideNotEnabled;
             project.ProjectOptions.MustHideCompleted = ioProject.ProjectOptions.MustHideCompleted;
 

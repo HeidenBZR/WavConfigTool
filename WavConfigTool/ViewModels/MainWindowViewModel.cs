@@ -34,10 +34,10 @@ namespace WavConfigTool.ViewModels
         public ProjectManager ProjectManager { get; private set; } = ProjectManager.Current;
         public OtoGenerator OtoGenerator { get; private set; }
 
-        public int ConsonantAttack { get => Project == null ? 0 : Project.ConsonantAttack; set => Project.ConsonantAttack = value; }
-        public int VowelAttack { get => Project == null ? 0 : Project.VowelAttack; set => Project.VowelAttack = value; }
-        public int RestAttack { get => Project == null ? 0 : Project.RestAttack; set => Project.RestAttack = value; }
-        public int VowelDecay { get => Project == null ? 0 : Project.VowelDecay; set => Project.VowelDecay = value; }
+        public int ConsonantAttack { get => Project == null ? 0 : Project.ConsonantAttack; set { Project.ConsonantAttack = value; TrySaveProject(); } }
+        public int VowelAttack { get => Project == null ? 0 : Project.VowelAttack; set { Project.VowelAttack = value; TrySaveProject(); } }
+        public int RestAttack { get => Project == null ? 0 : Project.RestAttack; set { Project.RestAttack = value; TrySaveProject(); } }
+        public int VowelDecay { get => Project == null ? 0 : Project.VowelDecay; set { Project.VowelDecay = value; TrySaveProject(); } }
 
         public bool MustHideNotEnabled
         {
@@ -50,8 +50,8 @@ namespace WavConfigTool.ViewModels
             set { Project.ProjectOptions.MustHideCompleted = value; PagerViewModel.RequestUpdateCollection(); }
         }
 
-        public string Prefix { get => Project?.Prefix; set => Project.Prefix = value; }
-        public string Suffix { get => Project?.Suffix; set => Project.Suffix = value; }
+        public string Prefix { get => Project?.Prefix; set { Project.Prefix = value; TrySaveProject(); } }
+        public string Suffix { get => Project?.Suffix; set { Project.Suffix = value; TrySaveProject(); } }
 
         public string WavPrefix
         {
@@ -267,6 +267,7 @@ namespace WavConfigTool.ViewModels
                     Base = wavControl
                 };
                 OtoPagerViewModel.OtoMode();
+                OtoPagerViewModel.SetPageSizeCommand.Execute(Project.ProjectOptions.OtoPageSize);
                 PagerViewModel = OtoPagerViewModel;
                 IsOtoPreviewMode = true;
                 Refresh();
@@ -284,6 +285,12 @@ namespace WavConfigTool.ViewModels
         private string SymbolOfType(PhonemeType type)
         {
             return type.ToString().Substring(0, 1);
+        }
+
+        private void TrySaveProject()
+        {
+            if (Project != null && Project.IsLoaded)
+                Project.FireSaveMe();
         }
 
         #endregion

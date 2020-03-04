@@ -10,6 +10,7 @@ namespace WavConfigCore
 {
     public class ProjectOptions
     {
+        public int OtoPageSize = 5;
         public int PageSize = 5;
         public int LastPage = 0;
         public bool MustHideCompleted;
