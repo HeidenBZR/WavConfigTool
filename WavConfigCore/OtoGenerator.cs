@@ -137,8 +137,8 @@ namespace WavConfigCore
 
                 case AliasType.RC:
                 case AliasType.RCm:
-                    offset = p1.Zone.In;
-                    overlap = p2.Zone.In + p1Attack;
+                    offset = p2.Zone.In - p1Attack;
+                    overlap = p2.Zone.In;
                     preutterance = p2.Zone.Out;
                     consonant = p2.Zone.Out + Project.VowelDecay;
                     cutoff = p2.Zone.Out + Project.VowelDecay + 10;
