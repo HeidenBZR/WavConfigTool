@@ -18,35 +18,39 @@ namespace WavConfigTool.Classes
             var appdir = AppDomain.CurrentDomain.BaseDirectory;
             var resources = Path.Combine(appdir, @"Resources");
             var exe = Path.Combine(appdir, @"WavConfigTool.exe");
-            AssociateIfNeeded(
-                Path.Combine(resources, @"projectIcon.ico"),
-                exe,
-                "WavConfig.Tool.Project",
-                ".wcp",
-                "WavConfigTool Project File"
-            );
-            AssociateIfNeeded(
-                Path.Combine(resources, @"reclistIcon.ico"),
-                exe,
-                "WavConfig.Reclist",
-                ".reclist",
-                "WavConfig Reclist File"
-            );
-            AssociateIfNeeded(
-                Path.Combine(resources, @"maskIcon.ico"),
-                exe,
-                "WavConfig.Mask",
-                ".mask",
-                "WavConfig Mask File"
-            );
-            AssociateIfNeeded(
-                Path.Combine(resources, @"txtIcon.ico"),
-                exe,
-                "WavConfig.TextReplace",
-                ".wtr",
-                "WavConfig Text Replace File"
-            );
-            SHChangeNotify(0x8000000, 0x1000, IntPtr.Zero, IntPtr.Zero);
+            try
+            {
+                AssociateIfNeeded(
+                    Path.Combine(resources, @"projectIcon.ico"),
+                    exe,
+                    "WavConfig.Tool.Project",
+                    ".wcp",
+                    "WavConfigTool Project File"
+                );
+                AssociateIfNeeded(
+                    Path.Combine(resources, @"reclistIcon.ico"),
+                    exe,
+                    "WavConfig.Reclist",
+                    ".reclist",
+                    "WavConfig Reclist File"
+                );
+                AssociateIfNeeded(
+                    Path.Combine(resources, @"maskIcon.ico"),
+                    exe,
+                    "WavConfig.Mask",
+                    ".mask",
+                    "WavConfig Mask File"
+                );
+                AssociateIfNeeded(
+                    Path.Combine(resources, @"txtIcon.ico"),
+                    exe,
+                    "WavConfig.TextReplace",
+                    ".wtr",
+                    "WavConfig Text Replace File"
+                );
+                SHChangeNotify(0x8000000, 0x1000, IntPtr.Zero, IntPtr.Zero);
+            }
+            catch { }
         }
 
         private static void AssociateIfNeeded(string icon, string exe, string appName, string ext, string desc)
