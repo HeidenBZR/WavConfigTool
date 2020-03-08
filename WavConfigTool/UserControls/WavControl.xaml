@@ -101,7 +101,34 @@
                 Height="{Binding Height, FallbackValue=100}"
                 HorizontalAlignment="Left"
                 Visibility="{Binding IsImageEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
-                Source="{Binding WavImage}" />
+                Source="{Binding WavImage}">
+                <Image.ContextMenu>
+                    <ContextMenu Name="WavContextMenu">
+                        <MenuItem
+                                    Header="Reload Wav"
+                                    Command="{Binding ReloadCommand}" />
+                        <Separator/>
+                        <MenuItem 
+                                    Header="Сбросить все маркеры в текущем аудио" 
+                                    Command="{Binding ResetAllPointsCommand}" />
+                        <Separator />
+                        <MenuItem 
+                                    Header="Сбросить все маркеры гласных (V) в текущем аудио"  
+                                    Command="{Binding ResetPointsCommand}" 
+                                    CommandParameter="{Binding PhonemeTypeVowel}" />
+                        <MenuItem 
+                                    Header="Сбросить все маркеры согласных (C) в текущем аудио"
+                                    Command="{Binding ResetPointsCommand}" 
+                                    CommandParameter="{Binding PhonemeTypeConsonant}" />
+                        <MenuItem 
+                                    Header="Сбросить все маркеры пауз (R) в текущем аудио"
+                                    Command="{Binding ResetPointsCommand}" 
+                                    CommandParameter="{Binding PhonemeTypeRest}" />
+                        <Separator />
+                        <MenuItem Header="Предпросмотр oto.ini" Command="{Binding OtoModeCommand}" />
+                    </ContextMenu>
+                </Image.ContextMenu>
+            </Image>
         </Canvas>
         <Canvas 
             Name = "Points"
@@ -180,35 +207,7 @@
                     Orientation="Horizontal">
                     <TextBlock Margin="0" Text="{Binding NumberView, FallbackValue=1}" />
                     <TextBlock Margin="0" Text=". " />
-                    <TextBlock Margin="0,0,5,0" Text="{Binding Filename, FallbackValue=FILENAME}">
-
-                        <TextBlock.ContextMenu>
-                            <ContextMenu Name="WavContextMenu">
-                                <MenuItem
-                                    Header="Reload Wav"
-                                    Command="{Binding ReloadCommand}" />
-                                <Separator/>
-                                <MenuItem 
-                                    Header="Сбросить все маркеры в текущем аудио" 
-                                    Command="{Binding ResetAllPointsCommand}" />
-                                <Separator />
-                                <MenuItem 
-                                    Header="Сбросить все маркеры гласных (V) в текущем аудио"  
-                                    Command="{Binding ResetPointsCommand}" 
-                                    CommandParameter="{Binding PhonemeTypeVowel}" />
-                                <MenuItem 
-                                    Header="Сбросить все маркеры согласных (C) в текущем аудио"
-                                    Command="{Binding ResetPointsCommand}" 
-                                    CommandParameter="{Binding PhonemeTypeConsonant}" />
-                                <MenuItem 
-                                    Header="Сбросить все маркеры пауз (R) в текущем аудио"
-                                    Command="{Binding ResetPointsCommand}" 
-                                    CommandParameter="{Binding PhonemeTypeRest}" />
-                                <Separator />
-                                <MenuItem Header="Предпросмотр oto.ini" Command="{Binding OtoModeCommand}" />
-                            </ContextMenu>
-                        </TextBlock.ContextMenu>
-                    </TextBlock>
+                    <TextBlock Margin="0,0,5,0" Text="{Binding Filename, FallbackValue=FILENAME}"/>
                     <ListView
                         ItemsSource="{Binding Phonemes, Mode=OneWay}" 
                         Style="{DynamicResource ListViewPhonemes}" 
