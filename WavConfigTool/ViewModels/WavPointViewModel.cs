@@ -48,46 +48,61 @@ namespace WavConfigTool.ViewModels
             Position = position;
             Type = type;
             Text = text;
-            IsLeft = isLeft;
+            Update(isLeft);
             // TODO: Переделать на StyleSelector
-            switch (type)
+            switch (Type)
             {
                 case PhonemeType.Vowel:
                     BorderBrush = (SolidColorBrush)Application.Current.Resources["VowelBorderBrush"];
                     BackgroundBrush = (SolidColorBrush)Application.Current.Resources["VowelBackBrush"];
-                    if (IsRight)
-                    {
-                        HasTopLeftCorner = true;
-                    }
                     break;
 
                 case PhonemeType.Consonant:
                     BorderBrush = (SolidColorBrush)Application.Current.Resources["ConsonantBorderBrush"];
                     BackgroundBrush = (SolidColorBrush)Application.Current.Resources["ConsonantBackBrush"];
-                    if (IsRight)
-                    {
-                        HasTopLeftCorner = true;
-                    }
                     break;
 
                 case PhonemeType.Rest:
                     BorderBrush = (SolidColorBrush)Application.Current.Resources["RestBorderBrush"];
                     BackgroundBrush = (SolidColorBrush)Application.Current.Resources["RestBackBrush"];
-                    if (IsRight)
-                    {
-                        HasTopLeftCorner = true;
-                        HasBottomLeftCorner = true;
-                    }
-                    else
-                    {
-                        HasTopRightCorner = true;
-                        HasBottomRightCorner = true;
-                    }
                     break;
             }
             RaisePropertiesChanged(
                 () => BorderBrush,
                 () => BackgroundBrush
+            );
+        }
+
+        public void Update(bool isLeft)
+        {
+            IsLeft = isLeft;
+            // TODO: Переделать на StyleSelector
+            switch (Type)
+            {
+                case PhonemeType.Vowel:
+                case PhonemeType.Consonant:
+                    HasTopLeftCorner = IsRight;
+                    HasTopRightCorner = false;
+                    HasBottomRightCorner = false;
+                    HasBottomLeftCorner = false;
+                    break;
+
+                case PhonemeType.Rest:
+                    HasTopLeftCorner = IsRight;
+                    HasTopRightCorner = IsLeft;
+                    HasBottomRightCorner = IsLeft;
+                    HasBottomLeftCorner = IsRight;
+                    break;
+            }
+            RaisePropertiesChanged(
+                () => HasTopRightCorner,
+                () => HasTopLeftCorner,
+                () => HasBottomLeftCorner,
+                () => HasBottomRightCorner
+            );
+            RaisePropertiesChanged(
+                () => IsLeft,
+                () => IsRight
             );
         }
 

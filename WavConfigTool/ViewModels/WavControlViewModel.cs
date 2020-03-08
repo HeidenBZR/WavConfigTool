@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using WavConfigTool.Classes;
 using WavConfigCore;
 using WavConfigCore.Tools;
+using System.Linq;
 
 namespace WavConfigTool.ViewModels
 {
@@ -263,6 +264,20 @@ namespace WavConfigTool.ViewModels
             return point;
         }
 
+        private void UpdatePoints()
+        {
+            foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest })
+            {
+                var points = PointsOfType(phonemeType);
+                var list = points.ToList();
+                list.Sort((a, b) => { return a.Position.CompareTo(b.Position); });
+                for (var i = 0; i < list.Count; i++)
+                {
+                    list[i].Update(PointIsLeft(phonemeType, i));
+                }
+            }
+        }
+
         private void ApplyPoints()
         {
             FillPoints(PhonemeType.Consonant);
@@ -317,6 +332,7 @@ namespace WavConfigTool.ViewModels
 
         private void HandlePointsChanged()
         {
+            UpdatePoints();
             RaisePropertiesChanged(
                 () => ConsonantPoints,
                 () => VowelPoints,
@@ -393,11 +409,15 @@ namespace WavConfigTool.ViewModels
         public ICommand ResetPointsCommand => new DelegateCommand<PhonemeType>((PhonemeType type) =>
         {
             ResetPoints(type);
+            ProjectLine.UpdateZones();
+            FirePointsChanged();
         }, (type) => !IsLoading);
 
         public ICommand ResetAllPointsCommand => new DelegateCommand(() =>
         {
             ResetPoints();
+            ProjectLine.UpdateZones();
+            FirePointsChanged();
         }, () => !IsLoading);
 
         public ICommand ReloadCommand => new DelegateCommand(() =>

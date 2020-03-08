@@ -46,8 +46,8 @@
                                             Stroke="{TemplateBinding BorderBrush}">
                                             <Polygon.Points>
                                                 <Point X="0" Y="0" />
-                                                <Point X="10" Y="0" />
-                                                <Point X="0" Y="10" />
+                                                <Point X="15" Y="0" />
+                                                <Point X="0" Y="15" />
                                             </Polygon.Points>
                                         </Polygon>
                                         <Polygon 
@@ -56,9 +56,9 @@
                                             Cursor="Hand"
                                             Stroke="{TemplateBinding BorderBrush}">
                                             <Polygon.Points>
-                                                <Point X="-10" Y="0" />
+                                                <Point X="-15" Y="0" />
                                                 <Point X="0" Y="0" />
-                                                <Point X="0" Y="10" />
+                                                <Point X="0" Y="15" />
                                             </Polygon.Points>
                                         </Polygon>
                                         <Polygon
@@ -72,9 +72,9 @@
                                                 RenderTransformOrigin="0.5,0.5"
                                                 Stroke="{TemplateBinding BorderBrush}">
                                             <Polygon.Points>
-                                                <Point X="-10" Y="0" />
+                                                <Point X="-15" Y="0" />
                                                 <Point X="0" Y="0" />
-                                                <Point X="0" Y="-10" />
+                                                <Point X="0" Y="-15" />
                                             </Polygon.Points>
                                         </Polygon>
                                         <Polygon
@@ -89,8 +89,8 @@
                                                 Stroke="{TemplateBinding BorderBrush}">
                                             <Polygon.Points>
                                                 <Point X="0" Y="0" />
-                                                <Point X="10" Y="0" />
-                                                <Point X="0" Y="-10" />
+                                                <Point X="15" Y="0" />
+                                                <Point X="0" Y="-15" />
                                             </Polygon.Points>
                                         </Polygon>
                                     </Grid>
