@@ -63,9 +63,9 @@ namespace WavConfigTool.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Icon, аналогичного (Значок).
         /// </summary>
-        internal static System.Drawing.Icon main {
+        internal static System.Drawing.Icon mainIcon {
             get {
-                object obj = ResourceManager.GetObject("main", resourceCulture);
+                object obj = ResourceManager.GetObject("mainIcon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace WavConfigTool.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Icon, аналогичного (Значок).
         /// </summary>
-        internal static System.Drawing.Icon mask {
+        internal static System.Drawing.Icon maskIcon {
             get {
-                object obj = ResourceManager.GetObject("mask", resourceCulture);
+                object obj = ResourceManager.GetObject("maskIcon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -83,9 +83,9 @@ namespace WavConfigTool.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Icon, аналогичного (Значок).
         /// </summary>
-        internal static System.Drawing.Icon project {
+        internal static System.Drawing.Icon projectIcon {
             get {
-                object obj = ResourceManager.GetObject("project", resourceCulture);
+                object obj = ResourceManager.GetObject("projectIcon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace WavConfigTool.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Icon, аналогичного (Значок).
         /// </summary>
-        internal static System.Drawing.Icon reclist {
+        internal static System.Drawing.Icon reclistIcon {
             get {
-                object obj = ResourceManager.GetObject("reclist", resourceCulture);
+                object obj = ResourceManager.GetObject("reclistIcon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -103,9 +103,9 @@ namespace WavConfigTool.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Icon, аналогичного (Значок).
         /// </summary>
-        internal static System.Drawing.Icon txt {
+        internal static System.Drawing.Icon txtIcon {
             get {
-                object obj = ResourceManager.GetObject("txt", resourceCulture);
+                object obj = ResourceManager.GetObject("txtIcon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

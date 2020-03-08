@@ -1,10 +1,13 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using WavConfigTool.Properties;
 
 namespace WavConfigTool.Classes
 {
@@ -12,47 +15,47 @@ namespace WavConfigTool.Classes
     {
         public static void AssociateIfNeeded()
         {
+            var appdir = AppDomain.CurrentDomain.BaseDirectory;
+            var resources = Path.Combine(appdir, @"Resources");
+            var exe = Path.Combine(appdir, @"WavConfigTool.exe");
             AssociateIfNeeded(
-                @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\Resources\project.ico",
-                @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\bin\Debug\WavConfigTool.exe",
+                Path.Combine(resources, @"projectIcon.ico"),
+                exe,
                 "WavConfig.Tool.Project",
                 ".wcp",
                 "WavConfigTool Project File"
             );
             AssociateIfNeeded(
-                @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\Resources\reclist.ico",
-                @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\bin\Debug\WavConfigTool.exe",
+                Path.Combine(resources, @"reclistIcon.ico"),
+                exe,
                 "WavConfig.Reclist",
                 ".reclist",
                 "WavConfig Reclist File"
             );
             AssociateIfNeeded(
-                @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\Resources\mask.ico",
-                @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\bin\Debug\WavConfigTool.exe",
+                Path.Combine(resources, @"maskIcon.ico"),
+                exe,
                 "WavConfig.Mask",
                 ".mask",
                 "WavConfig Mask File"
             );
             AssociateIfNeeded(
-                @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\Resources\txt.ico",
-                @"D:\External\Github\HeidenBZR\WavConfigTool\WavConfigTool\bin\Debug\WavConfigTool.exe",
+                Path.Combine(resources, @"txtIcon.ico"),
+                exe,
                 "WavConfig.TextReplace",
                 ".wtr",
                 "WavConfig Text Replace File"
             );
-
+            SHChangeNotify(0x8000000, 0x1000, IntPtr.Zero, IntPtr.Zero);
         }
 
         private static void AssociateIfNeeded(string icon, string exe, string appName, string ext, string desc)
         {
-            if (!System.IO.File.Exists(icon))
-                throw new Exception("icon not found");
-            if (!System.IO.File.Exists(exe))
-                throw new Exception("exe not found");
+            if (!File.Exists(exe))
+                throw new Exception("file not found");
             if (IsAssociated(exe))
                 Remove(ext, appName);
             Associate(ext, appName, desc, icon, exe);
-            SHChangeNotify(0x8000000, 0x1000, IntPtr.Zero, IntPtr.Zero);
         }
 
         ////////////// STACK OVERFLOW //////////////
