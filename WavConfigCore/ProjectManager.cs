@@ -67,6 +67,8 @@ namespace WavConfigCore
                 project.Suffix = project.Voicebank.Subfolder;
             }
             Project = project;
+            if (filename != "")
+                AfterProjectLoaded(filename);
         }
 
         public void SaveAs(string filename)

@@ -18,7 +18,7 @@ namespace WavConfigTool.ViewModels
     {
         public static readonly Version Version = new Version(0, 2, 0, 0);
 
-        public int AlphaVersion => 32;
+        public int AlphaVersion => 33;
 
         public ProjectViewModel ProjectViewModel { get; set; }
         public Project Project => ProjectManager.Project;
@@ -59,6 +59,7 @@ namespace WavConfigTool.ViewModels
             set
             {
                 Project.WavPrefix = value;
+                TrySaveProject();
                 ReloadProjectCommand.Execute(0);
             }
         }
@@ -68,6 +69,7 @@ namespace WavConfigTool.ViewModels
             set
             {
                 Project.WavSuffix = value;
+                TrySaveProject();
                 ReloadProjectCommand.Execute(0);
             }
         }
@@ -75,12 +77,22 @@ namespace WavConfigTool.ViewModels
         public double UserScaleY
         {
             get => Settings.UserScaleY;
-            set { Project.UserScaleY = value; ReloadProjectCommand.Execute(0); }
+            set
+            {
+                Project.UserScaleY = value;
+                TrySaveProject();
+                ReloadProjectCommand.Execute(0);
+            }
         }
         public double UserScaleX
         {
             get => Settings.UserScaleX;
-            set { Project.UserScaleX = value; ReloadProjectCommand.Execute(0); }
+            set
+            {
+                Project.UserScaleX = value;
+                TrySaveProject();
+                ReloadProjectCommand.Execute(0);
+            }
         }
 
         public PhonemeType Mode { get => Settings.Mode; set => Settings.Mode = value; }

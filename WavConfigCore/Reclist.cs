@@ -29,7 +29,6 @@ namespace WavConfigCore
             Phonemes = new List<Phoneme>();
             Reclines = new List<Recline>();
             reclineByFilename = new Dictionary<string, Recline>();
-            IsLoaded = true;
         }
 
         public void AddRecline(Recline recline)
@@ -129,7 +128,7 @@ namespace WavConfigCore
             {
                 for (int i = 0; i < phonemes.Count; i++)
                 {
-                    while (WavMask.MustSkipPhoneme(filename, type, i) && i <= phonemes.Count)
+                    while (WavMask.MustSkipPhoneme(filename, type, i) && i < phonemes.Count)
                     {
                         phonemes[i].IsSkipped = true;
                         i++;
