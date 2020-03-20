@@ -97,7 +97,7 @@ namespace WavConfigCore
             {
                 for (int i = 0; i < phonemes.Count; i++)
                 {
-                    while (WavMask.MustSkipPhoneme(filename, type, i) && i <= phonemes.Count)
+                    while (WavMask.MustSkipPhoneme(filename, type, i) && i < phonemes.Count)
                     {
                         phonemes[i].IsSkipped = true;
                         i++;

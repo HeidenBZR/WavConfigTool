@@ -54,11 +54,10 @@ namespace WavConfigCore
                 var groups = wavGroupsByFilename[filename];
                 foreach (var wavGroup in groups)
                 {
-                    if (!wavGroup.MustSkipPhoneme(phonemeType, position))
-                        return false;
+                    return wavGroup.MustSkipPhoneme(phonemeType, position);
                 }
             }
-            return true; // skip only if all groups ask for it
+            return false; // skip only if all groups ask for it
         }
 
         public void SetDefaultAliasTypes(WavGroup wavGroup)

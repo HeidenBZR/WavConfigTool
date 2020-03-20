@@ -64,7 +64,7 @@ namespace WavConfigCore.Reader
             switch (option)
             {
                 case "Voicebank":
-                    project.SetVoicebank(new Voicebank(Path.GetDirectoryName(projectDir), value));
+                    project.SetVoicebank(new Voicebank(PathResolver.Current.TryGetDirectoryName(projectDir), value));
                     break;
 
                 case "Reclist":
@@ -116,7 +116,7 @@ namespace WavConfigCore.Reader
             /// Совместимость со старыми сейвами без опций
             if (!lines[0].StartsWith("$"))
             {
-                project.SetVoicebank(new Voicebank(Path.GetDirectoryName(location), lines[0]));
+                project.SetVoicebank(new Voicebank(PathResolver.Current.TryGetDirectoryName(location), lines[0]));
                 i++;
             }
             /// Чтение опций

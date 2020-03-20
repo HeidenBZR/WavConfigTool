@@ -39,6 +39,18 @@ namespace WavConfigCore.Tools
                 Directory.CreateDirectory(Backup(true));
         }
 
+        public string TryGetDirectoryName(string path, string defaultVal = "")
+        {
+            try
+            {
+                return Path.GetDirectoryName(path);
+            }
+            catch
+            {
+                return defaultVal;
+            }
+        }
+
         public string Reclist(string filename = "")
         {
             return Path.Combine(ResourcesDir, "Settings", filename);

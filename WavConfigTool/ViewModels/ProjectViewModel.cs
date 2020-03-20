@@ -94,8 +94,8 @@ namespace WavConfigTool.ViewModels
 
         public ICommand ChangeVoicebankCommand => new OpenFileCommand((obj) =>
         {
-            var location = Path.GetDirectoryName((string)obj);
-            Project.SetVoicebank(new Voicebank(Path.GetDirectoryName(Settings.ProjectFile), location));
+            var location = PathResolver.Current.TryGetDirectoryName((string)obj);
+            Project.SetVoicebank(new Voicebank(PathResolver.Current.TryGetDirectoryName(Settings.ProjectFile), location));
             ProjectDataChanged();
         },
         "Select voicebank samples",

@@ -87,8 +87,8 @@
                     <TextBlock Margin="0" Text="=" />
                     <TextBlock Margin="0" Text="{Binding Prefix, FallbackValue=PREFIX_}"/>
                     <TextBlock Margin="0" Text="{Binding Alias, FallbackValue=ALIAS}" FontWeight="Bold"/>
-                    <TextBlock Margin="0" Text="{Binding Suffix, FallbackValue=_SUFIX}"/>
-                    <TextBlock Margin="0,0,5,0" Text="{Binding NumberView}"/>
+                    <TextBlock Margin="0" Text="{Binding NumberView}" Foreground="#00BBBB"/>
+                    <TextBlock Margin="0,0,5,0" Text="{Binding Suffix, FallbackValue=_SUFIX}"/>
                     <TextBlock Margin="0" Text="[" />
                     <TextBlock Margin="0" Text="{Binding Oto.OffsetWrite, FallbackValue=100}"/>
                     <TextBlock Margin="0" Text="," />

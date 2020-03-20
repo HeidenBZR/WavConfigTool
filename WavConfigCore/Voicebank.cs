@@ -47,7 +47,7 @@ namespace WavConfigCore
                         Image = pair[1];
                 }
             }
-            ImagePath = CharacterPath != null && Image != null && Image != "" ? Path.Combine(Path.GetDirectoryName(CharacterPath), Image) : "";
+            ImagePath = CharacterPath != null && Image != null && Image != "" ? Path.Combine(PathResolver.Current.TryGetDirectoryName(CharacterPath), Image) : "";
         }
 
         public bool IsSampleEnabled(string sample, string wavPrefix, string wavSuffix)

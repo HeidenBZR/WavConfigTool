@@ -132,7 +132,7 @@ namespace WavConfigCore.Reader
             project.ProjectOptions.MustHideNotEnabled = ioProject.ProjectOptions.MustHideNotEnabled;
             project.ProjectOptions.MustHideCompleted = ioProject.ProjectOptions.MustHideCompleted;
 
-            project.SetVoicebank(new Voicebank(Path.GetDirectoryName(projectDir), ioProject.Voicebank));
+            project.SetVoicebank(new Voicebank(PathResolver.Current.TryGetDirectoryName(projectDir), ioProject.Voicebank));
             project.SetReclist(ReclistReader.Current.Read(ioProject.Reclist));
             project.SetReplacer(ReplacerReader.Current.Read(ioProject.Replacer, project.Reclist));
 
