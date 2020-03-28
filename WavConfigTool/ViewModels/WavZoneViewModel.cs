@@ -28,7 +28,7 @@ namespace WavConfigTool.ViewModels
 
         public string Name => $"Zone [{string.Join(", ", Points)}]";
 
-        public int Height => WavControlBaseViewModel.Height;
+        public int Height => WavControlBaseViewModel.GlobalHeight;
         public int Middle => Height / 2;
 
         public WavZoneViewModel(PhonemeType type, double p_in, double p_out, double length)

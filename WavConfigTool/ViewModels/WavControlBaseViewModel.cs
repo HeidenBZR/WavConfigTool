@@ -8,8 +8,9 @@ namespace WavConfigTool.ViewModels
 {
     public abstract class WavControlBaseViewModel : ViewModelBase
     {
-        public static int Height => 100;
-        public static int Space => 30;
+        public static int GlobalHeight => 100;
+        public int Height => GlobalHeight;
+        public int Space => 30;
 
         public virtual bool IsCompleted => false;
         public virtual bool IsEnabled => true;

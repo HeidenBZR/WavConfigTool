@@ -139,6 +139,9 @@
     <Compile Include="UserControls\DataPoint.xaml.cs">
       <DependentUpon>DataPoint.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Gear.xaml.cs">
+      <DependentUpon>Gear.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\OtoPreviewControl.xaml.cs">
       <DependentUpon>OtoPreviewControl.xaml</DependentUpon>
     </Compile>
@@ -221,6 +224,10 @@
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="UserControls\DataPoint.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\Gear.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -316,12 +323,12 @@
   <ItemGroup>
     <PublishFile Include="DevExpress.Mvvm">
       <Visible>False</Visible>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
   </ItemGroup>

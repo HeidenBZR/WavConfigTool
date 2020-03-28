@@ -34,9 +34,9 @@ namespace WavConfigTool.ViewModels
         public bool HasBottomRightCorner { get; private set; }
         public int IndexZ => IsLeft ? 10 : 1;
 
-        public bool IsLoaded { get; set; } = false;
+        public int Height => WavControlBaseViewModel.GlobalHeight;
 
-        public int Height => WavControlBaseViewModel.Height;
+        public bool IsLoaded { get; set; } = false;
 
         public WavPointViewModel()
         {

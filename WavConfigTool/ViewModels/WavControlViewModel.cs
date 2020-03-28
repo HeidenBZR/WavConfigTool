@@ -63,7 +63,7 @@ namespace WavConfigTool.ViewModels
         public event SimpleHandler OnGenerateOtoRequested = delegate { };
         public event PhonemeTypeArgHandler OnChangePhonemeModeRequested = delegate {};
 
-        public static int MetaInfoHeight => Height - 18;
+        public int MetaInfoHeight => Height - 18;
 
         public readonly string SampleName = "";
         public readonly string Hash = "";
