@@ -1,50 +1,30 @@
-﻿<Window
-    x:Class="WavConfigTool.Windows.MainWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-    xmlns:local="clr-namespace:WavConfigTool.Windows"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uc="clr-namespace:WavConfigTool.UserControls"
-    xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
-    xmlns:vt="clr-namespace:WavConfigTool.ViewTools"
-    Title="{Binding Title}"
-    Width="1500"
-    Height="700"
-    Background="{DynamicResource WindowBackground}"
-    WindowState="Maximized"
-    mc:Ignorable="d">
+﻿<Window x:Class="WavConfigTool.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+        xmlns:local="clr-namespace:WavConfigTool.Windows"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:uc="clr-namespace:WavConfigTool.UserControls" xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
+        xmlns:vt="clr-namespace:WavConfigTool.ViewTools" Title="{Binding Title}" Width="1500" Height="700"
+        Background="{DynamicResource WindowBackground}" WindowState="Maximized" mc:Ignorable="d">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
     <dxmvvm:Interaction.Behaviors>
-        <dxmvvm:EventToCommand Event="Loaded" Command="{Binding LoadedCommand}"/>
+        <dxmvvm:EventToCommand Event="Loaded" Command="{Binding LoadedCommand}" />
         <dxmvvm:KeyToCommand Command="{Binding GenerateOtoCommand}" KeyGesture="CTRL+G" />
-        <dxmvvm:KeyToCommand
-            Command="{Binding SetPhonemeModeCommand}"
-            CommandParameter="{Binding ModeR}"
-            KeyGesture="ALT+R" />
-        <dxmvvm:KeyToCommand
-            Command="{Binding SetPhonemeModeCommand}"
-            CommandParameter="{Binding ModeV}"
-            KeyGesture="ALT+V" />
-        <dxmvvm:KeyToCommand
-            Command="{Binding SetPhonemeModeCommand}"
-            CommandParameter="{Binding ModeC}"
-            KeyGesture="ALT+C" />
-        <dxmvvm:KeyToCommand
-            Command="{Binding SetPhonemeModeCommand}"
-            CommandParameter="{Binding ModeR}"
-            KeyGesture="ALT+1" />
-        <dxmvvm:KeyToCommand
-            Command="{Binding SetPhonemeModeCommand}"
-            CommandParameter="{Binding ModeV}"
-            KeyGesture="ALT+2" />
-        <dxmvvm:KeyToCommand
-            Command="{Binding SetPhonemeModeCommand}"
-            CommandParameter="{Binding ModeC}"
-            KeyGesture="ALT+3" />
+        <dxmvvm:KeyToCommand Command="{Binding SetPhonemeModeCommand}" CommandParameter="{Binding ModeR}"
+                KeyGesture="ALT+R" />
+        <dxmvvm:KeyToCommand Command="{Binding SetPhonemeModeCommand}" CommandParameter="{Binding ModeV}"
+                KeyGesture="ALT+V" />
+        <dxmvvm:KeyToCommand Command="{Binding SetPhonemeModeCommand}" CommandParameter="{Binding ModeC}"
+                KeyGesture="ALT+C" />
+        <dxmvvm:KeyToCommand Command="{Binding SetPhonemeModeCommand}" CommandParameter="{Binding ModeR}"
+                KeyGesture="ALT+1" />
+        <dxmvvm:KeyToCommand Command="{Binding SetPhonemeModeCommand}" CommandParameter="{Binding ModeV}"
+                KeyGesture="ALT+2" />
+        <dxmvvm:KeyToCommand Command="{Binding SetPhonemeModeCommand}" CommandParameter="{Binding ModeC}"
+                KeyGesture="ALT+3" />
         <dxmvvm:KeyToCommand Command="{Binding PagerViewModel.SetPreiousPageCommand}" KeyGesture="OemOpenBrackets" />
         <dxmvvm:KeyToCommand Command="{Binding PagerViewModel.SetNextPageCommand}" KeyGesture="OemCloseBrackets" />
         <dxmvvm:KeyToCommand Command="{Binding PagerViewModel.SetFirstPageCommand}" KeyGesture="SHIFT+OemOpenBrackets" />
@@ -73,376 +53,207 @@
             <RowDefinition Height="*">
             </RowDefinition>
         </Grid.RowDefinitions>
-        <uc:CanvasLoading
-            x:Name="CanvasLoading"
-            Grid.Row="0"
-            Grid.RowSpan="4"
-            Margin="5"
-            Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibility}}" />
-        <Menu
-            Name="MainMenu"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Top">
+        <uc:CanvasLoading x:Name="CanvasLoading" Grid.Row="0" Grid.RowSpan="4" Margin="5"
+                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibility}}" />
+        <Menu Name="MainMenu" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                ItemsPanel="{DynamicResource ItemsPanelTemplate}">
             <MenuItem Name="MenuFile" Header="File">
-                <MenuItem Header="_New Project" InputGestureText="Ctrl+N"  Command="{Binding NewProjectCommand}"/>
+                <MenuItem Header="_New Project" InputGestureText="Ctrl+N" Command="{Binding NewProjectCommand}" />
                 <MenuItem Header="_Open Project..." InputGestureText="Ctrl+O" Command="{Binding OpenProjectCommand}" />
                 <Separator />
-                <MenuItem Header="Save Project As..." InputGestureText="Shift+Ctrl+S" Command="{Binding SaveProjectAsNewCommand}" />
+                <MenuItem Header="Save Project As..." InputGestureText="Shift+Ctrl+S"
+                        Command="{Binding SaveProjectAsNewCommand}" />
                 <Separator />
                 <MenuItem Header="Find Wav" InputGestureText="Ctrl+F" IsEnabled="False" />
                 <MenuItem Header="Find Uncompleted" InputGestureText="Ctrl+U" IsEnabled="False" />
                 <Separator />
-                <MenuItem
-                    Command="{Binding CallProjectCommand}"
-                    Header="Project"
-                    InputGestureText="Ctrl+P" />
+                <MenuItem Command="{Binding CallProjectCommand}" Header="Project" InputGestureText="Ctrl+P" />
                 <MenuItem Header="Generate Oto.ini" InputGestureText="Ctrl+G" Command="{Binding GenerateOtoCommand}" />
                 <Separator />
                 <MenuItem Header="Exit" />
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Header="Toggle Waveform" InputGestureText="Ctrl+Q" IsEnabled="False" />
-                <MenuItem
-                    Header="Toggle Spectrum"
-                    InputGestureText="Ctrl W"
-                    IsEnabled="False" />
-                <MenuItem
-                    Header="Toggle Pitch"
-                    InputGestureText="Ctrl E"
-                    IsEnabled="False" />
+                <MenuItem Header="Toggle Spectrum" InputGestureText="Ctrl W" IsEnabled="False" />
+                <MenuItem Header="Toggle Pitch" InputGestureText="Ctrl E" IsEnabled="False" />
                 <Separator />
                 <MenuItem Header="Next page" InputGestureText="]" Command="{Binding PagerViewModel.SetNextPageCommand}" />
-                <MenuItem Header="Previous page" InputGestureText="[" Command="{Binding PagerViewModel.SetPreiousPageCommand}" />
-                <MenuItem Header="First page" InputGestureText="Shift+]" Command="{Binding PagerViewModel.SetNextPageCommand}" />
-                <MenuItem Header="Last page" InputGestureText="Shift+[" Command="{Binding PagerViewModel.SetPreiousPageCommand}" />
+                <MenuItem Header="Previous page" InputGestureText="["
+                        Command="{Binding PagerViewModel.SetPreiousPageCommand}" />
+                <MenuItem Header="First page" InputGestureText="Shift+]"
+                        Command="{Binding PagerViewModel.SetNextPageCommand}" />
+                <MenuItem Header="Last page" InputGestureText="Shift+["
+                        Command="{Binding PagerViewModel.SetPreiousPageCommand}" />
                 <Separator />
                 <MenuItem Header="More items on page" InputGestureText="Ctrl+Plus" IsEnabled="False" />
                 <MenuItem Header="Less items on page" InputGestureText="Ctrl+Minus" IsEnabled="False" />
                 <Separator />
-                <MenuItem Header="Toggle Tools Panel" InputGestureText="Ctrl+Backspace" Command="{Binding ToggleToolsPanelCommand}" />
+                <MenuItem Header="Toggle Tools Panel" InputGestureText="Ctrl+Backspace"
+                        Command="{Binding ToggleToolsPanelCommand}" />
             </MenuItem>
-            <MenuItem Header="Debug" Visibility="{Binding IsDebug, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}">
+            <MenuItem Header="Debug"
+                    Visibility="{Binding IsDebug, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}">
                 <MenuItem Header="Debug command" InputGestureText="Ctrl+Shift+Alt+D" Command="{Binding DebugCommand}" />
             </MenuItem>
         </Menu>
 
-        <Border
-            Grid.Row="1"
-            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-            BorderThickness="0,0,0,1">
+        <Border Grid.Row="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                BorderThickness="0,0,0,1">
 
             <StackPanel Background="{DynamicResource WindowBackground}" Orientation="Horizontal">
 
                 <StackPanel Height="25" Orientation="Horizontal">
-                    <Button
-                        Width="20"
-                        Margin="3,0"
-                        Background="{DynamicResource ButtonRestBrush}"
-                        BorderBrush="{DynamicResource ButtonRestBrush}"
-                        Command="{Binding SetPhonemeModeCommand}"
-                        CommandParameter="{Binding ModeR}"
-                        Content="{Binding ModeRSymbol}" />
-                    <Button
-                        Width="20"
-                        Margin="3,0"
-                        Background="{DynamicResource ButtonVowelBrush}"
-                        BorderBrush="{DynamicResource ButtonVowelBrush}"
-                        Command="{Binding SetPhonemeModeCommand}"
-                        CommandParameter="{Binding ModeV}"
-                        Content="{Binding ModeVSymbol}" />
-                    <Button
-                        Width="20"
-                        Margin="3,0"
-                        Background="{DynamicResource ButtonConsonantBrush}"
-                        BorderBrush="{DynamicResource ButtonConsonantBrush}"
-                        Command="{Binding SetPhonemeModeCommand}"
-                        CommandParameter="{Binding ModeC}"
-                        Content="{Binding ModeCSymbol}" />
+                    <Button Width="20" Margin="3,0" Background="{DynamicResource ButtonRestBrush}"
+                            BorderBrush="{DynamicResource ButtonRestBrush}" Command="{Binding SetPhonemeModeCommand}"
+                            CommandParameter="{Binding ModeR}" Content="{Binding ModeRSymbol}" />
+                    <Button Width="20" Margin="3,0" Background="{DynamicResource ButtonVowelBrush}"
+                            BorderBrush="{DynamicResource ButtonVowelBrush}" Command="{Binding SetPhonemeModeCommand}"
+                            CommandParameter="{Binding ModeV}" Content="{Binding ModeVSymbol}" />
+                    <Button Width="20" Margin="3,0" Background="{DynamicResource ButtonConsonantBrush}"
+                            BorderBrush="{DynamicResource ButtonConsonantBrush}"
+                            Command="{Binding SetPhonemeModeCommand}" CommandParameter="{Binding ModeC}"
+                            Content="{Binding ModeCSymbol}" />
                     <TextBlock Margin="13,0,0,0" Text="Current: " />
-                    <TextBlock
-                        Width="20"
-                        Margin="0"
-                        FontWeight="Bold"
-                        Text="{Binding ModeSymbol}" />
+                    <TextBlock Width="20" Margin="0" FontWeight="Bold" Text="{Binding ModeSymbol}" />
                 </StackPanel>
-                <Line
-                    Width="1"
-                    Margin="5,0,5,0"
-                    Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                    X1="0"
-                    X2="0"
-                    Y1="0"
-                    Y2="30" />
+                <Line Width="1" Margin="5,0,5,0" Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                        X1="0" X2="0" Y1="0" Y2="30" />
                 <uc:Pager x:Name="Pager" DataContext="{Binding PagerViewModel}" />
-                <Line
-                    Width="1"
-                    Margin="5,0,5,0"
-                    Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                    X1="0"
-                    X2="0"
-                    Y1="0"
-                    Y2="30" />
-                <CheckBox
-                    VerticalAlignment="Center"
-                    Margin="5,0,5,0"
-                    IsChecked="{Binding MustHideNotEnabled}"
-                    Content="Hide not enabled"/>
-                <CheckBox
-                    VerticalAlignment="Center"
-                    Margin="5,0,5,0"
-                    IsChecked="{Binding MustHideCompleted}"
-                    Content="Hide completed"/>
+                <Line Width="1" Margin="5,0,5,0" Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                        X1="0" X2="0" Y1="0" Y2="30" />
+                <CheckBox VerticalAlignment="Center" Margin="5,0,5,0" IsChecked="{Binding MustHideNotEnabled}"
+                        Content="Hide not enabled" />
+                <CheckBox VerticalAlignment="Center" Margin="5,0,5,0" IsChecked="{Binding MustHideCompleted}"
+                        Content="Hide completed" />
             </StackPanel>
         </Border>
-        <Border
-            Grid.Row="2"
-            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-            BorderThickness="0,0,0,1">
+        <Border Grid.Row="2" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                BorderThickness="0,0,0,1">
 
             <StackPanel Background="{DynamicResource ToolsPanelBackgroundBrush}" Orientation="Horizontal">
-                <Border
-                    Margin="4,4,0,4"
-                    Padding="0"
-                    BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                    BorderThickness="1">
+                <Border Margin="4,4,0,4" Padding="0"
+                        BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1">
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                         <Image Margin="0" Source="{Binding VoicebankImage}" />
-                        <StackPanel
-                            Margin="15,0"
-                            VerticalAlignment="Center"
-                            Orientation="Vertical">
-                            <StackPanel 
-                                Orientation="Horizontal"
-                                VerticalAlignment="Center">
-                                <TextBlock
-                                    FontSize="14"
-                                    FontWeight="Bold"
-                                    Text="{Binding VoicebankName, TargetNullValue='[VOICEBANK]'}" />
-                                <TextBlock 
-                                    Text="{Binding VoicebankSubfolder, TargetNullValue='[Sub]'}"
-                                    Margin="5,0,0,0"
-                                    FontSize="14"/>
+                        <StackPanel Margin="15,0" VerticalAlignment="Center" Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock FontSize="14" FontWeight="Bold"
+                                        Text="{Binding VoicebankName, TargetNullValue='[VOICEBANK]'}" />
+                                <TextBlock Text="{Binding VoicebankSubfolder, TargetNullValue='[Sub]'}" Margin="5,0,0,0"
+                                        FontSize="14" />
                             </StackPanel>
-                            <TextBlock VerticalAlignment="Center" Text="{Binding ReclistName, TargetNullValue='[RECLIST]'}" />
-                            <StackPanel Orientation="Horizontal"
-                                Margin="0,5,0,0">
+                            <TextBlock VerticalAlignment="Center"
+                                    Text="{Binding ReclistName, TargetNullValue='[RECLIST]'}" />
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
 
-                                <Button  Margin="0,0,5,0"
-                                Command="{Binding CallProjectCommand}"
-                                Content="PROJECT" />
-                                <Button Margin="0,0,5,0" Content="NEW" Command="{Binding NewProjectCommand}"/>
-                                <Button Margin="0,0,5,0" Content="OPEN" Command="{Binding OpenProjectCommand}"/>
-                                <Button Content="RELOAD" Command="{Binding ReloadProjectCommand}"/>
+                                <Button Margin="0,0,5,0" Command="{Binding CallProjectCommand}" Content="PROJECT" />
+                                <Button Margin="0,0,5,0" Content="NEW" Command="{Binding NewProjectCommand}" />
+                                <Button Margin="0,0,5,0" Content="OPEN" Command="{Binding OpenProjectCommand}" />
+                                <Button Content="RELOAD" Command="{Binding ReloadProjectCommand}" />
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </Border>
-                <Border
-                    Margin="4,4,0,4"
-                    BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                    BorderThickness="1">
+                <Border Margin="4,4,0,4" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                        BorderThickness="1">
                     <StackPanel Height="60">
-                        <TextBlock
-                            Padding="0"
-                            HorizontalAlignment="Center"
-                            Text="Attack" />
-                        <StackPanel
-                            Height="25"
-                            Margin="10"
-                            VerticalAlignment="Center"
-                            Orientation="Horizontal">
+                        <TextBlock Padding="0" HorizontalAlignment="Center" Text="Attack" />
+                        <StackPanel Height="25" Margin="10" VerticalAlignment="Center" Orientation="Horizontal">
                             <TextBlock Margin="3,0" Text="V:" />
-                            <TextBox
-                                Width="40"
-                                Padding="0"
-                                VerticalAlignment="Center"
-                                Text="{Binding VowelAttack, Mode=TwoWay, TargetNullValue=0}" />
+                            <TextBox Width="40" Padding="0" VerticalAlignment="Center"
+                                    Text="{Binding VowelAttack, Mode=TwoWay, TargetNullValue=0}" />
 
                             <TextBlock Margin="3,0" Text="C:" />
-                            <TextBox
-                                Width="40"
-                                Padding="0"
-                                VerticalAlignment="Center"
-                                Text="{Binding ConsonantAttack, Mode=TwoWay, TargetNullValue=0}" />
+                            <TextBox Width="40" Padding="0" VerticalAlignment="Center"
+                                    Text="{Binding ConsonantAttack, Mode=TwoWay, TargetNullValue=0}" />
 
                             <TextBlock Margin="3,0" Text="R:" />
-                            <TextBox
-                                Width="40"
-                                Padding="0"
-                                VerticalAlignment="Center"
-                                Text="{Binding RestAttack, Mode=TwoWay, TargetNullValue=0}" />
+                            <TextBox Width="40" Padding="0" VerticalAlignment="Center"
+                                    Text="{Binding RestAttack, Mode=TwoWay, TargetNullValue=0}" />
 
                         </StackPanel>
                     </StackPanel>
                 </Border>
 
-                <Border
-                    Margin="4,4,0,4"
-                    BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                    BorderThickness="1">
+                <Border Margin="4,4,0,4" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                        BorderThickness="1">
                     <StackPanel Height="60">
-                        <TextBlock
-                            Padding="0"
-                            HorizontalAlignment="Center"
-                            Text="Decay" />
-                        <StackPanel
-                            Height="25"
-                            Margin="10"
-                            VerticalAlignment="Center"
-                            Orientation="Horizontal">
-                            <TextBox
-                                Width="50"
-                                Padding="0"
-                                VerticalAlignment="Center"
-                                Text="{Binding VowelDecay, Mode=TwoWay, TargetNullValue=0}" />
+                        <TextBlock Padding="0" HorizontalAlignment="Center" Text="Decay" />
+                        <StackPanel Height="25" Margin="10" VerticalAlignment="Center" Orientation="Horizontal">
+                            <TextBox Width="50" Padding="0" VerticalAlignment="Center"
+                                    Text="{Binding VowelDecay, Mode=TwoWay, TargetNullValue=0}" />
 
                         </StackPanel>
                     </StackPanel>
                 </Border>
-                <Border
-                    Margin="4,4,0,4"
-                    BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                    BorderThickness="1">
+                <Border Margin="4,4,0,4" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                        BorderThickness="1">
                     <StackPanel Height="60">
-                        <TextBlock
-                            Padding="0"
-                            HorizontalAlignment="Center"
-                            Text="Alias" />
-                        <StackPanel
-                            Height="25"
-                            Margin="10"
-                            VerticalAlignment="Center"
-                            Orientation="Horizontal">
+                        <TextBlock Padding="0" HorizontalAlignment="Center" Text="Alias" />
+                        <StackPanel Height="25" Margin="10" VerticalAlignment="Center" Orientation="Horizontal">
                             <TextBlock Margin="3,0" Text="Prefix:" />
-                            <TextBox
-                                Width="40"
-                                Padding="0"
-                                VerticalAlignment="Center"
-                                Text="{Binding Prefix, Mode=TwoWay, FallbackValue='', TargetNullValue=''}" />
+                            <TextBox Width="40" Padding="0" VerticalAlignment="Center"
+                                    Text="{Binding Prefix, Mode=TwoWay, FallbackValue='', TargetNullValue=''}" />
 
                             <TextBlock Margin="3,0" Text="Suffix:" />
-                            <TextBox
-                                Width="40"
-                                Padding="0"
-                                VerticalAlignment="Center"
-                                Text="{Binding Suffix, Mode=TwoWay, FallbackValue='', TargetNullValue=''}" />
+                            <TextBox Width="40" Padding="0" VerticalAlignment="Center"
+                                    Text="{Binding Suffix, Mode=TwoWay, FallbackValue='', TargetNullValue=''}" />
 
                         </StackPanel>
                     </StackPanel>
                 </Border>
-                <Border
-                    Margin="4,4,0,4"
-                    BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                    BorderThickness="1">
+                <Border Margin="4,4,0,4" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                        BorderThickness="1">
                     <StackPanel Height="60">
-                        <TextBlock
-                            Padding="0"
-                            HorizontalAlignment="Center"
-                            Text="Wave Options" />
-                        <StackPanel
-                            Height="25"
-                            Margin="10"
-                            VerticalAlignment="Center"
-                            Orientation="Horizontal">
+                        <TextBlock Padding="0" HorizontalAlignment="Center" Text="Wave Options" />
+                        <StackPanel Height="25" Margin="10" VerticalAlignment="Center" Orientation="Horizontal">
                             <TextBlock Margin="3,0" Text="Wav Prefix:" />
-                            <TextBox
-                                Width="40"
-                                Padding="0"
-                                VerticalAlignment="Center"
-                                Text="{Binding WavPrefix, Mode=TwoWay, FallbackValue=''}" />
+                            <TextBox Width="40" Padding="0" VerticalAlignment="Center"
+                                    Text="{Binding WavPrefix, Mode=TwoWay, FallbackValue=''}" />
 
                             <TextBlock Margin="3,0" Text="Wav Suffix:" />
-                            <TextBox
-                                Width="40"
-                                Padding="0"
-                                VerticalAlignment="Center"
-                                Text="{Binding WavSuffix, Mode=TwoWay, FallbackValue=''}" />
+                            <TextBox Width="40" Padding="0" VerticalAlignment="Center"
+                                    Text="{Binding WavSuffix, Mode=TwoWay, FallbackValue=''}" />
 
                         </StackPanel>
                     </StackPanel>
                 </Border>
-                <Border
-                    Margin="4,4,0,4"
-                    BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                    BorderThickness="1">
+                <Border Margin="4,4,0,4" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                        BorderThickness="1">
                     <StackPanel Height="60">
-                        <TextBlock
-                            Padding="0"
-                            HorizontalAlignment="Center"
-                            Text="Image Render Options" />
-                        <StackPanel
-                            Height="25"
-                            Margin="10"
-                            VerticalAlignment="Center"
-                            Orientation="Horizontal">
+                        <TextBlock Padding="0" HorizontalAlignment="Center" Text="Image Render Options" />
+                        <StackPanel Height="25" Margin="10" VerticalAlignment="Center" Orientation="Horizontal">
 
-                            <TextBlock
-                                Margin="3,0"
-                                Text="Scale Y:" />
-                            <TextBox
-                                Width="30"
-                                Padding="0"
-                                VerticalAlignment="Center"
-                                IsEnabled="{Binding IsNotLoading}"
-                                Text="{Binding UserScaleY, Mode=TwoWay}" />
-                            <TextBlock
-                                Margin="3,0"
-                                Text="Scale X:" />
-                            <TextBox
-                                Width="30"
-                                Padding="0"
-                                VerticalAlignment="Center"
-                                IsEnabled="{Binding IsNotLoading}"
-                                Text="{Binding UserScaleX, Mode=TwoWay}" />
+                            <TextBlock Margin="3,0" Text="Scale Y:" />
+                            <TextBox Width="30" Padding="0" VerticalAlignment="Center"
+                                    IsEnabled="{Binding IsNotLoading}" Text="{Binding UserScaleY, Mode=TwoWay}" />
+                            <TextBlock Margin="3,0" Text="Scale X:" />
+                            <TextBox Width="30" Padding="0" VerticalAlignment="Center"
+                                    IsEnabled="{Binding IsNotLoading}" Text="{Binding UserScaleX, Mode=TwoWay}" />
 
                         </StackPanel>
                     </StackPanel>
                 </Border>
-                <Border
-                    Margin="4,4,0,4"
-                    BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                    
-                    Visibility="{Binding IsOtoPreviewMode, Converter={StaticResource BooleanToVisibility}}"
-                    BorderThickness="1">
+                <Border Margin="4,4,0,4" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                        Visibility="{Binding IsOtoPreviewMode, Converter={StaticResource BooleanToVisibility}}"
+                        BorderThickness="1">
                     <StackPanel Height="60">
-                        <TextBlock
-                            Padding="0"
-                            HorizontalAlignment="Center"
-                            Text="Mode" />
-                        <StackPanel
-                            Height="25"
-                            Margin="10"
-                            VerticalAlignment="Center"
-                            Orientation="Horizontal">
-                            <Button Margin="0,0,5,0" Content="Set Wav Config Mode" Command="{Binding SetWavConfigMode}"/>
+                        <TextBlock Padding="0" HorizontalAlignment="Center" Text="Mode" />
+                        <StackPanel Height="25" Margin="10" VerticalAlignment="Center" Orientation="Horizontal">
+                            <Button Margin="0,0,5,0" Content="Set Wav Config Mode" Command="{Binding SetWavConfigMode}" />
 
                         </StackPanel>
                     </StackPanel>
                 </Border>
-                <Border
-                    Margin="4"
-                    BorderBrush="DarkBlue"
-                    BorderThickness="1"
-                    Visibility="Hidden" />
+                <Border Margin="4" BorderBrush="DarkBlue" BorderThickness="1" Visibility="Hidden" />
             </StackPanel>
         </Border>
-        <Button
-            Grid.Row="3"
-            Width="200"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Stretch"
-            Command="{Binding ToggleToolsPanelCommand}"
-            Style="{DynamicResource ToolsPanelButton}" />
+        <Button Grid.Row="3" Width="200" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                Command="{Binding ToggleToolsPanelCommand}" Style="{DynamicResource ToolsPanelButton}" />
 
-        <ItemsControl
-            Name="WavControlList"
-            Grid.Row="4"
-            Margin="5"
-            Background="Transparent"
-            BorderThickness="0"
-            ItemsPanel="{DynamicResource WavControlListItemsPanel}"
-            ItemsSource="{Binding PagerViewModel.PageContent}"
-            Style="{DynamicResource WavControlsControl}" >
+        <ItemsControl Name="WavControlList" Grid.Row="4" Margin="5" Background="Transparent" BorderThickness="0"
+                ItemsPanel="{DynamicResource WavControlListItemsPanel}"
+                ItemsSource="{Binding PagerViewModel.PageContent}" Style="{DynamicResource WavControlsControl}">
             <ItemsControl.Resources>
                 <DataTemplate DataType="{x:Type vm:WavControlViewModel}">
                     <uc:WavControl />
