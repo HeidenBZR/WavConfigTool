@@ -12,7 +12,7 @@
         <Setter Property="OverridesDefaultStyle"
                 Value="True" />
         <Setter Property="BorderThickness"
-                Value="0" />
+                Value="1" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
@@ -24,7 +24,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Menu}">
                     <Border BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="0"
+                            BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}"
                             Padding="{TemplateBinding Padding}"
                             SnapsToDevicePixels="True">
