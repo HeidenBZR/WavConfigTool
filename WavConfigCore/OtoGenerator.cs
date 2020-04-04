@@ -60,7 +60,10 @@ namespace WavConfigCore
                     if (otoRaw != null)
                     {
                         (var alias, var oto) = Project.AddOto(otoRaw);
-                        recline.AddOto(alias, oto);
+                        if (oto != null)
+                        {
+                            recline.AddOto(alias, oto);
+                        }
                     }
                 }
 

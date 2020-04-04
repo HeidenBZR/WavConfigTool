@@ -161,8 +161,11 @@ namespace WavConfigCore
                 while (Otos.ContainsKey(newAlias));
             }
             if (CheckForDuplicates(i))
+            {
                 Otos[newAlias] = oto;
-            return (newAlias, oto);
+                return (newAlias, oto);
+            }
+            return (null, null);
         }
 
         public int AttackOfType(PhonemeType type)
@@ -227,7 +230,7 @@ namespace WavConfigCore
 
         private bool CheckForDuplicates(int i)
         {
-            return i == 0 || Reclist.WavMask.MaxDuplicates == 0 || i < Reclist.WavMask.MaxDuplicates;
+            return i == 0 || Reclist.WavMask.MaxDuplicates == -1 || i < Reclist.WavMask.MaxDuplicates;
         }
 
         #endregion
