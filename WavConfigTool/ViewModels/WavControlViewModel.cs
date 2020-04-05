@@ -269,11 +269,13 @@ namespace WavConfigTool.ViewModels
             foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest })
             {
                 var points = PointsOfType(phonemeType);
+                var phonemes = ProjectLine.Recline.PhonemesOfType(phonemeType);
                 var list = points.ToList();
                 list.Sort((a, b) => { return a.Position.CompareTo(b.Position); });
                 for (var i = 0; i < list.Count; i++)
                 {
-                    list[i].Update(PointIsLeft(phonemeType, i));
+                    var text = phonemes.Count() > i / 2 ? phonemes[i / 2].Alias : "/PH/";
+                    list[i].Update(PointIsLeft(phonemeType, i), text);
                 }
             }
         }

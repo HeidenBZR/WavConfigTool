@@ -47,8 +47,7 @@ namespace WavConfigTool.ViewModels
         {
             Position = position;
             Type = type;
-            Text = text;
-            Update(isLeft);
+            Update(isLeft, text);
             // TODO: Переделать на StyleSelector
             switch (Type)
             {
@@ -73,9 +72,10 @@ namespace WavConfigTool.ViewModels
             );
         }
 
-        public void Update(bool isLeft)
+        public void Update(bool isLeft, string text)
         {
             IsLeft = isLeft;
+            Text = text;
             // TODO: Переделать на StyleSelector
             switch (Type)
             {
@@ -102,7 +102,8 @@ namespace WavConfigTool.ViewModels
             );
             RaisePropertiesChanged(
                 () => IsLeft,
-                () => IsRight
+                () => IsRight,
+                () => Text
             );
         }
 
