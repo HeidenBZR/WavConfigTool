@@ -72,24 +72,22 @@
                                     Command="{Binding ReloadCommand}" />
                                 <Separator />
                                 <MenuItem
-                                    Header="Сбросить все маркеры в текущем аудио"
+                                    Header="Reset all points in current audio"
                                     Command="{Binding ResetAllPointsCommand}" />
                                 <Separator />
                                 <MenuItem
-                                    Header="Сбросить все маркеры гласных (V) в текущем аудио"
+                                    Header="Reset all vowel (V) points in current audio"
                                     Command="{Binding ResetPointsCommand}"
                                     CommandParameter="{Binding PhonemeTypeVowel}" />
-                                <MenuItem
-                                    Header="Сбросить все маркеры согласных (C) в текущем аудио"
+                                <MenuItem Header="Reset all consonant (C) points in current audio"
                                     Command="{Binding ResetPointsCommand}"
                                     CommandParameter="{Binding PhonemeTypeConsonant}" />
-                                <MenuItem
-                                    Header="Сбросить все маркеры пауз (R) в текущем аудио"
+                                <MenuItem Header="Reset all rest (R) points in current audio"
                                     Command="{Binding ResetPointsCommand}"
                                     CommandParameter="{Binding PhonemeTypeRest}" />
                                 <Separator />
                                 <MenuItem
-                                    Header="Предпросмотр oto.ini"
+                                    Header="oto.ini preview"
                                     Command="{Binding OtoModeCommand}" />
                             </ContextMenu>
                         </local:Gear.ContextMenu>

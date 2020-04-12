@@ -404,6 +404,7 @@ namespace WavConfigTool.ViewModels
 
         public ICommand ReloadProjectCommand => new DelegateCommand(() =>
         {
+            SetWavConfigMode.Execute(null);
             ProjectManager.LoadProject(Settings.ProjectFile);
             LoadProjectAsync();
             Refresh();
