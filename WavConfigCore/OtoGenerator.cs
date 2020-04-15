@@ -101,8 +101,8 @@ namespace WavConfigCore
             {
                 // Absolute values, relative ones are made in Oto on write (!)
                 case AliasType.V:
-                    offset = p1.Zone.In + Project.VowelDecay - p1Attack;
-                    overlap = p1.Zone.In + Project.VowelDecay;
+                    offset = p1.Zone.In + Project.VowelDecay;
+                    overlap = p1.Zone.In + Project.VowelDecay + Project.VowelDecay;
                     preutterance = overlap - 5;
                     consonant = overlap;
                     cutoff = p1.Zone.Out - p1Attack;
