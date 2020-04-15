@@ -154,8 +154,9 @@
             <MenuItem Header="Debug"
                       Visibility="{Binding IsDebug, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}">
                 <MenuItem Header="Debug command"
-                          InputGestureText="Ctrl+Shift+Alt+D"
                           Command="{Binding DebugCommand}" />
+                <MenuItem Header="Convert from noskip"
+                          Command="{Binding CvcFromNoskipCommand}" />
             </MenuItem>
         </Menu>
 

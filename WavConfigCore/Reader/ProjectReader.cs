@@ -138,6 +138,10 @@ namespace WavConfigCore.Reader
 
             foreach (var ioWavConfig in ioProject.WavConfigs)
             {
+                if (ioWavConfig.File == null)
+                {
+                    continue;
+                }
                 if (!project.ProjectLinesByFilename.ContainsKey(ioWavConfig.File))
                 {
                     project.AddProjectLine(ioWavConfig.File, new ProjectLine());

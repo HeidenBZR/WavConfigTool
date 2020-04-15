@@ -142,7 +142,12 @@ namespace WavConfigTool.ViewModels
                 for (int i = 0; i < Project.ProjectLines.Count; i++)
                 {
                     await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
-                        wavControls.Add(CreateWavControl(i))));
+                    {
+                        if (Project.ProjectLines[i].Recline != null)
+                        {
+                            wavControls.Add(CreateWavControl(i));
+                        };
+                    }));
                 }
 
                 WavControlsPagerViewModel = new PagerViewModel(wavControls);
@@ -418,6 +423,8 @@ namespace WavConfigTool.ViewModels
             Refresh();
         }, () => IsOtoPreviewMode);
 
+#if DEBUG
+
         public ICommand DebugCommand => new DelegateCommand(() =>
         {
             foreach (var projectLine in Project.ProjectLines)
@@ -435,6 +442,43 @@ namespace WavConfigTool.ViewModels
             ReloadProjectCommand.Execute(0);
         }, () => IsDebug);
 
+
+        public ICommand CvcFromNoskipCommand => new DelegateCommand(() =>
+        {
+            foreach (var projectLine in Project.ProjectLines)
+            {
+                if (projectLine.Recline == null)
+                    continue;
+                if (Project.Reclist.WavMask.IsInGroup(projectLine.Recline.Name, "CV-VC") && !Project.Reclist.WavMask.IsInGroup(projectLine.Recline.Name, "C"))
+                {
+                    if (projectLine.ConsonantPoints.Count == 6)
+                    {
+                        var points = new List<int>()
+                        {
+                            projectLine.ConsonantPoints[2],
+                            projectLine.ConsonantPoints[3]
+                        };
+                        projectLine.ConsonantPoints = points;
+                    }
+                }
+                else if (Project.Reclist.WavMask.IsInGroup(projectLine.Recline.Name, "VC special"))
+                {
+                    if (projectLine.RestPoints.Count == 2)
+                    {
+                        var points = new List<int>()
+                        {
+                            projectLine.RestPoints[1]
+                        };
+                        projectLine.RestPoints = points;
+                    }
+                }
+            }
+            Project.FireSaveMe();
+            ReloadProjectCommand.Execute(0);
+        }, () => Project != null && Project.IsLoaded && IsDebug);
+
+
+#endif
         #endregion
     }
 }

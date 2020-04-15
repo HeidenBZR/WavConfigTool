@@ -78,6 +78,22 @@ namespace WavConfigCore
             }
         }
 
+#if DEBUG
+
+        public bool IsInGroup(string filename, string groupName)
+        {
+            for (var i = 0; i < WavGroups.Count(); i++)
+            {
+                if (WavGroups[i].Name == groupName)
+                {
+                    return WavGroups[i].Wavs.Contains(filename);
+                }
+            }
+            return false;
+        }
+
+#endif
+
         #region private
 
         private Dictionary<string, List<WavGroup>> wavGroupsByFilename;
