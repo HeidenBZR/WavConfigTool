@@ -213,6 +213,11 @@ namespace WavConfigTool.ViewModels
             UpdatePoints();
         }
 
+        public void RequestGenerateOto()
+        {
+            OnGenerateOtoRequested();
+        }
+
         #region private
 
         private async void Load()
@@ -326,7 +331,7 @@ namespace WavConfigTool.ViewModels
             point.RegenerateOtoRequest += delegate
             {
                 OnChangePhonemeModeRequested(point.Type);
-                OnGenerateOtoRequested();
+                RequestGenerateOto();
             };
             return point;
         }

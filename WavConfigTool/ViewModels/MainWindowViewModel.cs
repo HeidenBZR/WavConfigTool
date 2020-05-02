@@ -34,10 +34,12 @@ namespace WavConfigTool.ViewModels
         public ProjectManager ProjectManager { get; private set; } = ProjectManager.Current;
         public OtoGenerator OtoGenerator { get; private set; }
 
-        public int ConsonantAttack { get => Project == null ? 0 : Project.ConsonantAttack; set { Project.ConsonantAttack = value; TrySaveProject(); RedrawPoints(); } }
-        public int VowelAttack { get => Project == null ? 0 : Project.VowelAttack; set { Project.VowelAttack = value; TrySaveProject(); RedrawPoints(); } }
-        public int RestAttack { get => Project == null ? 0 : Project.RestAttack; set { Project.RestAttack = value; TrySaveProject(); RedrawPoints(); } }
-        public int VowelDecay { get => Project == null ? 0 : Project.VowelDecay; set { Project.VowelDecay = value; TrySaveProject(); RedrawPoints(); } }
+        public int AttackC { get => Project == null ? 0 : Project.AttackC; set { Project.AttackC = value; TrySaveProject(); RedrawPoints(); } }
+        public int AttackV { get => Project == null ? 0 : Project.AttackV; set { Project.AttackV = value; TrySaveProject(); RedrawPoints(); } }
+        public int AttackR { get => Project == null ? 0 : Project.AttackR; set { Project.AttackR = value; TrySaveProject(); RedrawPoints(); } }
+        public int DecayC  { get => Project == null ? 0 : Project.DecayC;  set { Project.DecayC = value;  TrySaveProject(); RedrawPoints(); } }
+        public int DecayV  { get => Project == null ? 0 : Project.DecayV;  set { Project.DecayV = value;  TrySaveProject(); RedrawPoints(); } }
+        public int DecayR  { get => Project == null ? 0 : Project.DecayR;  set { Project.DecayR = value;  TrySaveProject(); RedrawPoints(); } }
 
         public bool MustHideNotEnabled
         {
@@ -194,6 +196,7 @@ namespace WavConfigTool.ViewModels
                     projectLine.Recline.ResetOto();
                     OtoGenerator.GenerateFromProjectLine(projectLine);
                     OtoPagerViewModel.UpdateOtoPreviewControls(control.GenerateOtoPreview());
+                    OtoPagerViewModel.UpdatePageContent();
                     RaisePropertyChanged(() => PagerViewModel);
                 }
             };
@@ -217,10 +220,15 @@ namespace WavConfigTool.ViewModels
             );
 
             RaisePropertiesChanged(
-                () => ConsonantAttack,
-                () => VowelAttack,
-                () => RestAttack,
-                () => VowelDecay
+                () => AttackC,
+                () => AttackV,
+                () => AttackR
+            );
+
+            RaisePropertiesChanged(
+                () => DecayC,
+                () => DecayV,
+                () => DecayR
             );
 
             RaisePropertiesChanged(
@@ -279,10 +287,8 @@ namespace WavConfigTool.ViewModels
                 Project.ResetOto();
                 wavControl.ProjectLine.Recline.ResetOto();
                 OtoGenerator.GenerateFromProjectLine(wavControl.ProjectLine);
-                OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreview())
-                {
-                    Base = wavControl
-                };
+                OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreview());
+                OtoPagerViewModel.SetBase(wavControl);
                 OtoPagerViewModel.OtoMode();
                 OtoPagerViewModel.SetPageSizeCommand.Execute(Project.ProjectOptions.OtoPageSize);
                 PagerViewModel = OtoPagerViewModel;
@@ -316,6 +322,10 @@ namespace WavConfigTool.ViewModels
             foreach (var control in controls)
             {
                 control.HandlePointsChanged();
+            }
+            if (IsOtoPreviewMode)
+            {
+                PagerViewModel.Base.RequestGenerateOto();
             }
         }
 
@@ -427,6 +437,7 @@ namespace WavConfigTool.ViewModels
 
         public ICommand SetWavConfigMode => new DelegateCommand(() =>
         {
+            OtoPagerViewModel.UnsubscribeBaseChanged();
             PagerViewModel = WavControlsPagerViewModel;
             IsOtoPreviewMode = false;
             Refresh();

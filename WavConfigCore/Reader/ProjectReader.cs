@@ -75,10 +75,12 @@ namespace WavConfigCore.Reader
             ioProject.WavOptions.UserScaleX = project.UserScaleX;
             ioProject.OtoOptions.OtoPrefix = project.Prefix;
             ioProject.OtoOptions.OtoSuffix = project.Suffix;
-            ioProject.OtoOptions.VowelDecay = project.VowelDecay;
-            ioProject.OtoOptions.VowelAttack = project.VowelAttack;
-            ioProject.OtoOptions.ConsonantAttack = project.ConsonantAttack;
-            ioProject.OtoOptions.RestAttack = project.RestAttack;
+            ioProject.OtoOptions.VowelDecay = project.DecayV;
+            ioProject.OtoOptions.ConsonantDecay = project.DecayC;
+            ioProject.OtoOptions.RestDecay = project.DecayR;
+            ioProject.OtoOptions.VowelAttack = project.AttackV;
+            ioProject.OtoOptions.ConsonantAttack = project.AttackC;
+            ioProject.OtoOptions.RestAttack = project.AttackR;
             ioProject.ProjectOptions = new IOProjectOptions
             {
                 LastPage = project.ProjectOptions.LastPage,
@@ -120,10 +122,12 @@ namespace WavConfigCore.Reader
                 UserScaleX = ioProject.WavOptions.UserScaleX,
                 Prefix = ioProject.OtoOptions.OtoPrefix,
                 Suffix = ioProject.OtoOptions.OtoSuffix,
-                VowelDecay = ioProject.OtoOptions.VowelDecay,
-                VowelAttack = ioProject.OtoOptions.VowelAttack,
-                ConsonantAttack = ioProject.OtoOptions.ConsonantAttack,
-                RestAttack = ioProject.OtoOptions.RestAttack,
+                DecayV = ioProject.OtoOptions.VowelDecay,
+                DecayC = ioProject.OtoOptions.ConsonantDecay,
+                DecayR = ioProject.OtoOptions.RestDecay,
+                AttackV = ioProject.OtoOptions.VowelAttack,
+                AttackC = ioProject.OtoOptions.ConsonantAttack,
+                AttackR = ioProject.OtoOptions.RestAttack,
                 ProjectOptions = new ProjectOptions()
             };
             project.ProjectOptions.LastPage = ioProject.ProjectOptions.LastPage;

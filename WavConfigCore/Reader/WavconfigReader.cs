@@ -35,9 +35,9 @@ namespace WavConfigCore.Reader
             text.Append($"$Reclist={project.Reclist.Name}\r\n");
             text.Append($"$Suffix={project.Suffix}\r\n");
             text.Append($"$Prefix={project.Prefix}\r\n");
-            text.Append($"$VowelDecay={project.VowelDecay}\r\n");
-            text.Append($"$VowelAttack={project.VowelAttack}\r\n");
-            text.Append($"$ConsonantAttack={project.ConsonantAttack}\r\n");
+            text.Append($"$VowelDecay={project.DecayV}\r\n");
+            text.Append($"$VowelAttack={project.AttackV}\r\n");
+            text.Append($"$ConsonantAttack={project.AttackC}\r\n");
             text.Append($"$WavAmplitudeMultiplayer={project.UserScaleY.ToString("F2")}\r\n");
             foreach (var key in project.Options.Keys)
             {
@@ -81,17 +81,17 @@ namespace WavConfigCore.Reader
 
                 case "VowelDecay":
                     if (int.TryParse(value, out int vowelDecay))
-                        project.VowelDecay = vowelDecay;
+                        project.DecayV = vowelDecay;
                     break;
 
                 case "VowelAttack":
                     if (int.TryParse(value, out int vowelAttack))
-                        project.VowelAttack = vowelAttack;
+                        project.AttackV = vowelAttack;
                     break;
 
                 case "ConsonantAttack":
                     if (int.TryParse(value, out int consonantAttack))
-                        project.ConsonantAttack = consonantAttack;
+                        project.AttackC = consonantAttack;
                     break;
 
                 case "WavAmplitudeMultiplayer":

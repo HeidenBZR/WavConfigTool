@@ -10,7 +10,7 @@ namespace WavConfigTool.ViewModels
 {
     public class PagerViewModel : ViewModelBase
     {
-        public WavControlBaseViewModel Base { get; set; }
+        public WavControlViewModel Base { get; set; }
 
         public int PageSize { get => _pageSize; set => SetPageSizeCommand.Execute(value); }
         public int ItemsCount => Collection != null ? Collection.Count : 0;
@@ -81,6 +81,14 @@ namespace WavConfigTool.ViewModels
             }
         }
 
+        public void SetBase(WavControlViewModel _base)
+        {
+            if (Base != null)
+                Base.PointsChanged -= UpdatePageContent;
+            Base = _base;
+            Base.PointsChanged += UpdatePageContent;
+        }
+
         public void OtoMode()
         {
             CurrentPage = 0;
@@ -119,9 +127,14 @@ namespace WavConfigTool.ViewModels
             }
         }
 
+        public void UnsubscribeBaseChanged()
+        {
+            if (Base != null)
+                Base.PointsChanged -= UpdatePageContent;
+        }
+
         public void UpdatePageContent()
         {
-            var pageContent = new ObservableCollection<WavControlBaseViewModel>();
             if (!IsHidden)
             {
                 if (IsOtoMode)
@@ -154,7 +167,6 @@ namespace WavConfigTool.ViewModels
                     }
                 }
             }
-            this.pageContent = pageContent;
         }
 
         #region private

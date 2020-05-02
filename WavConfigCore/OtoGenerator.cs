@@ -56,7 +56,8 @@ namespace WavConfigCore
                 for (int count = 1; count < 6 && i + count - 1 < reclinePhonemes.Count; count++)
                 {
                     var phonemes = reclinePhonemes.GetRange(i, count);
-                    var otoRaw = GenerateSingleOto(projectLine, position, phonemes.ToArray(), phonemesOfType);
+                    var next = i + count < reclinePhonemes.Count ? reclinePhonemes[i + count] : null;
+                    var otoRaw = GenerateSingleOto(projectLine, position, phonemes.ToArray(), phonemesOfType, next);
                     if (otoRaw != null)
                     {
                         (var alias, var oto) = Project.AddOto(otoRaw);
@@ -76,7 +77,7 @@ namespace WavConfigCore
 
         #region private
 
-        private Oto GenerateSingleOto(ProjectLine projectLine, int position, Phoneme[] phonemes, Dictionary<PhonemeType, List<Phoneme>> phonemesOfType)
+        private Oto GenerateSingleOto(ProjectLine projectLine, int position, Phoneme[] phonemes, Dictionary<PhonemeType, List<Phoneme>> phonemesOfType, Phoneme next)
         {
             var recline = projectLine.Recline;
 
@@ -101,8 +102,8 @@ namespace WavConfigCore
             {
                 // Absolute values, relative ones are made in Oto on write (!)
                 case AliasType.V:
-                    offset = p1.Zone.In + Project.VowelDecay;
-                    overlap = p1.Zone.In + Project.VowelDecay + Project.VowelDecay;
+                    offset = p1.Zone.In + Project.DecayV;
+                    overlap = p1.Zone.In + Project.DecayV + Project.DecayV;
                     preutterance = overlap - 5;
                     consonant = overlap;
                     cutoff = p1.Zone.Out - p1Attack;
@@ -117,7 +118,7 @@ namespace WavConfigCore
                     offset = p1.Zone.Out - p1Attack < p1.Zone.In ? p1.Zone.In : p1.Zone.Out - p1Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.In + Project.VowelDecay;
+                    consonant = p2.Zone.In + Project.DecayV;
                     cutoff = p2.Zone.Out - p2Attack;
                     break;
 
@@ -125,7 +126,7 @@ namespace WavConfigCore
                     offset = p1.Zone.Out;
                     overlap = p1.Zone.Out + p1Attack;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.In + Project.VowelDecay;
+                    consonant = p2.Zone.In + Project.DecayV;
                     cutoff = p2.Zone.Out - p2Attack;
                     break;
 
@@ -134,17 +135,18 @@ namespace WavConfigCore
                     offset = p1.Zone.Out;
                     overlap = p1.Zone.Out + p1Attack;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.In + Project.VowelDecay;
+                    consonant = p2.Zone.In + Project.DecayV;
                     cutoff = p2.Zone.Out - p2Attack;
                     break;
 
                 case AliasType.RC:
                 case AliasType.RCm:
+                    var nextP = next != null ? next.Zone.In : p2.Zone.Out;
                     offset = p2.Zone.In - p1Attack;
                     overlap = p2.Zone.In;
                     preutterance = p2.Zone.Out;
-                    consonant = p2.Zone.Out + Project.VowelDecay;
-                    cutoff = p2.Zone.Out + Project.VowelDecay + 10;
+                    consonant = nextP + Project.DecayC;
+                    cutoff = nextP + Project.DecayC + Project.AttackC;
                     break;
 
                 // Ends with Rest
@@ -155,7 +157,7 @@ namespace WavConfigCore
                     offset = p1.Zone.Out - p1Attack;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out + Project.VowelDecay;
+                    consonant = p2.Zone.Out + Project.DecayR;
                     cutoff = 0;
                     break;
 
@@ -164,7 +166,7 @@ namespace WavConfigCore
                     offset = p1.Zone.In;
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
-                    consonant = p2.Zone.Out + Project.VowelDecay;
+                    consonant = p2.Zone.Out + Project.DecayR;
                     cutoff = 0;
                     break;
 

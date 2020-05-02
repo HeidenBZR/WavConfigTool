@@ -20,7 +20,9 @@ namespace WavConfigCore.Reader
     {
         public string OtoPrefix;
         public string OtoSuffix;
-        public int VowelDecay = 80;
+        public int VowelDecay = 170;
+        public int ConsonantDecay = 80;
+        public int RestDecay = 250;
         public int VowelAttack = 60;
         public int ConsonantAttack = 40;
         public int RestAttack = 50;

@@ -33,10 +33,12 @@ namespace WavConfigCore
         public bool IsLoaded { get; set; } = false;
         public bool IsChangedAfterBackup { get; private set; }
 
-        public int VowelDecay { get => vowelDecay; set { vowelDecay = value; ProjectChanged(); } }
-        public int VowelAttack { get => vowelAttack; set { vowelAttack = value; ProjectChanged(); } }
-        public int ConsonantAttack { get => consonantAttack; set { consonantAttack = value; ProjectChanged(); } }
-        public int RestAttack { get => restAttack; set { restAttack = value; ProjectChanged(); } }
+        public int DecayR { get => restDecay; set { restDecay = value; ProjectChanged(); } }
+        public int DecayV { get => vowelDecay; set { vowelDecay = value; ProjectChanged(); } }
+        public int DecayC { get => consonantDecay; set { consonantDecay = value; ProjectChanged(); } }
+        public int AttackR { get => restAttack; set { restAttack = value; ProjectChanged(); } }
+        public int AttackV { get => vowelAttack; set { vowelAttack = value; ProjectChanged(); } }
+        public int AttackC { get => consonantAttack; set { consonantAttack = value; ProjectChanged(); } }
         public string Prefix { get => prefix; set { prefix = value; ProjectChanged(); } }
         public string Suffix { get => suffix; set { suffix = value; ProjectChanged(); } }
         public string WavPrefix { get => wavPrefix; set { wavPrefix = value; ProjectChanged(); } }
@@ -171,11 +173,21 @@ namespace WavConfigCore
         public int AttackOfType(PhonemeType type)
         {
             if (type == PhonemeType.Consonant)
-                return ConsonantAttack;
+                return AttackC;
             else if (type == PhonemeType.Vowel)
-                return VowelAttack;
+                return AttackV;
             else
-                return RestAttack;
+                return AttackR;
+        }
+
+        public int DecayOfType(PhonemeType type)
+        {
+            if (type == PhonemeType.Consonant)
+                return DecayC;
+            else if (type == PhonemeType.Vowel)
+                return DecayV;
+            else
+                return DecayR;
         }
 
         public void ProcessLineAfterRead(ProjectLine projectLine)
@@ -207,7 +219,9 @@ namespace WavConfigCore
         private List<ProjectLine> projectLines;
         private Dictionary<string, ProjectLine> projectLinesByFilename;
 
-        private int vowelDecay = 200;
+        private int vowelDecay = 170;
+        private int consonantDecay = 80;
+        private int restDecay = 250;
         private int vowelAttack = 60;
         private int consonantAttack = 30;
         private int restAttack = 40;

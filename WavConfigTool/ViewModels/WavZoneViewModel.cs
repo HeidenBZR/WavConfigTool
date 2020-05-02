@@ -15,7 +15,7 @@ namespace WavConfigTool.ViewModels
         public double Attack => ProjectManager.Current.Project.AttackOfType(Type);
 
         public double Width => Out + Attack;
-        public double Decay => Type == PhonemeType.Vowel ? ProjectManager.Current.Project.VowelDecay : Attack;
+        public double Decay => ProjectManager.Current.Project.DecayOfType(Type);
 
         public PointCollection Points { get; private set; }
         public PointCollection BorderPoints1 { get; private set; }
@@ -59,7 +59,7 @@ namespace WavConfigTool.ViewModels
             double inMinusAttack = Math.Max(In - attack, 0);
             double outPlusAttack = Math.Min(Out + attack, length);
             outMinusAttack = outMinusAttack < 0 ? 0 : outMinusAttack;
-            double decay = Settings.RealToViewX(ProjectManager.Current.Project.VowelDecay);
+            double decay = Settings.RealToViewX(Decay);
             switch (Type)
             {
                 case PhonemeType.Consonant:

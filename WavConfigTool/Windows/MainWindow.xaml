@@ -275,31 +275,31 @@
                     <StackPanel Height="60">
                         <TextBlock Padding="0"
                                    HorizontalAlignment="Center"
-                                   Text="Attack" />
+                                   Text="Attack (Overlap)" />
                         <StackPanel Height="25"
                                     Margin="10"
                                     VerticalAlignment="Center"
                                     Orientation="Horizontal">
                             <TextBlock Margin="3,0"
+                                       Text="R:" />
+                            <TextBox Width="40"
+                                     Padding="0"
+                                     VerticalAlignment="Center"
+                                     Text="{Binding AttackR, Mode=TwoWay, TargetNullValue=0}" />
+                            <TextBlock Margin="3,0"
                                        Text="V:" />
                             <TextBox Width="40"
                                      Padding="0"
                                      VerticalAlignment="Center"
-                                     Text="{Binding VowelAttack, Mode=TwoWay, TargetNullValue=0}" />
+                                     Text="{Binding AttackV, Mode=TwoWay, TargetNullValue=0}" />
 
                             <TextBlock Margin="3,0"
                                        Text="C:" />
                             <TextBox Width="40"
                                      Padding="0"
                                      VerticalAlignment="Center"
-                                     Text="{Binding ConsonantAttack, Mode=TwoWay, TargetNullValue=0}" />
+                                     Text="{Binding AttackC, Mode=TwoWay, TargetNullValue=0}" />
 
-                            <TextBlock Margin="3,0"
-                                       Text="R:" />
-                            <TextBox Width="40"
-                                     Padding="0"
-                                     VerticalAlignment="Center"
-                                     Text="{Binding RestAttack, Mode=TwoWay, TargetNullValue=0}" />
 
                         </StackPanel>
                     </StackPanel>
@@ -311,15 +311,29 @@
                     <StackPanel Height="60">
                         <TextBlock Padding="0"
                                    HorizontalAlignment="Center"
-                                   Text="Decay" />
+                                   Text="Decay (Consonant)" />
                         <StackPanel Height="25"
                                     Margin="10"
                                     VerticalAlignment="Center"
                                     Orientation="Horizontal">
-                            <TextBox Width="50"
+                            <TextBlock Margin="3,0"
+                                       Text="R:" />
+                            <TextBox Width="40"
                                      Padding="0"
                                      VerticalAlignment="Center"
-                                     Text="{Binding VowelDecay, Mode=TwoWay, TargetNullValue=0}" />
+                                     Text="{Binding DecayR, Mode=TwoWay, TargetNullValue=0}" />
+                            <TextBlock Margin="3,0"
+                                       Text="V:" />
+                            <TextBox Width="40"
+                                     Padding="0"
+                                     VerticalAlignment="Center"
+                                     Text="{Binding DecayV, Mode=TwoWay, TargetNullValue=0}" />
+                            <TextBlock Margin="3,0"
+                                       Text="C:" />
+                            <TextBox Width="40"
+                                     Padding="0"
+                                     VerticalAlignment="Center"
+                                     Text="{Binding DecayC, Mode=TwoWay, TargetNullValue=0}" />
 
                         </StackPanel>
                     </StackPanel>
