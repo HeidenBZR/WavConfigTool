@@ -37,6 +37,7 @@ namespace WavConfigTool.ViewModels
         public int Height => WavControlBaseViewModel.GlobalHeight;
 
         public bool IsLoaded { get; set; } = false;
+        public bool IsEnabled { get; set; }
 
         public WavPointViewModel()
         {
@@ -110,6 +111,11 @@ namespace WavConfigTool.ViewModels
         public override string ToString()
         {
             return $"{{{Position}}} {Text}";
+        }
+
+        public void FireChanged()
+        {
+            RaisePropertyChanged(() => IsEnabled);
         }
 
         #region commands

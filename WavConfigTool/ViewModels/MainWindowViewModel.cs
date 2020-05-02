@@ -34,10 +34,10 @@ namespace WavConfigTool.ViewModels
         public ProjectManager ProjectManager { get; private set; } = ProjectManager.Current;
         public OtoGenerator OtoGenerator { get; private set; }
 
-        public int ConsonantAttack { get => Project == null ? 0 : Project.ConsonantAttack; set { Project.ConsonantAttack = value; TrySaveProject(); } }
-        public int VowelAttack { get => Project == null ? 0 : Project.VowelAttack; set { Project.VowelAttack = value; TrySaveProject(); } }
-        public int RestAttack { get => Project == null ? 0 : Project.RestAttack; set { Project.RestAttack = value; TrySaveProject(); } }
-        public int VowelDecay { get => Project == null ? 0 : Project.VowelDecay; set { Project.VowelDecay = value; TrySaveProject(); } }
+        public int ConsonantAttack { get => Project == null ? 0 : Project.ConsonantAttack; set { Project.ConsonantAttack = value; TrySaveProject(); RedrawPoints(); } }
+        public int VowelAttack { get => Project == null ? 0 : Project.VowelAttack; set { Project.VowelAttack = value; TrySaveProject(); RedrawPoints(); } }
+        public int RestAttack { get => Project == null ? 0 : Project.RestAttack; set { Project.RestAttack = value; TrySaveProject(); RedrawPoints(); } }
+        public int VowelDecay { get => Project == null ? 0 : Project.VowelDecay; set { Project.VowelDecay = value; TrySaveProject(); RedrawPoints(); } }
 
         public bool MustHideNotEnabled
         {
@@ -308,6 +308,15 @@ namespace WavConfigTool.ViewModels
         {
             if (Project != null && Project.IsLoaded)
                 Project.FireSaveMe();
+        }
+
+        private void RedrawPoints()
+        {
+            var controls = PagerViewModel.PageContent;
+            foreach (var control in controls)
+            {
+                control.HandlePointsChanged();
+            }
         }
 
         #endregion

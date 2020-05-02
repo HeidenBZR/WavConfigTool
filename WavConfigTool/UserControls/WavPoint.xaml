@@ -10,6 +10,7 @@
     Width="50"
     Height="{Binding Height}"
     Panel.ZIndex="{Binding IndexX, FallbackValue=1}"
+    Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibility}, FallbackValue=Visible}"
     SnapsToDevicePixels="True"
     mc:Ignorable="d">
     <!--<d:UserControl.DataContext>

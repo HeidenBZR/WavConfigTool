@@ -26,7 +26,7 @@ namespace WavConfigTool.ViewModels
 
         public List<WavControlBaseViewModel> SourceCollection { get; private set; } = new List<WavControlBaseViewModel>();
         public ObservableCollection<WavControlBaseViewModel> Collection { get; private set; } = new ObservableCollection<WavControlBaseViewModel>();
-        public ObservableCollection<WavControlBaseViewModel> PageContent => GetPageContent();
+        public ObservableCollection<WavControlBaseViewModel> PageContent => pageContent;
 
         public event SimpleHandler PagerChanged = delegate { };
 
@@ -49,6 +49,7 @@ namespace WavConfigTool.ViewModels
         public void RequestUpdateCollection()
         {
             UpdateCollection();
+            UpdatePageContent();
             SetPageSizeCommand.Execute(PageSize);
         }
 
@@ -118,6 +119,44 @@ namespace WavConfigTool.ViewModels
             }
         }
 
+        public void UpdatePageContent()
+        {
+            var pageContent = new ObservableCollection<WavControlBaseViewModel>();
+            if (!IsHidden)
+            {
+                if (IsOtoMode)
+                {
+                    if (pageContent.Count == 0)
+                    {
+                        pageContent.Add(Base);
+                    }
+                    else if (pageContent[0] != Base)
+                    {
+                        pageContent[0] = Base;
+                    }
+                    while (pageContent.Count > 1)
+                    {
+                        pageContent.RemoveAt(1);
+                    }
+                    var otosPageSize = PageSize - 1;
+                    for (int i = otosPageSize * CurrentPage; i < otosPageSize * (CurrentPage + 1) && i < Collection.Count; i++)
+                    {
+                        pageContent.Add(Collection[i]);
+                    }
+                }
+                else
+                {
+                    pageContent.Clear();
+                    for (int i = PageSize * CurrentPage; i < PageSize * (CurrentPage + 1); i++)
+                    {
+                        if (i < Collection.Count)
+                            pageContent.Add(Collection[i]);
+                    }
+                }
+            }
+            this.pageContent = pageContent;
+        }
+
         #region private
 
         private ObservableCollection<WavControlBaseViewModel> pageContent = new ObservableCollection<WavControlBaseViewModel>();
@@ -125,42 +164,6 @@ namespace WavConfigTool.ViewModels
         private int _pageSize = 7;
         private ProjectOptions ProjectOptions;
         private bool isLoadRestAllowed = false;
-
-        private ObservableCollection<WavControlBaseViewModel> GetPageContent()
-        {
-            if (IsHidden)
-                return new ObservableCollection<WavControlBaseViewModel>();
-            if (IsOtoMode)
-            {
-                if (pageContent.Count == 0)
-                {
-                    pageContent.Add(Base);
-                }
-                else if (pageContent[0] != Base)
-                {
-                    pageContent[0] = Base;
-                }
-                while (pageContent.Count > 1)
-                {
-                    pageContent.RemoveAt(1);
-                }
-                var otosPageSize = PageSize - 1;
-                for (int i = otosPageSize * CurrentPage; i < otosPageSize * (CurrentPage + 1) && i < Collection.Count; i++)
-                {
-                    pageContent.Add(Collection[i]);
-                }
-            }
-            else
-            {
-                pageContent.Clear();
-                for (int i = PageSize * CurrentPage; i < PageSize * (CurrentPage + 1); i++)
-                {
-                    if (i < Collection.Count)
-                        pageContent.Add(Collection[i]);
-                }
-            }
-            return pageContent;
-        }
 
         private void Refresh()
         {
@@ -246,6 +249,7 @@ namespace WavConfigTool.ViewModels
             RaisePropertyChanged(() => CurrentPageView);
             RaisePropertyChanged(() => PageContent);
             PagerChanged();
+            UpdatePageContent();
         }, currentPage => (currentPage < PagesTotal && currentPage >= 0));
 
         public ICommand SetPageSizeCommand => new DelegateCommand<int>((pageSize) =>
@@ -256,8 +260,9 @@ namespace WavConfigTool.ViewModels
             _pageSize = pageSize;
             Refresh();
             SetPageCommand.Execute(current / pageSize);
+            UpdatePageContent();
             PagerChanged();
-        }, pageSize => pageSize > 0);
+        }, pageSize => pageSize > 0 && pageSize != PageSize);
 
         #endregion
     }

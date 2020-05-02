@@ -80,6 +80,9 @@ namespace WavConfigTool.ViewModels
             ProjectLine.ProjectLineChanged += HandleProjectLineChanged;
             SampleName = sampleName;
             Hash = hash;
+            CreatePoints();
+            UpdatePoints();
+            FirePointsChanged();
         }
 
         public override void Ready()
@@ -170,6 +173,46 @@ namespace WavConfigTool.ViewModels
                 return $"{Filename} : WavControlViewModel";
         }
 
+        public void HandleProjectLineChanged()
+        {
+            RaisePropertiesChanged(
+                () => Filename,
+                () => IsCompleted,
+                () => WavImage,
+                () => EditEnabled
+            );
+            RaisePropertiesChanged(
+                () => WavChannels,
+                () => WavBitRate,
+                () => WavSampleRate
+            );
+            RaisePropertiesChanged(
+                () => EditEnabled,
+                () => IsEnabled,
+                () => IsLoaded,
+                () => IsLoading,
+                () => IsDisabled
+            );
+            UpdatePoints();
+        }
+
+        public override void HandlePointsChanged()
+        {
+            RaisePropertiesChanged(
+                () => ConsonantPoints,
+                () => VowelPoints,
+                () => RestPoints,
+                () => IsCompleted
+            );
+            RaisePropertiesChanged(
+                () => ConsonantZones,
+                () => VowelZones,
+                () => RestZones,
+                () => Phonemes
+            );
+            UpdatePoints();
+        }
+
         #region private
 
         private async void Load()
@@ -202,24 +245,28 @@ namespace WavConfigTool.ViewModels
 
             App.MainDispatcher.Invoke(() =>
             {
-                WaveForm.DrawWaveform();
-                WaveForm.Finish(Hash);
-                IsImageEnabled = true;
-                OnLoaded();
+                if (IsLoading)
+                {
+                    WaveForm.DrawWaveform();
+                    WaveForm.Finish(Hash);
+                    IsImageEnabled = true;
+                    OnLoaded();
+                    FirePointsChanged();
+                }
             });
 
         }
 
         private List<WavZoneViewModel> GetZones(PhonemeType type)
         {
-            var points = ProjectLine.PointsOfType(type).ShallowClone();
+            var points = ProjectLine.PointsOfType(type);
             var zones = new List<WavZoneViewModel>();
-            points.Sort();
+            var kindaWitdh = Width > 0 ? Width : 2000;
             for (int i = 0; i + 1 < points.Count; i += 2)
             {
                 var pIn = Settings.RealToViewX(points[i]);
                 var pOut = Settings.RealToViewX(points[i + 1]);
-                zones.Add(new WavZoneViewModel(type, pIn, pOut, Width));
+                zones.Add(new WavZoneViewModel(type, pIn, pOut, kindaWitdh));
             }
             return zones;
         }
@@ -239,16 +286,28 @@ namespace WavConfigTool.ViewModels
             return phonemes.Count > i / 2 ? phonemes[i / 2] : "/PH/";
         }
 
-        private void FillPoints(PhonemeType type)
+        private void CreatePoints()
         {
-            var points = PointsOfType(type);
-            var projectPoints = ProjectLine.PointsOfType(type, virtuals: false);
-            points.Clear();
-            for (int i = 0; i < projectPoints.Count; i++)
+            foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest})
             {
-                var position = Settings.RealToViewX(projectPoints[i]);
-                var point = CreatePoint(position, type, i);
-                points.Add(point);
+                var phonemes = ProjectLine.Recline.PhonemesOfType(phonemeType);
+                var points = PointsOfType(phonemeType);
+                for (var i = 0; i < phonemes.Count; i++)
+                {
+                    if (phonemeType == PhonemeType.Rest && i == 0)
+                    {
+                        points.Add(CreatePoint(-1, phonemeType, 0));
+                    }
+                    else if (phonemeType == PhonemeType.Rest && i == phonemes.Count - 1)
+                    {
+                        points.Add(CreatePoint(-1, phonemeType, 1));
+                    }
+                    else
+                    {
+                        points.Add(CreatePoint(-1, phonemeType, 0));
+                        points.Add(CreatePoint(-1, phonemeType, 1));
+                    }
+                }
             }
         }
 
@@ -274,26 +333,36 @@ namespace WavConfigTool.ViewModels
 
         private void UpdatePoints()
         {
-            foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest })
-            {
-                var points = PointsOfType(phonemeType);
-                var phonemes = ProjectLine.Recline.PhonemesOfType(phonemeType);
-                var list = points.ToList();
-                list.Sort((a, b) => { return a.Position.CompareTo(b.Position); });
-                for (var i = 0; i < list.Count; i++)
-                {
-                    var text = phonemes.Count() > i / 2 ? phonemes[i / 2].Alias : "/PH/";
-                    list[i].Update(PointIsLeft(phonemeType, i), text);
-                }
-            }
+            UpdatePointsOfType(PhonemeType.Consonant);
+            UpdatePointsOfType(PhonemeType.Rest);
+            UpdatePointsOfType(PhonemeType.Vowel);
         }
 
-        private void ApplyPoints()
+        private void UpdatePointsOfType(PhonemeType type)
         {
-            FillPoints(PhonemeType.Consonant);
-            FillPoints(PhonemeType.Rest);
-            FillPoints(PhonemeType.Vowel);
-            FirePointsChanged();
+            var points = PointsOfType(type);
+            var projectPoints = ProjectLine.PointsOfType(type, virtuals: false);
+            var phonemes = ProjectLine.Recline.PhonemesOfType(type);
+            for (int i = 0; i < points.Count; i++)
+            {
+                var point = points[i];
+                var wasEnabled = point.IsEnabled;
+                point.IsEnabled = i < projectPoints.Count;
+                if (point.IsEnabled)
+                {
+                    var position = Settings.RealToViewX(projectPoints[i]);
+                    point.Position = position;
+                    point.Update(PointIsLeft(type, i), phonemes[i / 2].Alias);
+                }
+                else
+                {
+                    point.Position = -1;
+                }
+                if (IsEnabled != wasEnabled)
+                {
+                    point.FireChanged();
+                }
+            }
         }
 
         private bool PointIsLeft(PhonemeType type, int i)
@@ -301,60 +370,20 @@ namespace WavConfigTool.ViewModels
             return type == PhonemeType.Rest ? i % 2 == 1 : i % 2 == 0;
         }
 
-        private void ResetPoints(PhonemeType type)
+        private void ResetPoints()
+        {
+            ResetPointsOfType(PhonemeType.Vowel);
+            ResetPointsOfType(PhonemeType.Consonant);
+            ResetPointsOfType(PhonemeType.Rest);
+        }
+
+        private void ResetPointsOfType(PhonemeType type)
         {
             ProjectLine.PointsOfType(type, false).Clear();
             ProjectLine.ZonesOfType(type).Clear();
             PointsOfType(type).Clear();
             ZonesOfType(type).Clear();
             FirePointsChanged();
-        }
-
-        private void ResetPoints()
-        {
-            ResetPoints(PhonemeType.Vowel);
-            ResetPoints(PhonemeType.Consonant);
-            ResetPoints(PhonemeType.Rest);
-        }
-
-        private void HandleProjectLineChanged()
-        {
-            RaisePropertiesChanged(
-                () => Filename,
-                () => IsCompleted,
-                () => WavImage,
-                () => EditEnabled
-            );
-            RaisePropertiesChanged(
-                () => WavChannels,
-                () => WavBitRate,
-                () => WavSampleRate
-            );
-            RaisePropertiesChanged(
-                () => EditEnabled,
-                () => IsEnabled,
-                () => IsLoaded,
-                () => IsLoading,
-                () => IsDisabled
-            );
-            ApplyPoints();
-        }
-
-        private void HandlePointsChanged()
-        {
-            UpdatePoints();
-            RaisePropertiesChanged(
-                () => ConsonantPoints,
-                () => VowelPoints,
-                () => RestPoints,
-                () => IsCompleted
-            );
-            RaisePropertiesChanged(
-                () => ConsonantZones,
-                () => VowelZones,
-                () => RestZones,
-                () => Phonemes
-            );
         }
 
         private void HandleLoaded()
@@ -364,7 +393,7 @@ namespace WavConfigTool.ViewModels
                 ProjectLine.Width = WaveForm.Width;
                 RaisePropertyChanged(() => Width);
                 RaisePropertyChanged(() => WavImage);
-                ApplyPoints();
+                UpdatePoints();
                 IsLoaded = true;
                 IsLoading = false;
                 HandleProjectLineChanged();
@@ -418,7 +447,7 @@ namespace WavConfigTool.ViewModels
 
         public ICommand ResetPointsCommand => new DelegateCommand<PhonemeType>((PhonemeType type) =>
         {
-            ResetPoints(type);
+            ResetPointsOfType(type);
             ProjectLine.UpdateZones();
             FirePointsChanged();
         }, (type) => !IsLoading);
