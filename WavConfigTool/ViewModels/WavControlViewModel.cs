@@ -196,10 +196,18 @@ namespace WavConfigTool.ViewModels
                 }
 
                 WaveForm = new WaveForm(SampleName);
-                WaveForm.MakeWaveForm(Height, Hash);
+                WaveForm.Start(Height);
+                WaveForm.CollectData();
+            })).ConfigureAwait(true);
+
+            App.MainDispatcher.Invoke(() =>
+            {
+                WaveForm.DrawWaveform();
+                WaveForm.Finish(Hash);
                 IsImageEnabled = true;
                 OnLoaded();
-            })).ConfigureAwait(true);
+            });
+
         }
 
         private List<WavZoneViewModel> GetZones(PhonemeType type)
