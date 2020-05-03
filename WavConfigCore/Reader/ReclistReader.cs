@@ -45,17 +45,17 @@ namespace WavConfigCore.Reader
         private Reclist ReadYaml(string name)
         {
             var filename = PathResolver.Current.Reclist(name + ".reclist");
+            IOReclist ioReclist = null;
             using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
             {
                 var serializer = new Deserializer();
-                IOReclist ioReclist = null;
                 try
                 {
                     ioReclist = serializer.Deserialize(new StreamReader(fileStream, Encoding.UTF8), typeof(IOReclist)) as IOReclist;
                 }
                 catch { }
-                return ioReclist == null ? null : GetReclist(ioReclist, name);
             }
+            return ioReclist == null ? null : GetReclist(ioReclist, name);
         }
 
         private void WriteYaml(string filename, Reclist reclist)

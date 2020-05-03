@@ -49,7 +49,7 @@ namespace WavConfigTool.ViewModels
             // Остановить просчитывание в конструкторе
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
-            GetReclistsAsync();
+            GetReclists();
         }
 
         #region private
@@ -60,11 +60,13 @@ namespace WavConfigTool.ViewModels
         {
             var list = new List<string>();
             string path = PathResolver.Current.Reclist();
-            foreach (string filename in Directory.GetFiles(path, "*.reclist"))
+            var files = Directory.GetFiles(path, "*.reclist");
+            foreach (string filename in files)
             {
-                var reclist = Path.GetFileNameWithoutExtension(filename);
-                if (!list.Contains(reclist))
-                    list.Add(reclist);
+                var reclistName = Path.GetFileNameWithoutExtension(filename);
+                var reclist = ReclistReader.Current.Read(reclistName);
+                if (reclist != null && reclist.IsLoaded && !list.Contains(reclistName))
+                    list.Add(reclistName);
             }
             Reclists = new ObservableCollection<string>(list);
         }
