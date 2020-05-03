@@ -8,14 +8,14 @@ namespace WavConfigCore.Reader.IO
 {
 
     [Serializable]
-    class IOPhonemes
+    public class IOPhonemes
     {
         public string[] Vowels;
         public string[] Consonants;
     }
 
     [Serializable]
-    class IOWavParams
+    public class IOWavParams
     {
         public string Filename;
         public string[] Phonemes;
@@ -23,7 +23,7 @@ namespace WavConfigCore.Reader.IO
     }
 
     [Serializable]
-    class IOReclist
+    public class IOReclist
     {
         public IOPhonemes Phonemes;
         public IOWavParams[] Files;

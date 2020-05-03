@@ -70,6 +70,114 @@ namespace WavConfigHelper.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Check reclist.
+        /// </summary>
+        internal static string STR_COMMAND_CHECK_RECLIST_DESC {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_CHECK_RECLIST_DESC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на check_reclist &quot;%Reclist name%&quot;.
+        /// </summary>
+        internal static string STR_COMMAND_CHECK_RECLIST_EXAMPLE1 {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_CHECK_RECLIST_EXAMPLE1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на check_reclist &quot;CVC RUS&quot;.
+        /// </summary>
+        internal static string STR_COMMAND_CHECK_RECLIST_EXAMPLE2 {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_CHECK_RECLIST_EXAMPLE2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Reclist check finished..
+        /// </summary>
+        internal static string STR_COMMAND_CHECK_RECLIST_FINISH {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_CHECK_RECLIST_FINISH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Reclist loaded succesfully..
+        /// </summary>
+        internal static string STR_COMMAND_CHECK_RECLIST_LOADED {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_CHECK_RECLIST_LOADED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Failed to read mask file. Check YAML syntax..
+        /// </summary>
+        internal static string STR_COMMAND_CHECK_RECLIST_MASK_CANT_READ_YAML {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_CHECK_RECLIST_MASK_CANT_READ_YAML", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на No mask file found. It&apos;s not an error. All possible aliases will be generated from all positions..
+        /// </summary>
+        internal static string STR_COMMAND_CHECK_RECLIST_MASK_IS_MISSING {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_CHECK_RECLIST_MASK_IS_MISSING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Mask loaded successfully..
+        /// </summary>
+        internal static string STR_COMMAND_CHECK_RECLIST_MASK_IS_OK {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_CHECK_RECLIST_MASK_IS_OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на No WTR file found. It&apos;s not an error. Default alias style will be applied.
+        /// </summary>
+        internal static string STR_COMMAND_CHECK_RECLIST_WTR_IS_MISSING {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_CHECK_RECLIST_WTR_IS_MISSING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Found WTR file..
+        /// </summary>
+        internal static string STR_COMMAND_CHECK_RECLIST_WTR_IS_OK {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_CHECK_RECLIST_WTR_IS_OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на YAML is correct, but reclist loading failed. Contact the developer..
+        /// </summary>
+        internal static string STR_COMMAND_ERROR_CANT_READ_RECLIST {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_ERROR_CANT_READ_RECLIST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Failed to read file. Check YAML syntax..
+        /// </summary>
+        internal static string STR_COMMAND_ERROR_CANT_READ_YAML {
+            get {
+                return ResourceManager.GetString("STR_COMMAND_ERROR_CANT_READ_YAML", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на File &apos;{0}&apos; already exists!.
         /// </summary>
         internal static string STR_COMMAND_ERROR_FILE_ALREADY_EXISTS {

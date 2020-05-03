@@ -120,6 +120,42 @@
   <data name="STR_COMMAND_BYE" xml:space="preserve">
     <value>Bye!</value>
   </data>
+  <data name="STR_COMMAND_CHECK_RECLIST_DESC" xml:space="preserve">
+    <value>Check reclist</value>
+  </data>
+  <data name="STR_COMMAND_CHECK_RECLIST_EXAMPLE1" xml:space="preserve">
+    <value>check_reclist "%Reclist name%"</value>
+  </data>
+  <data name="STR_COMMAND_CHECK_RECLIST_EXAMPLE2" xml:space="preserve">
+    <value>check_reclist "CVC RUS"</value>
+  </data>
+  <data name="STR_COMMAND_CHECK_RECLIST_FINISH" xml:space="preserve">
+    <value>Reclist check finished.</value>
+  </data>
+  <data name="STR_COMMAND_CHECK_RECLIST_LOADED" xml:space="preserve">
+    <value>Reclist loaded succesfully.</value>
+  </data>
+  <data name="STR_COMMAND_CHECK_RECLIST_MASK_CANT_READ_YAML" xml:space="preserve">
+    <value>Failed to read mask file. Check YAML syntax.</value>
+  </data>
+  <data name="STR_COMMAND_CHECK_RECLIST_MASK_IS_MISSING" xml:space="preserve">
+    <value>No mask file found. It's not an error. All possible aliases will be generated from all positions.</value>
+  </data>
+  <data name="STR_COMMAND_CHECK_RECLIST_MASK_IS_OK" xml:space="preserve">
+    <value>Mask loaded successfully.</value>
+  </data>
+  <data name="STR_COMMAND_CHECK_RECLIST_WTR_IS_MISSING" xml:space="preserve">
+    <value>No WTR file found. It's not an error. Default alias style will be applied</value>
+  </data>
+  <data name="STR_COMMAND_CHECK_RECLIST_WTR_IS_OK" xml:space="preserve">
+    <value>Found WTR file.</value>
+  </data>
+  <data name="STR_COMMAND_ERROR_CANT_READ_RECLIST" xml:space="preserve">
+    <value>YAML is correct, but reclist loading failed. Contact the developer.</value>
+  </data>
+  <data name="STR_COMMAND_ERROR_CANT_READ_YAML" xml:space="preserve">
+    <value>Failed to read file. Check YAML syntax.</value>
+  </data>
   <data name="STR_COMMAND_ERROR_FILE_ALREADY_EXISTS" xml:space="preserve">
     <value>File '{0}' already exists!</value>
   </data>

@@ -37,7 +37,7 @@ namespace WavConfigCore.Reader
                 return reclist;
 
             reclist.Name = Path.GetFileNameWithoutExtension(filename);
-            reclist.WavMask = WavMaskReader.Current.Read(PathResolver.Current.Reclist(reclist.Name + ".mask"));
+            reclist.WavMask = WavMaskReader.Current.Read(PathResolver.Current.Mask(reclist.Name));
 
             string[] lines = File.ReadAllLines(filename, Encoding.UTF8);
             if (lines.Length < 2)

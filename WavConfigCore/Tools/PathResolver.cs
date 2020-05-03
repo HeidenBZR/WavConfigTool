@@ -5,7 +5,7 @@ namespace WavConfigCore.Tools
 {
     public class PathResolver
     {
-        public const string SETTINGS_EXT = ".reclist";
+        public const string RECLIST_EXT = ".reclist";
         public const string REPLACEMENT_EXT = ".wtr";
         public const string PROJECT_EXT = ".wcp";
         public const string MASK_EXT = ".mask";
@@ -54,6 +54,11 @@ namespace WavConfigCore.Tools
         public string Reclist(string filename = "")
         {
             return Path.Combine(ResourcesDir, "Settings", filename);
+        }
+
+        public string Mask(string filename = "")
+        {
+            return Path.Combine(ResourcesDir, "Settings", filename + MASK_EXT);
         }
 
         public string Log()

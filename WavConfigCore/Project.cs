@@ -90,7 +90,7 @@ namespace WavConfigCore
         {
             Reclist = reclist;
             if (Reclist.IsLoaded)
-                Reader.ReclistReader.Current.Write(PathResolver.Current.Reclist(Reclist.Name + PathResolver.SETTINGS_EXT), Reclist);
+                Reader.ReclistReader.Current.Write(PathResolver.Current.Reclist(Reclist.Name + PathResolver.RECLIST_EXT), Reclist);
             IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
             CheckEnabled();
             ProjectChanged();

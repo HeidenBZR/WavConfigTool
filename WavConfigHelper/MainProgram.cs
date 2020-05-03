@@ -5,7 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WavConfigCore.Tools;
 using WavConfigHelper.Properties;
+using WavConfigCore.Reader.IO;
+using YamlDotNet.Serialization;
+using WavConfigCore.Reader;
 
 namespace WavConfigHelper
 {
@@ -25,14 +29,16 @@ namespace WavConfigHelper
                 CONSOLE_COMMAND_EXIT,
                 CONSOLE_COMMAND_HELP,
                 CONSOLE_COMMAND_IMPORT_PROJECT,
-                CONSOLE_COMMAND_IMPORT_RECLIST
+                CONSOLE_COMMAND_IMPORT_RECLIST,
+                CONSOLE_COMMAND_CHECK_RECLIST
             };
             commandListHelp = new Dictionary<string, string>
             {
                 [CONSOLE_COMMAND_EXIT] = Localization.STR_COMMAND_EXIT_DESC,
                 [CONSOLE_COMMAND_HELP] = Localization.STR_COMMAND_HELP_DESC,
                 [CONSOLE_COMMAND_IMPORT_PROJECT] = Localization.STR_COMMAND_IMPORT_PROJECT_DESC,
-                [CONSOLE_COMMAND_IMPORT_RECLIST] = Localization.STR_COMMAND_IMPORT_RECLIST_DESC
+                [CONSOLE_COMMAND_IMPORT_RECLIST] = Localization.STR_COMMAND_IMPORT_RECLIST_DESC,
+                [CONSOLE_COMMAND_CHECK_RECLIST] = Localization.STR_COMMAND_CHECK_RECLIST_DESC
             };
             commandListExamples = new Dictionary<string, string[]>
             {
@@ -45,6 +51,11 @@ namespace WavConfigHelper
                 {
                     Localization.STR_COMMAND_IMPORT_RECLIST_EXAMPLE1,
                     Localization.STR_COMMAND_IMPORT_RECLIST_EXAMPLE2
+                },
+                [CONSOLE_COMMAND_CHECK_RECLIST] = new string[]
+                {
+                    Localization.STR_COMMAND_CHECK_RECLIST_EXAMPLE1,
+                    Localization.STR_COMMAND_CHECK_RECLIST_EXAMPLE2
                 }
             };
         }
@@ -61,6 +72,7 @@ namespace WavConfigHelper
         private const string CONSOLE_COMMAND_HELP = "help";
         private const string CONSOLE_COMMAND_IMPORT_PROJECT = "import_project";
         private const string CONSOLE_COMMAND_IMPORT_RECLIST = "import_reclist";
+        private const string CONSOLE_COMMAND_CHECK_RECLIST  = "check_reclist";
 
         protected override bool TryGetAction(string command, string[] commandParams)
         {
@@ -84,6 +96,10 @@ namespace WavConfigHelper
 
                 case CONSOLE_COMMAND_IMPORT_RECLIST:
                     TryImportReclist(commandParams);
+                    break;
+
+                case CONSOLE_COMMAND_CHECK_RECLIST:
+                    CheckReclist(commandParams);
                     break;
 
                 default:
@@ -113,7 +129,24 @@ namespace WavConfigHelper
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(error);
-            Console.ForegroundColor = ConsoleColor.Black;
+            ResetForeground();
+        }
+
+        private void PrintSuccess(string text)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(text);
+            ResetForeground();
+        }
+
+        private void ResetForeground()
+        {
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
+        private void PrintMessage(string text)
+        {
+            Console.WriteLine(text);
         }
 
         private bool CheckArgsCount(string[] commandParams, int count, string command)
@@ -154,7 +187,7 @@ namespace WavConfigHelper
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             PrintError(Localization.STR_COMMAND_FAILED);
-            Console.ForegroundColor = ConsoleColor.White;
+            ResetForeground();
         }
 
         private void CommandSuccess()
@@ -162,7 +195,7 @@ namespace WavConfigHelper
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(Localization.STR_COMMAND_SUCCESS);
-            Console.ForegroundColor = ConsoleColor.White;
+            ResetForeground();
         }
 
         private void TryImportProject(string[] commandParams)
@@ -200,6 +233,87 @@ namespace WavConfigHelper
                 CommandSuccess();
             else
                 CommandFailed();
+        }
+
+        private void CheckReclist(string[] commandParams)
+        {
+            var command = CONSOLE_COMMAND_CHECK_RECLIST;
+
+            if (!CheckArgsCount(commandParams, 1, command))
+                return;
+
+            var reclistName = commandParams[0];
+            var filename = PathResolver.Current.Reclist(reclistName + PathResolver.RECLIST_EXT);
+            PrintMessage("Filename: " + filename);
+            if (!CheckFileExists(filename, mustExist: true))
+                return;
+
+            IOReclist ioReclist = null;
+            using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
+            {
+                var serializer = new Deserializer();
+                try
+                {
+                    ioReclist = serializer.Deserialize(new StreamReader(fileStream, Encoding.UTF8), typeof(IOReclist)) as IOReclist;
+                }
+                catch { }
+            }
+
+            if (ioReclist == null)
+            {
+                PrintError(Localization.STR_COMMAND_ERROR_CANT_READ_YAML);
+                return;
+            }
+
+            var reclist = ReclistReader.Current.Read(reclistName);
+
+            if (reclist == null || !reclist.IsLoaded)
+            {
+                PrintError(Localization.STR_COMMAND_ERROR_CANT_READ_RECLIST);
+                return;
+            }
+
+            PrintSuccess(Localization.STR_COMMAND_CHECK_RECLIST_LOADED);
+
+            var replacerFilename = PathResolver.Current.Replacer(reclist.Name);
+            PrintMessage("Replacer filename: " + replacerFilename);
+            if (!File.Exists(replacerFilename))
+            {
+                PrintMessage(Localization.STR_COMMAND_CHECK_RECLIST_WTR_IS_MISSING);
+            }
+            else
+            {
+                PrintSuccess(Localization.STR_COMMAND_CHECK_RECLIST_WTR_IS_OK);
+            }
+
+            var maskFilename = PathResolver.Current.Mask(reclist.Name);
+            PrintMessage("Mask filename: " + maskFilename);
+            if (!File.Exists(maskFilename))
+            {
+                PrintMessage(Localization.STR_COMMAND_CHECK_RECLIST_MASK_IS_MISSING);
+            }
+            else
+            {
+                var serializer = new Deserializer();
+                IOWavMask ioWavMask = null;
+                using (var fileStream = new FileStream(maskFilename, FileMode.OpenOrCreate))
+                {
+                    try
+                    {
+                        ioWavMask = serializer.Deserialize(new StreamReader(fileStream, Encoding.UTF8), typeof(IOWavMask)) as IOWavMask;
+                    }
+                    catch { }
+                }
+                if (ioWavMask == null)
+                {
+                    PrintError(Localization.STR_COMMAND_CHECK_RECLIST_MASK_CANT_READ_YAML);
+                    return;
+                }
+
+                PrintSuccess(Localization.STR_COMMAND_CHECK_RECLIST_MASK_IS_OK);
+            }
+
+            PrintSuccess(Localization.STR_COMMAND_CHECK_RECLIST_FINISH);
         }
 
         #endregion
