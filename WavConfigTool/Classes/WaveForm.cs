@@ -51,6 +51,11 @@ namespace WavConfigTool.Classes
             reader = new AudioFileReader(Path);
         }
 
+        public double GetSampleWidth()
+        {
+            return Settings.RealToViewX(1.0 / WaveFormat.SampleRate * WaveFormat.Channels * 1000);
+        }
+
         public void CollectData()
         {
             WaveFormat = reader.WaveFormat;
@@ -62,8 +67,7 @@ namespace WavConfigTool.Classes
             int yBase = height / 2;
             double yScale = Settings.UserScaleY;
             double yScaleBase = -((double)height - 3) / 2;
-
-            double sampleWidth = Settings.RealToViewX(1.0 / WaveFormat.BitsPerSample * WaveFormat.Channels / X_SCALE_ERROR);
+            double sampleWidth = GetSampleWidth();
             double currPosition = 0;
             // Data for current column
             int currColumn = 0;
@@ -146,8 +150,6 @@ namespace WavConfigTool.Classes
         }
 
         private const float LINE_WEIGHT = 0.5f;
-        // HACK: can't find why it counts wrong, for now i'm just leaving this constant
-        public const double X_SCALE_ERROR = 1.3782;
 
         private List<Point[]> points;
         private AudioFileReader reader;

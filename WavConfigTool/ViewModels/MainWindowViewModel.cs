@@ -470,19 +470,7 @@ namespace WavConfigTool.ViewModels
 
         public ICommand DebugCommand => new DelegateCommand(() =>
         {
-            foreach (var projectLine in Project.ProjectLines)
-            {
-                foreach (var type in new[] { PhonemeType.Consonant, PhonemeType.Rest, PhonemeType.Vowel })
-                {
-                    var points = projectLine.PointsOfType(type, false);
-                    for (var i = 0; i < points.Count; i++)
-                    {
-                        points[i] = (int)(points[i] * 1.4 / WaveForm.X_SCALE_ERROR);
-                    }
-                }
-            }
-            Project.FireSaveMe();
-            ReloadProjectCommand.Execute(0);
+
         }, () => IsDebug);
 
 
