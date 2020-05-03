@@ -130,6 +130,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\FileAssociation.cs" />
+    <Compile Include="Classes\Frq.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Classes\ExceptionCatcher.cs" />
     <Compile Include="Styles\Styles.cs" />

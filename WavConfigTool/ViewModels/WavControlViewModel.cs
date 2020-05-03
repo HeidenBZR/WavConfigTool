@@ -19,7 +19,7 @@ namespace WavConfigTool.ViewModels
     {
         public ProjectLine ProjectLine { get; private set; }
         public WaveForm WaveForm { get; set; }
-
+        public Frq Frq { get; set; }
 
         public string Filename { get => ProjectLine.Recline.Name; }
         public ObservableCollection<Phoneme> Phonemes => new ObservableCollection<Phoneme>(ProjectLine.Recline.Phonemes);
@@ -247,6 +247,8 @@ namespace WavConfigTool.ViewModels
                 WaveForm = new WaveForm(SampleName);
                 WaveForm.Start(Height);
                 WaveForm.CollectData();
+                Frq = new Frq();
+                Frq.Load(SampleName);
             })).ConfigureAwait(true);
 
             App.MainDispatcher.Invoke(() =>
