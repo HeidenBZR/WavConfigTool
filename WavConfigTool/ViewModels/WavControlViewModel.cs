@@ -411,7 +411,7 @@ namespace WavConfigTool.ViewModels
                         throw new Exception("error on draw frq");
                     points.Add(new FrqPointViewModel(Settings.RealToViewX(x), y));
                 }
-                x += Settings.RealToViewX(9.86); // IDK!
+                x += WaveForm.GetSampleWidth() * Frq.SamplesPerFrq;
             }
             this.FrqPoints = new ObservableCollection<FrqPointViewModel>(points);
         }
