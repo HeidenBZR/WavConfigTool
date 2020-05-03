@@ -53,7 +53,7 @@ namespace WavConfigTool.Classes
 
         public double GetSampleWidth()
         {
-            return Settings.RealToViewX(1.0 / WaveFormat.SampleRate * WaveFormat.Channels * 1000);
+            return Settings.RealToViewX(WaveFormat.Channels * 1000.0 / WaveFormat.SampleRate);
         }
 
         public void CollectData()

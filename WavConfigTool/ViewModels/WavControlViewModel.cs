@@ -403,15 +403,15 @@ namespace WavConfigTool.ViewModels
 
             foreach (var point in averagedPoints)
             {
-                if (point != 0)
+                var saturatedY = point / maxVal;
+                var y = middleHeight - saturatedY * middleHeight;
+                if (y != 0)
                 {
-                    var saturatedY = point / maxVal;
-                    var y = middleHeight - saturatedY * middleHeight;
                     if (y < 0 || y > height)
                         throw new Exception("error on draw frq");
                     points.Add(new FrqPointViewModel(Settings.RealToViewX(x), y));
                 }
-                x += WaveForm.GetSampleWidth() * Frq.SamplesPerFrq;
+                x += Settings.RealToViewX(WaveForm.WaveFormat.Channels * 1000.0 * Frq.SamplesPerFrq / WaveForm.WaveFormat.SampleRate);
             }
             this.FrqPoints = new ObservableCollection<FrqPointViewModel>(points);
         }
