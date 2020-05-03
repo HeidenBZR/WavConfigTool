@@ -6,25 +6,35 @@
              xmlns:local="clr-namespace:WavConfigTool.UserControls"
              xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
              xmlns:vt="clr-namespace:WavConfigTool.ViewTools"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              mc:Ignorable="d"
              d:DesignHeight="20"
-             Width="220">
+             Width="400">
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:KeyToCommand 
+            Command="{Binding GotoCommand}"
+            KeyGesture="Enter" />
+    </dxmvvm:Interaction.Behaviors>
     <d:UserControl.DataContext>
         <vm:GotoUserControlViewModel />
     </d:UserControl.DataContext>
-    <ComboBox   
-        ItemsSource="{Binding Items}"
-        SelectedItem="{Binding SelectedItem}"
-        IsTextSearchEnabled="True"
-        IsEditable="True"
-        Text="{Binding SelectedItem.ViewName, Mode=OneWay}">
-        <ComboBox.ItemTemplate>
-            <ItemContainerTemplate>
-                <Label 
-                    Content="{Binding ViewName}"
-                    Margin="0"
-                    Padding="2"/>
-            </ItemContainerTemplate>
-        </ComboBox.ItemTemplate>
-    </ComboBox>
+    <StackPanel
+        Orientation="Horizontal">
+        <ComboBox ItemsSource="{Binding Items}"
+                  SelectedItem="{Binding SelectedItem}"
+                  IsTextSearchEnabled="True"
+                  Width="200"
+                  IsEditable="True"
+                  TextSearch.TextPath="ViewName">
+            <ComboBox.ItemTemplate>
+                <ItemContainerTemplate>
+                    <Label Content="{Binding ViewName}"
+                           Margin="0"
+                           Padding="2" />
+                </ItemContainerTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <Button Content="Goto"
+                Command="{Binding GotoCommand}" />
+    </StackPanel>
 </UserControl>

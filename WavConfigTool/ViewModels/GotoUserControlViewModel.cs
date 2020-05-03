@@ -16,7 +16,7 @@ namespace WavConfigTool.ViewModels
         public event GotoHandler OnGoto;
 
         public ObservableCollection<WavControlBaseViewModel> Items { get; set; }
-        public WavControlBaseViewModel SelectedItem { get => selectedItem; set { selectedItem = value; Goto(selectedItem); } }
+        public WavControlBaseViewModel SelectedItem { get; set; }
 
         public void SetItems(ObservableCollection<WavControlBaseViewModel> items)
         {
@@ -25,8 +25,6 @@ namespace WavConfigTool.ViewModels
         }
 
         #region private
-
-        private WavControlBaseViewModel selectedItem;
 
         private void Goto(WavControlBaseViewModel model)
         {
@@ -39,8 +37,8 @@ namespace WavConfigTool.ViewModels
 
         public ICommand GotoCommand => new DelegateCommand(delegate
         {
-            Goto(selectedItem);
-        }, () => Items != null && selectedItem != null);
+            Goto(SelectedItem);
+        }, () => Items != null && SelectedItem != null);
 
         #endregion
 
