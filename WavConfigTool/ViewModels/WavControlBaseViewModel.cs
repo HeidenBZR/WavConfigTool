@@ -14,6 +14,7 @@ namespace WavConfigTool.ViewModels
 
         public virtual bool IsCompleted => false;
         public virtual bool IsEnabled => true;
+        public virtual string ViewName => "{NAME}";
 
         // TODO: Move base things here
 

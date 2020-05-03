@@ -221,6 +221,8 @@
                           Margin="5,0,5,0"
                           IsChecked="{Binding MustHideCompleted}"
                           Content="Hide completed" />
+                <uc:GotoUserControl
+                          DataContext="{Binding GotoUserControlViewModel}"/>
             </StackPanel>
         </Border>
         <Border Grid.Row="2"

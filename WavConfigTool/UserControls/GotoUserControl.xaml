@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="WavConfigTool.UserControls.GotoUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WavConfigTool.UserControls"
+             xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
+             xmlns:vt="clr-namespace:WavConfigTool.ViewTools"
+             mc:Ignorable="d"
+             d:DesignHeight="20"
+             Width="220">
+    <d:UserControl.DataContext>
+        <vm:GotoUserControlViewModel />
+    </d:UserControl.DataContext>
+    <ComboBox   
+        ItemsSource="{Binding Items}"
+        SelectedItem="{Binding SelectedItem}"
+        IsTextSearchEnabled="True"
+        IsEditable="True"
+        Text="{Binding SelectedItem.ViewName, Mode=OneWay}">
+        <ComboBox.ItemTemplate>
+            <ItemContainerTemplate>
+                <Label 
+                    Content="{Binding ViewName}"
+                    Margin="0"
+                    Padding="2"/>
+            </ItemContainerTemplate>
+        </ComboBox.ItemTemplate>
+    </ComboBox>
+</UserControl>

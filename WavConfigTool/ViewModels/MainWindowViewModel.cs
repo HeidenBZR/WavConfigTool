@@ -32,6 +32,7 @@ namespace WavConfigTool.ViewModels
         public PagerViewModel WavControlsPagerViewModel { get; set; }
         public PagerViewModel OtoPagerViewModel { get; set; }
         public ProjectManager ProjectManager { get; private set; } = ProjectManager.Current;
+        public GotoUserControlViewModel GotoUserControlViewModel { get; set; }
         public OtoGenerator OtoGenerator { get; private set; }
 
         public int AttackC { get => Project == null ? 0 : Project.AttackC; set { Project.AttackC = value; TrySaveProject(); RedrawPoints(); } }
@@ -44,12 +45,12 @@ namespace WavConfigTool.ViewModels
         public bool MustHideNotEnabled
         {
             get => Project != null && Project.ProjectOptions.MustHideNotEnabled;
-            set { Project.ProjectOptions.MustHideNotEnabled = value; PagerViewModel.RequestUpdateCollection(); }
+            set { Project.ProjectOptions.MustHideNotEnabled = value; UpdatePagerCollection(); }
         }
         public bool MustHideCompleted
         {
             get => Project != null && Project.ProjectOptions.MustHideCompleted;
-            set { Project.ProjectOptions.MustHideCompleted = value; PagerViewModel.RequestUpdateCollection(); }
+            set { Project.ProjectOptions.MustHideCompleted = value; UpdatePagerCollection(); }
         }
 
         public string Prefix { get => Project?.Prefix; set { Project.Prefix = value; TrySaveProject(); } }
@@ -161,7 +162,7 @@ namespace WavConfigTool.ViewModels
                     control.Ready();
                 }
                 PagerViewModel.ReadProjectOption(Project.ProjectOptions);
-                PagerViewModel.RequestUpdateCollection();
+                UpdatePagerCollection();
                 PagerViewModel.WaitForPageLoadedAndLoadRest();
                 OtoGenerator = new OtoGenerator(Project);
             }
@@ -170,6 +171,19 @@ namespace WavConfigTool.ViewModels
             {
                 Refresh();
             });
+        }
+
+        private void HandleGoto(WavControlBaseViewModel model)
+        {
+            var wavControl = model as WavControlViewModel;
+            if (IsOtoPreviewMode && wavControl != null)
+            {
+                SetOtoMode(wavControl);
+            }
+            else
+            {
+                PagerViewModel.Goto(model);
+            }
         }
 
         private void WriteProjectOptions()
@@ -329,6 +343,15 @@ namespace WavConfigTool.ViewModels
             }
         }
 
+        private void UpdatePagerCollection()
+        {
+            GotoUserControlViewModel = null;
+            PagerViewModel.RequestUpdateCollection();
+            GotoUserControlViewModel = new GotoUserControlViewModel();
+            GotoUserControlViewModel.SetItems(PagerViewModel.Collection);
+            GotoUserControlViewModel.OnGoto += HandleGoto;
+        }
+
         #endregion
 
         #region Commands
@@ -432,7 +455,7 @@ namespace WavConfigTool.ViewModels
             ProjectManager.LoadProject(Settings.ProjectFile);
             LoadProjectAsync();
             Refresh();
-            PagerViewModel.RequestUpdateCollection();
+            UpdatePagerCollection();
         }, () => !IsLoading);
 
         public ICommand SetWavConfigMode => new DelegateCommand(() =>

@@ -142,6 +142,9 @@
     <Compile Include="UserControls\Gear.xaml.cs">
       <DependentUpon>Gear.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\GotoUserControl.xaml.cs">
+      <DependentUpon>GotoUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\OtoPreviewControl.xaml.cs">
       <DependentUpon>OtoPreviewControl.xaml</DependentUpon>
     </Compile>
@@ -158,6 +161,7 @@
     <Compile Include="UserControls\WavZone.xaml.cs">
       <DependentUpon>WavZone.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\GotoUserControlViewModel.cs" />
     <Compile Include="ViewTools\ViewManager.cs" />
     <Compile Include="ViewModels\OtoPreviewControlViewModel.cs" />
     <Compile Include="ViewModels\WavControlBaseViewModel.cs" />
@@ -260,6 +264,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\Gear.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\GotoUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

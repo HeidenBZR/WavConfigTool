@@ -169,6 +169,17 @@ namespace WavConfigTool.ViewModels
             }
         }
 
+        public void Goto(WavControlBaseViewModel model)
+        {
+            var index = Collection.IndexOf(model);
+            if (index >= 0)
+            {
+                int page = index / PageSize;
+                if (page != CurrentPage)
+                    SetPageCommand.Execute(page);
+            }
+        }
+
         #region private
 
         private ObservableCollection<WavControlBaseViewModel> pageContent = new ObservableCollection<WavControlBaseViewModel>();
