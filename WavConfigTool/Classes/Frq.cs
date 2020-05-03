@@ -11,6 +11,10 @@ namespace WavConfigTool.Classes
     {
         public double[] Points { get; set; }
         public string Name;
+        public double AverageFrequency;
+        public int SamplesPerFrq;
+
+        public string Title;
 
         public void Load(string wavFilename)
         {
@@ -42,18 +46,15 @@ namespace WavConfigTool.Classes
         {
             byte[] bytes;
 
-            string title;
-            int samplesPerFrq;
-            double averageFrequency;
             List<double> frequency = new List<double>();
             List<double> amplitude = new List<double>();
             using (var s = new FileStream(Name, FileMode.Open))
             {
                 bytes = new byte[24];
                 s.Read(bytes, offset: 0, count: 24);
-                title = Encoding.ASCII.GetString(bytes, index: 0, count: 8);
-                samplesPerFrq = BitConverter.ToInt32(bytes, startIndex: 8);
-                averageFrequency = BitConverter.ToDouble(bytes, startIndex: 12);
+                Title = Encoding.ASCII.GetString(bytes, index: 0, count: 8);
+                SamplesPerFrq = BitConverter.ToInt32(bytes, startIndex: 8);
+                AverageFrequency = BitConverter.ToDouble(bytes, startIndex: 12);
                 for (int offset = 0; offset + 16 < s.Length; offset += 16)
                 {
                     bytes = new byte[16];

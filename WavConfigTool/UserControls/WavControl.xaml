@@ -213,7 +213,14 @@
             </Canvas>
             <Canvas
                 Name="Points"
-                Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}">
+                    Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}">
+                <ItemsControl 
+                    Name="FrqList"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    ItemTemplate="{DynamicResource FrqPointsConrolItem}"
+                    ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+                    ItemsSource="{Binding FrqPoints, Mode=OneWay}" />
                 <ItemsControl
                     Name="ConsonantZones"
                     HorizontalAlignment="Left"

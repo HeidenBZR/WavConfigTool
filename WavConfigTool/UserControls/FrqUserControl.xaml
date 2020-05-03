@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="WavConfigTool.UserControls.FrqUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewtools="clr-namespace:WavConfigTool.ViewTools"
+             xmlns:local="clr-namespace:WavConfigTool.UserControls"
+             mc:Ignorable="d" 
+            SnapsToDevicePixels="True"
+             d:DesignHeight="2"
+             d:DesignWidth="2">
+    <Canvas Canvas.Left="-1">
+        <Thumb Canvas.Left="{Binding X, FallbackValue=10, TargetNullValue=10}"
+               Canvas.Top="{Binding Y, FallbackValue=50, TargetNullValue=50}"
+               SnapsToDevicePixels="True"
+               Width="2"
+               Height="2">
+            <Thumb.Template>
+                <ControlTemplate>
+                    <Rectangle Fill="Blue"></Rectangle>
+                </ControlTemplate>
+            </Thumb.Template>
+        </Thumb>
+    </Canvas>
+</UserControl>
