@@ -32,18 +32,18 @@ namespace WavConfigCore.Reader
 
         public WavMask Read(string filename)
         {
-            var wavMask = ReadYaml(filename);
-            return wavMask ?? new WavMask(false);
+            var ioWavMask = ReadYaml(filename);
+            return ioWavMask != null ? GetWavMask(ioWavMask) : new WavMask(false);
         }
 
         public void Write(string filename, WavMask wavMask)
         {
             if (wavMask == null || wavMask.WavGroups == null)
                 return;
-            WriteYaml(filename, wavMask);
+            WriteYaml(filename, GetIOWavMask(wavMask));
         }
 
-        private WavMask ReadYaml(string filename)
+        public IOWavMask ReadYaml(string filename)
         {
             using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
             {
@@ -54,15 +54,14 @@ namespace WavConfigCore.Reader
                     ioWavMask = serializer.Deserialize(new StreamReader(fileStream, Encoding.UTF8), typeof(IOWavMask)) as IOWavMask;
                 }
                 catch { }
-                return ioWavMask == null ? null : GetWavMask(ioWavMask);
+                return ioWavMask;
             }
         }
 
-        private void WriteYaml(string filename, WavMask wavMask)
+        public void WriteYaml(string filename, IOWavMask ioWavMask)
         {
             using (var writer = new StreamWriter(filename, false, Encoding.UTF8))
             {
-                var ioWavMask = GetIOWavMask(wavMask);
                 var serializer = new Serializer();
                 serializer.Serialize(writer, ioWavMask, typeof(IOWavMask));
             }
