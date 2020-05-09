@@ -42,7 +42,7 @@ namespace WavConfigCore.Reader
             WriteYaml(filename, reclist);
         }
 
-        private Reclist ReadYaml(string name)
+        public Reclist ReadYaml(string name)
         {
             var filename = PathResolver.Current.Reclist(name + PathResolver.RECLIST_EXT);
             IOReclist ioReclist = null;
@@ -58,7 +58,7 @@ namespace WavConfigCore.Reader
             return ioReclist == null ? null : GetReclist(ioReclist, name);
         }
 
-        private void WriteYaml(string filename, Reclist reclist)
+        public void WriteYaml(string filename, Reclist reclist)
         {
             using (var writer = new StreamWriter(filename, false, Encoding.UTF8))
             {

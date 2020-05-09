@@ -36,7 +36,7 @@ namespace WavConfigCore.Reader
             return project ?? new Project();
         }
 
-        private Project ReadYaml(string filename)
+        public Project ReadYaml(string filename)
         {
             using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
             {
@@ -56,7 +56,7 @@ namespace WavConfigCore.Reader
             WriteYaml(filename, project);
         }
 
-        private void WriteYaml(string filename, Project project)
+        public void WriteYaml(string filename, Project project)
         {
             using (var writer = new StreamWriter(filename, false, Encoding.UTF8))
             {
