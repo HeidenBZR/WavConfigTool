@@ -32,11 +32,11 @@ namespace WavConfigCore.Reader
 
         public Project Read(string filename)
         {
-            var project = ReadYaml(filename);
-            return project ?? new Project();
+            var ioProject = ReadYaml(filename);
+            return ioProject != null ? GetProject(ioProject, filename) : new Project();
         }
 
-        public Project ReadYaml(string filename)
+        public IOProject ReadYaml(string filename)
         {
             using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
             {
@@ -47,20 +47,19 @@ namespace WavConfigCore.Reader
                     ioProject = serializer.Deserialize(new StreamReader(fileStream, Encoding.UTF8), typeof(IOProject)) as IOProject;
                 }
                 catch { }
-                return ioProject == null ? null : GetProject(ioProject, filename);
+                return ioProject;
             }
         }
 
         public void Write(string filename, Project project)
         {
-            WriteYaml(filename, project);
+            WriteYaml(filename, GetIOProject(project));
         }
 
-        public void WriteYaml(string filename, Project project)
+        public void WriteYaml(string filename, IOProject ioProject)
         {
             using (var writer = new StreamWriter(filename, false, Encoding.UTF8))
             {
-                var ioProject = GetIOProject(project);
                 var serializer = new Serializer();
                 serializer.Serialize(writer, ioProject, typeof(IOProject));
             }

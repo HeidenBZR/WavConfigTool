@@ -33,16 +33,16 @@ namespace WavConfigCore.Reader
 
         public Reclist Read(string name)
         {
-            var reclist = ReadYaml(name);
-            return reclist ?? new Reclist();
+            var ioReclist = ReadYaml(name);
+            return ioReclist != null ? GetReclist(ioReclist, name) : new Reclist();
         }
 
         public void Write(string filename, Reclist reclist)
         {
-            WriteYaml(filename, reclist);
+            WriteYaml(filename, GetIOReclist(reclist));
         }
 
-        public Reclist ReadYaml(string name)
+        public IOReclist ReadYaml(string name)
         {
             var filename = PathResolver.Current.Reclist(name + PathResolver.RECLIST_EXT);
             IOReclist ioReclist = null;
@@ -55,14 +55,13 @@ namespace WavConfigCore.Reader
                 }
                 catch { }
             }
-            return ioReclist == null ? null : GetReclist(ioReclist, name);
+            return ioReclist;
         }
 
-        public void WriteYaml(string filename, Reclist reclist)
+        public void WriteYaml(string filename, IOReclist ioReclist)
         {
             using (var writer = new StreamWriter(filename, false, Encoding.UTF8))
             {
-                var ioReclist = GetIOReclist(reclist);
                 var serializer = new Serializer();
                 serializer.Serialize(writer, ioReclist, typeof(IOReclist));
             }
