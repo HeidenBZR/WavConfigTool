@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using WavConfigTool.ViewModels;
+using Brush = System.Drawing.Brush;
+using Color = System.Drawing.Color;
+using Point = System.Windows.Point;
 
 namespace WavConfigTool.Classes
 {
@@ -40,7 +47,69 @@ namespace WavConfigTool.Classes
             Name = null;
         }
 
+        public Point[] CalculateVisualPoints(WaveForm waveForm)
+        {
+            var height = WavControlBaseViewModel.GlobalHeight;
+            var middleHeight = WavControlBaseViewModel.GlobalHeight / 2;
+
+            double maxVal = 0;
+            var averagedPoints = new List<double>();
+            foreach (var point in Points)
+            {
+                var average = point - AverageFrequency;
+                averagedPoints.Add(average);
+                if (average != 0 && maxVal < Math.Abs(average))
+                    maxVal = Math.Abs(average);
+            }
+
+            var step = Settings.RealToViewX(waveForm.WaveFormat.Channels * 1000.0 * SamplesPerFrq /
+                                            waveForm.WaveFormat.SampleRate);
+
+            var x = step / 2;
+            var points = new List<Point>();
+            for (var i = 1; i < averagedPoints.Count; i++)
+            {
+                var point = averagedPoints[i];
+                var saturatedY = point / maxVal;
+                var y = middleHeight - saturatedY * middleHeight;
+                if (y != height)
+                {
+                    if (y < 0 || y > height)
+                        throw new Exception("error on draw frq");
+
+                    points.Add(new Point(x, y));
+                }
+
+                x += step;
+            }
+
+            return points.ToArray();
+        }
+
+        public ImageSource DrawPoints(Point[] points, float height)
+        {
+            var width = (int) (points[points.Length - 1].X + 1);
+            var res = new Bitmap(width, (int)height);
+            using (Brush fillBrush = new SolidBrush(color))
+            using (Graphics g = Graphics.FromImage(res))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                foreach (var p in points)
+                {
+                    g.FillRectangle(fillBrush, (float)p.X, (float)p.Y, SIZE, SIZE);
+                }
+            }
+
+            var bitmapImage = WaveForm.Bitmap2BitmapImage(res);
+            res.Dispose();
+            return bitmapImage;
+        }
+
         #region private
+
+        private readonly Color color = Color.FromArgb( 200, 0, 250);
+        private readonly Color stroke = Color.FromArgb( 100, 0, 150);
+        private const int SIZE = 2;
 
         private void Read()
         {

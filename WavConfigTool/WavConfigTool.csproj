@@ -140,9 +140,6 @@
     <Compile Include="UserControls\DataPoint.xaml.cs">
       <DependentUpon>DataPoint.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\FrqUserControl.xaml.cs">
-      <DependentUpon>FrqUserControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\Gear.xaml.cs">
       <DependentUpon>Gear.xaml</DependentUpon>
     </Compile>
@@ -265,10 +262,6 @@
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="UserControls\DataPoint.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\FrqUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -20,7 +20,6 @@ namespace WavConfigTool.ViewModels
         public ProjectLine ProjectLine { get; private set; }
         public WaveForm WaveForm { get; set; }
         public Frq Frq { get; set; }
-        public ObservableCollection<FrqPointViewModel> FrqPoints { get; set; }
 
         public string Filename { get => ProjectLine.Recline.Name; }
         public ObservableCollection<Phoneme> Phonemes => new ObservableCollection<Phoneme>(ProjectLine.Recline.Phonemes);
@@ -50,6 +49,7 @@ namespace WavConfigTool.ViewModels
 
         public int Width => WaveForm != null ? WaveForm.VisualWidth : 4000;
         public ImageSource WavImage => GetWavImage();
+        public ImageSource FrqImage { get; set; }
 
         public PhonemeType PhonemeTypeRest => PhonemeType.Rest;
         public PhonemeType PhonemeTypeVowel => PhonemeType.Vowel;
@@ -378,47 +378,10 @@ namespace WavConfigTool.ViewModels
             Frq.Load(sampleName);
             if (Frq.Points != null)
             {
-                CreateFrqPoints();
+                var visualPoints = Frq.CalculateVisualPoints(WaveForm);
+                App.MainDispatcher.Invoke(() => { FrqImage = Frq.DrawPoints(visualPoints, Height); });
             }
-            RaisePropertyChanged(() => FrqPoints);
-        }
-
-        private void CreateFrqPoints()
-        {
-            var points = new List<FrqPointViewModel>();
-            var height = WavControlBaseViewModel.GlobalHeight;
-            var middleHeight = WavControlBaseViewModel.GlobalHeight / 2;
-
-            double maxVal = 0;
-            var averagedPoints = new List<double>();
-            foreach (var point in Frq.Points)
-            {
-                var average = point - Frq.AverageFrequency;
-                averagedPoints.Add(average);
-                if (average != 0 && maxVal < Math.Abs(average))
-                    maxVal = Math.Abs(average);
-            }
-
-            var step = Settings.RealToViewX(WaveForm.WaveFormat.Channels * 1000.0 * Frq.SamplesPerFrq /
-                                            WaveForm.WaveFormat.SampleRate);
-
-            var x = step / 2;
-            for (var i = 1; i < averagedPoints.Count; i++)
-            {
-                var point = averagedPoints[i];
-                var saturatedY = point / maxVal;
-                var y = middleHeight - saturatedY * middleHeight;
-                if (y != height)
-                {
-                    if (y < 0 || y > height)
-                        throw new Exception("error on draw frq");
-                    points.Add(new FrqPointViewModel(x, y));
-                }
-
-                x += step;
-            }
-
-            this.FrqPoints = new ObservableCollection<FrqPointViewModel>(points);
+            RaisePropertyChanged(() => FrqImage);
         }
 
         private bool PointIsLeft(PhonemeType type, int i)
@@ -452,7 +415,6 @@ namespace WavConfigTool.ViewModels
                 UpdatePoints();
                 IsLoaded = true;
                 IsLoading = false;
-                RaisePropertyChanged(() => FrqPoints);
                 HandleProjectLineChanged();
             });
         }

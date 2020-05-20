@@ -153,7 +153,7 @@ namespace WavConfigTool.Classes
             return val > halfHeight ? halfHeight : val < -halfHeight ? -halfHeight : val;
         }
 
-        private BitmapImage Bitmap2BitmapImage(Bitmap bitmap)
+        public static BitmapImage Bitmap2BitmapImage(Bitmap bitmap)
         {
             using (var memory = new MemoryStream())
             {

@@ -60,10 +60,6 @@
         <uc:WavZone />
     </DataTemplate>
 
-    <DataTemplate x:Key="FrqPointsControlItem">
-        <uc:FrqUserControl />
-    </DataTemplate>
-
     <Style x:Key="ToolsPanelButton" TargetType="{x:Type Button}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}" />
         <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
