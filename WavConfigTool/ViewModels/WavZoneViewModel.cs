@@ -148,26 +148,44 @@ namespace WavConfigTool.ViewModels
                     }
                     else if (Math.Abs(length - p_out) < 10)
                     {
-                        BorderPoints1 = new PointCollection
+                        if (decay > Out)
                         {
-                            new Point(0, Height),
-                            new Point(decay, Middle),
-                            new Point(decay, Height),
-                        };
-                        BorderPoints2 = new PointCollection
+                            BorderPoints1 = new PointCollection
+                            {
+                                new Point(0, Height),
+                                new Point(Out, Middle),
+                                new Point(Out, Height),
+                            };
+                            Points = new PointCollection
+                            {
+                                new Point(0, Height),
+                                new Point(Out, Middle),
+                                new Point(Out, Height),
+                            };
+                        }
+                        else
                         {
-                            new Point(decay, Middle),
-                            new Point(decay, Height),
-                            new Point(Out, Height),
-                            new Point(Out, Middle),
-                        };
-                        Points = new PointCollection
-                        {
-                            new Point(0, Height),
-                            new Point(decay, Middle),
-                            new Point(Out, Middle),
-                            new Point(Out, Height),
-                        };
+                            BorderPoints1 = new PointCollection
+                            {
+                                new Point(0, Height),
+                                new Point(decay, Middle),
+                                new Point(decay, Height),
+                            };
+                            BorderPoints2 = new PointCollection
+                            {
+                                new Point(decay, Middle),
+                                new Point(decay, Height),
+                                new Point(Out, Height),
+                                new Point(Out, Middle),
+                            };
+                            Points = new PointCollection
+                            {
+                                new Point(0, Height),
+                                new Point(decay, Middle),
+                                new Point(Out, Middle),
+                                new Point(Out, Height),
+                            };
+                        }
                     }
                     else
                     {
