@@ -219,7 +219,7 @@
                        Source="{Binding FrqImage}">
                 </Image>
             </Canvas>
-            <!--<Canvas
+            <Canvas
                 Name="Points"
                     Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}">
                 <ItemsControl
@@ -264,7 +264,7 @@
                     ItemTemplate="{DynamicResource WavPointItemsControlItem}"
                     ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                     ItemsSource="{Binding RestPoints, Mode=OneWay}" />
-            </Canvas>-->
+            </Canvas>
             <StackPanel
                 HorizontalAlignment="Left"
                 Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibility}}"
