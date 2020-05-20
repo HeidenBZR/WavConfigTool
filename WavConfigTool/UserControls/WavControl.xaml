@@ -218,49 +218,49 @@
                     Name="FrqList"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    ItemTemplate="{DynamicResource FrqPointsConrolItem}"
+                    ItemTemplate="{DynamicResource FrqPointsControlItem}"
                     ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                     ItemsSource="{Binding FrqPoints, Mode=OneWay}" />
                 <ItemsControl
                     Name="ConsonantZones"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    ItemTemplate="{DynamicResource WavZoneItemsConrolItem}"
+                    ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
                     ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                     ItemsSource="{Binding ConsonantZones, Mode=OneWay}" />
                 <ItemsControl
                     Name="VowelZones"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    ItemTemplate="{DynamicResource WavZoneItemsConrolItem}"
+                    ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
                     ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                     ItemsSource="{Binding VowelZones, Mode=OneWay}" />
                 <ItemsControl
                     Name="RestZones"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    ItemTemplate="{DynamicResource WavZoneItemsConrolItem}"
+                    ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
                     ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                     ItemsSource="{Binding RestZones, Mode=OneWay}" />
                 <ItemsControl
                     Name="ConsonantPoints"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
+                    ItemTemplate="{DynamicResource WavPointItemsControlItem}"
                     ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                     ItemsSource="{Binding ConsonantPoints, Mode=OneWay}" />
                 <ItemsControl
                     Name="VowelPoints"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
+                    ItemTemplate="{DynamicResource WavPointItemsControlItem}"
                     ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                     ItemsSource="{Binding VowelPoints, Mode=OneWay}" />
                 <ItemsControl
                     Name="RestPoints"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    ItemTemplate="{DynamicResource WavPointItemsConrolItem}"
+                    ItemTemplate="{DynamicResource WavPointItemsControlItem}"
                     ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                     ItemsSource="{Binding RestPoints, Mode=OneWay}" />
             </Canvas>

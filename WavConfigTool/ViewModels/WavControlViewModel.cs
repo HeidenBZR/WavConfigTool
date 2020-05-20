@@ -180,7 +180,6 @@ namespace WavConfigTool.ViewModels
             RaisePropertiesChanged(
                 () => Filename,
                 () => IsCompleted,
-                () => WavImage,
                 () => EditEnabled
             );
             RaisePropertiesChanged(

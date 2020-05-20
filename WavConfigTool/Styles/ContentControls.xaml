@@ -52,15 +52,15 @@
     </ItemsPanelTemplate>
 
 
-    <DataTemplate x:Key="WavPointItemsConrolItem">
+    <DataTemplate x:Key="WavPointItemsControlItem">
         <uc:WavPoint />
     </DataTemplate>
 
-    <DataTemplate x:Key="WavZoneItemsConrolItem">
+    <DataTemplate x:Key="WavZoneItemsControlItem">
         <uc:WavZone />
     </DataTemplate>
 
-    <DataTemplate x:Key="FrqPointsConrolItem">
+    <DataTemplate x:Key="FrqPointsControlItem">
         <uc:FrqUserControl />
     </DataTemplate>
 
