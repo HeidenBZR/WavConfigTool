@@ -1,9 +1,15 @@
 ﻿using DevExpress.Mvvm;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Media;
 using WavConfigTool.Classes;
 using WavConfigCore;
+using Brush = System.Windows.Media.Brush;
+using Color = System.Drawing.Color;
+using Point = System.Drawing.Point;
+using Pen = System.Drawing.Pen;
 
 namespace WavConfigTool.ViewModels
 {
@@ -17,16 +23,11 @@ namespace WavConfigTool.ViewModels
         public double Width => Out + Attack;
         public double Decay => ProjectManager.Current.Project.DecayOfType(Type);
 
-        public PointCollection Points { get; private set; }
-        public PointCollection BorderPoints1 { get; private set; }
-        public PointCollection BorderPoints2 { get; private set; }
-        public PointCollection BorderPoints3 { get; private set; }
-        public Brush BackgroundBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantZoneBrush"];
-        public Brush BorderBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantBackBrush"];
+        public ImageSource Image { get; private set; }
+        public SolidColorBrush BackgroundBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantZoneBrush"];
+        public SolidColorBrush BorderBrush { get; set; } = (SolidColorBrush)Application.Current.Resources["ConsonantBackBrush"];
 
         public WavZoneViewModel() { }
-
-        public string Name => $"Zone [{string.Join(", ", Points)}]";
 
         public int Height => WavControlBaseViewModel.GlobalHeight;
         public int Middle => Height / 2;
@@ -60,32 +61,34 @@ namespace WavConfigTool.ViewModels
             double outPlusAttack = Math.Min(Out + attack, length);
             outMinusAttack = outMinusAttack < 0 ? 0 : outMinusAttack;
             double decay = Settings.RealToViewX(Decay);
+            double[][] lines = null;
+            double[] points = null;
+            double width = Out;
             switch (Type)
             {
                 case PhonemeType.Consonant:
                     if (outMinusAttack > 0)
                     {
-                        BorderPoints1 = new PointCollection
+                        lines = new double[][]
                         {
-                            new Point(0, Height),
-                            new Point(0, Middle),
-                            new Point(outMinusAttack, Middle),
-                            new Point(outMinusAttack, Height),
+                            new double[]
+                            {
+                                outMinusAttack, Height,
+                                outMinusAttack, Middle
+                            },
                         };
                     }
-                    BorderPoints2 = new PointCollection
-                        {
-                            new Point(outMinusAttack, Height),
-                            new Point(outMinusAttack, Middle),
-                            new Point(Out, Height),
-                        };
-                    Points = new PointCollection
-                        {
-                            new Point(0, Height),
-                            new Point(0, Middle),
-                            new Point(outMinusAttack, Middle),
-                            new Point(Out, Height),
-                        };
+                    else
+                    {
+                        lines = new double[0][];
+                    }
+                    points = new double[]
+                    {
+                        0, Height,
+                        Out, Height,
+                        Out, Middle,
+                        0, Middle,
+                    };
                     break;
                 case PhonemeType.Vowel:
                     var minLength = 10;
@@ -93,137 +96,154 @@ namespace WavConfigTool.ViewModels
                     var processedAttack = attack;
                     var totalLengthMinusAttack = totalLength - processedAttack;
                     var processedDecay = totalLengthMinusAttack - decay > minLength ? decay : totalLengthMinusAttack - minLength;
-                    BorderPoints1 = new PointCollection
+                    lines = new[]
+                    {
+                        new double[]
                         {
-                            new Point(0, Height),
-                            new Point(0, 0),
-                            new Point(processedDecay, Middle),
-                            new Point(processedDecay, Height),
-                        };
-                    BorderPoints2 = new PointCollection
+                            processedDecay, Height,
+                            processedDecay, Middle
+                        },
+                        new double[]
                         {
-                            new Point(processedDecay, Middle),
-                            new Point(totalLengthMinusAttack, Middle),
-                            new Point(totalLengthMinusAttack, Height),
-                            new Point(processedDecay, Height),
-                        };
-                    BorderPoints3 = new PointCollection
-                        {
-                            new Point(totalLengthMinusAttack, Middle),
-                            new Point(Out, Height),
-                            new Point(totalLengthMinusAttack, Height),
-                        };
-                    Points = new PointCollection
-                        {
-                            new Point(0, Height),
-                            new Point(0, 0),
-                            new Point(processedDecay, Middle),
-                            new Point(totalLengthMinusAttack, Middle),
-                            new Point(Out, Height),
-                        };
+                            totalLengthMinusAttack, Height,
+                            totalLengthMinusAttack, Middle
+                        }
+                    };
+                    points = new double[]
+                    {
+                        0, Height,
+                        0, 0,
+                        processedDecay, Middle,
+                        totalLengthMinusAttack, Middle,
+                        Out, Height
+                    };
                     break;
                 case PhonemeType.Rest:
                     if (p_in == 0)
                     {
-                        BorderPoints2 = new PointCollection
+                        lines = new double[][]
                         {
-                            new Point(0, Middle),
-                            new Point(0, Height),
-                            new Point(Out, Height),
-                            new Point(Out, Middle),
+                            new double[]
+                            {
+                                Out, Middle,
+                                Out, Height
+                            }
                         };
-                        BorderPoints3 = new PointCollection
+                        points = new double[]
                         {
-                            new Point(Out, Middle),
-                            new Point(outPlusAttack, Height),
-                            new Point(Out, Height),
+                            0, Height,
+                            0, Middle,
+                            Out, Middle,
+                            outPlusAttack, Height,
                         };
-                        Points = new PointCollection
-                        {
-                            new Point(0, Height),
-                            new Point(0, Middle),
-                            new Point(Out, Middle),
-                            new Point(outPlusAttack, Height),
-                        };
+                        width = Out + outPlusAttack;
                     }
                     else if (Math.Abs(length - p_out) < 10)
                     {
                         if (decay > Out)
                         {
-                            BorderPoints1 = new PointCollection
+                            lines = new double[][]
                             {
-                                new Point(0, Height),
-                                new Point(Out, Middle),
-                                new Point(Out, Height),
+                                new double[]
+                                {
+                                    0, Middle,
+                                    0, Height
+                                }
                             };
-                            Points = new PointCollection
+                            points = new double[]
                             {
-                                new Point(0, Height),
-                                new Point(Out, Middle),
-                                new Point(Out, Height),
+                                0, Height,
+                                Out, Middle,
+                                Out, Height
                             };
                         }
                         else
                         {
-                            BorderPoints1 = new PointCollection
+                            lines = new double[][]
                             {
-                                new Point(0, Height),
-                                new Point(decay, Middle),
-                                new Point(decay, Height),
+                                new double[]
+                                {
+                                    Out, Middle,
+                                    Out, Height
+                                }
                             };
-                            BorderPoints2 = new PointCollection
+                            points = new double[]
                             {
-                                new Point(decay, Middle),
-                                new Point(decay, Height),
-                                new Point(Out, Height),
-                                new Point(Out, Middle),
-                            };
-                            Points = new PointCollection
-                            {
-                                new Point(0, Height),
-                                new Point(decay, Middle),
-                                new Point(Out, Middle),
-                                new Point(Out, Height),
+                                0, Height,
+                                0, Middle,
+                                Out, Middle,
+                                outPlusAttack, Height,
                             };
                         }
                     }
                     else
                     {
-                        BorderPoints1 = new PointCollection
+                        lines = new double[][]
                         {
-                            new Point(0, Height),
-                            new Point(decay, Middle),
-                            new Point(decay, Height),
+                            new double[]
+                            {
+                                decay, Middle,
+                                decay, Height
+                            },
+                            new double[]
+                            {
+                                Out, Middle,
+                                Out, Height
+                            }
                         };
-                        BorderPoints2 = new PointCollection
+                        points = new double[]
                         {
-                            new Point(decay, Middle),
-                            new Point(decay, Height),
-                            new Point(Out, Height),
-                            new Point(Out, Middle),
-                        };
-                        BorderPoints3 = new PointCollection
-                        {
-                            new Point(Out, Middle),
-                            new Point(outPlusAttack, Height),
-                            new Point(Out, Height),
-                        };
-                        Points = new PointCollection
-                        {
-                            new Point(0, Height),
-                            new Point(decay, Middle),
-                            new Point(Out, Middle),
-                            new Point(outPlusAttack, Height),
+                            0, Height,
+                            decay, Middle,
+                            Out, Middle,
+                            outPlusAttack, Height,
                         };
                     }
                     break;
             }
-            RaisePropertiesChanged(
-                () => BackgroundBrush,
-                () => In,
-                () => Out,
-                () => Points
+
+            var fillBrush = Color.FromArgb(BackgroundBrush.Color.A,BackgroundBrush.Color.R, BackgroundBrush.Color.G, BackgroundBrush.Color.B);
+            var strokeBrush = Color.FromArgb(BorderBrush.Color.R, BorderBrush.Color.G, BorderBrush.Color.B);
+            DrawPoints(lines, points, (int)width, Height, fillBrush, strokeBrush);
+            RaisePropertyChanged(
+                () => Image
             );
+        }
+
+
+        public void DrawPoints(double[][] lines, double[] points, int width, int height, Color fillColor, Color strokeColor)
+        {
+            var res = new Bitmap(width, height);
+            using (var strokePen = new Pen(strokeColor))
+            using (var fillBrush = new SolidBrush(fillColor))
+            using (Graphics g = Graphics.FromImage(res))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                foreach (var line in lines)
+                {
+                    g.DrawLine(strokePen, (float)line[0], (float)line[1], (float)line[2], (float)line[3]);
+                }
+
+                var pointFs = new List<PointF>();
+                for (int i = 0; i + 1 < points.Length; i += 2)
+                {
+                    var x1 = (float)points[i];
+                    var y1 = (float)points[i + 1];
+                    var x2 = (float)points[i + 2 >= points.Length ? 0 : i  + 2];
+                    var y2 = (float)points[i + 3 >= points.Length ? 1 : i + 3];
+                    pointFs.Add(new PointF(x1, y1));
+                    if (x1 == x2 && (x1 == In || x1 == width))
+                        continue;
+                    g.DrawLine(strokePen, x1, y1, x2, y2);
+                }
+                pointFs.Add(new PointF((float)points[0], (float)points[1]));
+
+                g.FillPolygon(fillBrush, pointFs.ToArray());
+            }
+
+            var bitmapImage = WaveForm.Bitmap2BitmapImage(res);
+            res.Dispose();
+            Image = bitmapImage;
         }
     }
 }

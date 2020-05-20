@@ -5,51 +5,23 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WavConfigTool.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:WavConfigTool.ViewModels"
     d:DesignHeight="100"
     d:DesignWidth="200"
     Tag="{Binding Name, TargetNullValue=WavZone}"
     mc:Ignorable="d">
     <d:UserControl.DataContext>
-        <local:WavZone />
+        <viewModels:WavZoneViewModel />
     </d:UserControl.DataContext>
 
     <Canvas>
-        <!--<Canvas
-            Canvas.Left="{Binding In, FallbackValue=0, TargetNullValue=0}"
-            Width="{Binding Out, FallbackValue=0, TargetNullValue=0}"
-            Height="100"
-            Background="{Binding BackgroundBrush, FallbackValue=#22EE2222}" />-->
-        <Polygon 
-            Height="100"
-            Width="{Binding Width}"
-            Fill="{Binding BackgroundBrush, FallbackValue=#00000000}"
-            SnapsToDevicePixels="True"
-            Points="{Binding Points}"
-            Canvas.Left="{Binding In, FallbackValue=0, TargetNullValue=0}">
-        </Polygon>
-        <Polygon 
-            Height="100"
-            Width="{Binding Width}"
-            Stroke="{Binding BorderBrush, FallbackValue=#00000000}"
-            SnapsToDevicePixels="True"
-            Points="{Binding BorderPoints1}"
-            Canvas.Left="{Binding In, FallbackValue=0, TargetNullValue=0}">
-        </Polygon>
-        <Polygon 
-            Height="100"
-            Width="{Binding Width}"
-            Stroke="{Binding BorderBrush, FallbackValue=#00000000}"
-            SnapsToDevicePixels="True"
-            Points="{Binding BorderPoints2}"
-            Canvas.Left="{Binding In, FallbackValue=0, TargetNullValue=0}">
-        </Polygon>
-        <Polygon 
-            Height="100"
-            Width="{Binding Width}"
-            Stroke="{Binding BorderBrush, FallbackValue=#00000000}"
-            SnapsToDevicePixels="True"
-            Points="{Binding BorderPoints3}"
-            Canvas.Left="{Binding In, FallbackValue=0, TargetNullValue=0}">
-        </Polygon>
+        <Canvas HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
+            <Image Name="Image"
+                   Canvas.Left="{Binding In}"
+                   HorizontalAlignment="Left"
+                   Source="{Binding Image}">
+            </Image>
+        </Canvas>
     </Canvas>
 </UserControl>
