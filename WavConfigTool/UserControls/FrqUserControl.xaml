@@ -9,15 +9,17 @@
             SnapsToDevicePixels="True"
              d:DesignHeight="2"
              d:DesignWidth="2">
-    <Canvas Canvas.Left="-1">
+    <Canvas Canvas.Left="-2"
+            Canvas.Top="-2"
+            HorizontalAlignment="Left">
         <Thumb Canvas.Left="{Binding X, FallbackValue=10, TargetNullValue=10}"
                Canvas.Top="{Binding Y, FallbackValue=50, TargetNullValue=50}"
                SnapsToDevicePixels="True"
-               Width="2"
-               Height="2">
+               Width="4"
+               Height="4">
             <Thumb.Template>
                 <ControlTemplate>
-                    <Rectangle Fill="Blue"></Rectangle>
+                    <Rectangle Fill="Violet" Stroke="BlueViolet" StrokeThickness="1"></Rectangle>
                 </ControlTemplate>
             </Thumb.Template>
         </Thumb>

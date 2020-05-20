@@ -387,7 +387,6 @@ namespace WavConfigTool.ViewModels
         private void CreateFrqPoints()
         {
             var points = new List<FrqPointViewModel>();
-            double x = 0;
             var height = WavControlBaseViewModel.GlobalHeight;
             var middleHeight = WavControlBaseViewModel.GlobalHeight / 2;
 
@@ -401,18 +400,25 @@ namespace WavConfigTool.ViewModels
                     maxVal = Math.Abs(average);
             }
 
-            foreach (var point in averagedPoints)
+            var step = Settings.RealToViewX(WaveForm.WaveFormat.Channels * 1000.0 * Frq.SamplesPerFrq /
+                                            WaveForm.WaveFormat.SampleRate);
+
+            var x = step / 2;
+            for (var i = 1; i < averagedPoints.Count; i++)
             {
+                var point = averagedPoints[i];
                 var saturatedY = point / maxVal;
                 var y = middleHeight - saturatedY * middleHeight;
-                if (y != 0)
+                if (y != height)
                 {
                     if (y < 0 || y > height)
                         throw new Exception("error on draw frq");
-                    points.Add(new FrqPointViewModel(Settings.RealToViewX(x), y));
+                    points.Add(new FrqPointViewModel(x, y));
                 }
-                x += Settings.RealToViewX(WaveForm.WaveFormat.Channels * 1000.0 * Frq.SamplesPerFrq / WaveForm.WaveFormat.SampleRate);
+
+                x += step;
             }
+
             this.FrqPoints = new ObservableCollection<FrqPointViewModel>(points);
         }
 
