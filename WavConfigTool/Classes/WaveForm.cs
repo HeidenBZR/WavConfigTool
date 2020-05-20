@@ -18,16 +18,8 @@ namespace WavConfigTool.Classes
 
         public WaveFormat WaveFormat;
         public int? RealBitsPerSample => WaveFormat?.BitsPerSample / WaveFormat?.BlockAlign * 2;
-        public double MostLeft;
-
-        public double Threshold = 0.001;
-        public double DataThreshold = 0.05;
 
         public bool IsEnabled = false;
-        public bool IsGenerating = false;
-        public bool IsGenerated = false;
-
-        public Exception GeneratingException;
 
         public BitmapImage BitmapImage;
         public string ImageHash;
