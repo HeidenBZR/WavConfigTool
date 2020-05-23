@@ -55,9 +55,9 @@ namespace WavConfigTool.ViewModels
         public PhonemeType PhonemeTypeVowel => PhonemeType.Vowel;
         public PhonemeType PhonemeTypeConsonant => PhonemeType.Consonant;
 
-        public string WavChannels => GetChannelsString(WaveForm?.WaveFormat?.Channels);
-        public string WavBitRate => WaveForm?.RealBitsPerSample?.ToString();
-        public string WavSampleRate => WaveForm?.WaveFormat?.SampleRate.ToString();
+        public string WavChannels => WaveForm?.ChannelsString;
+        public string WavBitRate => WaveForm?.BitRate.ToString();
+        public string WavSampleRate => WaveForm?.SampleRate.ToString();
 
         public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
         public event OtoModeHandler OnOtoMode = delegate { };
@@ -417,11 +417,6 @@ namespace WavConfigTool.ViewModels
                 IsLoading = false;
                 HandleProjectLineChanged();
             });
-        }
-
-        private string GetChannelsString(int? channels)
-        {
-            return !channels.HasValue ? null : channels.Value == 1 ? "Mono" : channels.Value == 2 ? "Stereo" : channels.Value.ToString();
         }
 
         private double CheckPosition(double position)

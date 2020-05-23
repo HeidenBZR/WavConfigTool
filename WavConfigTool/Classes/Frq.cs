@@ -62,8 +62,8 @@ namespace WavConfigTool.Classes
                     maxVal = Math.Abs(average);
             }
 
-            var step = Settings.RealToViewX(waveForm.WaveFormat.Channels * 1000.0 * SamplesPerFrq /
-                                            waveForm.WaveFormat.SampleRate);
+            var step = Settings.RealToViewX(waveForm.Channels * 1000.0 * SamplesPerFrq /
+                                            waveForm.SampleRate);
 
             var x = step / 2;
             var points = new List<Point>();

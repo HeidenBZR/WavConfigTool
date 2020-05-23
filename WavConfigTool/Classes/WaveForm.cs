@@ -16,8 +16,10 @@ namespace WavConfigTool.Classes
 
         public string Path;
 
-        public WaveFormat WaveFormat;
-        public int? RealBitsPerSample => WaveFormat?.BitsPerSample / WaveFormat?.BlockAlign * 2;
+        public string ChannelsString;
+        public int Channels;
+        public int BitRate;
+        public int SampleRate;
 
         public bool IsEnabled = false;
 
@@ -41,18 +43,21 @@ namespace WavConfigTool.Classes
                 return;
             }
             reader = new AudioFileReader(Path);
+            Channels = reader.WaveFormat.Channels;
+            ChannelsString = GetChannelsString(Channels);
+            BitRate = reader.WaveFormat.BitsPerSample * 2 / reader.BlockAlign;
+            SampleRate = reader.WaveFormat.SampleRate;
         }
 
         public double GetSampleWidth()
         {
-            return Settings.RealToViewX(WaveFormat.Channels * 1000.0 / WaveFormat.SampleRate);
+            return Settings.RealToViewX(Channels * 1000.0 / SampleRate);
         }
 
         public void CollectData()
         {
-            WaveFormat = reader.WaveFormat;
             // calculate number of samples
-            long nSamples = reader.Length / ((WaveFormat.BitsPerSample * WaveFormat.Channels) / 8);
+            long nSamples = reader.Length / ((BitRate * Channels) / 8);
             if (nSamples < 2)
                 return;
 
@@ -138,19 +143,8 @@ namespace WavConfigTool.Classes
         {
             points.Clear();
             reader.Close();
+            reader.Dispose();
             ImageHash = hash;
-        }
-
-        private const float LINE_WEIGHT = 0.5f;
-
-        private List<Point[]> points;
-        private AudioFileReader reader;
-        private int height;
-        private Color color;
-
-        private int ClampHeight(int val, int halfHeight)
-        {
-            return val > halfHeight ? halfHeight : val < -halfHeight ? -halfHeight : val;
         }
 
         public static BitmapImage Bitmap2BitmapImage(Bitmap bitmap)
@@ -169,6 +163,23 @@ namespace WavConfigTool.Classes
 
                 return bitmapImage;
             }
+        }
+
+        private const float LINE_WEIGHT = 0.5f;
+
+        private List<Point[]> points;
+        private AudioFileReader reader;
+        private int height;
+        private Color color;
+
+        private int ClampHeight(int val, int halfHeight)
+        {
+            return val > halfHeight ? halfHeight : val < -halfHeight ? -halfHeight : val;
+        }
+
+        private string GetChannelsString(int? channels)
+        {
+            return !channels.HasValue ? null : channels.Value == 1 ? "Mono" : channels.Value == 2 ? "Stereo" : channels.Value.ToString();
         }
     }
 }
