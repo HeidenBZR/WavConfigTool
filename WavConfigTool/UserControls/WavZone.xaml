@@ -8,7 +8,6 @@
     xmlns:viewModels="clr-namespace:WavConfigTool.ViewModels"
     d:DesignHeight="100"
     d:DesignWidth="200"
-    Tag="{Binding Name, TargetNullValue=WavZone}"
     mc:Ignorable="d">
     <d:UserControl.DataContext>
         <viewModels:WavZoneViewModel />

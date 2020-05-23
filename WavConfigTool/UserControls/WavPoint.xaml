@@ -7,15 +7,12 @@
     xmlns:local="clr-namespace:WavConfigTool.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewtools="clr-namespace:WavConfigTool.ViewTools"
+    xmlns:viewModels="clr-namespace:WavConfigTool.ViewModels"
     Width="50"
-    Height="{Binding Height}"
-    Panel.ZIndex="{Binding IndexX, FallbackValue=1}"
+    Height="{Binding Height, FallbackValue=100}"
     Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibility}, FallbackValue=Visible}"
     SnapsToDevicePixels="True"
     mc:Ignorable="d">
-    <!--<d:UserControl.DataContext>
-        <local:WavPoint />
-    </d:UserControl.DataContext>-->
     <Canvas>
         <Thumb
             Canvas.Left="{Binding Position, FallbackValue=0}"
@@ -37,11 +34,11 @@
                                         Canvas.Left="-1"
                                         Width="2"
                                         Cursor="SizeWE"
-                                        Height="{Binding Height}"
+                                        Height="{Binding Height, FallbackValue=100}"
                                         Fill="{TemplateBinding BorderBrush}" />
-                                    <Grid Height="{Binding Height}" VerticalAlignment="Stretch">
+                                    <Grid Height="{Binding Height, FallbackValue=100}" VerticalAlignment="Stretch">
                                         <Polygon 
-                                            Visibility="{Binding HasTopRightCorner, Converter={StaticResource BooleanToVisibility}}"
+                                            Visibility="{Binding HasTopRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=True}"
                                             Fill="{TemplateBinding Background}" 
                                             Cursor="Hand"
                                             Stroke="{TemplateBinding BorderBrush}">
@@ -51,8 +48,7 @@
                                                 <Point X="0" Y="15" />
                                             </Polygon.Points>
                                         </Polygon>
-                                        <Polygon 
-                                            Visibility="{Binding HasTopLeftCorner, Converter={StaticResource BooleanToVisibility}}"
+                                        <Polygon Visibility="{Binding HasTopLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=False}"
                                             Fill="{TemplateBinding Background}" 
                                             Cursor="Hand"
                                             Stroke="{TemplateBinding BorderBrush}">
@@ -62,8 +58,7 @@
                                                 <Point X="0" Y="15" />
                                             </Polygon.Points>
                                         </Polygon>
-                                        <Polygon
-                                                Visibility="{Binding HasBottomLeftCorner, Converter={StaticResource BooleanToVisibility}}"
+                                        <Polygon Visibility="{Binding HasBottomLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=False}"
                                                 x:Name="ControllerBottomRight"
                                                 Width="15"
                                                 HorizontalAlignment="Left"
@@ -78,8 +73,7 @@
                                                 <Point X="0" Y="-15" />
                                             </Polygon.Points>
                                         </Polygon>
-                                        <Polygon
-                                                Visibility="{Binding HasBottomRightCorner, Converter={StaticResource BooleanToVisibility}}"
+                                        <Polygon Visibility="{Binding HasBottomRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=False}"
                                                 x:Name="ControllerBottomLeft"
                                                 Width="15"
                                                 HorizontalAlignment="Left"
@@ -98,8 +92,8 @@
                                     <Grid
                                         Canvas.Left="0"
                                         VerticalAlignment="Stretch"
-                                        Visibility="{Binding IsLeft, Converter={StaticResource BooleanToVisibility}}"
-                                        Height="{Binding Height}">
+                                        Visibility="{Binding IsLeft, Converter={StaticResource BooleanToVisibility}, FallbackValue=true}"
+                                        Height="{Binding Height, FallbackValue=100}">
                                         <Border 
                                             Margin="0,0,0,0"
                                             BorderBrush="{TemplateBinding BorderBrush}"
