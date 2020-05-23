@@ -131,6 +131,7 @@
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding IsSkipped, Mode=OneWay}" Value="true">
                                                 <Setter Property="Border.Opacity" Value="0.8"></Setter>
+                                                <Setter Property="Border.ToolTip" Value="Do not configure this phoneme. It's not needed for the aliases of this line."></Setter>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
