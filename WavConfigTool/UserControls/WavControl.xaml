@@ -64,15 +64,16 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Orientation="Horizontal">
-                    <TextBlock
-                        Margin="0"
-                        Text="{Binding NumberView, FallbackValue=1}" />
-                    <TextBlock
-                        Margin="0"
-                        Text=". " />
-                    <TextBlock
-                        Margin="0,0,5,0"
-                        Text="{Binding Filename, FallbackValue=FILENAME}" />
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}. {1}">
+                                <Binding Path="NumberView"
+                                         FallbackValue="1" />
+                                <Binding Path="Filename"
+                                         FallbackValue="FILENAME" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                     <ListView
                         ItemsSource="{Binding Phonemes, Mode=OneWay}"
                         Style="{DynamicResource ListViewPhonemes}"
