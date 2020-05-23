@@ -1,17 +1,12 @@
 ﻿using DevExpress.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using WavConfigTool.Classes;
 using WavConfigCore;
-using WavConfigCore.Tools;
-using System.Linq;
 
 namespace WavConfigTool.ViewModels
 {
@@ -21,7 +16,7 @@ namespace WavConfigTool.ViewModels
         public WaveForm WaveForm { get; set; }
         public Frq Frq { get; set; }
 
-        public string Filename { get => ProjectLine.Recline.Name; }
+        public string Filename => ProjectLine.Recline.Name;
         public ObservableCollection<Phoneme> Phonemes => new ObservableCollection<Phoneme>(ProjectLine.Recline.Phonemes);
 
         public bool IsOtoBase { get; set; } = false;
@@ -31,7 +26,7 @@ namespace WavConfigTool.ViewModels
         public bool IsReady { get; set; } = false;
 
         public override bool IsCompleted => ProjectLine.IsCompleted;
-        public override bool IsEnabled => (bool)ProjectLine?.IsEnabled;
+        public override bool IsEnabled => ProjectLine?.IsEnabled != null && (bool)ProjectLine?.IsEnabled;
         public bool IsDisabled => !IsEnabled;
         public bool EditEnabled => IsEnabled && !IsLoading && IsLoaded;
 
@@ -47,7 +42,7 @@ namespace WavConfigTool.ViewModels
         public int NumberView => Number + 1;
         public override string ViewName => $"{ProjectLine?.Recline?.Description} [{ProjectLine?.Recline?.Name}]";
 
-        public int Width => WaveForm != null ? WaveForm.VisualWidth : 4000;
+        public int Width => WaveForm?.VisualWidth ?? 4000;
         public ImageSource WavImage => GetWavImage();
         public ImageSource FrqImage { get; set; }
 
@@ -64,8 +59,6 @@ namespace WavConfigTool.ViewModels
         public event SimpleHandler OnLoaded = delegate { };
         public event SimpleHandler OnGenerateOtoRequested = delegate { };
         public event PhonemeTypeArgHandler OnChangePhonemeModeRequested = delegate {};
-
-        public int MetaInfoHeight => Height - 18;
 
         public readonly string SampleName = "";
         public readonly string Hash = "";
