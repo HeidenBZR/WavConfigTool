@@ -99,30 +99,29 @@ namespace WavConfigTool.ViewModels
         }
 
         public PhonemeType Mode { get => Settings.Mode; set => Settings.Mode = value; }
-        public string ModeSymbol { get => SymbolOfType(Mode); }
+        public string ModeSymbol => SymbolOfType(Mode);
 
-        public PhonemeType ModeC { get => PhonemeType.Consonant; }
-        public PhonemeType ModeV { get => PhonemeType.Vowel; }
-        public PhonemeType ModeR { get => PhonemeType.Rest; }
+        public PhonemeType ModeC => PhonemeType.Consonant;
+        public PhonemeType ModeV => PhonemeType.Vowel;
+        public PhonemeType ModeR => PhonemeType.Rest;
 
-        public string ModeCSymbol { get => SymbolOfType(ModeC); }
-        public string ModeVSymbol { get => SymbolOfType(ModeV); }
-        public string ModeRSymbol { get => SymbolOfType(ModeR); }
+        public string ModeCSymbol => SymbolOfType(ModeC);
+        public string ModeVSymbol => SymbolOfType(ModeV);
+        public string ModeRSymbol => SymbolOfType(ModeR);
 
         public double ToolsPanelHeight { get; set; } = 80;
         public const int TOOLS_PANEL_OPENED_HEIGHT = 80;
         public bool IsToolsPanelShown { get => _isToolsPanelShown; set { _isToolsPanelShown = value; RaisePropertyChanged(() => IsToolsPanelShown); } }
 
         public bool IsLoading { get; set; } = false;
-        public bool IsNotLoading { get => !IsLoading; }
+        public bool IsNotLoading => !IsLoading;
         public bool IsOtoPreviewMode { get; set; } = false;
 
         public static bool IsDebug { get; set; } = false;
 
         public string Title => GetTitle();
 
-        public ObservableCollection<WavControlBaseViewModel> WavControlViewModels { get => PagerViewModel.Collection; }
-        public ObservableCollection<WavControlBaseViewModel> WavControlViewModelsPage { get => PagerViewModel.PageContent; }
+        public ObservableCollection<WavControlBaseViewModel> WavControlViewModels => PagerViewModel.Collection;
 
         public MainWindowViewModel()
         {
