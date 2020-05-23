@@ -9,12 +9,10 @@ using System.Windows.Media.Imaging;
 using WavConfigTool.Classes;
 using WavConfigTool.ViewTools;
 using WavConfigCore;
-using WavConfigCore.Reader;
 
 namespace WavConfigTool.ViewModels
 {
-
-    class MainWindowViewModel : ViewModelBase
+    internal class MainWindowViewModel : ViewModelBase
     {
         public static readonly Version Version = new Version(0, 2, 0, 0);
 
@@ -22,25 +20,25 @@ namespace WavConfigTool.ViewModels
 
         public ProjectViewModel ProjectViewModel { get; set; }
         public Project Project => ProjectManager.Project;
-        public string ReclistName => Project != null && Project.Voicebank != null && Project.IsLoaded ? Project.Reclist.Name : null;
-        public string VoicebankName => Project != null && Project.Voicebank != null && Project.IsLoaded ? Project.Voicebank.Name : null;
-        public string VoicebankImagePath => Project != null && Project.Voicebank != null && Project.IsLoaded ? Project.Voicebank.ImagePath : null;
-        public string VoicebankSubfolder => Project != null && Project.Voicebank != null && Project.IsLoaded ? Project.Voicebank.Subfolder : null;
+        public string ReclistName => Project?.Voicebank != null && Project.IsLoaded ? Project.Reclist.Name : null;
+        public string VoicebankName => Project?.Voicebank != null && Project.IsLoaded ? Project.Voicebank.Name : null;
+        public string VoicebankImagePath => Project?.Voicebank != null && Project.IsLoaded ? Project.Voicebank.ImagePath : null;
+        public string VoicebankSubfolder => Project?.Voicebank != null && Project.IsLoaded ? Project.Voicebank.Subfolder : null;
         public BitmapImage VoicebankImage => GetVoicebankImage();
 
         public PagerViewModel PagerViewModel { get; set; }
         public PagerViewModel WavControlsPagerViewModel { get; set; }
         public PagerViewModel OtoPagerViewModel { get; set; }
-        public ProjectManager ProjectManager { get; private set; } = ProjectManager.Current;
+        public ProjectManager ProjectManager => ProjectManager.Current;
         public GotoUserControlViewModel GotoUserControlViewModel { get; set; }
         public OtoGenerator OtoGenerator { get; private set; }
 
-        public int AttackC { get => Project == null ? 0 : Project.AttackC; set { Project.AttackC = value; TrySaveProject(); RedrawPoints(); } }
-        public int AttackV { get => Project == null ? 0 : Project.AttackV; set { Project.AttackV = value; TrySaveProject(); RedrawPoints(); } }
-        public int AttackR { get => Project == null ? 0 : Project.AttackR; set { Project.AttackR = value; TrySaveProject(); RedrawPoints(); } }
-        public int DecayC  { get => Project == null ? 0 : Project.DecayC;  set { Project.DecayC = value;  TrySaveProject(); RedrawPoints(); } }
-        public int DecayV  { get => Project == null ? 0 : Project.DecayV;  set { Project.DecayV = value;  TrySaveProject(); RedrawPoints(); } }
-        public int DecayR  { get => Project == null ? 0 : Project.DecayR;  set { Project.DecayR = value;  TrySaveProject(); RedrawPoints(); } }
+        public int AttackC { get => Project?.AttackC ?? 0; set { Project.AttackC = value; TrySaveProject(); RedrawPoints(); } }
+        public int AttackV { get => Project?.AttackV ?? 0; set { Project.AttackV = value; TrySaveProject(); RedrawPoints(); } }
+        public int AttackR { get => Project?.AttackR ?? 0; set { Project.AttackR = value; TrySaveProject(); RedrawPoints(); } }
+        public int DecayC  { get => Project?.DecayC ?? 0;  set { Project.DecayC = value;  TrySaveProject(); RedrawPoints(); } }
+        public int DecayV  { get => Project?.DecayV ?? 0;  set { Project.DecayV = value;  TrySaveProject(); RedrawPoints(); } }
+        public int DecayR  { get => Project?.DecayR ?? 0;  set { Project.DecayR = value;  TrySaveProject(); RedrawPoints(); } }
 
         public bool MustHideNotEnabled
         {
@@ -109,15 +107,13 @@ namespace WavConfigTool.ViewModels
         public string ModeVSymbol => SymbolOfType(ModeV);
         public string ModeRSymbol => SymbolOfType(ModeR);
 
-        public double ToolsPanelHeight { get; set; } = 80;
-        public const int TOOLS_PANEL_OPENED_HEIGHT = 80;
-        public bool IsToolsPanelShown { get => _isToolsPanelShown; set { _isToolsPanelShown = value; RaisePropertyChanged(() => IsToolsPanelShown); } }
+        public bool IsToolsPanelShown { get => isToolsPanelShown; set { isToolsPanelShown = value; RaisePropertyChanged(() => IsToolsPanelShown); } }
 
-        public bool IsLoading { get; set; } = false;
+        public bool IsLoading { get; set; }
         public bool IsNotLoading => !IsLoading;
-        public bool IsOtoPreviewMode { get; set; } = false;
+        public bool IsOtoPreviewMode { get; set; }
 
-        public static bool IsDebug { get; set; } = false;
+        public static bool IsDebug { get; set; }
 
         public string Title => GetTitle();
 
@@ -132,7 +128,7 @@ namespace WavConfigTool.ViewModels
 
         #region private
 
-        private bool _isToolsPanelShown = true;
+        private bool isToolsPanelShown = true;
 
         private async void LoadProjectAsync()
         {
@@ -141,13 +137,14 @@ namespace WavConfigTool.ViewModels
             if (Project != null && Project.IsLoaded)
             {
                 var wavControls = new List<WavControlBaseViewModel>();
-                for (int i = 0; i < Project.ProjectLines.Count; i++)
+                for (var i = 0; i < Project.ProjectLines.Count; i++)
                 {
+                    var index = i;
                     await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
                     {
-                        if (Project.ProjectLines[i].Recline != null)
+                        if (Project.ProjectLines[index].Recline != null)
                         {
-                            wavControls.Add(CreateWavControl(i));
+                            wavControls.Add(CreateWavControl(index));
                         };
                     }));
                 }
@@ -155,7 +152,7 @@ namespace WavConfigTool.ViewModels
                 WavControlsPagerViewModel = new PagerViewModel(wavControls);
                 PagerViewModel = WavControlsPagerViewModel;
                 PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
-                Project.BeforeSave += () => { WriteProjectOptions(); };
+                Project.BeforeSave += WriteProjectOptions;
                 foreach (var control in PagerViewModel.Collection)
                 {
                     control.Ready();
@@ -166,16 +163,12 @@ namespace WavConfigTool.ViewModels
                 OtoGenerator = new OtoGenerator(Project);
             }
             IsLoading = false;
-            App.MainDispatcher.Invoke(() =>
-            {
-                Refresh();
-            });
+            App.MainDispatcher.Invoke(Refresh);
         }
 
         private void HandleGoto(WavControlBaseViewModel model)
         {
-            var wavControl = model as WavControlViewModel;
-            if (IsOtoPreviewMode && wavControl != null)
+            if (IsOtoPreviewMode && model is WavControlViewModel wavControl)
             {
                 SetOtoMode(wavControl);
             }
@@ -188,7 +181,6 @@ namespace WavConfigTool.ViewModels
         private void WriteProjectOptions()
         {
             PagerViewModel.WriteProjectOptions(Project.ProjectOptions);
-            // дозаписать свои если есть
         }
 
         private WavControlViewModel CreateWavControl(int i)
@@ -197,21 +189,17 @@ namespace WavConfigTool.ViewModels
             var sampleName = Project.Voicebank.GetSamplePath(projectLine.Recline.Name, Project.WavPrefix, Project.WavSuffix);
             var hash = $"{Project.Voicebank.Name}_{Project.Reclist.Name}_{Settings.UserScaleX}x{Settings.UserScaleY}_{sampleName}"; //.GetHashCode();
             var control = new WavControlViewModel(projectLine, sampleName, hash) { Number = i };
-            control.OnOtoMode += delegate
-            {
-                SetOtoMode(control);
-            };
+            control.OnOtoMode += model => SetOtoMode(control);
             control.OnGenerateOtoRequested += delegate
             {
-                if (IsOtoPreviewMode)
-                {
-                    Project.ResetOto();
-                    projectLine.Recline.ResetOto();
-                    OtoGenerator.GenerateFromProjectLine(projectLine);
-                    OtoPagerViewModel.UpdateOtoPreviewControls(control.GenerateOtoPreview());
-                    OtoPagerViewModel.UpdatePageContent();
-                    RaisePropertyChanged(() => PagerViewModel);
-                }
+                if (!IsOtoPreviewMode)
+                    return;
+                Project.ResetOto();
+                projectLine.Recline.ResetOto();
+                OtoGenerator.GenerateFromProjectLine(projectLine);
+                OtoPagerViewModel.UpdateOtoPreviewControls(control.GenerateOtoPreview());
+                OtoPagerViewModel.UpdatePageContent();
+                RaisePropertyChanged(() => PagerViewModel);
             };
             control.OnChangePhonemeModeRequested += delegate (PhonemeType type)
             {
@@ -269,8 +257,7 @@ namespace WavConfigTool.ViewModels
 
         private void ResetProject()
         {
-            if (PagerViewModel != null)
-                PagerViewModel.Clear();
+            PagerViewModel?.Clear();
             ProjectManager.Reset();
             IsLoading = true;
             Refresh();
@@ -281,10 +268,10 @@ namespace WavConfigTool.ViewModels
             var projectFileName = Project != null && Project.IsLoaded ? " " + Path.GetFileName(Settings.ProjectFile) : "";
             var alphaString = $"(Alpha v.{AlphaVersion})";
             if (Project == null)
-                return $"WavConfig v.{Version.ToString()} {alphaString}{projectFileName}";
+                return $"WavConfig v.{Version} {alphaString}{projectFileName}";
             if (PagerViewModel == null || PagerViewModel.PagesTotal == 0)
-                return $"WavConfig v.{Version.ToString()} {alphaString}{projectFileName}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
-            return $"WavConfig v.{Version.ToString()} {alphaString}{projectFileName} [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
+                return $"WavConfig v.{Version} {alphaString}{projectFileName}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
+            return $"WavConfig v.{Version} {alphaString}{projectFileName} [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
                 $"Page {PagerViewModel.CurrentPage + 1}/{PagerViewModel.PagesTotal}";
         }
 
@@ -312,7 +299,7 @@ namespace WavConfigTool.ViewModels
 
         private BitmapImage GetVoicebankImage()
         {
-            if (Project != null && Project.Voicebank != null && Project.Voicebank.ImagePath != "" && File.Exists(Project.Voicebank.ImagePath))
+            if (Project?.Voicebank != null && Project.Voicebank.ImagePath != "" && File.Exists(Project.Voicebank.ImagePath))
                 return new BitmapImage(new Uri(Project.Voicebank.ImagePath));
             else
                 return null;
@@ -415,7 +402,7 @@ namespace WavConfigTool.ViewModels
             if (ProjectViewModel != null)
                 return;
             ProjectViewModel = new ProjectViewModel(Project);
-            ProjectViewModel.ProjectDataChanged += delegate { LoadProjectAsync(); };
+            ProjectViewModel.ProjectDataChanged += LoadProjectAsync;
             ViewManager.CallProject(ProjectViewModel);
             ProjectViewModel = null;
         }, (param) => (Project != null));
