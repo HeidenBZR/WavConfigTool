@@ -259,31 +259,20 @@
                     ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                     ItemsSource="{Binding RestPoints, Mode=OneWay}" />
             </Canvas>
-            <StackPanel
-                HorizontalAlignment="Left"
-                Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibility}}"
-                Margin="10,69,0,0"
-                Grid.Row="1">
-                <StackPanel
-                    Orientation="Horizontal"
-                    Opacity="0.2">
-                    <TextBlock
-                        Margin="0,0,0,0"
-                        Text="{Binding WavBitRate, FallbackValue=BitRate}" />
-                    <TextBlock
-                        Margin="0,0,3,0"
-                        Text="bit" />
-                    <TextBlock
-                        Margin="0,0,3,0"
-                        Text="{Binding WavChannels, FallbackValue=Channels}" />
-                    <TextBlock
-                        Margin="0,0,0,0"
-                        Text="{Binding WavSampleRate, FallbackValue=SampleRate}" />
-                    <TextBlock
-                        Margin="0,0,3,0"
-                        Text="Hz" />
-                </StackPanel>
-            </StackPanel>
+            <TextBlock HorizontalAlignment="Left"
+                       Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibility}}"
+                       Margin="10,69,0,0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}bit {1}, {2}Hz">
+                        <Binding Path="WavBitRate" 
+                                 FallbackValue="BitRate" />
+                        <Binding Path="WavChannels"
+                                 FallbackValue="Channels" />
+                        <Binding Path="WavSampleRate"
+                                 FallbackValue="SampleRate"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
         </Grid>
     </Grid>
 </local:WavControlBase>
