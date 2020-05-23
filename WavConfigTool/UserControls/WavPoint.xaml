@@ -168,7 +168,7 @@
                 </dxmvvm:EventToCommand>
                 <dxmvvm:EventToCommand
                     Command="{Binding DeletePointCommand}"
-                    EventName="MouseRightButtonDown"
+                    EventName="MouseRightButtonUp"
                     PassEventArgsToCommand="True">
                     <dxmvvm:EventToCommand.EventArgsConverter>
                         <viewtools:MouseButtonToPointConverter />

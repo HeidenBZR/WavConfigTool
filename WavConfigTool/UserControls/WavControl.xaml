@@ -64,34 +64,6 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Orientation="Horizontal">
-                    <local:Gear>
-                        <local:Gear.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem
-                                    Header="Reload Wav"
-                                    Command="{Binding ReloadCommand}" />
-                                <Separator />
-                                <MenuItem
-                                    Header="Reset all points in current audio"
-                                    Command="{Binding ResetAllPointsCommand}" />
-                                <Separator />
-                                <MenuItem
-                                    Header="Reset all vowel (V) points in current audio"
-                                    Command="{Binding ResetPointsCommand}"
-                                    CommandParameter="{Binding PhonemeTypeVowel}" />
-                                <MenuItem Header="Reset all consonant (C) points in current audio"
-                                    Command="{Binding ResetPointsCommand}"
-                                    CommandParameter="{Binding PhonemeTypeConsonant}" />
-                                <MenuItem Header="Reset all rest (R) points in current audio"
-                                    Command="{Binding ResetPointsCommand}"
-                                    CommandParameter="{Binding PhonemeTypeRest}" />
-                                <Separator />
-                                <MenuItem
-                                    Header="oto.ini preview"
-                                    Command="{Binding OtoModeCommand}" />
-                            </ContextMenu>
-                        </local:Gear.ContextMenu>
-                    </local:Gear>
                     <TextBlock
                         Margin="0"
                         Text="{Binding NumberView, FallbackValue=1}" />
@@ -217,6 +189,28 @@
                        Height="{Binding Height, FallbackValue=100}"
                        HorizontalAlignment="Left"
                        Source="{Binding FrqImage}">
+                    <Image.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Reload Wav"
+                                      Command="{Binding ReloadCommand}" />
+                            <Separator />
+                            <MenuItem Header="Reset all points in current audio"
+                                      Command="{Binding ResetAllPointsCommand}" />
+                            <Separator />
+                            <MenuItem Header="Reset all vowel (V) points in current audio"
+                                      Command="{Binding ResetPointsCommand}"
+                                      CommandParameter="{Binding PhonemeTypeVowel}" />
+                            <MenuItem Header="Reset all consonant (C) points in current audio"
+                                      Command="{Binding ResetPointsCommand}"
+                                      CommandParameter="{Binding PhonemeTypeConsonant}" />
+                            <MenuItem Header="Reset all rest (R) points in current audio"
+                                      Command="{Binding ResetPointsCommand}"
+                                      CommandParameter="{Binding PhonemeTypeRest}" />
+                            <Separator />
+                            <MenuItem Header="oto.ini preview"
+                                      Command="{Binding OtoModeCommand}" />
+                        </ContextMenu>
+                    </Image.ContextMenu>
                 </Image>
             </Canvas>
             <Canvas
