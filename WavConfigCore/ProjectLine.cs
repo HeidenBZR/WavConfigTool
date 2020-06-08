@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using WavConfigCore.Tools;
+using YamlDotNet.Serialization.NodeDeserializers;
 
 namespace WavConfigCore
 {
@@ -53,6 +54,11 @@ namespace WavConfigCore
         public void UpdateZones()
         {
             OnUpdateZonesRequested();
+        }
+
+        public bool IsEmpty()
+        {
+            return RestPoints.Count == 0 && ConsonantPoints.Count == 0 && VowelPoints.Count == 0;
         }
 
         public static ProjectLine CreateNewFromRecline(Recline recline)

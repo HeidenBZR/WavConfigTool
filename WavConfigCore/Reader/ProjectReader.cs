@@ -96,6 +96,8 @@ namespace WavConfigCore.Reader
             var wavConfigsList = new List<IOWavConfig>();
             foreach (var projectLine in project.ProjectLines)
             {
+                if (projectLine.IsEmpty())
+                    continue;
                 var ioWavConfig = new IOWavConfig
                 {
                     Rests = projectLine.RestPoints.ToArray(),
