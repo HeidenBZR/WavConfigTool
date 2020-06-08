@@ -73,7 +73,10 @@ namespace WavConfigCore
         public void SaveAs(string filename)
         {
             if (Project.Voicebank != null)
-                Project.Voicebank.UpdateLocations(filename);
+            {
+                var dir = PathResolver.Current.TryGetDirectoryName(filename, "");
+                Project.Voicebank.UpdateLocations(dir);
+            }
             Save(filename);
         }
 
