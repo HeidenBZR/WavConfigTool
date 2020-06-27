@@ -10,3 +10,6 @@ Currently there are settings for reclist of such languages:
 - Japanese
 
 Settings files can be found [here](https://github.com/HeidenBZR/WavConfigSettings).
+
+More info in wiki page:
+https://github.com/HeidenBZR/WavConfigTool/wiki
