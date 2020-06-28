@@ -50,6 +50,13 @@ namespace WavConfigTool.ViewModels
         public PhonemeType PhonemeTypeVowel => PhonemeType.Vowel;
         public PhonemeType PhonemeTypeConsonant => PhonemeType.Consonant;
 
+        public bool ConsonantsPointsVisible => EditEnabled && ProjectLine.ConsonantPoints.Count > 0;
+        public bool VowelPointsVisible      => EditEnabled && ProjectLine.VowelPoints.Count > 0;
+        public bool RestPointsVisible       => EditEnabled && ProjectLine.RestPoints.Count > 0;
+        public bool ConsonantsZonesVisible  => EditEnabled && ProjectLine.ConsonantPoints.Count > 1;
+        public bool VowelZonesVisible       => EditEnabled && ProjectLine.VowelPoints.Count > 1;
+        public bool RestZonesVisible        => EditEnabled && ProjectLine.RestPoints.Count > 0;
+
         public string WavChannels => WaveForm?.ChannelsString;
         public string WavBitRate => WaveForm?.BitRate.ToString();
         public string WavSampleRate => WaveForm?.SampleRate.ToString();
@@ -207,6 +214,16 @@ namespace WavConfigTool.ViewModels
                 () => VowelZones,
                 () => RestZones,
                 () => Phonemes
+            );
+            RaisePropertiesChanged(
+                () => ConsonantsPointsVisible,
+                () => VowelPointsVisible,
+                () => RestPointsVisible
+            );
+            RaisePropertiesChanged(
+                () => ConsonantsZonesVisible,
+                () => VowelZonesVisible,
+                () => RestZonesVisible
             );
             UpdatePoints();
         }

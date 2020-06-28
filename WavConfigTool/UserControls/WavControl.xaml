@@ -104,7 +104,7 @@
                     VerticalAlignment="Stretch"
                     Background="#1710FF22"
                     BorderBrush="#FF159B00"
-                    Visibility="{Binding IsCompleted, Converter={StaticResource BooleanToVisibility}, FallbackValue=Hidden}"
+                    Visibility="{Binding IsCompleted, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                     BorderThickness="0,1,0,1">
             </Border>
             <Rectangle Height="1"
@@ -115,12 +115,12 @@
                        Margin="0,37,0,50" />
             <local:CanvasLoading x:Name="CanvasLoading"
                                  HorizontalAlignment="Stretch"
-                                 Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibility}, FallbackValue=Hidden}"
+                                 Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                                  Grid.RowSpan="2" />
             <Canvas HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     Background="#22FF2222"
-                    Visibility="{Binding IsDisabled, Converter={StaticResource BooleanToVisibility}, FallbackValue=Hidden}"
+                    Visibility="{Binding IsDisabled, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                     Grid.RowSpan="2">
                 <TextBlock Margin="10,50"
                            HorizontalAlignment="Center"
@@ -131,7 +131,7 @@
             <Image Name="WavImage"
                    Height="{Binding Height, FallbackValue=100}"
                    HorizontalAlignment="Left"
-                   Visibility="{Binding IsImageEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
+                   Visibility="{Binding IsImageEnabled, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                    Source="{Binding WavImage}">
             </Image>
             <Image Name="FrqImage"
@@ -149,7 +149,7 @@
                               ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
                               ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                               ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
+                              Visibility="{Binding ConsonantZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                               ItemsSource="{Binding ConsonantZones, Mode=OneWay}" />
                 <ItemsControl Name="VowelZones"
                               HorizontalAlignment="Left"
@@ -157,7 +157,7 @@
                               ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
                               ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                               ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
+                              Visibility="{Binding VowelZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                               ItemsSource="{Binding VowelZones, Mode=OneWay}" />
                 <ItemsControl Name="RestZones"
                               HorizontalAlignment="Left"
@@ -165,7 +165,7 @@
                               ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
                               ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                               ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
+                              Visibility="{Binding RestZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                               ItemsSource="{Binding RestZones, Mode=OneWay}" />
                 <Rectangle
                            Canvas.Left="0"
@@ -203,7 +203,7 @@
                               ItemTemplate="{DynamicResource WavPointItemsControlItem}"
                               ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                               ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
+                              Visibility="{Binding ConsonantsPointsVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                               ItemsSource="{Binding ConsonantPoints, Mode=OneWay}" />
                 <ItemsControl Name="VowelPoints"
                               HorizontalAlignment="Left"
@@ -211,14 +211,14 @@
                               ItemTemplate="{DynamicResource WavPointItemsControlItem}"
                               ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                               ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
+                              Visibility="{Binding VowelPointsVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                               ItemsSource="{Binding VowelPoints, Mode=OneWay}" />
                 <ItemsControl Name="RestPoints"
                               HorizontalAlignment="Left"
                               VerticalAlignment="Top"
                               ItemTemplate="{DynamicResource WavPointItemsControlItem}"
                               ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
+                              Visibility="{Binding RestPointsVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                               ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                               ItemsSource="{Binding RestPoints, Mode=OneWay}" />
                 <TextBlock HorizontalAlignment="Left"

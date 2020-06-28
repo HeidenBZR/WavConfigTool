@@ -39,7 +39,7 @@
                                            Fill="{TemplateBinding BorderBrush}" />
                                 <Grid Height="{Binding Height, FallbackValue=100}"
                                       VerticalAlignment="Stretch">
-                                    <Polygon Visibility="{Binding HasTopRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=True}"
+                                    <Polygon Visibility="{Binding HasTopRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=Visible}"
                                              Fill="{TemplateBinding Background}"
                                              Cursor="Hand"
                                              Stroke="{TemplateBinding BorderBrush}">
@@ -52,7 +52,7 @@
                                                    Y="15" />
                                         </Polygon.Points>
                                     </Polygon>
-                                    <Polygon Visibility="{Binding HasTopLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=False}"
+                                    <Polygon Visibility="{Binding HasTopLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                                              Fill="{TemplateBinding Background}"
                                              Cursor="Hand"
                                              Stroke="{TemplateBinding BorderBrush}">
@@ -65,7 +65,7 @@
                                                    Y="15" />
                                         </Polygon.Points>
                                     </Polygon>
-                                    <Polygon Visibility="{Binding HasBottomLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=False}"
+                                    <Polygon Visibility="{Binding HasBottomLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                                              x:Name="ControllerBottomRight"
                                              Width="15"
                                              HorizontalAlignment="Left"
@@ -83,7 +83,7 @@
                                                    Y="-15" />
                                         </Polygon.Points>
                                     </Polygon>
-                                    <Polygon Visibility="{Binding HasBottomRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=False}"
+                                    <Polygon Visibility="{Binding HasBottomRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                                              x:Name="ControllerBottomLeft"
                                              Width="15"
                                              HorizontalAlignment="Left"

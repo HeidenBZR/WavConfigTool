@@ -18,7 +18,7 @@
                 <ResourceDictionary Source="Styles/ContentControls.xaml" />
                 <ResourceDictionary Source="Styles/UserControls.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+            <viewtools:BooleanToVisibilityCollapsedConverter x:Key="BooleanToVisibility" />
             <viewtools:PhonemeTypeToColorConverter x:Key="PhonemeTypeToColor" />
             <viewtools:PhonemeTypeToBorderColorConverter x:Key="PhonemeTypeToBorderColor" />
             <viewtools:BooleanToFontWeightConverter x:Key="BooleanToFontWeight" />
