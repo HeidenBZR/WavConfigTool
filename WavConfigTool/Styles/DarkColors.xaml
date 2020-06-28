@@ -128,10 +128,6 @@
         x:Key="WaveformBrush"
         Color="#64c864" />
 
-    <SolidColorBrush
-        x:Key="WavControlBackgroundBrush"
-        Color="#15557722" />
-
     <LinearGradientBrush
         x:Key="ButtonRestBrush"
         StartPoint="0,0"

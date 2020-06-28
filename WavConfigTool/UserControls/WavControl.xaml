@@ -103,7 +103,7 @@
                Grid.Row="1"
                Height="{Binding Height, FallbackValue=100}"
                HorizontalAlignment="Left"
-               Visibility="{Binding DoShowPitch, Converter={dxmvvm:BooleanToVisibilityConverter}, FallbackValue=Hidden}"
+               Visibility="{Binding DoShowPitch, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                Source="{Binding FrqImage}">
         </Image>
         <Border BorderThickness="0,1,0,1"
@@ -132,6 +132,7 @@
         </Border>
         <Canvas HorizontalAlignment="Stretch"
                 Grid.Row="1"
+                Visibility="{Binding IsReadyToDrawPoints, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                 VerticalAlignment="Stretch">
             <ItemsControl Name="ConsonantZones"
                           HorizontalAlignment="Left"

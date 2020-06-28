@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using WavConfigCore;
 
@@ -133,8 +135,9 @@ namespace WavConfigTool.ViewModels
                 Base.PointsChanged -= UpdatePageContent;
         }
 
-        public void UpdatePageContent()
+        public async void UpdatePageContent()
         {
+            SetPageContentReady(false);
             if (!IsHidden)
             {
                 if (IsOtoMode)
@@ -167,6 +170,11 @@ namespace WavConfigTool.ViewModels
                     }
                 }
             }
+            await Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+                SetPageContentReady(true);
+            });
         }
 
         public void Goto(WavControlBaseViewModel model)
@@ -213,6 +221,12 @@ namespace WavConfigTool.ViewModels
             if (ItemsCount % realSize > 0)
                 pages++;
             return pages;
+        }
+
+        private void SetPageContentReady(bool ready)
+        {
+            foreach (var control in pageContent)
+                control.SetReady(ready);
         }
 
         private void LoadRest()

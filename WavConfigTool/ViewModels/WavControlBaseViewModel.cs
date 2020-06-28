@@ -16,6 +16,8 @@ namespace WavConfigTool.ViewModels
         public virtual bool IsEnabled => true;
         public virtual string ViewName => "{NAME}";
 
+        public bool IsReadyToDrawPoints { get; private set; }
+
         // TODO: Move base things here
 
         public virtual void Ready() { }
@@ -46,6 +48,11 @@ namespace WavConfigTool.ViewModels
         public virtual void HandleViewChanged()
         {
 
+        }
+
+        public virtual void SetReady(bool ready)
+        {
+            IsReadyToDrawPoints = ready;
         }
 
     }

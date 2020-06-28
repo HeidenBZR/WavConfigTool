@@ -25,7 +25,7 @@ namespace WavConfigTool.ViewModels
         public bool IsImageEnabled { get; set; } = false;
         public bool IsReady { get; set; } = false;
 
-        public override bool IsCompleted => ProjectLine.IsCompleted;
+        public override bool IsCompleted => ProjectLine.IsCompleted && IsReadyToDrawPoints;
         public override bool IsEnabled => ProjectLine?.IsEnabled != null && (bool)ProjectLine?.IsEnabled;
         public bool IsDisabled => !IsEnabled;
         public bool EditEnabled => IsEnabled && !IsLoading && IsLoaded;
@@ -61,7 +61,7 @@ namespace WavConfigTool.ViewModels
         public string WavBitRate => WaveForm?.BitRate.ToString();
         public string WavSampleRate => WaveForm?.SampleRate.ToString();
 
-        public bool DoShowPitch => ViewOptions.DoShowPitch;
+        public bool DoShowPitch => ViewOptions.DoShowPitch && IsReadyToDrawPoints;
 
         public ViewOptions ViewOptions { get; set; }
 
@@ -446,6 +446,12 @@ namespace WavConfigTool.ViewModels
             if (position > Width)
                 position = Width - 5;
             return position;
+        }
+
+        public override void SetReady(bool ready)
+        {
+            base.SetReady(ready);
+            RaisePropertiesChanged(nameof(IsReadyToDrawPoints), nameof(IsCompleted), nameof(DoShowPitch));
         }
 
         #endregion

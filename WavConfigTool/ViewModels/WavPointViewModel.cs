@@ -31,7 +31,7 @@ namespace WavConfigTool.ViewModels
 
         public bool IsTextBlockVisible => IsLeft && Type != PhonemeType.Rest;
         public double BottomPolygonOffset => Height - 15; // TODO: 15 is already constant in wpf and yet i can't see a way to put it properly...
-        public double TextblockOffset => Height - 20; // TODO: 15 is already constant in wpf and yet i can't see a way to put it properly...
+        public double TextblockOffset => Height - 20;
         
         public bool HasTopLeftCorner { get; private set; }
         public bool HasTopRightCorner { get; private set; }
