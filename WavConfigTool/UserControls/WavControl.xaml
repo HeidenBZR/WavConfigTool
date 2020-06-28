@@ -36,7 +36,8 @@
           VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="{Binding Space, Converter={StaticResource WavControlMargin}, FallbackValue=29}" />
-            <RowDefinition Height="{Binding Height}" />
+            <RowDefinition Height="{Binding Height}"
+                           x:Name="WavControlContent" />
         </Grid.RowDefinitions>
         <Canvas x:Name="WavControlHeader"
                 HorizontalAlignment="Stretch"
@@ -74,168 +75,172 @@
                 </StackPanel>
             </Grid>
         </Canvas>
-        <Grid Grid.Row="1"
-              x:Name="WavControlContent">
-            <dxmvvm:Interaction.Behaviors>
-                <dxmvvm:EventToCommand Command="{Binding WavControlClickCommand}"
-                                       EventName="MouseLeftButtonDown"
-                                       ModifierKeys=""
-                                       PassEventArgsToCommand="True">
-                    <dxmvvm:EventToCommand.EventArgsConverter>
-                        <vt:MouseButtonToPointConverter />
-                    </dxmvvm:EventToCommand.EventArgsConverter>
-                </dxmvvm:EventToCommand>
-                <dxmvvm:EventToCommand Command="{Binding WavControlClickCommand}"
-                                       EventName="MouseLeftButtonUp"
-                                       ModifierKeys="Shift"
-                                       PassEventArgsToCommand="True">
-                    <dxmvvm:EventToCommand.EventArgsConverter>
-                        <vt:MouseButtonToPointConverter />
-                    </dxmvvm:EventToCommand.EventArgsConverter>
-                </dxmvvm:EventToCommand>
-                <dxmvvm:EventToCommand Command="{Binding OtoModeCommand}"
-                                       EventName="MouseLeftButtonDown"
-                                       ModifierKeys="Alt" />
-                <dxmvvm:EventToCommand Command="{Binding RegenerateOtoCommand}"
-                                       EventName="MouseLeftButtonUp" />
-            </dxmvvm:Interaction.Behaviors>
-            <Border Name="WavCompleted"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Background="#1710FF22"
-                    BorderBrush="#FF159B00"
-                    Visibility="{Binding IsCompleted, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                    BorderThickness="0,1,0,1">
-            </Border>
-            <Rectangle Height="1"
-                       HorizontalAlignment="Stretch"
-                       Fill="{DynamicResource WaveformBrush}"
-                       SnapsToDevicePixels="True"
-                       Visibility="Collapsed"
-                       Margin="0,37,0,50" />
-            <local:CanvasLoading x:Name="CanvasLoading"
-                                 HorizontalAlignment="Stretch"
-                                 Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                                 Grid.RowSpan="2" />
-            <Canvas HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Background="#22FF2222"
-                    Visibility="{Binding IsDisabled, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                    Grid.RowSpan="2">
-                <TextBlock Margin="10,50"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Foreground="{DynamicResource RestBackBrush}"
-                           Text="Sample is not available" />
-            </Canvas>
-            <Image Name="WavImage"
-                   Height="{Binding Height, FallbackValue=100}"
-                   HorizontalAlignment="Left"
-                   Visibility="{Binding IsImageEnabled, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                   Source="{Binding WavImage}">
-            </Image>
-            <Image Name="FrqImage"
-                   Height="{Binding Height, FallbackValue=100}"
-                   HorizontalAlignment="Left"
-                   Visibility="{Binding DoShowPitch, Converter={dxmvvm:BooleanToVisibilityConverter}, FallbackValue=Hidden}"
-                   Source="{Binding FrqImage}">
-            </Image>
-            <Canvas HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Background="{DynamicResource WavControlBackgroundBrush}">
-                <ItemsControl Name="ConsonantZones"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Top"
-                              ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
-                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              Visibility="{Binding ConsonantZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                              ItemsSource="{Binding ConsonantZones, Mode=OneWay}" />
-                <ItemsControl Name="VowelZones"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Top"
-                              ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
-                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              Visibility="{Binding VowelZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                              ItemsSource="{Binding VowelZones, Mode=OneWay}" />
-                <ItemsControl Name="RestZones"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Top"
-                              ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
-                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              Visibility="{Binding RestZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                              ItemsSource="{Binding RestZones, Mode=OneWay}" />
-                <Rectangle
-                           Canvas.Left="0"
-                           Canvas.Top="0"
-                           Width="{Binding ElementName=WavControlContent, Path=ActualWidth}"
-                           Height="{Binding ElementName=WavControlContent, Path=ActualHeight}"
-                           Fill="Transparent"
-                           Name="ContextMenuHolder">
-                    <Rectangle.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Reload Wav"
-                                      Command="{Binding ReloadCommand}" />
-                            <Separator />
-                            <MenuItem Header="Reset all points in current audio"
-                                      Command="{Binding ResetAllPointsCommand}" />
-                            <Separator />
-                            <MenuItem Header="Reset all vowel (V) points in current audio"
-                                      Command="{Binding ResetPointsCommand}"
-                                      CommandParameter="{Binding PhonemeTypeVowel}" />
-                            <MenuItem Header="Reset all consonant (C) points in current audio"
-                                      Command="{Binding ResetPointsCommand}"
-                                      CommandParameter="{Binding PhonemeTypeConsonant}" />
-                            <MenuItem Header="Reset all rest (R) points in current audio"
-                                      Command="{Binding ResetPointsCommand}"
-                                      CommandParameter="{Binding PhonemeTypeRest}" />
-                            <Separator />
-                            <MenuItem Header="oto.ini preview"
-                                      Command="{Binding OtoModeCommand}" />
-                        </ContextMenu>
-                    </Rectangle.ContextMenu>
-                </Rectangle>
-                <ItemsControl Name="ConsonantPoints"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Top"
-                              ItemTemplate="{DynamicResource WavPointItemsControlItem}"
-                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              Visibility="{Binding ConsonantsPointsVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                              ItemsSource="{Binding ConsonantPoints, Mode=OneWay}" />
-                <ItemsControl Name="VowelPoints"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Top"
-                              ItemTemplate="{DynamicResource WavPointItemsControlItem}"
-                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              Visibility="{Binding VowelPointsVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                              ItemsSource="{Binding VowelPoints, Mode=OneWay}" />
-                <ItemsControl Name="RestPoints"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Top"
-                              ItemTemplate="{DynamicResource WavPointItemsControlItem}"
-                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              Visibility="{Binding RestPointsVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-                              ItemsSource="{Binding RestPoints, Mode=OneWay}" />
-                <TextBlock HorizontalAlignment="Left"
-                           Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibility}}"
-                           Margin="10,69,0,0">
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{}{0}bit {1}, {2}Hz">
-                            <Binding Path="WavBitRate"
-                                     FallbackValue="BitRate" />
-                            <Binding Path="WavChannels"
-                                     FallbackValue="Channels" />
-                            <Binding Path="WavSampleRate"
-                                     FallbackValue="SampleRate" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-            </Canvas>
-        </Grid>
+
+        <Border Name="WavCompleted"
+                Grid.Row="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="#1710FF22"
+                BorderBrush="#FF159B00"
+                Visibility="{Binding IsCompleted, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                BorderThickness="0,1,0,1">
+        </Border>
+        <Rectangle Height="1"
+                   Grid.Row="1"
+                   HorizontalAlignment="Stretch"
+                   Fill="{DynamicResource WaveformBrush}"
+                   SnapsToDevicePixels="True"
+                   Visibility="Collapsed"
+                   Margin="0,37,0,50" />
+        <local:CanvasLoading x:Name="CanvasLoading"
+                             Grid.Row="1"
+                             HorizontalAlignment="Stretch"
+                             Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                             Grid.RowSpan="2" />
+        <Canvas HorizontalAlignment="Stretch"
+                Grid.Row="1"
+                VerticalAlignment="Stretch"
+                Background="#22FF2222"
+                Visibility="{Binding IsDisabled, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                Grid.RowSpan="2">
+            <TextBlock Margin="10,50"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource RestBackBrush}"
+                       Text="Sample is not available" />
+        </Canvas>
+        <Image Name="WavImage"
+               Grid.Row="1"
+               Height="{Binding Height, FallbackValue=100}"
+               HorizontalAlignment="Left"
+               Visibility="{Binding IsImageEnabled, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+               Source="{Binding WavImage}">
+        </Image>
+        <Image Name="FrqImage"
+               Grid.Row="1"
+               Height="{Binding Height, FallbackValue=100}"
+               HorizontalAlignment="Left"
+               Visibility="{Binding DoShowPitch, Converter={dxmvvm:BooleanToVisibilityConverter}, FallbackValue=Hidden}"
+               Source="{Binding FrqImage}">
+        </Image>
+        <Canvas HorizontalAlignment="Stretch"
+                Grid.Row="1"
+                VerticalAlignment="Stretch"
+                Background="{DynamicResource WavControlBackgroundBrush}">
+            <ItemsControl Name="ConsonantZones"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"
+                          ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
+                          ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+                          ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                          Visibility="{Binding ConsonantZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                          ItemsSource="{Binding ConsonantZones, Mode=OneWay}" />
+            <ItemsControl Name="VowelZones"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"
+                          ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
+                          ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+                          ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                          Visibility="{Binding VowelZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                          ItemsSource="{Binding VowelZones, Mode=OneWay}" />
+            <ItemsControl Name="RestZones"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"
+                          ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
+                          ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+                          ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                          Visibility="{Binding RestZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                          ItemsSource="{Binding RestZones, Mode=OneWay}" />
+            <Rectangle Canvas.Left="0"
+                       Canvas.Top="0"
+                       Width="{Binding ElementName=WavControlContent, Path=ActualWidth}"
+                       Height="{Binding ElementName=WavControlContent, Path=ActualHeight}"
+                       Fill="Transparent"
+                       Name="ContextMenuHolder">
+                <dxmvvm:Interaction.Behaviors>
+                    <dxmvvm:EventToCommand Command="{Binding WavControlClickCommand}"
+                                           EventName="MouseLeftButtonDown"
+                                           ModifierKeys=""
+                                           PassEventArgsToCommand="True">
+                        <dxmvvm:EventToCommand.EventArgsConverter>
+                            <vt:MouseButtonToPointConverter />
+                        </dxmvvm:EventToCommand.EventArgsConverter>
+                    </dxmvvm:EventToCommand>
+                    <dxmvvm:EventToCommand Command="{Binding WavControlClickCommand}"
+                                           EventName="MouseLeftButtonUp"
+                                           ModifierKeys="Shift"
+                                           PassEventArgsToCommand="True">
+                        <dxmvvm:EventToCommand.EventArgsConverter>
+                            <vt:MouseButtonToPointConverter />
+                        </dxmvvm:EventToCommand.EventArgsConverter>
+                    </dxmvvm:EventToCommand>
+                    <dxmvvm:EventToCommand Command="{Binding OtoModeCommand}"
+                                           EventName="MouseLeftButtonDown"
+                                           ModifierKeys="Alt" />
+                    <dxmvvm:EventToCommand Command="{Binding RegenerateOtoCommand}"
+                                           EventName="MouseLeftButtonUp" />
+                </dxmvvm:Interaction.Behaviors>
+                <Rectangle.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Reload Wav"
+                                  Command="{Binding ReloadCommand}" />
+                        <Separator />
+                        <MenuItem Header="Reset all points in current audio"
+                                  Command="{Binding ResetAllPointsCommand}" />
+                        <Separator />
+                        <MenuItem Header="Reset all vowel (V) points in current audio"
+                                  Command="{Binding ResetPointsCommand}"
+                                  CommandParameter="{Binding PhonemeTypeVowel}" />
+                        <MenuItem Header="Reset all consonant (C) points in current audio"
+                                  Command="{Binding ResetPointsCommand}"
+                                  CommandParameter="{Binding PhonemeTypeConsonant}" />
+                        <MenuItem Header="Reset all rest (R) points in current audio"
+                                  Command="{Binding ResetPointsCommand}"
+                                  CommandParameter="{Binding PhonemeTypeRest}" />
+                        <Separator />
+                        <MenuItem Header="oto.ini preview"
+                                  Command="{Binding OtoModeCommand}" />
+                    </ContextMenu>
+                </Rectangle.ContextMenu>
+            </Rectangle>
+            <ItemsControl Name="ConsonantPoints"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"
+                          ItemTemplate="{DynamicResource WavPointItemsControlItem}"
+                          ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+                          ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                          Visibility="{Binding ConsonantsPointsVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                          ItemsSource="{Binding ConsonantPoints, Mode=OneWay}" />
+            <ItemsControl Name="VowelPoints"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"
+                          ItemTemplate="{DynamicResource WavPointItemsControlItem}"
+                          ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+                          ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                          Visibility="{Binding VowelPointsVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                          ItemsSource="{Binding VowelPoints, Mode=OneWay}" />
+            <ItemsControl Name="RestPoints"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"
+                          ItemTemplate="{DynamicResource WavPointItemsControlItem}"
+                          ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                          Visibility="{Binding RestPointsVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                          ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+                          ItemsSource="{Binding RestPoints, Mode=OneWay}" />
+            <TextBlock HorizontalAlignment="Left"
+                       Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibility}}"
+                       Margin="10,69,0,0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}bit {1}, {2}Hz">
+                        <Binding Path="WavBitRate"
+                                 FallbackValue="BitRate" />
+                        <Binding Path="WavChannels"
+                                 FallbackValue="Channels" />
+                        <Binding Path="WavSampleRate"
+                                 FallbackValue="SampleRate" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </Canvas>
     </Grid>
 </local:WavControlBase>
