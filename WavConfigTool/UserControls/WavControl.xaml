@@ -31,7 +31,9 @@
             </Style.Triggers>
         </Style>
     </UserControl.Style>
-    <Grid Name="Main">
+    <Grid Name="Main"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="{Binding Space, Converter={StaticResource WavControlMargin}, FallbackValue=29}" />
             <RowDefinition Height="{Binding Height}" />
@@ -97,29 +99,13 @@
                 <dxmvvm:EventToCommand Command="{Binding RegenerateOtoCommand}"
                                        EventName="MouseLeftButtonUp" />
             </dxmvvm:Interaction.Behaviors>
-            <Rectangle x:Name="bg"
-                       Fill="{DynamicResource WavControlBackgroundBrush}">
-            </Rectangle>
             <Border Name="WavCompleted"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     Background="#1710FF22"
                     BorderBrush="#FF159B00"
-                    BorderThickness="0,1,0,1"
-                    Grid.RowSpan="2">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Opacity"
-                                Value="0" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsCompleted, FallbackValue=False}"
-                                         Value="True">
-                                <Setter Property="Opacity"
-                                        Value="1" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
+                    Visibility="{Binding IsCompleted, Converter={StaticResource BooleanToVisibility}, FallbackValue=Hidden}"
+                    BorderThickness="0,1,0,1">
             </Border>
             <Rectangle Height="1"
                        HorizontalAlignment="Stretch"
@@ -142,14 +128,53 @@
                            Foreground="{DynamicResource RestBackBrush}"
                            Text="Sample is not available" />
             </Canvas>
+            <Image Name="WavImage"
+                   Height="{Binding Height, FallbackValue=100}"
+                   HorizontalAlignment="Left"
+                   Visibility="{Binding IsImageEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
+                   Source="{Binding WavImage}">
+            </Image>
+            <Image Name="FrqImage"
+                   Height="{Binding Height, FallbackValue=100}"
+                   HorizontalAlignment="Left"
+                   Visibility="{Binding DoShowPitch, Converter={dxmvvm:BooleanToVisibilityConverter}, FallbackValue=Hidden}"
+                   Source="{Binding FrqImage}">
+            </Image>
             <Canvas HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch">
-                <Image Name="WavImage"
-                       Height="{Binding Height, FallbackValue=100}"
-                       HorizontalAlignment="Left"
-                       Visibility="{Binding IsImageEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
-                       Source="{Binding WavImage}">
-                    <Image.ContextMenu>
+                    VerticalAlignment="Stretch"
+                    Background="{DynamicResource WavControlBackgroundBrush}">
+                <ItemsControl Name="ConsonantZones"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Top"
+                              ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
+                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                              Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
+                              ItemsSource="{Binding ConsonantZones, Mode=OneWay}" />
+                <ItemsControl Name="VowelZones"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Top"
+                              ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
+                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                              Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
+                              ItemsSource="{Binding VowelZones, Mode=OneWay}" />
+                <ItemsControl Name="RestZones"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Top"
+                              ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
+                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                              Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
+                              ItemsSource="{Binding RestZones, Mode=OneWay}" />
+                <Rectangle
+                           Canvas.Left="0"
+                           Canvas.Top="0"
+                           Width="{Binding ElementName=WavControlContent, Path=ActualWidth}"
+                           Height="{Binding ElementName=WavControlContent, Path=ActualHeight}"
+                           Fill="Transparent"
+                           Name="ContextMenuHolder">
+                    <Rectangle.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Reload Wav"
                                       Command="{Binding ReloadCommand}" />
@@ -170,47 +195,15 @@
                             <MenuItem Header="oto.ini preview"
                                       Command="{Binding OtoModeCommand}" />
                         </ContextMenu>
-                    </Image.ContextMenu>
-                </Image>
-            </Canvas>
-            <Canvas HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch">
-                <Image Name="FrqImage"
-                       Height="{Binding Height, FallbackValue=100}"
-                       HorizontalAlignment="Left"
-                       Visibility="{Binding DoShowPitch, Converter={dxmvvm:BooleanToVisibilityConverter}, FallbackValue=Hidden}"
-                       Source="{Binding FrqImage}">
-                </Image>
-            </Canvas>
-            <Canvas Name="Points"
-                    Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}">
-                <ItemsControl Name="ConsonantZones"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Top"
-                              ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
-                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              ItemsSource="{Binding ConsonantZones, Mode=OneWay}" />
-                <ItemsControl Name="VowelZones"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Top"
-                              ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
-                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              ItemsSource="{Binding VowelZones, Mode=OneWay}" />
-                <ItemsControl Name="RestZones"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Top"
-                              ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
-                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                              ItemsSource="{Binding RestZones, Mode=OneWay}" />
+                    </Rectangle.ContextMenu>
+                </Rectangle>
                 <ItemsControl Name="ConsonantPoints"
                               HorizontalAlignment="Left"
                               VerticalAlignment="Top"
                               ItemTemplate="{DynamicResource WavPointItemsControlItem}"
                               ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                               ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                              Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
                               ItemsSource="{Binding ConsonantPoints, Mode=OneWay}" />
                 <ItemsControl Name="VowelPoints"
                               HorizontalAlignment="Left"
@@ -218,29 +211,31 @@
                               ItemTemplate="{DynamicResource WavPointItemsControlItem}"
                               ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                               ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                              Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
                               ItemsSource="{Binding VowelPoints, Mode=OneWay}" />
                 <ItemsControl Name="RestPoints"
                               HorizontalAlignment="Left"
                               VerticalAlignment="Top"
                               ItemTemplate="{DynamicResource WavPointItemsControlItem}"
                               ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                              Visibility="{Binding EditEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
                               ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                               ItemsSource="{Binding RestPoints, Mode=OneWay}" />
+                <TextBlock HorizontalAlignment="Left"
+                           Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibility}}"
+                           Margin="10,69,0,0">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0}bit {1}, {2}Hz">
+                            <Binding Path="WavBitRate"
+                                     FallbackValue="BitRate" />
+                            <Binding Path="WavChannels"
+                                     FallbackValue="Channels" />
+                            <Binding Path="WavSampleRate"
+                                     FallbackValue="SampleRate" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
             </Canvas>
-            <TextBlock HorizontalAlignment="Left"
-                       Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibility}}"
-                       Margin="10,69,0,0">
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="{}{0}bit {1}, {2}Hz">
-                        <Binding Path="WavBitRate"
-                                 FallbackValue="BitRate" />
-                        <Binding Path="WavChannels"
-                                 FallbackValue="Channels" />
-                        <Binding Path="WavSampleRate"
-                                 FallbackValue="SampleRate" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
         </Grid>
     </Grid>
 </local:WavControlBase>

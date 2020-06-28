@@ -128,12 +128,13 @@ namespace WavConfigTool.ViewModels
                     delegate (Point point)
                     {
                         var oldValue = Position;
-                        Position = point.X;
+                        Position = Position + point.X;
+                        System.Console.WriteLine($"delta {point.X}\tposition {Position}\told {oldValue}");
                         WavPointChanged(oldValue, Position);
                     },
                     delegate (Point point)
                     {
-                        return true;
+                        return !double.IsNaN(point.X);
                     }
                 );
             }
