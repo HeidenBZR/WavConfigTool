@@ -37,94 +37,96 @@
                                            Cursor="SizeWE"
                                            Height="{Binding Height, FallbackValue=100}"
                                            Fill="{TemplateBinding BorderBrush}" />
-                                <Grid Height="{Binding Height, FallbackValue=100}"
-                                      VerticalAlignment="Stretch">
-                                    <Polygon Visibility="{Binding HasTopRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=Visible}"
-                                             Fill="{TemplateBinding Background}"
-                                             Cursor="Hand"
-                                             Stroke="{TemplateBinding BorderBrush}">
-                                        <Polygon.Points>
-                                            <Point X="0"
-                                                   Y="0" />
-                                            <Point X="15"
-                                                   Y="0" />
-                                            <Point X="0"
-                                                   Y="15" />
-                                        </Polygon.Points>
-                                    </Polygon>
-                                    <Polygon Visibility="{Binding HasTopLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                                             Fill="{TemplateBinding Background}"
-                                             Cursor="Hand"
-                                             Stroke="{TemplateBinding BorderBrush}">
-                                        <Polygon.Points>
-                                            <Point X="-15"
-                                                   Y="0" />
-                                            <Point X="0"
-                                                   Y="0" />
-                                            <Point X="0"
-                                                   Y="15" />
-                                        </Polygon.Points>
-                                    </Polygon>
-                                    <Polygon Visibility="{Binding HasBottomLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                                             x:Name="ControllerBottomRight"
-                                             Width="15"
-                                             HorizontalAlignment="Left"
-                                             VerticalAlignment="Bottom"
-                                             Cursor="Hand"
-                                             Fill="{TemplateBinding Background}"
-                                             RenderTransformOrigin="0.5,0.5"
-                                             Stroke="{TemplateBinding BorderBrush}">
-                                        <Polygon.Points>
-                                            <Point X="-15"
-                                                   Y="0" />
-                                            <Point X="0"
-                                                   Y="0" />
-                                            <Point X="0"
-                                                   Y="-15" />
-                                        </Polygon.Points>
-                                    </Polygon>
-                                    <Polygon Visibility="{Binding HasBottomRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                                             x:Name="ControllerBottomLeft"
-                                             Width="15"
-                                             HorizontalAlignment="Left"
-                                             VerticalAlignment="Bottom"
-                                             Cursor="Hand"
-                                             Fill="{TemplateBinding Background}"
-                                             RenderTransformOrigin="0.5,0.5"
-                                             Stroke="{TemplateBinding BorderBrush}">
-                                        <Polygon.Points>
-                                            <Point X="0"
-                                                   Y="0" />
-                                            <Point X="15"
-                                                   Y="0" />
-                                            <Point X="0"
-                                                   Y="-15" />
-                                        </Polygon.Points>
-                                    </Polygon>
-                                </Grid>
-                                <Grid Canvas.Left="0"
-                                      VerticalAlignment="Stretch"
-                                      Visibility="{Binding IsTextBlockVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Visible}"
-                                      Height="{Binding Height, FallbackValue=100}">
-                                    <Border Margin="0,0,0,0"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            Background="{TemplateBinding Background}"
-                                            Cursor="Hand"
-                                            BorderThickness="0,1,1,0"
-                                            VerticalAlignment="Bottom">
-                                        <TextBlock Name="TypeLabel"
-                                                   Padding="0"
-                                                   HorizontalAlignment="Left"
-                                                   VerticalAlignment="Bottom"
-                                                   Foreground="{TemplateBinding BorderBrush}"
-                                                   Panel.ZIndex="5"
-                                                   FontFamily="Century Gothic"
-                                                   FontSize="14"
-                                                   Margin="5,1,4,1"
-                                                   Text="{Binding VisualText, FallbackValue=Text, Mode=OneWay}">
-                                        </TextBlock>
-                                    </Border>
-                                </Grid>
+                                <Polygon Visibility="{Binding HasTopRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=Visible}"
+                                         Fill="{TemplateBinding Background}"
+                                         Cursor="Hand"
+                                         Canvas.Left="-1"
+                                         Stroke="{TemplateBinding BorderBrush}">
+                                    <Polygon.Points>
+                                        <Point X="0"
+                                               Y="0" />
+                                        <Point X="15"
+                                               Y="0" />
+                                        <Point X="0"
+                                               Y="15" />
+                                    </Polygon.Points>
+                                </Polygon>
+                                <Polygon Visibility="{Binding HasTopLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                                         Fill="{TemplateBinding Background}"
+                                         Cursor="Hand"
+                                         Canvas.Left="0"
+                                         Stroke="{TemplateBinding BorderBrush}">
+                                    <Polygon.Points>
+                                        <Point X="-15"
+                                               Y="0" />
+                                        <Point X="0"
+                                               Y="0" />
+                                        <Point X="0"
+                                               Y="15" />
+                                    </Polygon.Points>
+                                </Polygon>
+                                <Polygon Visibility="{Binding HasBottomLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                                         x:Name="ControllerBottomRight"
+                                         Width="15"
+                                         Canvas.Left="0"
+                                         Canvas.Top="{Binding Height}"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Bottom"
+                                         Cursor="Hand"
+                                         Fill="{TemplateBinding Background}"
+                                         RenderTransformOrigin="0.5,0.5"
+                                         Stroke="{TemplateBinding BorderBrush}">
+                                    <Polygon.Points>
+                                        <Point X="-15"
+                                               Y="0" />
+                                        <Point X="0"
+                                               Y="0" />
+                                        <Point X="0"
+                                               Y="-15" />
+                                    </Polygon.Points>
+                                </Polygon>
+                                <Polygon Visibility="{Binding HasBottomRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                                         x:Name="ControllerBottomLeft"
+                                         Width="15"
+                                         Canvas.Left="0"
+                                         Canvas.Top="{Binding Height}"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Bottom"
+                                         Cursor="Hand"
+                                         Fill="{TemplateBinding Background}"
+                                         RenderTransformOrigin="0.5,0.5"
+                                         Stroke="{TemplateBinding BorderBrush}">
+                                    <Polygon.Points>
+                                        <Point X="0"
+                                               Y="0" />
+                                        <Point X="15"
+                                               Y="0" />
+                                        <Point X="0"
+                                               Y="-15" />
+                                    </Polygon.Points>
+                                </Polygon>
+                                <Border
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        Background="{TemplateBinding Background}"
+                                        Visibility="{Binding IsTextBlockVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                                        Height="20"
+                                        Cursor="Hand"
+                                        Canvas.Left="0"
+                                        Canvas.Top="{Binding TextblockOffset}"
+                                        BorderThickness="0,1,1,0"
+                                        VerticalAlignment="Bottom">
+                                    <TextBlock Name="TypeLabel"
+                                                Padding="0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Bottom"
+                                                Foreground="{TemplateBinding BorderBrush}"
+                                                Panel.ZIndex="5"
+                                                FontFamily="Century Gothic"
+                                                FontSize="14"
+                                                Margin="5,1,4,1"
+                                                Text="{Binding VisualText, FallbackValue=Text, Mode=OneWay}">
+                                    </TextBlock>
+                                </Border>
                             </Canvas>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver"

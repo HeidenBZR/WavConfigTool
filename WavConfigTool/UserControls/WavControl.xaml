@@ -208,7 +208,7 @@
                           ItemTemplate="{DynamicResource WavPointItemsControlItem}"
                           ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                           ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                          Visibility="{Binding ConsonantsPointsVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                          Visibility="{Binding ConsonantPointsVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                           ItemsSource="{Binding ConsonantPoints, Mode=OneWay}" />
             <ItemsControl Name="VowelPoints"
                           HorizontalAlignment="Left"
