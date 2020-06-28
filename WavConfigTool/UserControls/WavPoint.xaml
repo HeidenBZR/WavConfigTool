@@ -31,6 +31,11 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Thumb}">
                             <Canvas>
+                                <Canvas.CacheMode>
+                                    <BitmapCache EnableClearType="False"
+                                                 RenderAtScale="1"
+                                                 SnapsToDevicePixels="False" />
+                                </Canvas.CacheMode>
                                 <Rectangle x:Name="Line"
                                            Canvas.Left="-1"
                                            Width="2"
@@ -128,15 +133,6 @@
                                     </TextBlock>
                                 </Border>
                             </Canvas>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="true">
-                                    <Setter Property="Background"
-                                            Value="White" />
-                                    <Setter Property="BorderBrush"
-                                            Value="Black" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
