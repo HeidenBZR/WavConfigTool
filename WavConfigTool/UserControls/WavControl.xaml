@@ -71,6 +71,21 @@
                             </ItemsPanelTemplate>
                         </ListView.ItemsPanel>
                     </ListView>
+                    <TextBlock HorizontalAlignment="Left"
+                               Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibility}}"
+                               Foreground="#FF115511"
+                               Margin="10,0,0,0">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}bit {1}, {2}Hz">
+                                <Binding Path="WavBitRate"
+                                         FallbackValue="BitRate" />
+                                <Binding Path="WavChannels"
+                                         FallbackValue="Channels" />
+                                <Binding Path="WavSampleRate"
+                                         FallbackValue="SampleRate" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                 </StackPanel>
             </Grid>
         </Canvas>
@@ -234,20 +249,6 @@
                           Visibility="{Binding RestPointsVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                           ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
                           ItemsSource="{Binding RestPoints, Mode=OneWay}" />
-            <TextBlock HorizontalAlignment="Left"
-                       Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibility}}"
-                       Margin="10,69,0,0">
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="{}{0}bit {1}, {2}Hz">
-                        <Binding Path="WavBitRate"
-                                 FallbackValue="BitRate" />
-                        <Binding Path="WavChannels"
-                                 FallbackValue="Channels" />
-                        <Binding Path="WavSampleRate"
-                                 FallbackValue="SampleRate" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
         </Canvas>
     </Grid>
 </local:WavControlBase>
