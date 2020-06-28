@@ -41,6 +41,7 @@ namespace WavConfigTool.ViewTools
         }
     }
 
+
     class OpenFileCommand : ICommand
     {
         Action<object> execute;

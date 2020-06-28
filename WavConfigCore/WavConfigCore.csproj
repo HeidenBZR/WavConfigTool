@@ -55,6 +55,7 @@
     <Compile Include="AliasType.cs" />
     <Compile Include="AliasTypeMask.cs" />
     <Compile Include="Delegates.cs" />
+    <Compile Include="OremoPackGenerator.cs" />
     <Compile Include="Oto.cs" />
     <Compile Include="OtoGenerator.cs" />
     <Compile Include="Phoneme.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Reader\IO\IOProject.cs" />
     <Compile Include="Reader\IO\IOReclist.cs" />
     <Compile Include="Reader\IO\IOWavMask.cs" />
+    <Compile Include="Reader\OremoPackWriter.cs" />
     <Compile Include="Reader\ProjectReader.cs" />
     <Compile Include="Reader\ReclistReader.cs" />
     <Compile Include="Reader\ReplacerReader.cs" />

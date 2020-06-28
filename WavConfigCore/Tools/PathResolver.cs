@@ -73,6 +73,14 @@ namespace WavConfigCore.Tools
             return Path.Combine(ResourcesDir, "Settings", filename);
         }
 
+        public string OremoPack(string oremoPackName)
+        {
+            var dir = Path.Combine(ResourcesDir, "Settings", oremoPackName + "_oremo");
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+            return dir;
+        }
+
         public string Backup(bool onlyFolder = false)
         {
             var folder = Path.Combine(Path.GetTempPath(), "WavConfigTool", "backups");

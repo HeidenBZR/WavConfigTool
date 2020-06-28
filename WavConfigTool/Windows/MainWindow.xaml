@@ -117,6 +117,13 @@
                 <Separator />
                 <MenuItem Header="Exit" />
             </MenuItem>
+            <MenuItem Header="Generate">
+                <MenuItem Header="Generate Oto.ini"
+                          InputGestureText="Ctrl+G"
+                          Command="{Binding GenerateOtoCommand}" />
+                <MenuItem Header="Generate Oremo Pack"
+                          Command="{Binding GenerateOremoPackCommand}" />
+            </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Header="Toggle Pitch"
                           InputGestureText="Ctrl+Q"

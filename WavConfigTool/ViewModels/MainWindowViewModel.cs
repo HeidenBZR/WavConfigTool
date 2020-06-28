@@ -9,6 +9,8 @@ using System.Windows.Media.Imaging;
 using WavConfigTool.Classes;
 using WavConfigTool.ViewTools;
 using WavConfigCore;
+using WavConfigCore.Reader;
+using System.Diagnostics;
 
 namespace WavConfigTool.ViewModels
 {
@@ -32,6 +34,7 @@ namespace WavConfigTool.ViewModels
         public ProjectManager ProjectManager => ProjectManager.Current;
         public GotoUserControlViewModel GotoUserControlViewModel { get; set; }
         public OtoGenerator OtoGenerator { get; private set; }
+        public OremoPackGenerator OremoPackGenerator { get; set; } = new OremoPackGenerator();
 
         public int AttackC { get => Project?.AttackC ?? 0; set { Project.AttackC = value; TrySaveProject(); RedrawPoints(); } }
         public int AttackV { get => Project?.AttackV ?? 0; set { Project.AttackV = value; TrySaveProject(); RedrawPoints(); } }
@@ -431,6 +434,13 @@ namespace WavConfigTool.ViewModels
             return Project != null && Project.IsLoaded;
         },
         "oto");
+
+        public ICommand GenerateOremoPackCommand => new DelegateCommand(delegate
+        {
+            var oremoPack = OremoPackGenerator.Generate(Project.Reclist);
+            OremoPackWriter.Current.WriteAndOpenFolder(oremoPack);
+
+        },() => Project != null && Project.Reclist != null && Project.Reclist.IsLoaded);
 
         public ICommand LoadedCommand => new DelegateCommand(() =>
         {
