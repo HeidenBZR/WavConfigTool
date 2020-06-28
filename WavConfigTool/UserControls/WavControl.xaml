@@ -75,22 +75,6 @@
             </Grid>
         </Canvas>
 
-        <Border Name="WavCompleted"
-                Grid.Row="1"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Background="#1710FF22"
-                BorderBrush="#FF159B00"
-                Visibility="{Binding IsCompleted, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                BorderThickness="0,1,0,1">
-        </Border>
-        <Rectangle Height="1"
-                   Grid.Row="1"
-                   HorizontalAlignment="Stretch"
-                   Fill="{DynamicResource WaveformBrush}"
-                   SnapsToDevicePixels="True"
-                   Visibility="Collapsed"
-                   Margin="0,37,0,50" />
         <local:CanvasLoading x:Name="CanvasLoading"
                              Grid.Row="1"
                              HorizontalAlignment="Stretch"
@@ -99,7 +83,7 @@
         <Canvas HorizontalAlignment="Stretch"
                 Grid.Row="1"
                 VerticalAlignment="Stretch"
-                Background="#22FF2222"
+                Background="#FF120000"
                 Visibility="{Binding IsDisabled, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                 Grid.RowSpan="2">
             <TextBlock Margin="10,50"
@@ -122,10 +106,33 @@
                Visibility="{Binding DoShowPitch, Converter={dxmvvm:BooleanToVisibilityConverter}, FallbackValue=Hidden}"
                Source="{Binding FrqImage}">
         </Image>
+        <Border BorderThickness="0,1,0,1"
+                Grid.Row="1"
+                Name="BgContainer"
+                Panel.ZIndex="-2"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background"
+                            Value="#15557722" />
+                    <Setter Property="BorderBrush"
+                            Value="#FF001B00" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCompleted}"
+                                     Value="True">
+                            <Setter Property="Background"
+                                    Value="#FF001F02" />
+                            <Setter Property="BorderBrush"
+                                    Value="#FF159B00" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
         <Canvas HorizontalAlignment="Stretch"
                 Grid.Row="1"
-                VerticalAlignment="Stretch"
-                Background="{DynamicResource WavControlBackgroundBrush}">
+                VerticalAlignment="Stretch">
             <ItemsControl Name="ConsonantZones"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Top"
