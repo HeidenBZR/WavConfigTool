@@ -85,8 +85,7 @@
                           Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibility}}" />
         <Menu Name="MainMenu"
               HorizontalAlignment="Stretch"
-              VerticalAlignment="Top"
-              ItemsPanel="{DynamicResource ItemsPanelTemplate}">
+              VerticalAlignment="Top">
             <MenuItem Name="MenuFile"
                       Header="File">
                 <MenuItem Header="_New Project"

@@ -15,6 +15,7 @@ namespace WavConfigTool.ViewModels
 {
     public class WavZoneViewModel : ViewModelBase
     {
+        public double Position => In;
         public double In { get; set; } = 0;
         public double Out { get; set; } = 100;
         public PhonemeType Type { get; set; } = PhonemeType.Consonant;

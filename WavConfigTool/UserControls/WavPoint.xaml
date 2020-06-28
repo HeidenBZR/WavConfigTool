@@ -13,165 +13,162 @@
     Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibility}, FallbackValue=Visible}"
     SnapsToDevicePixels="True"
     mc:Ignorable="d">
-    <Canvas>
-        <Thumb
-            Canvas.Left="{Binding Position, FallbackValue=0}"
-            ToolTip="{Binding PositionReal, FallbackValue=-1}"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Stretch">
-            <Thumb.Style>
-                <Style TargetType="{x:Type Thumb}">
-                    <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
-                    <Setter Property="Background" Value="{Binding Type, Converter={StaticResource PhonemeTypeToColor}, FallbackValue=Red}" />
-                    <Setter Property="BorderBrush" Value="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}, FallbackValue=#ff440000}" />
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type Thumb}">
-                                <Canvas>
-                                    <Rectangle
-                                        x:Name="Line"
-                                        Canvas.Left="-1"
-                                        Width="2"
-                                        Cursor="SizeWE"
-                                        Height="{Binding Height, FallbackValue=100}"
-                                        Fill="{TemplateBinding BorderBrush}" />
-                                    <Grid Height="{Binding Height, FallbackValue=100}" VerticalAlignment="Stretch">
-                                        <Polygon 
-                                            Visibility="{Binding HasTopRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=True}"
-                                            Fill="{TemplateBinding Background}" 
+    <Thumb
+        ToolTip="{Binding PositionReal, FallbackValue=-1}"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Stretch">
+        <Thumb.Style>
+            <Style TargetType="{x:Type Thumb}">
+                <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+                <Setter Property="Background" Value="{Binding Type, Converter={StaticResource PhonemeTypeToColor}, FallbackValue=Red}" />
+                <Setter Property="BorderBrush" Value="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}, FallbackValue=#ff440000}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Canvas>
+                                <Rectangle
+                                    x:Name="Line"
+                                    Canvas.Left="-1"
+                                    Width="2"
+                                    Cursor="SizeWE"
+                                    Height="{Binding Height, FallbackValue=100}"
+                                    Fill="{TemplateBinding BorderBrush}" />
+                                <Grid Height="{Binding Height, FallbackValue=100}" VerticalAlignment="Stretch">
+                                    <Polygon 
+                                        Visibility="{Binding HasTopRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=True}"
+                                        Fill="{TemplateBinding Background}" 
+                                        Cursor="Hand"
+                                        Stroke="{TemplateBinding BorderBrush}">
+                                        <Polygon.Points>
+                                            <Point X="0" Y="0" />
+                                            <Point X="15" Y="0" />
+                                            <Point X="0" Y="15" />
+                                        </Polygon.Points>
+                                    </Polygon>
+                                    <Polygon Visibility="{Binding HasTopLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=False}"
+                                        Fill="{TemplateBinding Background}" 
+                                        Cursor="Hand"
+                                        Stroke="{TemplateBinding BorderBrush}">
+                                        <Polygon.Points>
+                                            <Point X="-15" Y="0" />
+                                            <Point X="0" Y="0" />
+                                            <Point X="0" Y="15" />
+                                        </Polygon.Points>
+                                    </Polygon>
+                                    <Polygon Visibility="{Binding HasBottomLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=False}"
+                                            x:Name="ControllerBottomRight"
+                                            Width="15"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Bottom"
                                             Cursor="Hand"
+                                            Fill="{TemplateBinding Background}"
+                                            RenderTransformOrigin="0.5,0.5"
                                             Stroke="{TemplateBinding BorderBrush}">
-                                            <Polygon.Points>
-                                                <Point X="0" Y="0" />
-                                                <Point X="15" Y="0" />
-                                                <Point X="0" Y="15" />
-                                            </Polygon.Points>
-                                        </Polygon>
-                                        <Polygon Visibility="{Binding HasTopLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=False}"
-                                            Fill="{TemplateBinding Background}" 
+                                        <Polygon.Points>
+                                            <Point X="-15" Y="0" />
+                                            <Point X="0" Y="0" />
+                                            <Point X="0" Y="-15" />
+                                        </Polygon.Points>
+                                    </Polygon>
+                                    <Polygon Visibility="{Binding HasBottomRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=False}"
+                                            x:Name="ControllerBottomLeft"
+                                            Width="15"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Bottom"
                                             Cursor="Hand"
+                                            Fill="{TemplateBinding Background}"
+                                            RenderTransformOrigin="0.5,0.5"
                                             Stroke="{TemplateBinding BorderBrush}">
-                                            <Polygon.Points>
-                                                <Point X="-15" Y="0" />
-                                                <Point X="0" Y="0" />
-                                                <Point X="0" Y="15" />
-                                            </Polygon.Points>
-                                        </Polygon>
-                                        <Polygon Visibility="{Binding HasBottomLeftCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=False}"
-                                                x:Name="ControllerBottomRight"
-                                                Width="15"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Bottom"
-                                                Cursor="Hand"
-                                                Fill="{TemplateBinding Background}"
-                                                RenderTransformOrigin="0.5,0.5"
-                                                Stroke="{TemplateBinding BorderBrush}">
-                                            <Polygon.Points>
-                                                <Point X="-15" Y="0" />
-                                                <Point X="0" Y="0" />
-                                                <Point X="0" Y="-15" />
-                                            </Polygon.Points>
-                                        </Polygon>
-                                        <Polygon Visibility="{Binding HasBottomRightCorner, Converter={StaticResource BooleanToVisibility}, FallbackValue=False}"
-                                                x:Name="ControllerBottomLeft"
-                                                Width="15"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Bottom"
-                                                Cursor="Hand"
-                                                Fill="{TemplateBinding Background}"
-                                                RenderTransformOrigin="0.5,0.5"
-                                                Stroke="{TemplateBinding BorderBrush}">
-                                            <Polygon.Points>
-                                                <Point X="0" Y="0" />
-                                                <Point X="15" Y="0" />
-                                                <Point X="0" Y="-15" />
-                                            </Polygon.Points>
-                                        </Polygon>
-                                    </Grid>
-                                    <Grid
-                                        Canvas.Left="0"
-                                        VerticalAlignment="Stretch"
-                                        Visibility="{Binding IsLeft, Converter={StaticResource BooleanToVisibility}, FallbackValue=true}"
-                                        Height="{Binding Height, FallbackValue=100}">
-                                        <Border 
-                                            Margin="0,0,0,0"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            Background="{TemplateBinding Background}"
-                                            Cursor="Hand"
-                                            VerticalAlignment="Bottom">
-                                            <TextBlock
-                                                Name="TypeLabel"
-                                                Padding="0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Bottom"
-                                                Foreground="{TemplateBinding BorderBrush}"
-                                                Panel.ZIndex="5"
-                                                FontFamily="Century Gothic"
-                                                FontSize="14"
-                                                Text="{Binding VisualText, FallbackValue=Text, Mode=OneWay}" >
-                                                <TextBlock.Style>
-                                                    <Style>
-                                                        <Setter Property="TextBlock.Margin" Value="5,1,4,1"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding VisualText, Mode=OneWay}" Value="">
-                                                                <Setter Property="TextBlock.Margin" Value="0"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
-                                            <Border.Style>
+                                        <Polygon.Points>
+                                            <Point X="0" Y="0" />
+                                            <Point X="15" Y="0" />
+                                            <Point X="0" Y="-15" />
+                                        </Polygon.Points>
+                                    </Polygon>
+                                </Grid>
+                                <Grid
+                                    Canvas.Left="0"
+                                    VerticalAlignment="Stretch"
+                                    Visibility="{Binding IsLeft, Converter={StaticResource BooleanToVisibility}, FallbackValue=true}"
+                                    Height="{Binding Height, FallbackValue=100}">
+                                    <Border 
+                                        Margin="0,0,0,0"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        Background="{TemplateBinding Background}"
+                                        Cursor="Hand"
+                                        VerticalAlignment="Bottom">
+                                        <TextBlock
+                                            Name="TypeLabel"
+                                            Padding="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Bottom"
+                                            Foreground="{TemplateBinding BorderBrush}"
+                                            Panel.ZIndex="5"
+                                            FontFamily="Century Gothic"
+                                            FontSize="14"
+                                            Text="{Binding VisualText, FallbackValue=Text, Mode=OneWay}" >
+                                            <TextBlock.Style>
                                                 <Style>
-                                                    <Setter Property="Border.BorderThickness" Value="0,1,1,0"/>
+                                                    <Setter Property="TextBlock.Margin" Value="5,1,4,1"/>
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding VisualText, Mode=OneWay}" Value="">
-                                                            <Setter Property="Border.BorderThickness" Value="0"/>
+                                                            <Setter Property="TextBlock.Margin" Value="0"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
-                                            </Border.Style>
-                                        </Border>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <Border.Style>
+                                            <Style>
+                                                <Setter Property="Border.BorderThickness" Value="0,1,1,0"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding VisualText, Mode=OneWay}" Value="">
+                                                        <Setter Property="Border.BorderThickness" Value="0"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                    </Border>
 
-                                    </Grid>
-                                </Canvas>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="true">
-                                        <Setter Property="Background" Value="White" />
-                                        <Setter Property="BorderBrush" Value="Black" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </Thumb.Style>
+                                </Grid>
+                            </Canvas>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="true">
+                                    <Setter Property="Background" Value="White" />
+                                    <Setter Property="BorderBrush" Value="Black" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Thumb.Style>
 
-            <dxmvvm:Interaction.Behaviors>
-                <dxmvvm:EventToCommand
-                    Command="{Binding RegenerateOtoRequestCommand}"
-                    EventName="MouseLeftButtonDown">
-                </dxmvvm:EventToCommand>
-                <dxmvvm:EventToCommand
-                    Command="{Binding PointMovedCommand}"
-                    EventName="DragDelta"
-                    PassEventArgsToCommand="True">
-                    <dxmvvm:EventToCommand.EventArgsConverter>
-                        <viewtools:DragDeltaToPointConverter />
-                    </dxmvvm:EventToCommand.EventArgsConverter>
-                </dxmvvm:EventToCommand>
-                <dxmvvm:EventToCommand
-                    Command="{Binding DeletePointCommand}"
-                    EventName="MouseRightButtonUp"
-                    PassEventArgsToCommand="True">
-                    <dxmvvm:EventToCommand.EventArgsConverter>
-                        <viewtools:MouseButtonToPointConverter />
-                    </dxmvvm:EventToCommand.EventArgsConverter>
-                </dxmvvm:EventToCommand>
-                <dxmvvm:EventToCommand 
-                    Command="{Binding RegenerateOtoRequestCommand}"
-                    EventName="DragCompleted" />
-            </dxmvvm:Interaction.Behaviors>
-        </Thumb>
-    </Canvas>
+        <dxmvvm:Interaction.Behaviors>
+            <dxmvvm:EventToCommand
+                Command="{Binding RegenerateOtoRequestCommand}"
+                EventName="MouseLeftButtonDown">
+            </dxmvvm:EventToCommand>
+            <dxmvvm:EventToCommand
+                Command="{Binding PointMovedCommand}"
+                EventName="DragDelta"
+                PassEventArgsToCommand="True">
+                <dxmvvm:EventToCommand.EventArgsConverter>
+                    <viewtools:DragDeltaToPointConverter />
+                </dxmvvm:EventToCommand.EventArgsConverter>
+            </dxmvvm:EventToCommand>
+            <dxmvvm:EventToCommand
+                Command="{Binding DeletePointCommand}"
+                EventName="MouseRightButtonUp"
+                PassEventArgsToCommand="True">
+                <dxmvvm:EventToCommand.EventArgsConverter>
+                    <viewtools:MouseButtonToPointConverter />
+                </dxmvvm:EventToCommand.EventArgsConverter>
+            </dxmvvm:EventToCommand>
+            <dxmvvm:EventToCommand 
+                Command="{Binding RegenerateOtoRequestCommand}"
+                EventName="DragCompleted" />
+        </dxmvvm:Interaction.Behaviors>
+    </Thumb>
 </UserControl>

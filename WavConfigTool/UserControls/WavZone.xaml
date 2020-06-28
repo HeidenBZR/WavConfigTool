@@ -13,14 +13,8 @@
         <viewModels:WavZoneViewModel />
     </d:UserControl.DataContext>
 
-    <Canvas>
-        <Canvas HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch">
-            <Image Name="Image"
-                   Canvas.Left="{Binding In}"
-                   HorizontalAlignment="Left"
-                   Source="{Binding Image}">
-            </Image>
-        </Canvas>
-    </Canvas>
+    <Image Name="Image"
+           HorizontalAlignment="Left"
+           Source="{Binding Image}">
+    </Image>
 </UserControl>

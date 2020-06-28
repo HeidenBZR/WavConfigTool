@@ -59,6 +59,12 @@
     <DataTemplate x:Key="WavZoneItemsControlItem">
         <uc:WavZone />
     </DataTemplate>
+    
+    <Style x:Key="CanvasPlacedItemContainerStyle"
+           TargetType="ContentPresenter">
+        <Setter Property="Canvas.Left"
+                Value="{Binding Position}" />
+    </Style>
 
     <Style x:Key="ToolsPanelButton" TargetType="{x:Type Button}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}" />
