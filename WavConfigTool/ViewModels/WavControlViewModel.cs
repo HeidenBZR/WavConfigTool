@@ -54,6 +54,10 @@ namespace WavConfigTool.ViewModels
         public string WavBitRate => WaveForm?.BitRate.ToString();
         public string WavSampleRate => WaveForm?.SampleRate.ToString();
 
+        public bool DoShowPitch => ViewOptions.DoShowPitch;
+
+        public ViewOptions ViewOptions { get; set; }
+
         public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
         public event OtoModeHandler OnOtoMode = delegate { };
         public event SimpleHandler OnLoaded = delegate { };
@@ -210,6 +214,12 @@ namespace WavConfigTool.ViewModels
         public void RequestGenerateOto()
         {
             OnGenerateOtoRequested();
+        }
+
+        public override void HandleViewChanged()
+        {
+            base.HandleViewChanged();
+            RaisePropertyChanged(() => DoShowPitch);
         }
 
         #region private

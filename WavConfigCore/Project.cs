@@ -17,6 +17,11 @@ namespace WavConfigCore
         public bool MustHideNotEnabled;
     }
 
+    public class ViewOptions
+    {
+        public bool DoShowPitch { get; set; } = true;
+    }
+
     public class Project
     {
         #region variables
@@ -29,6 +34,7 @@ namespace WavConfigCore
         public Voicebank Voicebank { get => voicebank; private set { voicebank = value; ProjectChanged(); } }
         public Replacer Replacer { get => replacer; private set { replacer = value; ProjectChanged(); } }
         public ProjectOptions ProjectOptions { get; set; }
+        public ViewOptions ViewOptions { get; set; }
 
         public bool IsLoaded { get; set; } = false;
         public bool IsChangedAfterBackup { get; private set; }

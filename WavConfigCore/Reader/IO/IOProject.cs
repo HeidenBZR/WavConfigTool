@@ -48,6 +48,12 @@ namespace WavConfigCore.Reader
     }
 
     [Serializable]
+    public class IOViewOptions
+    {
+        public bool DoShowPitch = true;
+    }
+
+    [Serializable]
     public class IOProject
     {
         public string Voicebank;
@@ -56,6 +62,7 @@ namespace WavConfigCore.Reader
         public IOWavOptions WavOptions = new IOWavOptions();
         public IOOtoOptions OtoOptions = new IOOtoOptions();
         public IOProjectOptions ProjectOptions = new IOProjectOptions();
+        public IOViewOptions ViewOptions = new IOViewOptions();
         public IOWavConfig[] WavConfigs = new IOWavConfig[0];
     }
 }

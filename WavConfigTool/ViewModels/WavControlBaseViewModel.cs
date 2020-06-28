@@ -42,5 +42,11 @@ namespace WavConfigTool.ViewModels
         {
 
         }
+
+        public virtual void HandleViewChanged()
+        {
+
+        }
+
     }
 }

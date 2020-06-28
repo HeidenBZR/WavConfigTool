@@ -40,6 +40,8 @@ namespace WavConfigTool.ViewModels
         public int DecayV  { get => Project?.DecayV ?? 0;  set { Project.DecayV = value;  TrySaveProject(); RedrawPoints(); } }
         public int DecayR  { get => Project?.DecayR ?? 0;  set { Project.DecayR = value;  TrySaveProject(); RedrawPoints(); } }
 
+        public ViewOptions ViewOptions { get; set; }
+
         public bool MustHideNotEnabled
         {
             get => Project != null && Project.ProjectOptions.MustHideNotEnabled;
@@ -136,6 +138,7 @@ namespace WavConfigTool.ViewModels
             RaisePropertyChanged(() => IsLoading);
             if (Project != null && Project.IsLoaded)
             {
+                ViewOptions = Project.ViewOptions;
                 var wavControls = new List<WavControlBaseViewModel>();
                 for (var i = 0; i < Project.ProjectLines.Count; i++)
                 {
@@ -189,6 +192,7 @@ namespace WavConfigTool.ViewModels
             var sampleName = Project.Voicebank.GetSamplePath(projectLine.Recline.Name, Project.WavPrefix, Project.WavSuffix);
             var hash = $"{Project.Voicebank.Name}_{Project.Reclist.Name}_{Settings.UserScaleX}x{Settings.UserScaleY}_{sampleName}"; //.GetHashCode();
             var control = new WavControlViewModel(projectLine, sampleName, hash) { Number = i };
+            control.ViewOptions = ViewOptions;
             control.OnOtoMode += model => SetOtoMode(control);
             control.OnGenerateOtoRequested += delegate
             {
@@ -451,6 +455,12 @@ namespace WavConfigTool.ViewModels
             IsOtoPreviewMode = false;
             Refresh();
         }, () => IsOtoPreviewMode);
+
+        public ICommand TogglePitchCommand => new DelegateCommand(() =>
+        {
+            ViewOptions.DoShowPitch = !ViewOptions.DoShowPitch;
+            PagerViewModel.RefreshPageContent();
+        }, () => Project != null && Project.IsLoaded);
 
 #if DEBUG
 

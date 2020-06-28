@@ -149,14 +149,6 @@
                        HorizontalAlignment="Left"
                        Visibility="{Binding IsImageEnabled, Converter={StaticResource BooleanToVisibility}, TargetNullValue=Hidden}"
                        Source="{Binding WavImage}">
-                </Image>
-            </Canvas>
-            <Canvas HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch">
-                <Image Name="FrqImage"
-                       Height="{Binding Height, FallbackValue=100}"
-                       HorizontalAlignment="Left"
-                       Source="{Binding FrqImage}">
                     <Image.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Reload Wav"
@@ -179,6 +171,15 @@
                                       Command="{Binding OtoModeCommand}" />
                         </ContextMenu>
                     </Image.ContextMenu>
+                </Image>
+            </Canvas>
+            <Canvas HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
+                <Image Name="FrqImage"
+                       Height="{Binding Height, FallbackValue=100}"
+                       HorizontalAlignment="Left"
+                       Visibility="{Binding DoShowPitch, Converter={dxmvvm:BooleanToVisibilityConverter}, FallbackValue=Hidden}"
+                       Source="{Binding FrqImage}">
                 </Image>
             </Canvas>
             <Canvas Name="Points"

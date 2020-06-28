@@ -180,6 +180,14 @@ namespace WavConfigTool.ViewModels
             }
         }
 
+        public void RefreshPageContent()
+        {
+            foreach (var wavconfig in PageContent)
+            {
+                wavconfig.HandleViewChanged();
+            }
+        }
+
         #region private
 
         private ObservableCollection<WavControlBaseViewModel> pageContent = new ObservableCollection<WavControlBaseViewModel>();

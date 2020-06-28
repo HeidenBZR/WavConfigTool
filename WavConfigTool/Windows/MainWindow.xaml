@@ -54,6 +54,8 @@
                              KeyGesture="CTRL+O" />
         <dxmvvm:KeyToCommand Command="{Binding NewProjectCommand}"
                              KeyGesture="CTRL+N" />
+        <dxmvvm:KeyToCommand Command="{Binding TogglePitchCommand}"
+                             KeyGesture="CTRL+Q" />
     </dxmvvm:Interaction.Behaviors>
     <Grid>
         <Grid.RowDefinitions>
@@ -116,14 +118,14 @@
                 <MenuItem Header="Exit" />
             </MenuItem>
             <MenuItem Header="View">
-                <MenuItem Header="Toggle Waveform"
+                <MenuItem Header="Toggle Pitch"
                           InputGestureText="Ctrl+Q"
+                          Command="{Binding TogglePitchCommand}" />
+                <MenuItem Header="Toggle Waveform"
+                          InputGestureText="Ctrl+W"
                           IsEnabled="False" />
                 <MenuItem Header="Toggle Spectrum"
-                          InputGestureText="Ctrl W"
-                          IsEnabled="False" />
-                <MenuItem Header="Toggle Pitch"
-                          InputGestureText="Ctrl E"
+                          InputGestureText="Ctrl+E"
                           IsEnabled="False" />
                 <Separator />
                 <MenuItem Header="Next page"

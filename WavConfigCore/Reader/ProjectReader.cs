@@ -88,6 +88,10 @@ namespace WavConfigCore.Reader
                 MustHideNotEnabled = project.ProjectOptions.MustHideNotEnabled,
                 MustHideCompleted = project.ProjectOptions.MustHideCompleted
             };
+            ioProject.ViewOptions = new IOViewOptions
+            {
+                DoShowPitch = project.ViewOptions.DoShowPitch
+            };
             if (project.Voicebank != null)
                 ioProject.Voicebank = project.Voicebank.Location;
             if (project.Reclist != null)
@@ -129,13 +133,15 @@ namespace WavConfigCore.Reader
                 AttackV = ioProject.OtoOptions.VowelAttack,
                 AttackC = ioProject.OtoOptions.ConsonantAttack,
                 AttackR = ioProject.OtoOptions.RestAttack,
-                ProjectOptions = new ProjectOptions()
+                ProjectOptions = new ProjectOptions(),
+                ViewOptions = new ViewOptions()
             };
             project.ProjectOptions.LastPage = ioProject.ProjectOptions.LastPage;
             project.ProjectOptions.PageSize = ioProject.ProjectOptions.PageSize;
             project.ProjectOptions.OtoPageSize = ioProject.ProjectOptions.OtoPageSize;
             project.ProjectOptions.MustHideNotEnabled = ioProject.ProjectOptions.MustHideNotEnabled;
             project.ProjectOptions.MustHideCompleted = ioProject.ProjectOptions.MustHideCompleted;
+            project.ViewOptions.DoShowPitch = ioProject.ViewOptions.DoShowPitch;
 
             project.SetVoicebank(new Voicebank(PathResolver.Current.TryGetDirectoryName(projectDir), ioProject.Voicebank));
             project.SetReclist(ReclistReader.Current.Read(ioProject.Reclist));
