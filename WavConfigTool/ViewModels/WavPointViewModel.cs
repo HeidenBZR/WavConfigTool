@@ -27,6 +27,8 @@ namespace WavConfigTool.ViewModels
 
         public bool IsLeft { get; set; }
         public bool IsRight => !IsLeft;
+
+        public bool IsTextBlockVisible => IsLeft && Type != PhonemeType.Rest;
         
         public bool HasTopLeftCorner { get; private set; }
         public bool HasTopRightCorner { get; private set; }

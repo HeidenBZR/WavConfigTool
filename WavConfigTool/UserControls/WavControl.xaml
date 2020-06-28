@@ -36,8 +36,7 @@
           VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="{Binding Space, Converter={StaticResource WavControlMargin}, FallbackValue=29}" />
-            <RowDefinition Height="{Binding Height}"
-                           x:Name="WavControlContent" />
+            <RowDefinition Height="{Binding Height}" />
         </Grid.RowDefinitions>
         <Canvas x:Name="WavControlHeader"
                 HorizontalAlignment="Stretch"
@@ -153,10 +152,10 @@
                           ItemsSource="{Binding RestZones, Mode=OneWay}" />
             <Rectangle Canvas.Left="0"
                        Canvas.Top="0"
-                       Width="{Binding ElementName=WavControlContent, Path=ActualWidth}"
-                       Height="{Binding ElementName=WavControlContent, Path=ActualHeight}"
+                       Width="{Binding ElementName=Main, Path=ActualWidth}"
+                       Height="{Binding Height}"
                        Fill="Transparent"
-                       Name="ContextMenuHolder">
+                       Name="InteractiveZone">
                 <dxmvvm:Interaction.Behaviors>
                     <dxmvvm:EventToCommand Command="{Binding WavControlClickCommand}"
                                            EventName="MouseLeftButtonDown"

@@ -104,12 +104,13 @@
                                 </Grid>
                                 <Grid Canvas.Left="0"
                                       VerticalAlignment="Stretch"
-                                      Visibility="{Binding IsLeft, Converter={StaticResource BooleanToVisibility}, FallbackValue=true}"
+                                      Visibility="{Binding IsTextBlockVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Visible}"
                                       Height="{Binding Height, FallbackValue=100}">
                                     <Border Margin="0,0,0,0"
                                             BorderBrush="{TemplateBinding BorderBrush}"
                                             Background="{TemplateBinding Background}"
                                             Cursor="Hand"
+                                            BorderThickness="0,1,1,0"
                                             VerticalAlignment="Bottom">
                                         <TextBlock Name="TypeLabel"
                                                    Padding="0"
@@ -119,36 +120,10 @@
                                                    Panel.ZIndex="5"
                                                    FontFamily="Century Gothic"
                                                    FontSize="14"
+                                                   Margin="5,1,4,1"
                                                    Text="{Binding VisualText, FallbackValue=Text, Mode=OneWay}">
-                                            <TextBlock.Style>
-                                                <Style>
-                                                    <Setter Property="TextBlock.Margin"
-                                                            Value="5,1,4,1" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding VisualText, Mode=OneWay}"
-                                                                     Value="">
-                                                            <Setter Property="TextBlock.Margin"
-                                                                    Value="0" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
                                         </TextBlock>
-                                        <Border.Style>
-                                            <Style>
-                                                <Setter Property="Border.BorderThickness"
-                                                        Value="0,1,1,0" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding VisualText, Mode=OneWay}"
-                                                                 Value="">
-                                                        <Setter Property="Border.BorderThickness"
-                                                                Value="0" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
                                     </Border>
-
                                 </Grid>
                             </Canvas>
                             <ControlTemplate.Triggers>
