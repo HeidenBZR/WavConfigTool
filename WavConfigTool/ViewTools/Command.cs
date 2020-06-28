@@ -10,6 +10,8 @@ using Microsoft.Win32;
 using System.Windows.Input;
 using WavConfigTool.UserControls;
 using WavConfigTool.ViewModels;
+using System.IO;
+using System.Diagnostics;
 
 namespace WavConfigTool.ViewTools
 {
@@ -96,6 +98,21 @@ namespace WavConfigTool.ViewTools
         }
     }
 
+    class OpenFolderCommand : DelegateCommand
+    {
+        public OpenFolderCommand(string dir) : base(() =>
+        {
+            Process.Start(new ProcessStartInfo()
+            {
+                FileName = dir,
+                UseShellExecute = true,
+                Verb = "open"
+            });
+        }, Directory.Exists(dir))
+        {
+
+        }
+    }
     class SaveFileCommand : ICommand
     {
         Action<object> execute;

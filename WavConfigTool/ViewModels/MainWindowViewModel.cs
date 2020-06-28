@@ -11,6 +11,7 @@ using WavConfigTool.ViewTools;
 using WavConfigCore;
 using WavConfigCore.Reader;
 using System.Diagnostics;
+using WavConfigCore.Tools;
 
 namespace WavConfigTool.ViewModels
 {
@@ -472,13 +473,15 @@ namespace WavConfigTool.ViewModels
             PagerViewModel.RefreshPageContent();
         }, () => Project != null && Project.IsLoaded);
 
+        public ICommand OpenSettingsCommand => new OpenFolderCommand(PathResolver.Current.Reclist());
+        public ICommand OpenBackupsCommand => new OpenFolderCommand(PathResolver.Current.Backup(true));
+
 #if DEBUG
 
         public ICommand DebugCommand => new DelegateCommand(() =>
         {
 
         }, () => IsDebug);
-
 
         public ICommand CvcFromNoskipCommand => new DelegateCommand(() =>
         {

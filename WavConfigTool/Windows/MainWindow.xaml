@@ -124,6 +124,12 @@
                 <MenuItem Header="Generate Oremo Pack"
                           Command="{Binding GenerateOremoPackCommand}" />
             </MenuItem>
+            <MenuItem Header="Folders">
+                <MenuItem Header="Open Settings Folder"
+                          Command="{Binding OpenSettingsCommand}" />
+                <MenuItem Header="Open Backups Folder"
+                          Command="{Binding OpenBackupsCommand}" />
+            </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Header="Toggle Pitch"
                           InputGestureText="Ctrl+Q"
