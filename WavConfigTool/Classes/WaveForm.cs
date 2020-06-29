@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using Color = System.Drawing.Color;
 
 namespace WavConfigTool.Classes
 {
@@ -24,6 +24,7 @@ namespace WavConfigTool.Classes
         public bool IsEnabled = false;
 
         public BitmapImage BitmapImage;
+        public BitmapImage SpectrumImage;
         public string ImageHash;
 
         public WaveForm(string path)
@@ -52,6 +53,10 @@ namespace WavConfigTool.Classes
         public double GetSampleWidth()
         {
             return Settings.RealToViewX(Channels * 1000.0 / SampleRate);
+        }
+        public void CreateSpectrum()
+        {
+
         }
 
         public void CollectData()

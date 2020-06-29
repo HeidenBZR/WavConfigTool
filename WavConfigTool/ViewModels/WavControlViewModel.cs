@@ -45,6 +45,7 @@ namespace WavConfigTool.ViewModels
         public int Width => WaveForm?.VisualWidth ?? 4000;
         public ImageSource WavImage => GetWavImage();
         public ImageSource FrqImage { get; set; }
+        public ImageSource SpectrumImage => WaveForm?.SpectrumImage;
 
         public PhonemeType PhonemeTypeRest => PhonemeType.Rest;
         public PhonemeType PhonemeTypeVowel => PhonemeType.Vowel;
@@ -61,7 +62,9 @@ namespace WavConfigTool.ViewModels
         public string WavBitRate => WaveForm?.BitRate.ToString();
         public string WavSampleRate => WaveForm?.SampleRate.ToString();
 
-        public bool DoShowPitch => ViewOptions.DoShowPitch && IsReadyToDrawPoints;
+        public bool DoShowWaveform => IsReadyToDrawPoints && ViewOptions.DoShowWaveform && IsImageEnabled;
+        public bool DoShowPitch     => IsReadyToDrawPoints && ViewOptions.DoShowPitch;
+        public bool DoShowSpectrum  => IsReadyToDrawPoints && ViewOptions.DoShowSpectrum;
 
         public ViewOptions ViewOptions { get; set; }
 
@@ -236,7 +239,11 @@ namespace WavConfigTool.ViewModels
         public override void HandleViewChanged()
         {
             base.HandleViewChanged();
-            RaisePropertyChanged(() => DoShowPitch);
+            RaisePropertiesChanged(
+                () => DoShowPitch,
+                () => DoShowSpectrum,
+                () => DoShowWaveform
+            );
         }
 
         #region private
@@ -245,14 +252,18 @@ namespace WavConfigTool.ViewModels
         {
             App.MainDispatcher.Invoke(() =>
             {
+                if (WaveForm != null)
+                    WaveForm.SpectrumImage = null;
                 IsLoaded = false;
                 IsLoading = true;
                 IsImageEnabled = false;
                 RaisePropertiesChanged(
                     () => IsLoading,
                     () => IsLoaded,
-                    () => EditEnabled
+                    () => EditEnabled,
+                    () => SpectrumImage
                 );
+                HandleViewChanged();
             });
 
             await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
@@ -280,8 +291,20 @@ namespace WavConfigTool.ViewModels
                     OnLoaded();
                     FirePointsChanged();
                 }
+                HandleViewChanged();
             });
 
+            await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
+            {
+                if (WaveForm != null)
+                    WaveForm.CreateSpectrum();
+            })).ConfigureAwait(true);
+
+            App.MainDispatcher.Invoke(() =>
+            {
+                RaisePropertyChanged(nameof(SpectrumImage));
+                HandleViewChanged();
+            });
         }
 
         private List<WavZoneViewModel> GetZones(PhonemeType type)
@@ -451,7 +474,7 @@ namespace WavConfigTool.ViewModels
         public override void SetReady(bool ready)
         {
             base.SetReady(ready);
-            RaisePropertiesChanged(nameof(IsReadyToDrawPoints), nameof(IsCompleted), nameof(DoShowPitch));
+            RaisePropertiesChanged(nameof(IsReadyToDrawPoints), nameof(IsCompleted), nameof(DoShowPitch), nameof(DoShowSpectrum), nameof(DoShowWaveform));
         }
 
         #endregion

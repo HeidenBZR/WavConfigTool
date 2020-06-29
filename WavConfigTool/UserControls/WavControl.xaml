@@ -111,7 +111,7 @@
                Grid.Row="1"
                Height="{Binding Height, FallbackValue=100}"
                HorizontalAlignment="Left"
-               Visibility="{Binding IsImageEnabled, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+               Visibility="{Binding DoShowWaveform, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                Source="{Binding WavImage}">
         </Image>
         <Image Name="FrqImage"
@@ -120,6 +120,13 @@
                HorizontalAlignment="Left"
                Visibility="{Binding DoShowPitch, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                Source="{Binding FrqImage}">
+        </Image>
+        <Image Name="SpectrumImage"
+               Grid.Row="1"
+               Height="{Binding Height, FallbackValue=100}"
+               HorizontalAlignment="Left"
+               Visibility="{Binding DoShowSpectrum, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+               Source="{Binding SpectrumImage}">
         </Image>
         <Border BorderThickness="0,1,0,1"
                 Grid.Row="1"

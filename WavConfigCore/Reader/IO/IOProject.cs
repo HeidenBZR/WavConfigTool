@@ -51,6 +51,8 @@ namespace WavConfigCore.Reader
     public class IOViewOptions
     {
         public bool DoShowPitch = true;
+        public bool DoShowSpectrum = false;
+        public bool DoShowWaveform = true;
     }
 
     [Serializable]

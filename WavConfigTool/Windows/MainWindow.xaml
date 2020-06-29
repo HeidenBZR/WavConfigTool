@@ -56,6 +56,10 @@
                              KeyGesture="CTRL+N" />
         <dxmvvm:KeyToCommand Command="{Binding TogglePitchCommand}"
                              KeyGesture="CTRL+Q" />
+        <dxmvvm:KeyToCommand Command="{Binding ToggleWaveformCommand}"
+                             KeyGesture="CTRL+W" />
+        <dxmvvm:KeyToCommand Command="{Binding ToggleSpectrumCommand}"
+                             KeyGesture="CTRL+E" />
     </dxmvvm:Interaction.Behaviors>
     <Grid>
         <Grid.RowDefinitions>
@@ -135,8 +139,7 @@
                           InputGestureText="Ctrl+Q"
                           Command="{Binding TogglePitchCommand}" />
                 <MenuItem Header="Toggle Waveform"
-                          InputGestureText="Ctrl+W"
-                          IsEnabled="False" />
+                          InputGestureText="Ctrl+W" />
                 <MenuItem Header="Toggle Spectrum"
                           InputGestureText="Ctrl+E"
                           IsEnabled="False" />

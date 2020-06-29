@@ -42,7 +42,7 @@ namespace WavConfigCore.Reader
                 File.WriteAllText(reclistDir, oremoPack.Reclist, Encoding.GetEncoding(932));
                 File.WriteAllText(commentDir, oremoPack.Comment, Encoding.GetEncoding(932));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }

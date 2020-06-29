@@ -473,6 +473,18 @@ namespace WavConfigTool.ViewModels
             PagerViewModel.RefreshPageContent();
         }, () => Project != null && Project.IsLoaded);
 
+        public ICommand ToggleWaveformCommand => new DelegateCommand(() =>
+        {
+            ViewOptions.DoShowWaveform = !ViewOptions.DoShowWaveform;
+            PagerViewModel.RefreshPageContent();
+        }, () => Project != null && Project.IsLoaded);
+
+        public ICommand ToggleSpectrumCommand => new DelegateCommand(() =>
+        {
+            ViewOptions.DoShowSpectrum = !ViewOptions.DoShowSpectrum;
+            PagerViewModel.RefreshPageContent();
+        }, () => Project != null && Project.IsLoaded);
+
         public ICommand OpenSettingsCommand => new OpenFolderCommand(PathResolver.Current.Reclist());
         public ICommand OpenBackupsCommand => new OpenFolderCommand(PathResolver.Current.Backup(true));
 
