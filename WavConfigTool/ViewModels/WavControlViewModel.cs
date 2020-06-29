@@ -25,7 +25,7 @@ namespace WavConfigTool.ViewModels
         public bool IsImageEnabled { get; set; } = false;
         public bool IsReady { get; set; } = false;
 
-        public override bool IsCompleted => ProjectLine.IsCompleted && IsReadyToDrawPoints;
+        public override bool IsCompleted => ProjectLine.IsCompleted;
         public override bool IsEnabled => ProjectLine?.IsEnabled != null && (bool)ProjectLine?.IsEnabled;
         public bool IsDisabled => !IsEnabled;
         public bool EditEnabled => IsEnabled && !IsLoading && IsLoaded;
@@ -65,6 +65,7 @@ namespace WavConfigTool.ViewModels
         public bool DoShowWaveform => IsReadyToDrawPoints && ViewOptions.DoShowWaveform && IsImageEnabled;
         public bool DoShowPitch     => IsReadyToDrawPoints && ViewOptions.DoShowPitch;
         public bool DoShowSpectrum  => IsReadyToDrawPoints && ViewOptions.DoShowSpectrum;
+        public bool DoShowCompleted => IsCompleted && IsReadyToDrawPoints;
 
         public ViewOptions ViewOptions { get; set; }
 
@@ -186,7 +187,7 @@ namespace WavConfigTool.ViewModels
         {
             RaisePropertiesChanged(
                 () => Filename,
-                () => IsCompleted,
+                () => DoShowCompleted,
                 () => EditEnabled
             );
             RaisePropertiesChanged(
@@ -210,7 +211,7 @@ namespace WavConfigTool.ViewModels
                 () => ConsonantPoints,
                 () => VowelPoints,
                 () => RestPoints,
-                () => IsCompleted
+                () => DoShowCompleted
             );
             RaisePropertiesChanged(
                 () => ConsonantZones,
@@ -474,7 +475,7 @@ namespace WavConfigTool.ViewModels
         public override void SetReady(bool ready)
         {
             base.SetReady(ready);
-            RaisePropertiesChanged(nameof(IsReadyToDrawPoints), nameof(IsCompleted), nameof(DoShowPitch), nameof(DoShowSpectrum), nameof(DoShowWaveform));
+            RaisePropertiesChanged(nameof(IsReadyToDrawPoints), nameof(DoShowCompleted), nameof(DoShowPitch), nameof(DoShowSpectrum), nameof(DoShowWaveform));
         }
 
         #endregion

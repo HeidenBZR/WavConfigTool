@@ -141,7 +141,7 @@
                     <Setter Property="BorderBrush"
                             Value="#FF001B00" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsCompleted}"
+                        <DataTrigger Binding="{Binding DoShowCompleted}"
                                      Value="True">
                             <Setter Property="Background"
                                     Value="#FF001F02" />
