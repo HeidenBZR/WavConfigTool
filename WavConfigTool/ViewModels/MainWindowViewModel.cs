@@ -17,9 +17,7 @@ namespace WavConfigTool.ViewModels
 {
     internal class MainWindowViewModel : ViewModelBase
     {
-        public static readonly Version Version = new Version(0, 2, 0, 0);
-
-        public int AlphaVersion => 44;
+        public static readonly Version Version = new Version(0, 2, 0, 1);
 
         public ProjectViewModel ProjectViewModel { get; set; }
         public Project Project => ProjectManager.Project;
@@ -274,12 +272,11 @@ namespace WavConfigTool.ViewModels
         private string GetTitle()
         {
             var projectFileName = Project != null && Project.IsLoaded ? " " + Path.GetFileName(Settings.ProjectFile) : "";
-            var alphaString = $"(Alpha v.{AlphaVersion})";
             if (Project == null)
-                return $"WavConfig v.{Version} {alphaString}{projectFileName}";
+                return $"WavConfig v.{Version} {projectFileName}";
             if (PagerViewModel == null || PagerViewModel.PagesTotal == 0)
-                return $"WavConfig v.{Version} {alphaString}{projectFileName}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
-            return $"WavConfig v.{Version} {alphaString}{projectFileName} [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
+                return $"WavConfig v.{Version} {projectFileName}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
+            return $"WavConfig v.{Version} {projectFileName} [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
                 $"Page {PagerViewModel.CurrentPage + 1}/{PagerViewModel.PagesTotal}";
         }
 
