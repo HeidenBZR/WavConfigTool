@@ -5,4 +5,5 @@ Instead of configuring each alias, you can place areas of each phoneme, and the 
 More info on [wiki page](https://github.com/HeidenBZR/WavConfigTool/wiki).
 
 [Russian VK article](vk.com/@heidenbzr-wavconfigtool-new-version)
+
 [Discord server](https://discord.gg/6sUct2q)
