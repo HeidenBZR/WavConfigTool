@@ -6,49 +6,6 @@ namespace WavConfigTool.Classes
 {
     public static class Settings
     {
-        public static string TempProject
-        {
-            get
-            {
-                var tempdir = Path.GetTempPath();
-                tempdir = Path.Combine(tempdir, "WavConfigTool");
-                if (!Directory.Exists(tempdir))
-                    Directory.CreateDirectory(tempdir);
-                tempdir = Path.Combine(tempdir, @"~temp.wcp");
-                return tempdir;
-
-            }
-        }
-
-        public static string TempDir
-        {
-            get
-            {
-                var tempdir = Path.GetTempPath();
-                tempdir = Path.Combine(tempdir, "WavConfigTool");
-                if (!Directory.Exists(tempdir))
-                    Directory.CreateDirectory(tempdir);
-                tempdir = Path.Combine(tempdir, "waveform");
-                if (!Directory.Exists(tempdir))
-                    Directory.CreateDirectory(tempdir);
-                return tempdir;
-            }
-        }
-
-        public static void CheckPath()
-        {
-            if (!Directory.Exists(GetResoucesPath(@"WavConfigTool")))
-                Directory.CreateDirectory(GetResoucesPath(@"WavConfigTool"));
-            if (!Directory.Exists(GetResoucesPath(@"WavConfigTool\WavSettings\")))
-                Directory.CreateDirectory(GetResoucesPath(@"WavConfigTool\WavSettings\"));
-        }
-
-        public static string GetResoucesPath(string path)
-        {
-            return Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                path);
-        }
 
         public static string ProjectFile
         {
@@ -62,57 +19,7 @@ namespace WavConfigTool.Classes
                 Properties.Settings.Default.Save();
             }
         }
-        public static string LastReclist
-        {
-            get
-            {
-                return Properties.Settings.Default.LastReclist;
-            }
-            set
-            {
-                Properties.Settings.Default.LastReclist = value;
-                Properties.Settings.Default.Save();
-            }
-        }
 
-        public static bool IsMaximized
-        {
-            get
-            {
-                return Properties.Settings.Default.IsMaximized;
-            }
-            set
-            {
-                Properties.Settings.Default.IsMaximized = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static System.Drawing.Point WindowSize
-        {
-            get
-            {
-                return Properties.Settings.Default.WindowSize;
-            }
-            set
-            {
-                Properties.Settings.Default.WindowSize = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static System.Drawing.Point WindowPosition
-        {
-            get
-            {
-                return Properties.Settings.Default.WindowPosition;
-            }
-            set
-            {
-                Properties.Settings.Default.WindowPosition = value;
-                Properties.Settings.Default.Save();
-            }
-        }
 
         public static WavConfigCore.PhonemeType Mode { get; set; } = PhonemeType.Rest;
 
