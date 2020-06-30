@@ -12,14 +12,15 @@ using WavConfigCore;
 using WavConfigCore.Reader;
 using System.Diagnostics;
 using WavConfigCore.Tools;
+using System.Reflection;
 
 namespace WavConfigTool.ViewModels
 {
     internal class MainWindowViewModel : ViewModelBase
     {
-        public static readonly Version Version = new Version(0, 2, 0, 1);
 
         public ProjectViewModel ProjectViewModel { get; set; }
+        public string Version => "v.0.2.1";
         public Project Project => ProjectManager.Project;
         public string ReclistName => Project?.Voicebank != null && Project.IsLoaded ? Project.Reclist.Name : null;
         public string VoicebankName => Project?.Voicebank != null && Project.IsLoaded ? Project.Voicebank.Name : null;
@@ -273,10 +274,10 @@ namespace WavConfigTool.ViewModels
         {
             var projectFileName = Project != null && Project.IsLoaded ? " " + Path.GetFileName(Settings.ProjectFile) : "";
             if (Project == null)
-                return $"WavConfig v.{Version} {projectFileName}";
+                return $"WavConfig {Version} {projectFileName}";
             if (PagerViewModel == null || PagerViewModel.PagesTotal == 0)
-                return $"WavConfig v.{Version} {projectFileName}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
-            return $"WavConfig v.{Version} {projectFileName} [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
+                return $"WavConfig {Version} {projectFileName}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
+            return $"WavConfig {Version} {projectFileName} [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
                 $"Page {PagerViewModel.CurrentPage + 1}/{PagerViewModel.PagesTotal}";
         }
 
