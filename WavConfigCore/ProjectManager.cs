@@ -39,11 +39,6 @@ namespace WavConfigCore
         {
             Reset();
             CheckForLast(lastProject);
-            if (Project == null)
-            {
-                CreateProject();
-                AfterProjectLoaded(lastProject);
-            }
         }
 
         public void Open(string filename)

@@ -22,11 +22,13 @@ namespace WavConfigTool.ViewModels
         public ProjectViewModel ProjectViewModel { get; set; }
         public string Version => "v.0.2.1";
         public Project Project => ProjectManager.Project;
-        public string ReclistName => Project?.Voicebank != null && Project.IsLoaded ? Project.Reclist.Name : null;
-        public string VoicebankName => Project?.Voicebank != null && Project.IsLoaded ? Project.Voicebank.Name : null;
-        public string VoicebankImagePath => Project?.Voicebank != null && Project.IsLoaded ? Project.Voicebank.ImagePath : null;
-        public string VoicebankSubfolder => Project?.Voicebank != null && Project.IsLoaded ? Project.Voicebank.Subfolder : null;
+        public string ReclistName           => IsProjectReady && Project?.Voicebank != null ? Project.Reclist.Name : null;
+        public string VoicebankName         => IsProjectReady && Project?.Voicebank != null ? Project.Voicebank.Name : null;
+        public string VoicebankImagePath    => IsProjectReady && Project?.Voicebank != null ? Project.Voicebank.ImagePath : null;
+        public string VoicebankSubfolder    => IsProjectReady && Project?.Voicebank != null ? Project.Voicebank.Subfolder : null;
         public BitmapImage VoicebankImage => GetVoicebankImage();
+
+        public bool IsProjectReady => Project != null;
 
         public PagerViewModel PagerViewModel { get; set; }
         public PagerViewModel WavControlsPagerViewModel { get; set; }
@@ -256,7 +258,8 @@ namespace WavConfigTool.ViewModels
 
             RaisePropertiesChanged(
                 () => MustHideCompleted,
-                () => MustHideNotEnabled
+                () => MustHideNotEnabled,
+                () => IsProjectReady
             );
             RaisePropertyChanged(() => IsLoading);
         }

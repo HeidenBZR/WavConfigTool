@@ -63,14 +63,33 @@
     </dxmvvm:Interaction.Behaviors>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="21" />
-            <RowDefinition Height="30" />
-            <RowDefinition Name="ToolsPanel">
+            <RowDefinition Name="MenuRow" Height="21"  />
+            <RowDefinition Name="PagerRow">
+                <RowDefinition.Style>
+                    <Style TargetType="{x:Type RowDefinition}">
+                        <Setter Property="Height"
+                                Value="30" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsProjectReady}"
+                                         Value="False">
+                                <Setter Property="Height"
+                                        Value="0" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </RowDefinition.Style>
+            </RowDefinition>
+            <RowDefinition Name="ToolsPanelRow">
                 <RowDefinition.Style>
                     <Style TargetType="{x:Type RowDefinition}">
                         <Setter Property="Height"
                                 Value="90" />
                         <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsProjectReady}"
+                                         Value="False">
+                                <Setter Property="Height"
+                                        Value="45" />
+                            </DataTrigger>
                             <DataTrigger Binding="{Binding IsToolsPanelShown}"
                                          Value="False">
                                 <Setter Property="Height"
@@ -80,8 +99,22 @@
                     </Style>
                 </RowDefinition.Style>
             </RowDefinition>
-            <RowDefinition Height="12" />
-            <RowDefinition Height="*">
+            <RowDefinition Name="ToolsButtonRow">
+                <RowDefinition.Style>
+                    <Style TargetType="{x:Type RowDefinition}">
+                        <Setter Property="Height"
+                                Value="12" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsProjectReady}"
+                                         Value="False">
+                                <Setter Property="Height"
+                                        Value="0" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </RowDefinition.Style>
+            </RowDefinition>
+            <RowDefinition Name="ContentRow" Height="*">
             </RowDefinition>
         </Grid.RowDefinitions>
         <uc:CanvasLoading x:Name="CanvasLoading"
@@ -179,6 +212,7 @@
 
         <Border Grid.Row="1"
                 BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                Visibility="{Binding IsProjectReady, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                 BorderThickness="0,0,0,1">
 
             <StackPanel Background="{DynamicResource WindowBackground}"
@@ -262,6 +296,7 @@
                                         VerticalAlignment="Center"
                                         Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal"
+                                            Visibility="{Binding IsProjectReady, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                                             VerticalAlignment="Center">
                                     <TextBlock FontSize="14"
                                                FontWeight="Bold"
@@ -271,11 +306,13 @@
                                                FontSize="14" />
                                 </StackPanel>
                                 <TextBlock VerticalAlignment="Center"
+                                           Visibility="{Binding IsProjectReady, Converter={StaticResource BooleanToVisibilityH}, FallbackValue=Hidden}"
                                            Text="{Binding ReclistName, TargetNullValue='[RECLIST]'}" />
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,5,0,0">
 
                                     <Button Margin="0,0,5,0"
+                                            Visibility="{Binding IsProjectReady, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                                             Command="{Binding CallProjectCommand}"
                                             Content="PROJECT" />
                                     <Button Margin="0,0,5,0"
@@ -285,6 +322,7 @@
                                             Content="OPEN"
                                             Command="{Binding OpenProjectCommand}" />
                                     <Button Content="RELOAD"
+                                            Visibility="{Binding IsProjectReady, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                                             Command="{Binding ReloadProjectCommand}" />
                                 </StackPanel>
                             </StackPanel>
@@ -292,6 +330,7 @@
                     </Border>
                     <Border Margin="4,4,0,4"
                             BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            Visibility="{Binding IsProjectReady, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                             BorderThickness="1">
                         <StackPanel Height="60">
                             <TextBlock Padding="0"
@@ -328,6 +367,7 @@
 
                     <Border Margin="4,4,0,4"
                             BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            Visibility="{Binding IsProjectReady, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                             BorderThickness="1">
                         <StackPanel Height="60">
                             <TextBlock Padding="0"
@@ -361,6 +401,7 @@
                     </Border>
                     <Border Margin="4,4,0,4"
                             BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            Visibility="{Binding IsProjectReady, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                             BorderThickness="1">
                         <StackPanel Height="60">
                             <TextBlock Padding="0"
@@ -389,6 +430,7 @@
                     </Border>
                     <Border Margin="4,4,0,4"
                             BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            Visibility="{Binding IsProjectReady, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                             BorderThickness="1">
                         <StackPanel Height="60">
                             <TextBlock Padding="0"
@@ -417,6 +459,7 @@
                     </Border>
                     <Border Margin="4,4,0,4"
                             BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            Visibility="{Binding IsProjectReady, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                             BorderThickness="1">
                         <StackPanel Height="60">
                             <TextBlock Padding="0"
