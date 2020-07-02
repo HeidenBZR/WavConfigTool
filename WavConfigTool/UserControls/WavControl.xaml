@@ -195,6 +195,14 @@
                             <vt:MouseButtonToPointConverter />
                         </dxmvvm:EventToCommand.EventArgsConverter>
                     </dxmvvm:EventToCommand>
+                    <dxmvvm:EventToCommand Command="{Binding PlayCommand}"
+                                           EventName="MouseLeftButtonDown"
+                                           ModifierKeys="Ctrl"
+                                           PassEventArgsToCommand="True">
+                        <dxmvvm:EventToCommand.EventArgsConverter>
+                            <vt:MouseButtonToPointConverter />
+                        </dxmvvm:EventToCommand.EventArgsConverter>
+                    </dxmvvm:EventToCommand>
                     <dxmvvm:EventToCommand Command="{Binding WavControlClickCommand}"
                                            EventName="MouseLeftButtonUp"
                                            ModifierKeys="Shift"

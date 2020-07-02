@@ -13,6 +13,8 @@ using WavConfigCore.Reader;
 using System.Diagnostics;
 using WavConfigCore.Tools;
 using System.Reflection;
+using System.Drawing;
+using WavConfigTool.UserControls;
 
 namespace WavConfigTool.ViewModels
 {
@@ -37,6 +39,7 @@ namespace WavConfigTool.ViewModels
         public GotoUserControlViewModel GotoUserControlViewModel { get; set; }
         public OtoGenerator OtoGenerator { get; private set; }
         public OremoPackGenerator OremoPackGenerator { get; set; } = new OremoPackGenerator();
+        public WavPlayer WavPlayer = new WavPlayer();
 
         public int AttackC { get => Project?.AttackC ?? 0; set { Project.AttackC = value; TrySaveProject(); RedrawPoints(); } }
         public int AttackV { get => Project?.AttackV ?? 0; set { Project.AttackV = value; TrySaveProject(); RedrawPoints(); } }
@@ -198,6 +201,7 @@ namespace WavConfigTool.ViewModels
             var hash = $"{Project.Voicebank.Name}_{Project.Reclist.Name}_{Settings.UserScaleX}x{Settings.UserScaleY}_{sampleName}"; //.GetHashCode();
             var control = new WavControlViewModel(projectLine, sampleName, hash) { Number = i };
             control.ViewOptions = ViewOptions;
+            control.WavPlayer = WavPlayer;
             control.OnOtoMode += model => SetOtoMode(control);
             control.OnGenerateOtoRequested += delegate
             {

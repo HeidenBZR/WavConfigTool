@@ -7,6 +7,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using WavConfigTool.Classes;
 using WavConfigCore;
+using System.Activities.Statements;
+using System;
 
 namespace WavConfigTool.ViewModels
 {
@@ -68,6 +70,7 @@ namespace WavConfigTool.ViewModels
         public bool DoShowCompleted => IsCompleted && IsReadyToDrawPoints;
 
         public ViewOptions ViewOptions { get; set; }
+        public WavPlayer WavPlayer;
 
         public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
         public event OtoModeHandler OnOtoMode = delegate { };
@@ -245,6 +248,11 @@ namespace WavConfigTool.ViewModels
                 () => DoShowSpectrum,
                 () => DoShowWaveform
             );
+        }
+        public override void SetReady(bool ready)
+        {
+            base.SetReady(ready);
+            RaisePropertiesChanged(nameof(IsReadyToDrawPoints), nameof(DoShowCompleted), nameof(DoShowPitch), nameof(DoShowSpectrum), nameof(DoShowWaveform));
         }
 
         #region private
@@ -472,10 +480,31 @@ namespace WavConfigTool.ViewModels
             return position;
         }
 
-        public override void SetReady(bool ready)
+        private void PlaySound(int pos)
         {
-            base.SetReady(ready);
-            RaisePropertiesChanged(nameof(IsReadyToDrawPoints), nameof(DoShowCompleted), nameof(DoShowPitch), nameof(DoShowSpectrum), nameof(DoShowWaveform));
+            var startPosition = 0;
+            var length = Settings.ViewToRealX(Width);
+            var endPosition = length;
+
+            var points = new List<int>();
+            points.AddRange(ProjectLine.ConsonantPoints);
+            points.AddRange(ProjectLine.VowelPoints);
+            points.AddRange(ProjectLine.RestPoints);
+            points.Sort();
+
+            if (points.Count > 0)
+                endPosition = points[0];
+            for (int i = 0; i < points.Count && points[i] < pos; i++)
+            {
+                startPosition = points[i];
+                if (i + 1 < points.Count)
+                    endPosition = points[i + 1];
+                else
+                    endPosition = length;
+            }
+            Console.WriteLine($"pos {pos}, play from {startPosition} to {endPosition} on {ProjectLine}");
+
+            WavPlayer.Play(WaveForm, startPosition, endPosition - startPosition);
         }
 
         #endregion
@@ -494,6 +523,22 @@ namespace WavConfigTool.ViewModels
                     delegate (Point point)
                     {
                         return ProjectLine.IsEnabled && !ProjectLine.IsCompleted;
+                    }
+                );
+            }
+        }
+        public ICommand PlayCommand
+        {
+            get
+            {
+                return new DelegateCommand<Point>(
+                    delegate (System.Windows.Point point)
+                    {
+                        PlaySound(Settings.ViewToRealX(point.X));
+                    },
+                    delegate (Point point)
+                    {
+                        return ProjectLine.IsEnabled;
                     }
                 );
             }
