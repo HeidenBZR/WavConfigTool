@@ -68,6 +68,7 @@ namespace WavConfigCore
         public Project(string filename = "")
         {
             ProjectOptions = new ProjectOptions();
+            ViewOptions = new ViewOptions();
             voicebank = new Voicebank(PathResolver.Current.TryGetDirectoryName(filename), "");
             reclist = new Reclist();
             projectLines = new List<ProjectLine>();
