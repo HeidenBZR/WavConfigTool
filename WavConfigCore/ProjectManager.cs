@@ -60,6 +60,16 @@ namespace WavConfigCore
             {
                 project.Suffix = project.Voicebank.Subfolder;
             }
+
+            if (project.Voicebank.Type != "")
+            {
+                var reclist = ReclistReader.Current.Read(project.Voicebank.Type);
+                if (reclist.IsLoaded)
+                {
+                    project.SetReclist(reclist);
+                }
+            }
+
             Project = project;
             if (filename != "")
                 AfterProjectLoaded(filename);

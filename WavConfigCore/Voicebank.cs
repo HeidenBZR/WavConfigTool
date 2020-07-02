@@ -17,6 +17,7 @@ namespace WavConfigCore
         public string Subfolder { get; private set; }
         public string Image { get; private set; } = "";
         public string ImagePath { get; private set; } = "";
+        public string Type { get; private set; } = "";
 
         const string EMPTY_NAME = "(Voicebank is not available)";
 
@@ -45,6 +46,10 @@ namespace WavConfigCore
                         Name = pair[1];
                     else if (pair[0] == "image")
                         Image = pair[1];
+                    else if (pair[0] == "VoicebankType")
+                        Type = pair[1];
+                    else if (pair[0] == "type")
+                        Type = pair[1];
                 }
             }
             ImagePath = CharacterPath != null && Image != null && Image != "" ? Path.Combine(PathResolver.Current.TryGetDirectoryName(CharacterPath), Image) : "";
