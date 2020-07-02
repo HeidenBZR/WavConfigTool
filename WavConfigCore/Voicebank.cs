@@ -35,7 +35,7 @@ namespace WavConfigCore
 
         public void ReadCharacter()
         {
-            var lines = File.ReadAllLines(CharacterPath, Encoding.UTF8);
+            var lines = File.ReadAllLines(CharacterPath, Encoding.GetEncoding(932));
             foreach (var line in lines)
             {
                 if (line.Contains('='))
