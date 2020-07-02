@@ -44,7 +44,7 @@
             Value="Center" />
         <Setter
             Property="Padding"
-            Value="6,3" />
+            Value="6,2" />
         <Setter
             Property="Template">
             <Setter.Value>

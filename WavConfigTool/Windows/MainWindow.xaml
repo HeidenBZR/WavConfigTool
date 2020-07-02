@@ -9,7 +9,7 @@
         xmlns:vm="clr-namespace:WavConfigTool.ViewModels"
         xmlns:vt="clr-namespace:WavConfigTool.ViewTools"
         Title="{Binding Title}"
-        Width="1500"
+        Width="1200"
         Height="700"
         Background="{DynamicResource WindowBackground}"
         WindowState="Maximized"
@@ -69,7 +69,7 @@
                 <RowDefinition.Style>
                     <Style TargetType="{x:Type RowDefinition}">
                         <Setter Property="Height"
-                                Value="80" />
+                                Value="90" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsToolsPanelShown}"
                                          Value="False">
@@ -245,228 +245,231 @@
         <Border Grid.Row="2"
                 BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
                 BorderThickness="0,0,0,1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Disabled">
+                <StackPanel Background="{DynamicResource ToolsPanelBackgroundBrush}"
+                            Orientation="Horizontal"
+                            CanHorizontallyScroll="True">
+                    <Border Margin="4,4,0,4"
+                            Padding="0"
+                            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            BorderThickness="1">
+                        <StackPanel HorizontalAlignment="Center"
+                                    Orientation="Horizontal">
+                            <Image Margin="0"
+                                   Source="{Binding VoicebankImage}" />
+                            <StackPanel Margin="15,0"
+                                        VerticalAlignment="Center"
+                                        Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center">
+                                    <TextBlock FontSize="14"
+                                               FontWeight="Bold"
+                                               Text="{Binding VoicebankName, TargetNullValue='[VOICEBANK]'}" />
+                                    <TextBlock Text="{Binding VoicebankSubfolder, TargetNullValue='[Sub]'}"
+                                               Margin="5,0,0,0"
+                                               FontSize="14" />
+                                </StackPanel>
+                                <TextBlock VerticalAlignment="Center"
+                                           Text="{Binding ReclistName, TargetNullValue='[RECLIST]'}" />
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="0,5,0,0">
 
-            <StackPanel Background="{DynamicResource ToolsPanelBackgroundBrush}"
-                        Orientation="Horizontal">
-                <Border Margin="4,4,0,4"
-                        Padding="0"
-                        BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                        BorderThickness="1">
-                    <StackPanel HorizontalAlignment="Center"
-                                Orientation="Horizontal">
-                        <Image Margin="0"
-                               Source="{Binding VoicebankImage}" />
-                        <StackPanel Margin="15,0"
-                                    VerticalAlignment="Center"
-                                    Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal"
-                                        VerticalAlignment="Center">
-                                <TextBlock FontSize="14"
-                                           FontWeight="Bold"
-                                           Text="{Binding VoicebankName, TargetNullValue='[VOICEBANK]'}" />
-                                <TextBlock Text="{Binding VoicebankSubfolder, TargetNullValue='[Sub]'}"
-                                           Margin="5,0,0,0"
-                                           FontSize="14" />
+                                    <Button Margin="0,0,5,0"
+                                            Command="{Binding CallProjectCommand}"
+                                            Content="PROJECT" />
+                                    <Button Margin="0,0,5,0"
+                                            Content="NEW"
+                                            Command="{Binding NewProjectCommand}" />
+                                    <Button Margin="0,0,5,0"
+                                            Content="OPEN"
+                                            Command="{Binding OpenProjectCommand}" />
+                                    <Button Content="RELOAD"
+                                            Command="{Binding ReloadProjectCommand}" />
+                                </StackPanel>
                             </StackPanel>
-                            <TextBlock VerticalAlignment="Center"
-                                       Text="{Binding ReclistName, TargetNullValue='[RECLIST]'}" />
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="0,5,0,0">
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="4,4,0,4"
+                            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            BorderThickness="1">
+                        <StackPanel Height="60">
+                            <TextBlock Padding="0"
+                                       HorizontalAlignment="Center"
+                                       Text="Attack (Overlap)" />
+                            <StackPanel Height="25"
+                                        Margin="10"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                <TextBlock Margin="3,0"
+                                           Text="R:" />
+                                <TextBox Width="40"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         Text="{Binding AttackR, Mode=TwoWay, TargetNullValue=0}" />
+                                <TextBlock Margin="3,0"
+                                           Text="V:" />
+                                <TextBox Width="40"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         Text="{Binding AttackV, Mode=TwoWay, TargetNullValue=0}" />
 
-                                <Button Margin="0,0,5,0"
-                                        Command="{Binding CallProjectCommand}"
-                                        Content="PROJECT" />
-                                <Button Margin="0,0,5,0"
-                                        Content="NEW"
-                                        Command="{Binding NewProjectCommand}" />
-                                <Button Margin="0,0,5,0"
-                                        Content="OPEN"
-                                        Command="{Binding OpenProjectCommand}" />
-                                <Button Content="RELOAD"
-                                        Command="{Binding ReloadProjectCommand}" />
+                                <TextBlock Margin="3,0"
+                                           Text="C:" />
+                                <TextBox Width="40"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         Text="{Binding AttackC, Mode=TwoWay, TargetNullValue=0}" />
+
+
                             </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
-                <Border Margin="4,4,0,4"
-                        BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                        BorderThickness="1">
-                    <StackPanel Height="60">
-                        <TextBlock Padding="0"
-                                   HorizontalAlignment="Center"
-                                   Text="Attack (Overlap)" />
-                        <StackPanel Height="25"
-                                    Margin="10"
-                                    VerticalAlignment="Center"
-                                    Orientation="Horizontal">
-                            <TextBlock Margin="3,0"
-                                       Text="R:" />
-                            <TextBox Width="40"
-                                     Padding="0"
-                                     VerticalAlignment="Center"
-                                     Text="{Binding AttackR, Mode=TwoWay, TargetNullValue=0}" />
-                            <TextBlock Margin="3,0"
-                                       Text="V:" />
-                            <TextBox Width="40"
-                                     Padding="0"
-                                     VerticalAlignment="Center"
-                                     Text="{Binding AttackV, Mode=TwoWay, TargetNullValue=0}" />
+                    </Border>
 
-                            <TextBlock Margin="3,0"
-                                       Text="C:" />
-                            <TextBox Width="40"
-                                     Padding="0"
-                                     VerticalAlignment="Center"
-                                     Text="{Binding AttackC, Mode=TwoWay, TargetNullValue=0}" />
+                    <Border Margin="4,4,0,4"
+                            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            BorderThickness="1">
+                        <StackPanel Height="60">
+                            <TextBlock Padding="0"
+                                       HorizontalAlignment="Center"
+                                       Text="Decay (Consonant)" />
+                            <StackPanel Height="25"
+                                        Margin="10"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                <TextBlock Margin="3,0"
+                                           Text="R:" />
+                                <TextBox Width="40"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         Text="{Binding DecayR, Mode=TwoWay, TargetNullValue=0}" />
+                                <TextBlock Margin="3,0"
+                                           Text="V:" />
+                                <TextBox Width="40"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         Text="{Binding DecayV, Mode=TwoWay, TargetNullValue=0}" />
+                                <TextBlock Margin="3,0"
+                                           Text="C:" />
+                                <TextBox Width="40"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         Text="{Binding DecayC, Mode=TwoWay, TargetNullValue=0}" />
 
-
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
+                    </Border>
+                    <Border Margin="4,4,0,4"
+                            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            BorderThickness="1">
+                        <StackPanel Height="60">
+                            <TextBlock Padding="0"
+                                       HorizontalAlignment="Center"
+                                       Text="Alias" />
+                            <StackPanel Height="25"
+                                        Margin="10"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                <TextBlock Margin="3,0"
+                                           Text="Prefix:" />
+                                <TextBox Width="40"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         Text="{Binding Prefix, Mode=TwoWay, FallbackValue='', TargetNullValue=''}" />
 
-                <Border Margin="4,4,0,4"
-                        BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                        BorderThickness="1">
-                    <StackPanel Height="60">
-                        <TextBlock Padding="0"
-                                   HorizontalAlignment="Center"
-                                   Text="Decay (Consonant)" />
-                        <StackPanel Height="25"
-                                    Margin="10"
-                                    VerticalAlignment="Center"
-                                    Orientation="Horizontal">
-                            <TextBlock Margin="3,0"
-                                       Text="R:" />
-                            <TextBox Width="40"
-                                     Padding="0"
-                                     VerticalAlignment="Center"
-                                     Text="{Binding DecayR, Mode=TwoWay, TargetNullValue=0}" />
-                            <TextBlock Margin="3,0"
-                                       Text="V:" />
-                            <TextBox Width="40"
-                                     Padding="0"
-                                     VerticalAlignment="Center"
-                                     Text="{Binding DecayV, Mode=TwoWay, TargetNullValue=0}" />
-                            <TextBlock Margin="3,0"
-                                       Text="C:" />
-                            <TextBox Width="40"
-                                     Padding="0"
-                                     VerticalAlignment="Center"
-                                     Text="{Binding DecayC, Mode=TwoWay, TargetNullValue=0}" />
+                                <TextBlock Margin="3,0"
+                                           Text="Suffix:" />
+                                <TextBox Width="40"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         Text="{Binding Suffix, Mode=TwoWay, FallbackValue='', TargetNullValue=''}" />
 
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
-                <Border Margin="4,4,0,4"
-                        BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                        BorderThickness="1">
-                    <StackPanel Height="60">
-                        <TextBlock Padding="0"
-                                   HorizontalAlignment="Center"
-                                   Text="Alias" />
-                        <StackPanel Height="25"
-                                    Margin="10"
-                                    VerticalAlignment="Center"
-                                    Orientation="Horizontal">
-                            <TextBlock Margin="3,0"
-                                       Text="Prefix:" />
-                            <TextBox Width="40"
-                                     Padding="0"
-                                     VerticalAlignment="Center"
-                                     Text="{Binding Prefix, Mode=TwoWay, FallbackValue='', TargetNullValue=''}" />
+                    </Border>
+                    <Border Margin="4,4,0,4"
+                            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            BorderThickness="1">
+                        <StackPanel Height="60">
+                            <TextBlock Padding="0"
+                                       HorizontalAlignment="Center"
+                                       Text="Wave Options" />
+                            <StackPanel Height="25"
+                                        Margin="10"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                <TextBlock Margin="3,0"
+                                           Text="Wav Prefix:" />
+                                <TextBox Width="40"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         Text="{Binding WavPrefix, Mode=TwoWay, FallbackValue=''}" />
 
-                            <TextBlock Margin="3,0"
-                                       Text="Suffix:" />
-                            <TextBox Width="40"
-                                     Padding="0"
-                                     VerticalAlignment="Center"
-                                     Text="{Binding Suffix, Mode=TwoWay, FallbackValue='', TargetNullValue=''}" />
+                                <TextBlock Margin="3,0"
+                                           Text="Wav Suffix:" />
+                                <TextBox Width="40"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         Text="{Binding WavSuffix, Mode=TwoWay, FallbackValue=''}" />
 
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
-                <Border Margin="4,4,0,4"
-                        BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                        BorderThickness="1">
-                    <StackPanel Height="60">
-                        <TextBlock Padding="0"
-                                   HorizontalAlignment="Center"
-                                   Text="Wave Options" />
-                        <StackPanel Height="25"
-                                    Margin="10"
-                                    VerticalAlignment="Center"
-                                    Orientation="Horizontal">
-                            <TextBlock Margin="3,0"
-                                       Text="Wav Prefix:" />
-                            <TextBox Width="40"
-                                     Padding="0"
-                                     VerticalAlignment="Center"
-                                     Text="{Binding WavPrefix, Mode=TwoWay, FallbackValue=''}" />
+                    </Border>
+                    <Border Margin="4,4,0,4"
+                            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            BorderThickness="1">
+                        <StackPanel Height="60">
+                            <TextBlock Padding="0"
+                                       HorizontalAlignment="Center"
+                                       Text="Image Render Options" />
+                            <StackPanel Height="25"
+                                        Margin="10"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
 
-                            <TextBlock Margin="3,0"
-                                       Text="Wav Suffix:" />
-                            <TextBox Width="40"
-                                     Padding="0"
-                                     VerticalAlignment="Center"
-                                     Text="{Binding WavSuffix, Mode=TwoWay, FallbackValue=''}" />
+                                <TextBlock Margin="3,0"
+                                           Text="Scale Y:" />
+                                <TextBox Width="30"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         IsEnabled="{Binding IsNotLoading}"
+                                         Text="{Binding UserScaleY, Mode=TwoWay}" />
+                                <TextBlock Margin="3,0"
+                                           Text="Scale X:" />
+                                <TextBox Width="30"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         IsEnabled="{Binding IsNotLoading}"
+                                         Text="{Binding UserScaleX, Mode=TwoWay}" />
 
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
-                <Border Margin="4,4,0,4"
-                        BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                        BorderThickness="1">
-                    <StackPanel Height="60">
-                        <TextBlock Padding="0"
-                                   HorizontalAlignment="Center"
-                                   Text="Image Render Options" />
-                        <StackPanel Height="25"
-                                    Margin="10"
-                                    VerticalAlignment="Center"
-                                    Orientation="Horizontal">
+                    </Border>
+                    <Border Margin="4,4,0,4"
+                            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            Visibility="{Binding IsOtoPreviewMode, Converter={StaticResource BooleanToVisibility}}"
+                            BorderThickness="1">
+                        <StackPanel Height="60">
+                            <TextBlock Padding="0"
+                                       HorizontalAlignment="Center"
+                                       Text="Mode" />
+                            <StackPanel Height="25"
+                                        Margin="10"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                <Button Margin="0,0,5,0"
+                                        Content="Set Wav Config Mode"
+                                        Command="{Binding SetWavConfigMode}" />
 
-                            <TextBlock Margin="3,0"
-                                       Text="Scale Y:" />
-                            <TextBox Width="30"
-                                     Padding="0"
-                                     VerticalAlignment="Center"
-                                     IsEnabled="{Binding IsNotLoading}"
-                                     Text="{Binding UserScaleY, Mode=TwoWay}" />
-                            <TextBlock Margin="3,0"
-                                       Text="Scale X:" />
-                            <TextBox Width="30"
-                                     Padding="0"
-                                     VerticalAlignment="Center"
-                                     IsEnabled="{Binding IsNotLoading}"
-                                     Text="{Binding UserScaleX, Mode=TwoWay}" />
-
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
-                <Border Margin="4,4,0,4"
-                        BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                        Visibility="{Binding IsOtoPreviewMode, Converter={StaticResource BooleanToVisibility}}"
-                        BorderThickness="1">
-                    <StackPanel Height="60">
-                        <TextBlock Padding="0"
-                                   HorizontalAlignment="Center"
-                                   Text="Mode" />
-                        <StackPanel Height="25"
-                                    Margin="10"
-                                    VerticalAlignment="Center"
-                                    Orientation="Horizontal">
-                            <Button Margin="0,0,5,0"
-                                    Content="Set Wav Config Mode"
-                                    Command="{Binding SetWavConfigMode}" />
-
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-                <Border Margin="4"
-                        BorderBrush="DarkBlue"
-                        BorderThickness="1"
-                        Visibility="Hidden" />
-            </StackPanel>
+                    </Border>
+                    <Border Margin="4"
+                            BorderBrush="DarkBlue"
+                            BorderThickness="1"
+                            Visibility="Hidden" />
+                </StackPanel>
+            </ScrollViewer>
         </Border>
         <Button Grid.Row="3"
                 Width="200"
