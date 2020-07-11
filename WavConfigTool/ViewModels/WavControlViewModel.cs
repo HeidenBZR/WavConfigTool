@@ -73,10 +73,12 @@ namespace WavConfigTool.ViewModels
         public WavPlayer WavPlayer;
 
         public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
+        public delegate void OnAddPointHandler(double position, PhonemeType type);
         public event OtoModeHandler OnOtoMode = delegate { };
         public event SimpleHandler OnLoaded = delegate { };
         public event SimpleHandler OnGenerateOtoRequested = delegate { };
         public event PhonemeTypeArgHandler OnChangePhonemeModeRequested = delegate {};
+        public event OnAddPointHandler OnAddPointRequested = delegate { };
 
         public readonly string SampleName = "";
         public readonly string Hash = "";
@@ -518,7 +520,7 @@ namespace WavConfigTool.ViewModels
                 return new DelegateCommand<Point>(
                     delegate (System.Windows.Point point)
                     {
-                        AddPoint((int)point.X, Settings.Mode);
+                        OnAddPointRequested((int)point.X, Settings.Mode);
                     },
                     delegate (Point point)
                     {

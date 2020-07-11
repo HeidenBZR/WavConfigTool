@@ -207,6 +207,7 @@ namespace WavConfigTool.ViewModels
             control.ViewOptions = ViewOptions;
             control.WavPlayer = WavPlayer;
             control.OnOtoMode += model => SetOtoMode(control);
+            control.OnAddPointRequested += (position, type) => HandleAddPointRequest(control, position, type);
             control.OnGenerateOtoRequested += delegate
             {
                 if (!IsOtoPreviewMode)
@@ -223,6 +224,14 @@ namespace WavConfigTool.ViewModels
                 SetPhonemeModeCommand.Execute(type);
             };
             return control;
+        }
+
+        private void HandleAddPointRequest(WavControlViewModel control, double position, PhonemeType type)
+        {
+            if (control.ProjectLine == null)
+                return;
+            if (Project.Reclist.WavMask.CanAddPoint(type, control.ProjectLine))
+                control.AddPoint(position, type);
         }
 
         private void Refresh()

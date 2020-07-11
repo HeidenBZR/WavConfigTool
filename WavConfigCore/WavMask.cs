@@ -44,9 +44,37 @@ namespace WavConfigCore
             return Default.CanGenerateOnPosition(aliasType, position);
         }
 
+        public bool CanAddPoint(PhonemeType phonemeType, ProjectLine projectLine)
+        {
+            if (projectLine.Recline == null)
+                return false;
+            var phonemes = projectLine.Recline.PhonemesOfType(phonemeType);
+            var neededCount = phonemes.Count * 2;
+            var realPhonemes = projectLine.PointsOfType(phonemeType, virtuals: false).Count;
+            var canIfNoSkip = realPhonemes < neededCount;
+
+            if (!IsConfigured())
+                return canIfNoSkip;
+
+            var filename = projectLine.Recline.Name;
+
+            if (!wavGroupsByFilename.ContainsKey(filename))
+                return canIfNoSkip;
+
+            var wavGroup = wavGroupsByFilename[filename][0];
+            var skips = wavGroup.GetSkippedPhonemesOfType(phonemeType);
+            var neededByGroup = 0;
+            for(var i = 0; i < phonemes.Count; i++)
+            {
+                if (!skips.Contains(i))
+                    neededByGroup += 2;
+            }
+            return realPhonemes < neededByGroup;
+        }
+
         public bool MustSkipPhoneme(string filename, PhonemeType phonemeType, int position)
         {
-            if (Default == null && (wavGroupsByFilename == null || wavGroupsByFilename.Count == 0))
+            if (!IsConfigured())
                 return false; // without mask file we generate all possible
 
             if (wavGroupsByFilename.ContainsKey(filename))
@@ -91,6 +119,11 @@ namespace WavConfigCore
             }
             return false;
         }
+        private bool IsConfigured()
+        {
+            return Default != null || wavGroupsByFilename != null && wavGroupsByFilename.Count > 0;
+        }
+
 
 #endif
 
