@@ -13,6 +13,8 @@ namespace WavConfigCore.Tools
         public const string LOG_FILE = "log.txt";
         public const string BACKUP_FILE = "~temp" + PROJECT_EXT;
 
+        public const string TEST_FOLDER = "test";
+
         public string TempDir = Path.Combine(Path.GetTempPath(), "WavConfigTool");
         public string ResourcesDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "WavConfigTool");
 
@@ -51,9 +53,14 @@ namespace WavConfigCore.Tools
             }
         }
 
-        public string Reclist(string filename = "")
+        public string Reclist(string filename = "", bool isTest = false)
         {
-            return Path.Combine(ResourcesDir, "Settings", filename);
+            var folder = Path.Combine(ResourcesDir, "Settings");
+            if (isTest)
+                folder = Path.Combine(folder, TEST_FOLDER);
+            if (filename == "")
+                return folder;
+            return Path.Combine(folder, filename);
         }
 
         public string Mask(string filename = "")
@@ -66,11 +73,14 @@ namespace WavConfigCore.Tools
             return Path.Combine(TempDir, LOG_FILE);
         }
 
-        public string Replacer(string reclistName, string name = "")
+        public string Replacer(string reclistName, string name = "", bool isTest = false)
         {
             var filename = name == "" ? reclistName : $"{reclistName}__{name}";
             filename += REPLACEMENT_EXT;
-            return Path.Combine(ResourcesDir, "Settings", filename);
+            var folder = Path.Combine(ResourcesDir, "Settings");
+            if (isTest)
+                folder = Path.Combine(folder, TEST_FOLDER);
+            return Path.Combine(folder, filename);
         }
 
         public string OremoPack(string oremoPackName)

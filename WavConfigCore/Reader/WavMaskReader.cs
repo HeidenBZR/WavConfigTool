@@ -45,17 +45,17 @@ namespace WavConfigCore.Reader
 
         public IOWavMask ReadYaml(string filename)
         {
-            using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
+            IOWavMask ioWavMask = null;
+            try
             {
-                var serializer = new Deserializer();
-                IOWavMask ioWavMask = null;
-                try
+                using (var fileStream = new FileStream(filename, FileMode.Open))
                 {
+                    var serializer = new Deserializer();
                     ioWavMask = serializer.Deserialize(new StreamReader(fileStream, Encoding.UTF8), typeof(IOWavMask)) as IOWavMask;
                 }
-                catch { }
-                return ioWavMask;
             }
+            catch { }
+            return ioWavMask;
         }
 
         public void WriteYaml(string filename, IOWavMask ioWavMask)

@@ -20,23 +20,22 @@ namespace WavConfigTool.ViewModels
 
         public Project Project { get => _project; set { SetProject(value); } }
         public string VoicebankName => Project?.Voicebank?.GetFullName();
-        public ObservableCollection<string> Reclists { get; private set; } = new ObservableCollection<string>() { "(Reclist)" };
+        public ObservableCollection<Reclist> Reclists { get; private set; } = new ObservableCollection<Reclist>();
         
-        public string SelectedReclist
+        public Reclist SelectedReclist
         {
-            get => Project?.Reclist?.Name;
+            get => Project?.Reclist;
             set
             {
-                Project.SetReclist(ReclistReader.Current.Read(value));
+                Project.SetReclist(value);
                 ProjectDataChanged();
             }
         }
 
-        public event SimpleHandler ProjectDataChanged;
+        public event SimpleHandler ProjectDataChanged = delegate { };
 
         public ProjectViewModel()
         {
-            ProjectDataChanged += delegate { };
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
             GetReclistsAsync();
@@ -44,7 +43,6 @@ namespace WavConfigTool.ViewModels
 
         public ProjectViewModel(Project project)
         {
-            ProjectDataChanged += delegate { };
             Project = project;
             // Остановить просчитывание в конструкторе
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
@@ -58,38 +56,47 @@ namespace WavConfigTool.ViewModels
 
         private void GetReclists()
         {
+            var reclists = new List<Reclist>();
             var list = new List<string>();
             string path = PathResolver.Current.Reclist();
             var files = Directory.GetFiles(path, "*.reclist");
             foreach (string filename in files)
             {
-                ReadReclist(filename, list);
+                var reclist = ReadReclist(filename, list);
+                if (reclist != null)
+                    reclists.Add(reclist);
             }
-            var testPath = Path.Combine(path, "test");
+            var testPath = Path.Combine(path, PathResolver.TEST_FOLDER);
             var filesTest = Directory.GetFiles(testPath, "*.reclist");
             foreach (string filename in filesTest)
             {
-                ReadReclist(filename, list, true);
+                var reclist = ReadReclist(filename, list, true);
+                if (reclist != null)
+                    reclists.Add(reclist);
             }
-            Reclists = new ObservableCollection<string>(list);
+
+            App.MainDispatcher.Invoke(() =>
+            {
+                Reclists = new ObservableCollection<Reclist>(reclists);
+                RaisePropertyChanged(nameof(Reclists));
+            });
         }
 
-        private void ReadReclist(string filename, List<string> list, bool isTest = false)
+        private Reclist ReadReclist(string filename, List<string> list, bool isTest = false)
         {
             var reclistName = Path.GetFileNameWithoutExtension(filename);
-            if (isTest)
-            {
-                reclistName = Path.Combine("test", reclistName);
-            }
-            var reclist = ReclistReader.Current.Read(reclistName);
+            var reclist = isTest ? ReclistReader.Current.ReadTest(reclistName) : ReclistReader.Current.Read(reclistName);
             if (reclist != null && reclist.IsLoaded && !list.Contains(reclistName))
             {
                 list.Add(reclistName);
+                return reclist;
             }
+            return null;
         }
 
         private async void GetReclistsAsync()
         {
+            Reclists.Clear();
             await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(GetReclists));
         }
 

@@ -42,12 +42,12 @@ namespace WavConfigHelper
             return true;
         }
 
-        public bool ImportReclist(string inputFilename, string reclistName)
+        public bool ImportReclist(string inputFilename, string reclistPath)
         {
             try
             {
                 var reclist = WavSettingsReader.Current.Read(inputFilename);
-                ReclistReader.Current.Write(reclistName, reclist);
+                ReclistReader.Current.Write(reclistPath, reclist);
             }
             catch (Exception ex)
             {

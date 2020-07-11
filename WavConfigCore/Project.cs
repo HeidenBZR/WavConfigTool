@@ -100,7 +100,7 @@ namespace WavConfigCore
         {
             Reclist = reclist;
             if (Reclist.IsLoaded)
-                Reader.ReclistReader.Current.Write(PathResolver.Current.Reclist(Reclist.Name + PathResolver.RECLIST_EXT), Reclist);
+                Reader.ReclistReader.Current.WriteWithName(Reclist);
             IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
             CheckEnabled();
             ProjectChanged();
@@ -109,7 +109,8 @@ namespace WavConfigCore
         public void SetReplacer(Replacer replacer)
         {
             Replacer = replacer;
-            Reader.ReplacerReader.Current.Write(replacer, Reclist);
+            if (reclist.IsLoaded)
+                Reader.ReplacerReader.Current.Write(replacer, Reclist);
             ProjectChanged();
         }
 

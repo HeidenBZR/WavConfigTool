@@ -20,7 +20,9 @@ namespace WavConfigCore
         public WavMask WavMask { get; set; }
         public bool IsLoaded { get; set; }
 
-        public const string EMPTY_NAME = "(Reclist is not avialable)";
+        public const string EMPTY_NAME = "(Reclist is not available)";
+
+        public bool IsTest;
 
         public Reclist()
         {
@@ -75,8 +77,6 @@ namespace WavConfigCore
             completed &= ApplyZonesAndReturnCompleted(projectLine, PhonemeType.Rest);
             projectLine.IsCompleted = completed;
         }
-
-
 
         #region private
 

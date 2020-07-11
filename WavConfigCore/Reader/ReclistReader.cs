@@ -33,8 +33,26 @@ namespace WavConfigCore.Reader
 
         public Reclist Read(string name)
         {
-            var ioReclist = ReadYaml(name);
+            var filename = PathResolver.Current.Reclist(name + PathResolver.RECLIST_EXT);
+            var ioReclist = ReadYaml(filename);
             return ioReclist != null ? GetReclist(ioReclist, name) : new Reclist();
+        }
+
+        public Reclist ReadTest(string name)
+        {
+            var filename = PathResolver.Current.Reclist(name + PathResolver.RECLIST_EXT, true);
+            var ioReclist = ReadYaml(filename);
+            var reclist = ioReclist != null ? GetReclist(ioReclist, name) : new Reclist();
+            reclist.IsTest = true;
+            return reclist;
+        }
+
+        public void WriteWithName(Reclist reclist)
+        {
+            if (reclist.Name == Reclist.EMPTY_NAME)
+                return; // IsLoaded went wrong
+            var filename = PathResolver.Current.Reclist(reclist.Name + PathResolver.RECLIST_EXT, reclist.IsTest);
+            Write(filename, reclist);
         }
 
         public void Write(string filename, Reclist reclist)
@@ -42,19 +60,18 @@ namespace WavConfigCore.Reader
             WriteYaml(filename, GetIOReclist(reclist));
         }
 
-        public IOReclist ReadYaml(string name)
+        public IOReclist ReadYaml(string filename)
         {
-            var filename = PathResolver.Current.Reclist(name + PathResolver.RECLIST_EXT);
             IOReclist ioReclist = null;
-            using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
+            try
             {
-                var serializer = new Deserializer();
-                try
+                using (var fileStream = new FileStream(filename, FileMode.Open))
                 {
+                    var serializer = new Deserializer();
                     ioReclist = serializer.Deserialize(new StreamReader(fileStream, Encoding.UTF8), typeof(IOReclist)) as IOReclist;
                 }
-                catch { }
             }
+            catch { }
             return ioReclist;
         }
 

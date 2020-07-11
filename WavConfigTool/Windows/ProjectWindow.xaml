@@ -52,13 +52,20 @@
             Margin="5,5,0,5"
             HorizontalAlignment="Left"
             Orientation="Vertical">
-            <ComboBox
-                Name="ReclistCombobox"
-                Width="200"
-                Height="25"
-                HorizontalAlignment="Left"
-                ItemsSource="{Binding Reclists}"
-                SelectedItem="{Binding SelectedReclist, Mode=TwoWay}" />
+            <ComboBox Name="ReclistCombobox"
+                      Width="200"
+                      Height="25"
+                      HorizontalAlignment="Left"
+                      ItemsSource="{Binding Reclists}"
+                      SelectedItem="{Binding SelectedReclist, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <ItemContainerTemplate>
+                        <Label Content="{Binding Name}"
+                               Margin="0"
+                               Padding="2" />
+                    </ItemContainerTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
 
             <StackPanel
                 Height="25"

@@ -38,17 +38,17 @@ namespace WavConfigCore.Reader
 
         public IOProject ReadYaml(string filename)
         {
-            using (var fileStream = new FileStream(filename, FileMode.OpenOrCreate))
+            IOProject ioProject = null;
+            try
             {
-                var serializer = new Deserializer();
-                IOProject ioProject = null;
-                try
+                using (var fileStream = new FileStream(filename, FileMode.Open))
                 {
+                    var serializer = new Deserializer();
                     ioProject = serializer.Deserialize(new StreamReader(fileStream, Encoding.UTF8), typeof(IOProject)) as IOProject;
                 }
-                catch { }
-                return ioProject;
             }
+            catch { }
+            return ioProject;
         }
 
         public void Write(string filename, Project project)
@@ -148,7 +148,14 @@ namespace WavConfigCore.Reader
             project.ViewOptions.DoShowSpectrum = ioProject.ViewOptions.DoShowSpectrum;
 
             project.SetVoicebank(new Voicebank(PathResolver.Current.TryGetDirectoryName(projectDir), ioProject.Voicebank));
-            project.SetReclist(ReclistReader.Current.Read(ioProject.Reclist));
+            var reclist = ReclistReader.Current.Read(ioProject.Reclist);
+            if (!reclist.IsLoaded)
+            {
+                var testReclist = ReclistReader.Current.ReadTest(ioProject.Reclist);
+                if (testReclist.IsLoaded)
+                    reclist = testReclist;
+            }
+            project.SetReclist(reclist);
             project.SetReplacer(ReplacerReader.Current.Read(ioProject.Replacer, project.Reclist));
 
             foreach (var ioWavConfig in ioProject.WavConfigs)

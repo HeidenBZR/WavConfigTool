@@ -68,7 +68,7 @@ namespace WavConfigCore.Reader
 
         public void Write(Replacer replacer, Reclist reclist)
         {
-            var filename = PathResolver.Current.Replacer(reclist.Name, replacer.Name);
+            var filename = PathResolver.Current.Replacer(reclist.Name, replacer.Name, reclist.IsTest);
             var text = new StringBuilder();
             foreach (var format in replacer.Formats)
             {
