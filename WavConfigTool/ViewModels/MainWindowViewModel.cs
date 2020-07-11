@@ -85,22 +85,26 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public double UserScaleY
+        public int UserScaleYView
         {
-            get => Settings.UserScaleY;
+            get => (int)(Settings.UserScaleY * 100);
             set
             {
-                Project.UserScaleY = value;
+                if (value <= 0)
+                    return;
+                Project.UserScaleY = value / 100.0;
                 TrySaveProject();
                 ReloadProjectCommand.Execute(0);
             }
         }
-        public double UserScaleX
+        public int UserScaleXView
         {
-            get => Settings.UserScaleX;
+            get => (int)(Settings.UserScaleX * 100);
             set
             {
-                Project.UserScaleX = value;
+                if (value <= 0)
+                    return;
+                Project.UserScaleX = value / 100.0;
                 TrySaveProject();
                 ReloadProjectCommand.Execute(0);
             }
@@ -253,8 +257,8 @@ namespace WavConfigTool.ViewModels
             );
 
             RaisePropertiesChanged(
-                () => UserScaleY,
-                () => UserScaleX,
+                () => UserScaleYView,
+                () => UserScaleXView,
                 () => Title,
                 () => ReclistName,
                 () => VoicebankImage

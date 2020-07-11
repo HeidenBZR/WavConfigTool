@@ -476,14 +476,16 @@
                                          Padding="0"
                                          VerticalAlignment="Center"
                                          IsEnabled="{Binding IsNotLoading}"
-                                         Text="{Binding UserScaleY, Mode=TwoWay}" />
-                                <TextBlock Margin="3,0"
+                                         Text="{Binding UserScaleYView, Mode=TwoWay}" />
+                                <TextBlock Text="%" />
+                                <TextBlock Margin="10,0"
                                            Text="Scale X:" />
                                 <TextBox Width="30"
                                          Padding="0"
                                          VerticalAlignment="Center"
                                          IsEnabled="{Binding IsNotLoading}"
-                                         Text="{Binding UserScaleX, Mode=TwoWay}" />
+                                         Text="{Binding UserScaleXView, Mode=TwoWay}" />
+                                <TextBlock Text="%" />
 
                             </StackPanel>
                         </StackPanel>
