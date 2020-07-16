@@ -56,42 +56,13 @@ namespace WavConfigTool.ViewModels
 
         private void GetReclists()
         {
-            var reclists = new List<Reclist>();
-            var list = new List<string>();
-            string path = PathResolver.Current.Reclist();
-            var files = Directory.GetFiles(path, "*.reclist");
-            foreach (string filename in files)
-            {
-                var reclist = ReadReclist(filename, list);
-                if (reclist != null)
-                    reclists.Add(reclist);
-            }
-            var testPath = Path.Combine(path, PathResolver.TEST_FOLDER);
-            var filesTest = Directory.GetFiles(testPath, "*.reclist");
-            foreach (string filename in filesTest)
-            {
-                var reclist = ReadReclist(filename, list, true);
-                if (reclist != null)
-                    reclists.Add(reclist);
-            }
+            var reclists = WavConfigCore.WavConfigCore.Current.GetReclists();
 
             App.MainDispatcher.Invoke(() =>
             {
                 Reclists = new ObservableCollection<Reclist>(reclists);
                 RaisePropertyChanged(nameof(Reclists));
             });
-        }
-
-        private Reclist ReadReclist(string filename, List<string> list, bool isTest = false)
-        {
-            var reclistName = Path.GetFileNameWithoutExtension(filename);
-            var reclist = isTest ? ReclistReader.Current.ReadTest(reclistName) : ReclistReader.Current.Read(reclistName);
-            if (reclist != null && reclist.IsLoaded && !list.Contains(reclistName))
-            {
-                list.Add(reclistName);
-                return reclist;
-            }
-            return null;
         }
 
         private async void GetReclistsAsync()

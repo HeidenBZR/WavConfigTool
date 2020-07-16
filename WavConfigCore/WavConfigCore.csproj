@@ -81,6 +81,7 @@
     <Compile Include="Tools\MusicMath.cs" />
     <Compile Include="Tools\PathResolver.cs" />
     <Compile Include="Voicebank.cs" />
+    <Compile Include="WavConfigCore.cs" />
     <Compile Include="WavGroup.cs" />
     <Compile Include="WavMask.cs" />
   </ItemGroup>
