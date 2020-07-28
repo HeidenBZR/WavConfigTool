@@ -107,7 +107,16 @@ namespace WavConfigCore
                     var phoneme = phonemes[i];
                     phoneme.IsSkipped = false;
 
-                    if (pointI >= points.Count)
+                    if ((i == 0 || i == phonemes.Count - 1) && pointI < points.Count)
+                    {
+                        var pointIn = points[pointI];
+                        var pointOut = points[pointI];
+                        pointI++;
+                        phoneme.Zone = new Zone(pointIn, pointOut);
+                        phoneme.HasZone = true;
+                        zones.Add(phoneme.Zone);
+                    }
+                    else if (pointI + 1 >= points.Count)
                     {
                         completed = false;
                         phoneme.Zone = new Zone();
@@ -116,6 +125,7 @@ namespace WavConfigCore
                     else
                     {
                         var pointIn = points[pointI];
+                        pointI++;
                         var pointOut = points[pointI];
                         pointI++;
                         phoneme.Zone = new Zone(pointIn, pointOut);

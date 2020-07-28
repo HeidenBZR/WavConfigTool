@@ -158,7 +158,7 @@ namespace WavConfigCore
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.Out + Project.DecayR;
-                    cutoff = 0;
+                    cutoff = next != null && next.IsRest ? next.Zone.In - Project.AttackR : 0;
                     break;
 
                 case AliasType.CR:
@@ -167,7 +167,7 @@ namespace WavConfigCore
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.Out + Project.DecayR;
-                    cutoff = 0;
+                    cutoff = next != null && next.IsRest ? next.Zone.In - Project.AttackR : 0;
                     break;
 
                 // Ends with Consonant

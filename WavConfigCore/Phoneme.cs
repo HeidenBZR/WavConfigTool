@@ -96,16 +96,6 @@ namespace WavConfigCore
             Type = PhonemeType.Rest;
         }
 
-        public Rest(string l, double zoneIn, double zoneOut, Recline recline, string letter = "") : this(l, letter)
-        {
-            Zone = new Zone()
-            {
-                In = zoneIn,
-                Out = zoneOut
-            };
-            Recline = recline;
-        }
-
         public override Phoneme Clone() { return new Rest(Alias, Letter); }
 
     };

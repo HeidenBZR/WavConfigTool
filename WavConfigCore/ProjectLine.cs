@@ -114,6 +114,8 @@ namespace WavConfigCore
             if (points.Count >= neededCount)
                 return -1;
             var realPhonemes = PointsOfType(type, virtuals: false);
+            if (realPhonemes.Contains(position))
+                return -1;
             realPhonemes.Add(position);
             realPhonemes.Sort();
             UpdateZones();
