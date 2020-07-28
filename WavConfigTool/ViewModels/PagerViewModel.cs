@@ -172,7 +172,9 @@ namespace WavConfigTool.ViewModels
             }
             await Task.Run(() =>
             {
-                Thread.Sleep(1000);
+                if (!IsOtoMode)
+                    Thread.Sleep(1000);
+
                 SetPageContentReady(true);
             });
         }
