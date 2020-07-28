@@ -22,7 +22,11 @@ namespace WavConfigTool.ViewModels
     {
 
         public ProjectViewModel ProjectViewModel { get; set; }
-        public string Version => "v.0.2.2";
+        public string Version => "v.0.2.2"
+#if DEBUG
+            + ".1a"
+#endif
+            ;
         public Project Project => ProjectManager.Project;
         public string ReclistName           => IsProjectReady && Project?.Voicebank != null ? Project.Reclist.Name : null;
         public string VoicebankName         => IsProjectReady && Project?.Voicebank != null ? Project.Voicebank.Name : null;
