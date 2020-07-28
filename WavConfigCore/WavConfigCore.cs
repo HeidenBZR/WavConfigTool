@@ -43,17 +43,14 @@ namespace WavConfigCore
                     reclists.Add(reclist);
             }
             var testPath = Path.Combine(path, PathResolver.TEST_FOLDER);
-            if (Directory.Exists(testPath))
+            var filesTest = Directory.GetFiles(testPath, "*.reclist");
+            foreach (string filename in filesTest)
             {
-                var filesTest = Directory.GetFiles(testPath, "*.reclist");
-                foreach (string filename in filesTest)
-                {
-                    var reclist = ReadReclist(filename, list, true);
-                    if (reclist != null)
-                        reclists.Add(reclist);
-                }
-                return reclists.ToArray();
+                var reclist = ReadReclist(filename, list, true);
+                if (reclist != null)
+                    reclists.Add(reclist);
             }
+            return reclists.ToArray();
         }
 
         #region private
