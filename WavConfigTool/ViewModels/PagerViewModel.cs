@@ -228,7 +228,10 @@ namespace WavConfigTool.ViewModels
         private void SetPageContentReady(bool ready)
         {
             foreach (var control in pageContent)
-                control.SetReady(ready);
+            {
+                if (control != Base)
+                    control.SetReady(ready);
+            }
         }
 
         private void LoadRest()
