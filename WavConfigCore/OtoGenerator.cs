@@ -158,7 +158,7 @@ namespace WavConfigCore
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.Out + Project.DecayR;
-                    cutoff = next != null && next.IsRest ? next.Zone.In - Project.AttackR : 0;
+                    cutoff = next == null || IsNextLast(next) ? 0 : next.Zone.In - Project.AttackR;
                     break;
 
                 case AliasType.CR:
@@ -167,7 +167,7 @@ namespace WavConfigCore
                     overlap = p1.Zone.Out;
                     preutterance = p2.Zone.In;
                     consonant = p2.Zone.Out + Project.DecayR;
-                    cutoff = next != null && next.IsRest ? next.Zone.In - Project.AttackR : 0;
+                    cutoff = next == null || IsNextLast(next) ? 0 : next.Zone.In - Project.AttackR;
                     break;
 
                 // Ends with Consonant
@@ -199,6 +199,11 @@ namespace WavConfigCore
                 }
             }
             return null;
+        }
+
+        private bool IsNextLast(Phoneme nextPhoneme)
+        {
+            return nextPhoneme != null && nextPhoneme.Type == PhonemeType.Rest && nextPhoneme.IsLast;
         }
 
         private string GetAliasType(params Phoneme[] phonemes)

@@ -41,6 +41,9 @@ namespace WavConfigCore
         public bool IsSkipped { get; set; }
         public Recline Recline;
 
+        public bool IsLast { get; set; }
+        public bool IsFirst { get; set; }
+
         public bool IsConsonant { get { return Type == PhonemeType.Consonant; } }
         public bool IsVowel { get { return Type == PhonemeType.Vowel; } }
         public bool IsRest { get { return Type == PhonemeType.Rest; } }

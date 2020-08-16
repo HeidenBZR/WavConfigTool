@@ -64,6 +64,8 @@ namespace WavConfigCore
             var phonemesForGeneration = new List<Phoneme>();
             foreach (var phoneme in Phonemes)
             {
+                phoneme.IsFirst = false;
+                phoneme.IsLast = false;
                 if (phoneme.Type == PhonemeType.Rest)
                 {
                     var r1 = Rest.Create(this);
@@ -80,6 +82,8 @@ namespace WavConfigCore
                     phonemesForGeneration.Add(phoneme);
                 }
             }
+            phonemesForGeneration.First((n) => n.IsFirst = true);
+            phonemesForGeneration.Last((n) => n.IsLast = true);
             return phonemesForGeneration;
         } 
 
