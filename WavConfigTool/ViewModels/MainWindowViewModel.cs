@@ -507,8 +507,10 @@ namespace WavConfigTool.ViewModels
             PagerViewModel.RefreshPageContent();
         }, () => Project != null && Project.IsLoaded);
 
-        public ICommand OpenSettingsCommand => new OpenFolderCommand(PathResolver.Current.Reclist());
-        public ICommand OpenBackupsCommand => new OpenFolderCommand(PathResolver.Current.Backup(true));
+        public ICommand OpenSettingsFolderCommand => new OpenFolderCommand(PathResolver.Current.Reclist());
+        public ICommand OpenBackupsFolderCommand => new OpenFolderCommand(PathResolver.Current.Backup(true));
+        public ICommand OpenVoicebankFolderCommand => new OpenFolderCommand(PathResolver.Current.TryGetDirectoryName(Project?.Voicebank?.Fullpath), Project?.Voicebank != null);
+        public ICommand OpenProjectFolderCommand => new OpenFolderCommand(PathResolver.Current.TryGetDirectoryName(Settings.ProjectFile), Project != null && Project.IsLoaded);
 
 #if DEBUG
 

@@ -12,6 +12,8 @@ using WavConfigTool.UserControls;
 using WavConfigTool.ViewModels;
 using System.IO;
 using System.Diagnostics;
+using NAudio.CoreAudioApi;
+using System.Runtime.CompilerServices;
 
 namespace WavConfigTool.ViewTools
 {
@@ -100,7 +102,7 @@ namespace WavConfigTool.ViewTools
 
     class OpenFolderCommand : DelegateCommand
     {
-        public OpenFolderCommand(string dir) : base(() =>
+        public OpenFolderCommand(string dir, bool canBeExecuted = true) : base(() =>
         {
             Process.Start(new ProcessStartInfo()
             {
@@ -108,7 +110,7 @@ namespace WavConfigTool.ViewTools
                 UseShellExecute = true,
                 Verb = "open"
             });
-        }, Directory.Exists(dir))
+        }, Directory.Exists(dir) && canBeExecuted)
         {
 
         }

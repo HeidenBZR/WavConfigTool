@@ -163,9 +163,13 @@
             </MenuItem>
             <MenuItem Header="Folders">
                 <MenuItem Header="Open Settings Folder"
-                          Command="{Binding OpenSettingsCommand}" />
+                          Command="{Binding OpenSettingsFolderCommand}" />
                 <MenuItem Header="Open Backups Folder"
-                          Command="{Binding OpenBackupsCommand}" />
+                          Command="{Binding OpenBackupsFolderCommand}" />
+                <MenuItem Header="Open Voicebank Folder"
+                          Command="{Binding OpenVoicebankFolderCommand}" />
+                <MenuItem Header="Open Project Folder"
+                          Command="{Binding OpenProjectFolderCommand}" />
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Header="Toggle Pitch"
