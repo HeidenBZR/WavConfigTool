@@ -63,9 +63,14 @@ namespace WavConfigCore.Tools
             return Path.Combine(folder, filename);
         }
 
-        public string Mask(string filename = "")
+        public string Mask(string filename = "", bool isTest = false)
         {
-            return Path.Combine(ResourcesDir, "Settings", filename + MASK_EXT);
+            var folder = Path.Combine(ResourcesDir, "Settings");
+            if (isTest)
+                folder = Path.Combine(folder, TEST_FOLDER);
+            if (filename == "")
+                return folder;
+            return Path.Combine(folder, filename + MASK_EXT);
         }
 
         public string Log()
