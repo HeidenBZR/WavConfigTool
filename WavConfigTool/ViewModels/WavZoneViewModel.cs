@@ -214,6 +214,8 @@ namespace WavConfigTool.ViewModels
 
         public void DrawPoints(double[][] lines, double[] points, int width, int height, Color fillColor, Color strokeColor)
         {
+            if (width == 0)
+                return;
             var res = new Bitmap(width, height);
             using (var strokePen = new Pen(strokeColor))
             using (var fillBrush = new SolidBrush(fillColor))
