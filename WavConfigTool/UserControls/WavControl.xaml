@@ -19,9 +19,16 @@
             <Setter Property="HorizontalAlignment"
                     Value="Left" />
             <Setter Property="Width"
-                    Value="{Binding Width, FallbackValue=1000}" />
+                    Value="{Binding Width, FallbackValue=500}" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsEnabled, Converter={StaticResource BooleanToVisibility}}"
+                <DataTrigger Binding="{Binding IsEnabled}"
+                             Value="False">
+                    <Setter Property="HorizontalAlignment"
+                            Value="Stretch" />
+                    <Setter Property="Width"
+                            Value="Auto" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsLoading}"
                              Value="True">
                     <Setter Property="HorizontalAlignment"
                             Value="Stretch" />

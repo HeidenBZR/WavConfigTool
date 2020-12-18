@@ -44,7 +44,7 @@ namespace WavConfigTool.ViewModels
         public int NumberView => Number + 1;
         public override string ViewName { get; }
 
-        public int Width => WaveForm?.VisualWidth ?? 4000;
+        public int Width => WaveForm?.VisualWidth ?? 400;
         public ImageSource WavImage => GetWavImage();
         public ImageSource FrqImage => ImagesLibrary.TryGetImage(WaveForm, WavImageType.FRQ);
         public ImageSource SpectrumImage => ImagesLibrary.TryGetImage(WaveForm, WavImageType.SPECTRUM);
@@ -294,8 +294,7 @@ namespace WavConfigTool.ViewModels
 
                 WaveForm = new WaveForm(SampleName);
                 ImagesLibrary.Load(WaveForm, Height, Hash);
-            })).ConfigureAwait(true);
-
+            }));
         }
 
         private void OnImagesLoaded(WaveForm waveForm)
