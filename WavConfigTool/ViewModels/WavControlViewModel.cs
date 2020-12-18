@@ -42,7 +42,7 @@ namespace WavConfigTool.ViewModels
 
         public int Number { get; set; }
         public int NumberView => Number + 1;
-        public override string ViewName => !string.IsNullOrEmpty(ProjectLine?.Recline?.Description) ? $"{ProjectLine?.Recline?.Description} [{ProjectLine?.Recline?.Name}]" : ProjectLine?.Recline?.Name;
+        public override string ViewName { get; }
 
         public int Width => WaveForm?.VisualWidth ?? 4000;
         public ImageSource WavImage => GetWavImage();
@@ -95,6 +95,7 @@ namespace WavConfigTool.ViewModels
             ProjectLine.ProjectLineChanged += HandleProjectLineChanged;
             SampleName = sampleName;
             Hash = hash;
+            ViewName = !string.IsNullOrEmpty(ProjectLine?.Recline?.Description) ? $"{ProjectLine?.Recline?.Description} [{ProjectLine?.Recline?.Name}]" : ProjectLine?.Recline?.Name;
             CreatePoints();
             UpdatePoints();
             FirePointsChanged();

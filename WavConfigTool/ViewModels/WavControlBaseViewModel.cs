@@ -15,7 +15,7 @@ namespace WavConfigTool.ViewModels
 
         public virtual bool IsCompleted => false;
         public virtual bool IsEnabled => true;
-        public virtual string ViewName => "{NAME}";
+        public virtual string ViewName { get; } = "{NAME}";
 
         public bool IsReadyToDrawPoints { get; private set; }
 

@@ -1,10 +1,7 @@
 ﻿using DevExpress.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace WavConfigTool.ViewModels
@@ -20,7 +17,6 @@ namespace WavConfigTool.ViewModels
 
         public void SetItems(ObservableCollection<WavControlBaseViewModel> items)
         {
-            this.items = items;
             SelectedKey = null;
             itemsByName.Clear();
             ItemsKeys = new string[items.Count()];
@@ -36,7 +32,6 @@ namespace WavConfigTool.ViewModels
         #region private
 
         private Dictionary<string, WavControlBaseViewModel> itemsByName = new Dictionary<string, WavControlBaseViewModel>();
-        private ObservableCollection<WavControlBaseViewModel> items { get; set; }
 
         private void Goto(WavControlBaseViewModel model)
         {
