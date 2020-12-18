@@ -32,7 +32,7 @@ namespace WavConfigCore.Reader
         public Replacer Read(string name, Reclist reclist)
         {
             var replacer = new Replacer();
-            var filename = PathResolver.Current.Replacer(reclist.Name, name);
+            var filename = PathResolver.Current.Replacer(reclist.Name, name, reclist.IsTest);
             if (!System.IO.File.Exists(filename))
                 return replacer;
             foreach (string line in System.IO.File.ReadAllLines(filename, Encoding.UTF8))

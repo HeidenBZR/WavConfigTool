@@ -232,7 +232,7 @@ namespace WavConfigTool.ViewModels
                 {
                     var x1 = (float)points[i];
                     var y1 = (float)points[i + 1];
-                    var x2 = (float)points[i + 2 >= points.Length ? 0 : i  + 2];
+                    var x2 = (float)points[i + 2 >= points.Length ? 0 : i + 2];
                     var y2 = (float)points[i + 3 >= points.Length ? 1 : i + 3];
                     pointFs.Add(new PointF(x1, y1));
                     if (x1 == x2 && (x1 == In || x1 == width))
