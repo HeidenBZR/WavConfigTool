@@ -15,16 +15,29 @@ namespace WavConfigTool.ViewModels
         public delegate void GotoHandler(WavControlBaseViewModel viewModel);
         public event GotoHandler OnGoto;
 
-        public ObservableCollection<WavControlBaseViewModel> Items { get; set; }
-        public WavControlBaseViewModel SelectedItem { get; set; }
+        public string SelectedKey { get; set; }
+        public string[] ItemsKeys { get; set; }
+        public bool IsCanGoto => ItemsKeys != null && SelectedKey != null && itemsByName.ContainsKey(SelectedKey);
 
         public void SetItems(ObservableCollection<WavControlBaseViewModel> items)
         {
-            Items = items;
-            SelectedItem = null;
+            this.items = items;
+            SelectedKey = null;
+            itemsByName.Clear();
+            ItemsKeys = new string[items.Count()];
+            var i = 0;
+            foreach (var item in items)
+            {
+                itemsByName[item.ViewName] = item;
+                ItemsKeys[i] = item.ViewName;
+                i++;
+            }
         }
 
         #region private
+
+        private Dictionary<string, WavControlBaseViewModel> itemsByName = new Dictionary<string, WavControlBaseViewModel>();
+        private ObservableCollection<WavControlBaseViewModel> items { get; set; }
 
         private void Goto(WavControlBaseViewModel model)
         {
@@ -37,8 +50,8 @@ namespace WavConfigTool.ViewModels
 
         public ICommand GotoCommand => new DelegateCommand(delegate
         {
-            Goto(SelectedItem);
-        }, () => Items != null && SelectedItem != null);
+            Goto(itemsByName[SelectedKey]);
+        }, () => IsCanGoto);
 
         #endregion
 

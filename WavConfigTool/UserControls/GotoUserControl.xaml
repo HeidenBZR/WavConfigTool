@@ -20,21 +20,23 @@
     </d:UserControl.DataContext>
     <StackPanel
         Orientation="Horizontal">
-        <ComboBox ItemsSource="{Binding Items}"
-                  SelectedItem="{Binding SelectedItem}"
+        <ComboBox ItemsSource="{Binding ItemsKeys}"
+                  SelectedItem="{Binding SelectedKey}"
                   IsTextSearchEnabled="True"
                   Width="200"
                   IsEditable="True"
-                  TextSearch.TextPath="ViewName">
+                  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                  BorderThickness="0">
             <ComboBox.ItemTemplate>
                 <ItemContainerTemplate>
-                    <Label Content="{Binding ViewName}"
+                    <TextBlock Text="{Binding}"
                            Margin="0"
                            Padding="2" />
                 </ItemContainerTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
         <Button Content="Goto"
-                Command="{Binding GotoCommand}" />
+                Command="{Binding GotoCommand}"
+                IsEnabled="{Binding IsCanGoto}"/>
     </StackPanel>
 </UserControl>
