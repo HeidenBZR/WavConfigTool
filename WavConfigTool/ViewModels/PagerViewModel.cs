@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WavConfigCore;
+using WavConfigTool.Classes;
 
 namespace WavConfigTool.ViewModels
 {
@@ -25,12 +26,14 @@ namespace WavConfigTool.ViewModels
         public int CurrentPageView { get => CurrentPage + 1; set => CurrentPage = value - 1; }
         public bool IsHidden { get; set; } = false;
         public bool IsOtoMode { get; set; } = false;
+        public ImagesLibrary ImagesLibrary;
 
         public List<WavControlBaseViewModel> SourceCollection { get; private set; } = new List<WavControlBaseViewModel>();
         public ObservableCollection<WavControlBaseViewModel> Collection { get; private set; } = new ObservableCollection<WavControlBaseViewModel>();
         public ObservableCollection<WavControlBaseViewModel> PageContent => pageContent;
 
         public event SimpleHandler PagerChanged = delegate { };
+
 
         public PagerViewModel()
         {

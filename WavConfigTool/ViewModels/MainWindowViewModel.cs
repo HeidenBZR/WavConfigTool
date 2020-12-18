@@ -44,6 +44,7 @@ namespace WavConfigTool.ViewModels
         public OtoGenerator OtoGenerator { get; private set; }
         public OremoPackGenerator OremoPackGenerator { get; set; } = new OremoPackGenerator();
         public WavPlayer WavPlayer = new WavPlayer();
+        public ImagesLibrary ImagesLibrary = new ImagesLibrary();
 
         public int AttackC { get => Project?.AttackC ?? 0; set { Project.AttackC = value; TrySaveProject(); RedrawPoints(); } }
         public int AttackV { get => Project?.AttackV ?? 0; set { Project.AttackV = value; TrySaveProject(); RedrawPoints(); } }
@@ -168,7 +169,7 @@ namespace WavConfigTool.ViewModels
                     }));
                 }
 
-                WavControlsPagerViewModel = new PagerViewModel(wavControls);
+                WavControlsPagerViewModel = new PagerViewModel(wavControls) { ImagesLibrary = ImagesLibrary};
                 PagerViewModel = WavControlsPagerViewModel;
                 PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
                 Project.BeforeSave += WriteProjectOptions;
@@ -207,9 +208,12 @@ namespace WavConfigTool.ViewModels
             var projectLine = Project.ProjectLines[i];
             var sampleName = Project.Voicebank.GetSamplePath(projectLine.Recline.Name, Project.WavPrefix, Project.WavSuffix);
             var hash = $"{Project.Voicebank.Name}_{Project.Reclist.Name}_{Settings.UserScaleX}x{Settings.UserScaleY}_{sampleName}"; //.GetHashCode();
-            var control = new WavControlViewModel(projectLine, sampleName, hash) { Number = i };
-            control.ViewOptions = ViewOptions;
-            control.WavPlayer = WavPlayer;
+            var control = new WavControlViewModel(projectLine, ImagesLibrary, sampleName, hash) 
+            { 
+                Number = i, 
+                ViewOptions = ViewOptions,
+                WavPlayer = WavPlayer
+            };
             control.OnOtoMode += model => SetOtoMode(control);
             control.OnAddPointRequested += (position, type) => HandleAddPointRequest(control, position, type);
             control.OnGenerateOtoRequested += delegate
@@ -317,7 +321,7 @@ namespace WavConfigTool.ViewModels
                 Project.ResetOto();
                 wavControl.ProjectLine.Recline.ResetOto();
                 OtoGenerator.GenerateFromProjectLine(wavControl.ProjectLine);
-                OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreview());
+                OtoPagerViewModel = new PagerViewModel(wavControl.GenerateOtoPreview()) { ImagesLibrary = ImagesLibrary };
                 OtoPagerViewModel.SetBase(wavControl);
                 OtoPagerViewModel.OtoMode();
                 OtoPagerViewModel.SetPageSizeCommand.Execute(Project.ProjectOptions.OtoPageSize);

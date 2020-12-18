@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using WavConfigCore;
 
 namespace WavConfigTool.ViewModels
 {

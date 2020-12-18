@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using WavConfigCore;
+using WavConfigTool.Classes;
 
 namespace WavConfigTool.ViewModels
 {
@@ -23,6 +24,7 @@ namespace WavConfigTool.ViewModels
         public virtual void Ready() { }
 
         public event SimpleHandler PointsChanged = delegate { };
+        public ImagesLibrary ImagesLibrary;
 
         public static void SortPoints(ObservableCollection<WavPointViewModel> collection)
         {

@@ -46,8 +46,8 @@ namespace WavConfigTool.ViewModels
 
         public int Width => WaveForm?.VisualWidth ?? 4000;
         public ImageSource WavImage => GetWavImage();
-        public ImageSource FrqImage { get; set; }
-        public ImageSource SpectrumImage => WaveForm?.SpectrumImage;
+        public ImageSource FrqImage => ImagesLibrary.TryGetImage(WaveForm, WavImageType.FRQ);
+        public ImageSource SpectrumImage => ImagesLibrary.TryGetImage(WaveForm, WavImageType.SPECTRUM);
 
         public PhonemeType PhonemeTypeRest => PhonemeType.Rest;
         public PhonemeType PhonemeTypeVowel => PhonemeType.Vowel;
@@ -89,7 +89,7 @@ namespace WavConfigTool.ViewModels
             OnLoaded += HandleLoaded;
         }
 
-        public WavControlViewModel(ProjectLine projectLine, string sampleName, string hash) : this()
+        public WavControlViewModel(ProjectLine projectLine, ImagesLibrary imagesLibrary, string sampleName, string hash) : this()
         {
             ProjectLine = projectLine;
             ProjectLine.ProjectLineChanged += HandleProjectLineChanged;
@@ -98,6 +98,8 @@ namespace WavConfigTool.ViewModels
             CreatePoints();
             UpdatePoints();
             FirePointsChanged();
+            ImagesLibrary = imagesLibrary;
+            ImagesLibrary.OnImageLoaded += OnImagesLoaded;
         }
 
         public override void Ready()
@@ -263,15 +265,18 @@ namespace WavConfigTool.ViewModels
         {
             App.MainDispatcher.Invoke(() =>
             {
-                if (WaveForm != null)
-                    WaveForm.SpectrumImage = null;
+                ImagesLibrary.ClearWavformImages(WaveForm);
                 IsLoaded = false;
                 IsLoading = true;
                 IsImageEnabled = false;
                 RaisePropertiesChanged(
                     () => IsLoading,
                     () => IsLoaded,
-                    () => EditEnabled,
+                    () => EditEnabled
+                );
+                RaisePropertiesChanged(
+                    () => WavImage,
+                    () => FrqImage,
                     () => SpectrumImage
                 );
                 HandleViewChanged();
@@ -287,32 +292,26 @@ namespace WavConfigTool.ViewModels
                 }
 
                 WaveForm = new WaveForm(SampleName);
-                WaveForm.Start(Height);
-                WaveForm.CollectData();
-                LoadFrq(SampleName);
+                ImagesLibrary.Load(WaveForm, Height, Hash);
             })).ConfigureAwait(true);
+
+        }
+
+        private void OnImagesLoaded(WaveForm waveForm)
+        {
+            if (waveForm != WaveForm)
+                return;
 
             App.MainDispatcher.Invoke(() =>
             {
                 if (IsLoading)
                 {
-                    WaveForm.DrawWaveform();
-                    WaveForm.Finish(Hash);
                     IsImageEnabled = true;
                     OnLoaded();
                     FirePointsChanged();
                 }
                 HandleViewChanged();
-            });
 
-            await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
-            {
-                if (WaveForm != null)
-                    WaveForm.CreateSpectrum();
-            })).ConfigureAwait(true);
-
-            App.MainDispatcher.Invoke(() =>
-            {
                 RaisePropertyChanged(nameof(SpectrumImage));
                 HandleViewChanged();
             });
@@ -335,7 +334,7 @@ namespace WavConfigTool.ViewModels
         private ImageSource GetWavImage()
         {
             if (IsImageEnabled && Hash == WaveForm?.ImageHash)
-                return WaveForm.BitmapImage;
+                return ImagesLibrary.TryGetImage(WaveForm, WavImageType.WAVEFORM);
             if (IsEnabled && !IsLoading && Hash != WaveForm?.ImageHash && Hash != null)
                 Load();
             return null;
@@ -424,18 +423,6 @@ namespace WavConfigTool.ViewModels
                     point.FireChanged();
                 }
             }
-        }
-
-        private void LoadFrq(string sampleName)
-        {
-            Frq = new Frq();
-            Frq.Load(sampleName);
-            if (Frq.Points != null)
-            {
-                var visualPoints = Frq.CalculateVisualPoints(WaveForm);
-                App.MainDispatcher.Invoke(() => { FrqImage = Frq.DrawPoints(visualPoints, Height); });
-            }
-            RaisePropertyChanged(() => FrqImage);
         }
 
         private bool PointIsLeft(PhonemeType type, int i)

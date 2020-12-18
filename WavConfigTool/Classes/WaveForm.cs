@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
 
@@ -23,8 +24,6 @@ namespace WavConfigTool.Classes
 
         public bool IsEnabled = false;
 
-        public BitmapImage BitmapImage;
-        public BitmapImage SpectrumImage;
         public string ImageHash;
 
         public WaveForm(string path)
@@ -33,38 +32,25 @@ namespace WavConfigTool.Classes
             IsEnabled = File.Exists(Path);
         }
 
-        public void Start(int height)
-        {
-            color = Color.FromArgb(255, 100, 200, 100);// "#64c864"
-            this.height = height;
-            if (!IsEnabled)
-            {
-                ImageHash = null;
-                BitmapImage = null;
-                return;
-            }
-            reader = new AudioFileReader(Path);
-            Channels = reader.WaveFormat.Channels;
-            ChannelsString = GetChannelsString(Channels);
-            BitRate = reader.WaveFormat.BitsPerSample * 2 / reader.BlockAlign;
-            SampleRate = reader.WaveFormat.SampleRate;
-        }
-
         public double GetSampleWidth()
         {
             return Settings.RealToViewX(Channels * 1000.0 / SampleRate);
         }
-        public void CreateSpectrum()
-        {
 
-        }
-
-        public void CollectData()
+        public ImageSource DrawWaveform(int height, Color color)
         {
+            if (!IsEnabled)
+                return null;
+            var reader = new AudioFileReader(Path);
+            Channels = reader.WaveFormat.Channels;
+            ChannelsString = GetChannelsString(Channels);
+            BitRate = reader.WaveFormat.BitsPerSample * 2 / reader.BlockAlign;
+            SampleRate = reader.WaveFormat.SampleRate;
+
             // calculate number of samples
             long nSamples = reader.Length / ((BitRate * Channels) / 8);
             if (nSamples < 2)
-                return;
+                return null;
 
             int yBase = height / 2;
             double yScale = Settings.UserScaleY;
@@ -84,7 +70,7 @@ namespace WavConfigTool.Classes
             float[] buffer = new float[8192];
             int readCount;
 
-            points = new List<Point[]>();
+            var points = new List<Point[]>();
             while ((readCount = reader.Read(buffer, 0, 8192)) > 0)
             {
                 // process samples
@@ -124,12 +110,16 @@ namespace WavConfigTool.Classes
 
             VisualWidth = (int)currPosition;
             Width = Settings.ViewToRealX(VisualWidth);
+            reader.Close();
+            reader.Dispose();
+
+            return GetWaveformImageSource(height, color, points);
         }
 
-        public void DrawWaveform()
+        private ImageSource GetWaveformImageSource(int height, Color color, List<Point[]> points)
         {
             var res = new Bitmap(VisualWidth, height);
-            using (Brush fillBrush = new SolidBrush(color))
+            using (System.Drawing.Brush fillBrush = new SolidBrush(color))
             using (Graphics g = Graphics.FromImage(res))
             {
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
@@ -140,17 +130,12 @@ namespace WavConfigTool.Classes
                 g.FillRectangle(fillBrush, 0, height / 2, VisualWidth, LINE_WEIGHT);
             }
 
-            BitmapImage = Bitmap2BitmapImage(res);
+            var image = Bitmap2BitmapImage(res);
             res.Dispose();
+            points.Clear();
+            return image;
         }
 
-        public void Finish(string hash)
-        {
-            points.Clear();
-            reader.Close();
-            reader.Dispose();
-            ImageHash = hash;
-        }
 
         public static BitmapImage Bitmap2BitmapImage(Bitmap bitmap)
         {
@@ -171,11 +156,6 @@ namespace WavConfigTool.Classes
         }
 
         private const float LINE_WEIGHT = 0.5f;
-
-        private List<Point[]> points;
-        private AudioFileReader reader;
-        private int height;
-        private Color color;
 
         private int ClampHeight(int val, int halfHeight)
         {
