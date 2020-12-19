@@ -20,9 +20,12 @@ namespace WavConfigTool.ViewModels
         public ObservableCollection<Phoneme> Phonemes { get; private set; }
 
         public bool IsLoading { get; set; } = false;
-        public bool IsLoaded { get; set; } = false;
         public bool IsImageEnabled { get; set; } = false;
         public bool IsReady { get; set; } = false;
+
+        public bool IsLoaded { get; set; } = false;
+        public bool IsImagesLoaded { get; set; } = false;
+        public bool IsPointsLoaded { get; set; } = false;
 
         public override bool IsCompleted => ProjectLine != null && ProjectLine.IsCompleted;
         public override bool IsEnabled => ProjectLine != null && ProjectLine.IsEnabled;
@@ -68,17 +71,16 @@ namespace WavConfigTool.ViewModels
 
         public event SimpleHandler OnLoaded = delegate { };
 
-        public WavControlViewModel()
-        {
-            OnLoaded += HandleLoaded;
-        }
-
         public override void Update(PagerContentBase pagerContent)
         {
             if (PagerContent != null)
             {
                 UnsubscribePagerContent();
             }
+
+            IsLoaded = false;
+            IsImagesLoaded = false;
+            IsPointsLoaded = false;
 
             PagerContent = pagerContent;
             var projectLineContainer = GetProjectLineContainer();
@@ -291,6 +293,12 @@ namespace WavConfigTool.ViewModels
             RaisePropertyChanged(nameof(SpectrumImage));
             RaisePropertyChanged(nameof(FrqImage));
             HandleViewChanged();
+
+            ProjectLine.Width = WaveForm.Width;
+            RaisePropertyChanged(nameof(Width));
+            UpdatePoints();
+            IsImagesLoaded = true;
+            CheckLoaded();
         }
 
         private void HandlePointAdded(double position, PhonemeType type, int i)
@@ -324,40 +332,47 @@ namespace WavConfigTool.ViewModels
 
         private async void CreatePoints()
         {
-            foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest})
+            var points = new Dictionary<PhonemeType, List<WavPointViewModel>>();
+
+            await Task.Run(delegate
             {
-                var phonemes = ProjectLine.Recline.PhonemesOfType(phonemeType);
-                var pointsOfType = PointsOfType(phonemeType);
-                var points = new List<WavPointViewModel>();
-                await Task.Run(delegate
+                foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest })
                 {
+                    points[phonemeType] = new List<WavPointViewModel>();
+                    var phonemes = ProjectLine.Recline.PhonemesOfType(phonemeType);
                     for (var i = 0; i < phonemes.Count; i++)
                     {
                         if (phonemeType == PhonemeType.Rest && i == 0)
                         {
-                            points.Add(CreatePoint(-1, phonemeType, 0));
+                            points[phonemeType].Add(CreatePoint(-1, phonemeType, 0));
                         }
                         else if (phonemeType == PhonemeType.Rest && i == phonemes.Count - 1)
                         {
-                            points.Add(CreatePoint(-1, phonemeType, 1));
+                            points[phonemeType].Add(CreatePoint(-1, phonemeType, 1));
                         }
                         else
                         {
-                            points.Add(CreatePoint(-1, phonemeType, 0));
-                            points.Add(CreatePoint(-1, phonemeType, 1));
+                            points[phonemeType].Add(CreatePoint(-1, phonemeType, 0));
+                            points[phonemeType].Add(CreatePoint(-1, phonemeType, 1));
                         }
                     }
-                }).ContinueWith(delegate 
+                }
+            }).ContinueWith(delegate
+            {
+                App.MainDispatcher.Invoke(delegate
                 {
-                    App.MainDispatcher.Invoke(delegate
+                    foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest })
                     {
-                        foreach (var point in points)
+                        var pointsOfType = PointsOfType(phonemeType);
+                        foreach (var point in points[phonemeType])
                         {
                             pointsOfType.Add(point);
                         };
-                    });
+                    };
+                    IsPointsLoaded = true;
+                    CheckLoaded();
                 });
-            }
+            });
         }
 
         private WavPointViewModel CreatePoint(double p, PhonemeType type, int i)
@@ -435,18 +450,15 @@ namespace WavConfigTool.ViewModels
             FirePointsChanged();
         }
 
-        private void HandleLoaded()
+        private void CheckLoaded()
         {
-            App.MainDispatcher.Invoke(() =>
+            if (IsImagesLoaded && IsPointsLoaded)
             {
-                ProjectLine.Width = WaveForm.Width;
-                RaisePropertyChanged(() => Width);
-                RaisePropertyChanged(() => WavImage);
-                UpdatePoints();
                 IsLoaded = true;
                 IsLoading = false;
+                RaisePropertiesChanged(nameof(IsLoaded), nameof(IsLoading));
                 HandleProjectLineChanged();
-            });
+            }
         }
 
         private void FirePointsChanged()

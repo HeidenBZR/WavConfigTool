@@ -101,7 +101,8 @@
                              Grid.Row="1"
                              HorizontalAlignment="Stretch"
                              Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                             Grid.RowSpan="2" />
+                             Grid.RowSpan="2">
+        </local:CanvasLoading>
         <Canvas HorizontalAlignment="Stretch"
                 Grid.Row="1"
                 VerticalAlignment="Stretch"
@@ -114,27 +115,27 @@
                        Foreground="{DynamicResource RestBackBrush}"
                        Text="Sample is not available" />
         </Canvas>
-        <Image Name="WavImage"
-               Grid.Row="1"
-               Height="{Binding Height, FallbackValue=100}"
-               HorizontalAlignment="Left"
-               Visibility="{Binding DoShowWaveform, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-               Source="{Binding WavImage}">
-        </Image>
-        <Image Name="FrqImage"
-               Grid.Row="1"
-               Height="{Binding Height, FallbackValue=100}"
-               HorizontalAlignment="Left"
-               Visibility="{Binding DoShowPitch, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-               Source="{Binding FrqImage}">
-        </Image>
-        <Image Name="SpectrumImage"
-               Grid.Row="1"
-               Height="{Binding Height, FallbackValue=100}"
-               HorizontalAlignment="Left"
-               Visibility="{Binding DoShowSpectrum, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-               Source="{Binding SpectrumImage}">
-        </Image>
+        <Canvas Name="WavImages"
+                Grid.Row="1">
+            <Image Name="WavFormImage"
+                   Height="{Binding Height, FallbackValue=100}"
+                   HorizontalAlignment="Left"
+                   Visibility="{Binding DoShowWaveform, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                   Source="{Binding WavImage}">
+            </Image>
+            <Image Name="FrqImage"
+                   Height="{Binding Height, FallbackValue=100}"
+                   HorizontalAlignment="Left"
+                   Visibility="{Binding DoShowPitch, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                   Source="{Binding FrqImage}">
+            </Image>
+            <Image Name="SpectrumImage"
+                   Height="{Binding Height, FallbackValue=100}"
+                   HorizontalAlignment="Left"
+                   Visibility="{Binding DoShowSpectrum, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                   Source="{Binding SpectrumImage}">
+            </Image>
+        </Canvas>
         <Border BorderThickness="0,1,0,1"
                 Grid.Row="1"
                 Name="BgContainer"
