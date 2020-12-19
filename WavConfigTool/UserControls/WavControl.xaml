@@ -145,7 +145,7 @@
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="Background"
-                            Value="#15557722" />
+                            Value="#15552277" />
                     <Setter Property="BorderBrush"
                             Value="#FF001B00" />
                     <Style.Triggers>
