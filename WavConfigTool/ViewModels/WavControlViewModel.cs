@@ -322,28 +322,41 @@ namespace WavConfigTool.ViewModels
             return phonemes.Count > i / 2 ? phonemes[i / 2] : "/PH/";
         }
 
-        private void CreatePoints()
+        private async void CreatePoints()
         {
             foreach (var phonemeType in new[] { PhonemeType.Consonant, PhonemeType.Vowel, PhonemeType.Rest})
             {
                 var phonemes = ProjectLine.Recline.PhonemesOfType(phonemeType);
-                var points = PointsOfType(phonemeType);
-                for (var i = 0; i < phonemes.Count; i++)
+                var pointsOfType = PointsOfType(phonemeType);
+                var points = new List<WavPointViewModel>();
+                await Task.Run(delegate
                 {
-                    if (phonemeType == PhonemeType.Rest && i == 0)
+                    for (var i = 0; i < phonemes.Count; i++)
                     {
-                        points.Add(CreatePoint(-1, phonemeType, 0));
+                        if (phonemeType == PhonemeType.Rest && i == 0)
+                        {
+                            points.Add(CreatePoint(-1, phonemeType, 0));
+                        }
+                        else if (phonemeType == PhonemeType.Rest && i == phonemes.Count - 1)
+                        {
+                            points.Add(CreatePoint(-1, phonemeType, 1));
+                        }
+                        else
+                        {
+                            points.Add(CreatePoint(-1, phonemeType, 0));
+                            points.Add(CreatePoint(-1, phonemeType, 1));
+                        }
                     }
-                    else if (phonemeType == PhonemeType.Rest && i == phonemes.Count - 1)
+                }).ContinueWith(delegate 
+                {
+                    App.MainDispatcher.Invoke(delegate
                     {
-                        points.Add(CreatePoint(-1, phonemeType, 1));
-                    }
-                    else
-                    {
-                        points.Add(CreatePoint(-1, phonemeType, 0));
-                        points.Add(CreatePoint(-1, phonemeType, 1));
-                    }
-                }
+                        foreach (var point in points)
+                        {
+                            pointsOfType.Add(point);
+                        };
+                    });
+                });
             }
         }
 
