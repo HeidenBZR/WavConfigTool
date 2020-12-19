@@ -16,7 +16,7 @@ namespace WavConfigTool.ViewModels
         public string[] ItemsKeys { get; set; }
         public bool IsCanGoto => ItemsKeys != null && SelectedKey != null && itemsByName.ContainsKey(SelectedKey);
 
-        public void SetItems(ObservableCollection<PagerContentBase> items)
+        public void SetItems(IList<PagerContentBase> items)
         {
             SelectedKey = null;
             itemsByName.Clear();

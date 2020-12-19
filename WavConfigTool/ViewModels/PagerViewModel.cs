@@ -29,8 +29,8 @@ namespace WavConfigTool.ViewModels
         public ImagesLibrary ImagesLibrary;
 
         public List<PagerContentBase> SourceCollection { get; private set; } = new List<PagerContentBase>();
-        public ObservableCollection<PagerContentBase> Collection { get; private set; } = new ObservableCollection<PagerContentBase>();
-        public ObservableCollection<WavControlBaseViewModel> PageContent { get; private set; }
+        public List<PagerContentBase> Collection { get; private set; } = new List<PagerContentBase>();
+        public List<WavControlBaseViewModel> PageContent { get; private set; }
 
         public event SimpleHandler PagerChanged = delegate { };
 
@@ -46,7 +46,7 @@ namespace WavConfigTool.ViewModels
         public PagerViewModel(List<PagerContentBase> collection, ViewOptions viewOptions)
         {
             ViewOptions = viewOptions;
-            PageContent = new ObservableCollection<WavControlBaseViewModel>();
+            PageContent = new List<WavControlBaseViewModel>();
             SourceCollection = collection;
             UpdateCollection();
             RaisePropertyChanged(() => PageContent);
@@ -206,7 +206,7 @@ namespace WavConfigTool.ViewModels
                 }
                 else
                 {
-                    while (PageContent.Count >= PageSize)
+                    while (PageContent.Count > PageSize)
                     {
                         PageContent.RemoveAt(PageContent.Count - 1);
                     }
@@ -216,11 +216,9 @@ namespace WavConfigTool.ViewModels
                         InitWavControlBase(model);
                         PageContent.Add(model);
                     }
-                    for (int i = 0; PageSize * CurrentPage + i < PageSize * (CurrentPage + 1); i++)
+                    for (int i = 0; PageSize * CurrentPage + i < PageSize * (CurrentPage + 1) && PageSize * CurrentPage + i < Collection.Count; i++)
                     {
-                        var itemI = PageSize * CurrentPage + i;
-                        if (itemI < Collection.Count)
-                            PageContent[i].Update(Collection[itemI]);
+                        PageContent[i].Update(Collection[PageSize * CurrentPage + i]);
                     }
                 }
             }
@@ -233,6 +231,7 @@ namespace WavConfigTool.ViewModels
             //});
 
             SetPageContentReady(true);
+            RaisePropertyChanged(nameof(PageContent));
         }
 
         private void InitWavControlBase(WavControlBaseViewModel model)

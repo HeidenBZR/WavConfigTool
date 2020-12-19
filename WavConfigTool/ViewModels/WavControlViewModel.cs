@@ -101,7 +101,6 @@ namespace WavConfigTool.ViewModels
             ProjectLine.ProjectLineChanged += HandleProjectLineChanged;
             SubscribePagerContent();
 
-            Ready();
             SetIsLoading();
             projectLineContainer.LoadImages(Height);
         }
