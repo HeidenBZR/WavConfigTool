@@ -27,6 +27,12 @@
                   IsEditable="True"
                   Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                   BorderThickness="0">
+            <ComboBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel  VirtualizingStackPanel.IsVirtualizing="True"
+                                             VirtualizingStackPanel.VirtualizationMode="Recycling" />
+                </ItemsPanelTemplate>
+            </ComboBox.ItemsPanel>
             <ComboBox.ItemTemplate>
                 <ItemContainerTemplate>
                     <TextBlock Text="{Binding}"
