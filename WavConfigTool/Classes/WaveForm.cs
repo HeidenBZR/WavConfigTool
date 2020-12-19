@@ -37,7 +37,7 @@ namespace WavConfigTool.Classes
             return Settings.RealToViewX(Channels * 1000.0 / SampleRate);
         }
 
-        public ImageSource DrawWaveform(int height, Color color)
+        public Bitmap DrawWaveform(int height, Color color)
         {
             if (!IsEnabled)
                 return null;
@@ -116,7 +116,7 @@ namespace WavConfigTool.Classes
             return GetWaveformImageSource(height, color, points);
         }
 
-        private ImageSource GetWaveformImageSource(int height, Color color, List<Point[]> points)
+        private Bitmap GetWaveformImageSource(int height, Color color, List<Point[]> points)
         {
             var res = new Bitmap(VisualWidth, height);
             using (System.Drawing.Brush fillBrush = new SolidBrush(color))
@@ -130,29 +130,8 @@ namespace WavConfigTool.Classes
                 g.FillRectangle(fillBrush, 0, height / 2, VisualWidth, LINE_WEIGHT);
             }
 
-            var image = Bitmap2BitmapImage(res);
-            res.Dispose();
             points.Clear();
-            return image;
-        }
-
-
-        public static BitmapImage Bitmap2BitmapImage(Bitmap bitmap)
-        {
-            using (var memory = new MemoryStream())
-            {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
-                memory.Position = 0;
-
-                var bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                bitmapImage.Freeze();
-
-                return bitmapImage;
-            }
+            return res;
         }
 
         private const float LINE_WEIGHT = 0.5f;

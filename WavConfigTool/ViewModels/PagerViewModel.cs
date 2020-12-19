@@ -169,7 +169,7 @@ namespace WavConfigTool.ViewModels
         private bool isLoadRestAllowed = false;
         private readonly int WavImageHeight = 100;
 
-        private async void UpdatePageContent()
+        private void UpdatePageContent()
         {
             SetPageContentReady(false);
             if (!IsHidden)

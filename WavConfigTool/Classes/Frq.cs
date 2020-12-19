@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using WavConfigTool.ViewModels;
 using Brush = System.Drawing.Brush;
 using Color = System.Drawing.Color;
 using Point = System.Windows.Point;
@@ -85,7 +80,7 @@ namespace WavConfigTool.Classes
             return points.ToArray();
         }
 
-        public ImageSource DrawPoints(Point[] points, float height)
+        public Bitmap DrawPoints(Point[] points, float height)
         {
             var width = (int) (points[points.Length - 1].X + 1);
             var res = new Bitmap(width, (int)height);
@@ -99,9 +94,7 @@ namespace WavConfigTool.Classes
                 }
             }
 
-            var bitmapImage = WaveForm.Bitmap2BitmapImage(res);
-            res.Dispose();
-            return bitmapImage;
+            return res;
         }
 
         #region private

@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+
 namespace WavConfigTool.Classes
 {
     public enum WavImageType
@@ -20,9 +24,9 @@ namespace WavConfigTool.Classes
 
         public ImagesLibrary()
         {
-            images[WavImageType.WAVEFORM] = new Dictionary<string, ImageSource>();
-            images[WavImageType.FRQ] = new Dictionary<string, ImageSource>();
-            images[WavImageType.SPECTRUM] = new Dictionary<string, ImageSource>();
+            images[WavImageType.WAVEFORM] = new Dictionary<string, Bitmap>();
+            images[WavImageType.FRQ] = new Dictionary<string, Bitmap>();
+            images[WavImageType.SPECTRUM] = new Dictionary<string, Bitmap>();
         }
 
         public void Clear()
@@ -60,7 +64,7 @@ namespace WavConfigTool.Classes
                 return null;
             if (!images[type].ContainsKey(waveForm.Path))
                 return null;
-            return images[type][waveForm.Path];
+            return Bitmap2ImageSource(images[type][waveForm.Path]);
         }
 
         public void ClearWavformImages(WaveForm waveForm)
@@ -75,17 +79,35 @@ namespace WavConfigTool.Classes
                 images[WavImageType.SPECTRUM].Remove(waveForm.Path);
         }
 
-        private Dictionary<WavImageType, Dictionary<string, ImageSource>> images = new Dictionary<WavImageType, Dictionary<string, ImageSource>>();
+        public static ImageSource Bitmap2ImageSource(System.Drawing.Bitmap bitmap)
+        {
+            using (var memory = new MemoryStream())
+            {
+                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
+                memory.Position = 0;
+
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+
+                return bitmapImage;
+            }
+        }
+
+        private Dictionary<WavImageType, Dictionary<string, Bitmap>> images = new Dictionary<WavImageType, Dictionary<string, Bitmap>>();
         private readonly System.Drawing.Color waveformColor = System.Drawing.Color.FromArgb(255, 100, 200, 100);// "#64c864"
 
         private void LoadWaveForm(WaveForm waveForm, int height)
         {
             if (HasImageOfType(waveForm, WavImageType.WAVEFORM))
                 return;
-            var image = waveForm.DrawWaveform(height, waveformColor);
-            if (image == null)
+            var bitmap = waveForm.DrawWaveform(height, waveformColor);
+            if (bitmap == null)
                 return;
-            images[WavImageType.WAVEFORM][waveForm.Path] = image;
+            images[WavImageType.WAVEFORM][waveForm.Path] = bitmap;
         }
 
         private void LoadFrq(WaveForm waveForm, int height)
@@ -97,10 +119,10 @@ namespace WavConfigTool.Classes
             if (frq.Points != null)
             {
                 var visualPoints = frq.CalculateVisualPoints(waveForm, height);
-                var image = frq.DrawPoints(visualPoints, height);
-                if (image == null)
+                var bitmap = frq.DrawPoints(visualPoints, height);
+                if (bitmap == null)
                     return;
-                images[WavImageType.FRQ][waveForm.Path] = image;
+                images[WavImageType.FRQ][waveForm.Path] = bitmap;
             }
         }
 

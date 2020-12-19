@@ -256,7 +256,7 @@ namespace WavConfigTool.ViewModels
                 g.FillPolygon(fillBrush, pointFs.ToArray());
             }
 
-            var bitmapImage = WaveForm.Bitmap2BitmapImage(res);
+            var bitmapImage = ImagesLibrary.Bitmap2ImageSource(res);
             res.Dispose();
             Image = bitmapImage;
         }
