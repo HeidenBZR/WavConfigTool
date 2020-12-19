@@ -78,19 +78,20 @@ namespace WavConfigTool.Classes
             IsLoadingImages = true;
             IsLoadedImages = false;
             ProjectLine.UpdateEnabled();
-            if (ProjectLine.IsEnabled)
+            if (!ProjectLine.IsEnabled)
+                FinishImagesLoading(false);
+            else
             {
                 await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
                 {
                     imagesLibrary.Load(WaveForm, height, hash);
                 })).ContinueWith(delegate
                 {
-                    FinishImagesLoading(true);
+                    App.MainDispatcher.Invoke(delegate
+                    {
+                        FinishImagesLoading(true);
+                    });
                 });
-            }
-            else
-            {
-                FinishImagesLoading(false);
             }
         }
 

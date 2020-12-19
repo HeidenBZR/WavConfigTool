@@ -217,7 +217,10 @@ namespace WavConfigTool.ViewModels
                 DrawPoints(lines, points, width, height, fillColor, strokeColor);
             }).ContinueWith(delegate
             {
-                RaisePropertyChanged(nameof(Image));
+                App.MainDispatcher.Invoke(delegate
+                {
+                    RaisePropertyChanged(nameof(Image));
+                });
             });
         }
 

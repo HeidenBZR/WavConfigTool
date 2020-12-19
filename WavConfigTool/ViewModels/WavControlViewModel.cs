@@ -254,7 +254,6 @@ namespace WavConfigTool.ViewModels
 
         private void SetIsLoading()
         {
-            ImagesLibrary.ClearWavformImages(WaveForm);
             IsLoaded = false;
             IsLoading = true;
             IsImageEnabled = false;

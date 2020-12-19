@@ -187,17 +187,17 @@ namespace WavConfigTool.ViewModels
                     {
                         PageContent[0].Update(Base);
                     }
-                    var otosPageSize = PageSize - 1;
-                    while (PageContent.Count >= otosPageSize)
+                    while (PageContent.Count >= PageSize)
                     {
                         PageContent.RemoveAt(PageContent.Count - 1);
                     }
-                    while (PageContent.Count < otosPageSize)
+                    while (PageContent.Count < PageSize)
                     {
                         var model = new OtoPreviewControlViewModel();
                         InitWavControlBase(model);
                         PageContent.Add(model);
                     }
+                    var otosPageSize = PageSize - 1;
                     for (int i = 0; otosPageSize * CurrentPage + i < otosPageSize * (CurrentPage + 1) && otosPageSize * CurrentPage + i < Collection.Count; i++)
                     {
                         var collectionI = otosPageSize * CurrentPage + i;
@@ -265,8 +265,7 @@ namespace WavConfigTool.ViewModels
         {
             foreach (var control in PageContent)
             {
-                if (control.PagerContent != Base)
-                    control.SetReady(ready);
+                control.SetReady(ready);
             }
         }
 

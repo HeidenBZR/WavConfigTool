@@ -41,9 +41,12 @@ namespace WavConfigTool.Classes
                 OnImageLoaded(waveForm);
                 return;
             }
+            if (waveForm.ImageHash != hash)
+            {
+                ClearWavformImages(waveForm);
+            }
 
             Console.WriteLine($"started load image with hash {hash}");
-            waveForm.ImageHash = hash;
             LoadWaveForm(waveForm, height);
             LoadFrq(waveForm, height);
             LoadSpectrum(waveForm, height);
@@ -77,6 +80,8 @@ namespace WavConfigTool.Classes
 
         private void LoadWaveForm(WaveForm waveForm, int height)
         {
+            if (HasImageOfType(waveForm, WavImageType.WAVEFORM))
+                return;
             var image = waveForm.DrawWaveform(height, waveformColor);
             if (image == null)
                 return;
@@ -85,6 +90,8 @@ namespace WavConfigTool.Classes
 
         private void LoadFrq(WaveForm waveForm, int height)
         {
+            if (HasImageOfType(waveForm, WavImageType.FRQ))
+                return;
             var frq = new Frq();
             frq.Load(waveForm.Path);
             if (frq.Points != null)
@@ -100,6 +107,11 @@ namespace WavConfigTool.Classes
         private void LoadSpectrum(WaveForm waveForm, int height)
         {
 
+        }
+
+        private bool HasImageOfType(WaveForm waveForm, WavImageType type)
+        {
+            return images[WavImageType.WAVEFORM].ContainsKey(waveForm.Path) && images[WavImageType.WAVEFORM][waveForm.Path] != null;
         }
     }
 }
