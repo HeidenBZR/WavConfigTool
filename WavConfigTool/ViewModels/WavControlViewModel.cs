@@ -464,6 +464,7 @@ namespace WavConfigTool.ViewModels
         private void FirePointsChanged()
         {
             GetProjectLineContainer().FirePointsChanged();
+            RaisePropertyChanged(nameof(IsCompleted));
         }
 
         private ProjectLineContainer GetProjectLineContainer()
