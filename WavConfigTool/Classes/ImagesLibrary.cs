@@ -89,7 +89,7 @@ namespace WavConfigTool.Classes
             frq.Load(waveForm.Path);
             if (frq.Points != null)
             {
-                var visualPoints = frq.CalculateVisualPoints(waveForm);
+                var visualPoints = frq.CalculateVisualPoints(waveForm, height);
                 var image = frq.DrawPoints(visualPoints, height);
                 if (image == null)
                     return;

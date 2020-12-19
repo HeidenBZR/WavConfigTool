@@ -39,7 +39,7 @@ namespace WavConfigTool.ViewModels
         public bool HasBottomRightCorner { get; private set; }
         public int IndexZ => IsLeft ? 10 : 1;
 
-        public int Height => WavControlBaseViewModel.GlobalHeight;
+        public int Height { get; private set; }
 
         public bool IsLoaded { get; set; } = false;
         public bool IsEnabled { get; set; }
@@ -49,10 +49,11 @@ namespace WavConfigTool.ViewModels
 
         }
 
-        public WavPointViewModel(double position, PhonemeType type, string text, bool isLeft)
+        public WavPointViewModel(double position, PhonemeType type, string text, bool isLeft, int height)
         {
             Position = position;
             Type = type;
+            Height = height;
             Update(isLeft, text);
             // TODO: Переделать на StyleSelector
             switch (Type)

@@ -9,8 +9,7 @@ namespace WavConfigTool.ViewModels
 {
     public abstract class WavControlBaseViewModel : ViewModelBase
     {
-        public static int GlobalHeight => 100;
-        public int Height => GlobalHeight;
+        public int Height { get; set; }
         public int Space => 30;
 
         public virtual bool IsCompleted => false;
@@ -19,11 +18,14 @@ namespace WavConfigTool.ViewModels
 
         public bool IsReadyToDrawPoints { get; private set; }
 
+        public PagerContentBase PagerContent { get; protected set; }
+        public WaveForm WaveForm { get; protected set; }
+
+        public ViewOptions ViewOptions { get; set; }
+
         // TODO: Move base things here
 
         public virtual void Ready() { }
-
-        public event SimpleHandler PointsChanged = delegate { };
         public ImagesLibrary ImagesLibrary;
 
         public static void SortPoints(ObservableCollection<WavPointViewModel> collection)
@@ -35,11 +37,6 @@ namespace WavConfigTool.ViewModels
             {
                 collection.Move(collection.IndexOf(sortableList[i]), i);
             }
-        }
-
-        public void FirePointsChanged()
-        {
-            PointsChanged();
         }
 
         public virtual void HandlePointsChanged()
@@ -56,6 +53,8 @@ namespace WavConfigTool.ViewModels
         {
             IsReadyToDrawPoints = ready;
         }
+
+        public abstract void Update(PagerContentBase pagerContent);
 
     }
 }

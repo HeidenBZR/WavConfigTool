@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using WavConfigTool.Classes;
 
 namespace WavConfigTool.ViewModels
 {
     class GotoUserControlViewModel : ViewModelBase
     {
-        public delegate void GotoHandler(WavControlBaseViewModel viewModel);
+        public delegate void GotoHandler(PagerContentBase viewModel);
         public event GotoHandler OnGoto;
 
         public string SelectedKey { get; set; }
         public string[] ItemsKeys { get; set; }
         public bool IsCanGoto => ItemsKeys != null && SelectedKey != null && itemsByName.ContainsKey(SelectedKey);
 
-        public void SetItems(ObservableCollection<WavControlBaseViewModel> items)
+        public void SetItems(ObservableCollection<PagerContentBase> items)
         {
             SelectedKey = null;
             itemsByName.Clear();
@@ -23,17 +24,18 @@ namespace WavConfigTool.ViewModels
             var i = 0;
             foreach (var item in items)
             {
-                itemsByName[item.ViewName] = item;
-                ItemsKeys[i] = item.ViewName;
+                var viewName = item.GetViewName();
+                itemsByName[viewName] = item;
+                ItemsKeys[i] = viewName;
                 i++;
             }
         }
 
         #region private
 
-        private Dictionary<string, WavControlBaseViewModel> itemsByName = new Dictionary<string, WavControlBaseViewModel>();
+        private Dictionary<string, PagerContentBase> itemsByName = new Dictionary<string, PagerContentBase>();
 
-        private void Goto(WavControlBaseViewModel model)
+        private void Goto(PagerContentBase model)
         {
             OnGoto(model);
         }

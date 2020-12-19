@@ -133,6 +133,9 @@
     <Compile Include="Classes\FileAssociation.cs" />
     <Compile Include="Classes\Frq.cs" />
     <Compile Include="Classes\ImagesLibrary.cs" />
+    <Compile Include="Classes\OtoContainer.cs" />
+    <Compile Include="Classes\PagerContentBase.cs" />
+    <Compile Include="Classes\ProjectLineContainer.cs" />
     <Compile Include="Classes\WavPlayer.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Classes\ExceptionCatcher.cs" />

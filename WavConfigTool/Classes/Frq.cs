@@ -47,10 +47,9 @@ namespace WavConfigTool.Classes
             Name = null;
         }
 
-        public Point[] CalculateVisualPoints(WaveForm waveForm)
+        public Point[] CalculateVisualPoints(WaveForm waveForm, double height)
         {
-            var height = WavControlBaseViewModel.GlobalHeight;
-            var middleHeight = WavControlBaseViewModel.GlobalHeight / 2;
+            var middleHeight = height / 2;
 
             double maxVal = 0;
             var averagedPoints = new List<double>();

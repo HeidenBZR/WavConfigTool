@@ -13,7 +13,7 @@ namespace WavConfigTool.ViewModels
 {
     public class PagerViewModel : ViewModelBase
     {
-        public WavControlViewModel Base { get; set; }
+        public ProjectLineContainer Base { get; set; }
 
         public int PageSize { get => _pageSize; set => SetPageSizeCommand.Execute(value); }
         public int ItemsCount => Collection != null ? Collection.Count : 0;
@@ -23,16 +23,18 @@ namespace WavConfigTool.ViewModels
             get => _currentPage;
             set => SetPageCommand.Execute(value);
         }
-        public int CurrentPageView { get => CurrentPage + 1; set => CurrentPage = value - 1; }
+        public int CurrentPageView => CurrentPage + 1;
         public bool IsHidden { get; set; } = false;
         public bool IsOtoMode { get; set; } = false;
         public ImagesLibrary ImagesLibrary;
 
-        public List<WavControlBaseViewModel> SourceCollection { get; private set; } = new List<WavControlBaseViewModel>();
-        public ObservableCollection<WavControlBaseViewModel> Collection { get; private set; } = new ObservableCollection<WavControlBaseViewModel>();
-        public ObservableCollection<WavControlBaseViewModel> PageContent => pageContent;
+        public List<PagerContentBase> SourceCollection { get; private set; } = new List<PagerContentBase>();
+        public ObservableCollection<PagerContentBase> Collection { get; private set; } = new ObservableCollection<PagerContentBase>();
+        public ObservableCollection<WavControlBaseViewModel> PageContent { get; private set; }
 
         public event SimpleHandler PagerChanged = delegate { };
+
+        public ViewOptions ViewOptions { get; private set; }
 
 
         public PagerViewModel()
@@ -41,8 +43,10 @@ namespace WavConfigTool.ViewModels
             IsHidden = false;
         }
 
-        public PagerViewModel(List<WavControlBaseViewModel> collection)
+        public PagerViewModel(List<PagerContentBase> collection, ViewOptions viewOptions)
         {
+            ViewOptions = viewOptions;
+            PageContent = new ObservableCollection<WavControlBaseViewModel>();
             SourceCollection = collection;
             UpdateCollection();
             RaisePropertyChanged(() => PageContent);
@@ -86,7 +90,7 @@ namespace WavConfigTool.ViewModels
             }
         }
 
-        public void SetBase(WavControlViewModel _base)
+        public void SetBase(ProjectLineContainer _base)
         {
             if (Base != null)
                 Base.PointsChanged -= UpdatePageContent;
@@ -101,18 +105,19 @@ namespace WavConfigTool.ViewModels
             Refresh();
         }
 
-        public void UpdateOtoPreviewControls(List<WavControlBaseViewModel> controls)
+        public void UpdateOtoPreviewControls(List<PagerContentBase> controls)
         {
             SourceCollection = controls;
             IsHidden = false;
             UpdateCollection();
+            UpdatePageContent();
         }
 
         public void WaitForPageLoadedAndLoadRest()
         {
             isLoadRestAllowed = true;
-            var pageContentLocal = pageContent.ToArray();
-            foreach (var control in pageContentLocal)
+            var PageContentLocal = PageContent.ToArray();
+            foreach (var control in PageContentLocal)
             {
                 var wavControl = control as WavControlViewModel;
                 if (wavControl == null)
@@ -121,7 +126,7 @@ namespace WavConfigTool.ViewModels
                 {
                     if (!isLoadRestAllowed)
                         return;
-                    foreach (var innerControl in pageContentLocal)
+                    foreach (var innerControl in PageContentLocal)
                     {
                         var innerWavControl = control as WavControlViewModel;
                         if (innerWavControl == null || !innerWavControl.IsLoaded)
@@ -137,52 +142,7 @@ namespace WavConfigTool.ViewModels
             if (Base != null)
                 Base.PointsChanged -= UpdatePageContent;
         }
-
-        public async void UpdatePageContent()
-        {
-            SetPageContentReady(false);
-            if (!IsHidden)
-            {
-                if (IsOtoMode)
-                {
-                    if (pageContent.Count == 0)
-                    {
-                        pageContent.Add(Base);
-                    }
-                    else if (pageContent[0] != Base)
-                    {
-                        pageContent[0] = Base;
-                    }
-                    while (pageContent.Count > 1)
-                    {
-                        pageContent.RemoveAt(1);
-                    }
-                    var otosPageSize = PageSize - 1;
-                    for (int i = otosPageSize * CurrentPage; i < otosPageSize * (CurrentPage + 1) && i < Collection.Count; i++)
-                    {
-                        pageContent.Add(Collection[i]);
-                    }
-                }
-                else
-                {
-                    pageContent.Clear();
-                    for (int i = PageSize * CurrentPage; i < PageSize * (CurrentPage + 1); i++)
-                    {
-                        if (i < Collection.Count)
-                            pageContent.Add(Collection[i]);
-                    }
-                }
-            }
-            await Task.Run(() =>
-            {
-                if (!IsOtoMode)
-                    Thread.Sleep(1000);
-
-                SetPageContentReady(true);
-            });
-        }
-
-        public void Goto(WavControlBaseViewModel model)
+        public void Goto(PagerContentBase model)
         {
             var index = Collection.IndexOf(model);
             if (index >= 0)
@@ -203,11 +163,84 @@ namespace WavConfigTool.ViewModels
 
         #region private
 
-        private ObservableCollection<WavControlBaseViewModel> pageContent = new ObservableCollection<WavControlBaseViewModel>();
         private int _currentPage = 0;
         private int _pageSize = 7;
         private ProjectOptions ProjectOptions;
         private bool isLoadRestAllowed = false;
+        private readonly int WavImageHeight = 100;
+
+        private async void UpdatePageContent()
+        {
+            SetPageContentReady(false);
+            if (!IsHidden)
+            {
+                if (IsOtoMode)
+                {
+                    if (PageContent.Count == 0)
+                    {
+                        var model = new WavControlViewModel();
+                        InitWavControlBase(model);
+                        PageContent.Add(model);
+                        model.Update(Base);
+                    }
+                    else if (PageContent[0].PagerContent != Base)
+                    {
+                        PageContent[0].Update(Base);
+                    }
+                    var otosPageSize = PageSize - 1;
+                    while (PageContent.Count >= otosPageSize)
+                    {
+                        PageContent.RemoveAt(PageContent.Count - 1);
+                    }
+                    while (PageContent.Count < otosPageSize)
+                    {
+                        var model = new OtoPreviewControlViewModel();
+                        InitWavControlBase(model);
+                        PageContent.Add(model);
+                    }
+                    for (int i = 0; otosPageSize * CurrentPage + i < otosPageSize * (CurrentPage + 1) && otosPageSize * CurrentPage + i < Collection.Count; i++)
+                    {
+                        var collectionI = otosPageSize * CurrentPage + i;
+                        PageContent[i + 1].Update(Collection[collectionI]);
+                    }
+                }
+                else
+                {
+                    while (PageContent.Count >= PageSize)
+                    {
+                        PageContent.RemoveAt(PageContent.Count - 1);
+                    }
+                    while (PageContent.Count < PageSize)
+                    {
+                        var model = new WavControlViewModel();
+                        InitWavControlBase(model);
+                        PageContent.Add(model);
+                    }
+                    for (int i = 0; PageSize * CurrentPage + i < PageSize * (CurrentPage + 1); i++)
+                    {
+                        var itemI = PageSize * CurrentPage + i;
+                        if (itemI < Collection.Count)
+                            PageContent[i].Update(Collection[itemI]);
+                    }
+                }
+            }
+            //await Task.Run(() =>
+            //{
+            //    if (!IsOtoMode)
+            //        Thread.Sleep(1000);
+
+            //    SetPageContentReady(true);
+            //});
+
+            SetPageContentReady(true);
+        }
+
+        private void InitWavControlBase(WavControlBaseViewModel model)
+        {
+            model.ImagesLibrary = ImagesLibrary;
+            model.Height = WavImageHeight;
+            model.ViewOptions = ViewOptions;
+        }
 
         private void Refresh()
         {
@@ -230,9 +263,9 @@ namespace WavConfigTool.ViewModels
 
         private void SetPageContentReady(bool ready)
         {
-            foreach (var control in pageContent)
+            foreach (var control in PageContent)
             {
-                if (control != Base)
+                if (control.PagerContent != Base)
                     control.SetReady(ready);
             }
         }
@@ -242,10 +275,10 @@ namespace WavConfigTool.ViewModels
             isLoadRestAllowed = false;
             foreach (var control in Collection)
             {
-                var wavControl = control as WavControlViewModel;
-                if (wavControl == null || wavControl.IsLoaded || wavControl.IsLoading)
+                var container = control as ProjectLineContainer;
+                if (container == null || container.IsLoadingImages || container.IsLoadingImages)
                     continue;
-                wavControl.LoadExternal();
+                container.LoadImages(WavImageHeight);
             }
         }
 

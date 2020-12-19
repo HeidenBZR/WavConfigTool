@@ -15,20 +15,17 @@ namespace WavConfigTool.ViewModels
     public class WavControlViewModel : WavControlBaseViewModel
     {
         public ProjectLine ProjectLine { get; private set; }
-        public WaveForm WaveForm { get; set; }
-        public Frq Frq { get; set; }
 
-        public string Filename => ProjectLine.Recline.Name;
-        public ObservableCollection<Phoneme> Phonemes => new ObservableCollection<Phoneme>(ProjectLine.Recline.Phonemes);
+        public string Filename { get; private set; }
+        public ObservableCollection<Phoneme> Phonemes { get; private set; }
 
-        public bool IsOtoBase { get; set; } = false;
         public bool IsLoading { get; set; } = false;
         public bool IsLoaded { get; set; } = false;
         public bool IsImageEnabled { get; set; } = false;
         public bool IsReady { get; set; } = false;
 
-        public override bool IsCompleted => ProjectLine.IsCompleted;
-        public override bool IsEnabled => ProjectLine?.IsEnabled != null && (bool)ProjectLine?.IsEnabled;
+        public override bool IsCompleted => ProjectLine != null && ProjectLine.IsCompleted;
+        public override bool IsEnabled => ProjectLine != null && ProjectLine.IsEnabled;
         public bool IsDisabled => !IsEnabled;
         public bool EditEnabled => IsEnabled && !IsLoading && IsLoaded;
 
@@ -40,14 +37,12 @@ namespace WavConfigTool.ViewModels
         public List<WavZoneViewModel> VowelZones => GetZones(PhonemeType.Vowel);
         public List<WavZoneViewModel> RestZones => GetZones(PhonemeType.Rest);
 
-        public int Number { get; set; }
-        public int NumberView => Number + 1;
-        public override string ViewName { get; }
+        public int NumberView { get; private set; }
 
-        public int Width => WaveForm?.VisualWidth ?? 400;
-        public ImageSource WavImage => GetWavImage();
-        public ImageSource FrqImage => ImagesLibrary.TryGetImage(WaveForm, WavImageType.FRQ);
-        public ImageSource SpectrumImage => ImagesLibrary.TryGetImage(WaveForm, WavImageType.SPECTRUM);
+        public int Width => WaveForm?.VisualWidth ?? 4000;
+        public ImageSource WavImage { get; private set; }
+        public ImageSource FrqImage { get; private set; }
+        public ImageSource SpectrumImage { get; private set; }
 
         public PhonemeType PhonemeTypeRest => PhonemeType.Rest;
         public PhonemeType PhonemeTypeVowel => PhonemeType.Vowel;
@@ -69,38 +64,44 @@ namespace WavConfigTool.ViewModels
         public bool DoShowSpectrum  => IsReadyToDrawPoints && ViewOptions.DoShowSpectrum;
         public bool DoShowCompleted => IsCompleted && IsReadyToDrawPoints;
 
-        public ViewOptions ViewOptions { get; set; }
         public WavPlayer WavPlayer;
 
-        public delegate void OtoModeHandler(WavControlViewModel wavControlViewModel);
-        public delegate void OnAddPointHandler(double position, PhonemeType type);
-        public event OtoModeHandler OnOtoMode = delegate { };
         public event SimpleHandler OnLoaded = delegate { };
-        public event SimpleHandler OnGenerateOtoRequested = delegate { };
-        public event PhonemeTypeArgHandler OnChangePhonemeModeRequested = delegate {};
-        public event OnAddPointHandler OnAddPointRequested = delegate { };
 
-        public readonly string SampleName = "";
-        public readonly string Hash = "";
-
-        public WavControlViewModel() : base()
+        public WavControlViewModel()
         {
-            PointsChanged += HandlePointsChanged;
             OnLoaded += HandleLoaded;
         }
 
-        public WavControlViewModel(ProjectLine projectLine, ImagesLibrary imagesLibrary, string sampleName, string hash) : this()
+        public override void Update(PagerContentBase pagerContent)
         {
-            ProjectLine = projectLine;
-            ProjectLine.ProjectLineChanged += HandleProjectLineChanged;
-            SampleName = sampleName;
-            Hash = hash;
-            ViewName = !string.IsNullOrEmpty(ProjectLine?.Recline?.Description) ? $"{ProjectLine?.Recline?.Description} [{ProjectLine?.Recline?.Name}]" : ProjectLine?.Recline?.Name;
+            if (PagerContent != null)
+            {
+                UnsubscribePagerContent();
+            }
+
+            PagerContent = pagerContent;
+            var projectLineContainer = GetProjectLineContainer();
+
+            ProjectLine = projectLineContainer.ProjectLine;
+            NumberView = projectLineContainer.Number + 1;
+            WaveForm = projectLineContainer.WaveForm;
+
+            Filename = ProjectLine.Recline.Name;
+            RaisePropertyChanged(nameof(Filename));
+            Phonemes = new ObservableCollection<Phoneme>(ProjectLine.Recline.Phonemes);
+            RaisePropertyChanged(nameof(Phonemes));
+
             CreatePoints();
             UpdatePoints();
             FirePointsChanged();
-            ImagesLibrary = imagesLibrary;
-            ImagesLibrary.OnImageLoaded += OnImagesLoaded;
+
+            ProjectLine.ProjectLineChanged += HandleProjectLineChanged;
+            SubscribePagerContent();
+
+            Ready();
+            SetIsLoading();
+            projectLineContainer.LoadImages(Height);
         }
 
         public override void Ready()
@@ -125,20 +126,9 @@ namespace WavConfigTool.ViewModels
                 (type == PhonemeType.Rest ? RestZones : VowelZones);
         }
 
-        public void AddPoint(double position, PhonemeType type)
-        {
-            position = CheckPosition(position);
-            var i = ProjectLine.AddPoint(Settings.ViewToRealX(position), type);
-            if (i == -1)
-                return;
-            var points = PointsOfType(type);
-            points.Add(CreatePoint(position, type, i));
-            FirePointsChanged();
-        }
-
         public void MovePoint(double position1, double position2, PhonemeType type)
         {
-            position2 = CheckPosition(position2);
+            position2 = GetProjectLineContainer().CheckPosition(position2);
             ProjectLine.MovePoint(Settings.ViewToRealX(position1), Settings.ViewToRealX(position2), type);
             var points = PointsOfType(type);
             for (int i = 0; i < points.Count; i++)
@@ -154,7 +144,7 @@ namespace WavConfigTool.ViewModels
 
         public void DeletePoint(double position, PhonemeType type)
         {
-            position = CheckPosition(position);
+            position = GetProjectLineContainer().CheckPosition(position);
             ProjectLine.DeletePoint(Settings.ViewToRealX(position), type);
             var points = PointsOfType(type);
             foreach (var point in points)
@@ -166,21 +156,6 @@ namespace WavConfigTool.ViewModels
                 }
             }
             FirePointsChanged();
-        }
-
-        public List<WavControlBaseViewModel> GenerateOtoPreview()
-        {
-            var collection = new List<WavControlBaseViewModel>();
-            foreach (Oto oto in ProjectLine.Recline.OtoList)
-            {
-                collection.Add(new OtoPreviewControlViewModel(oto, WavImage));
-            }
-            return collection;
-        }
-
-        public void LoadExternal()
-        {
-            Load();
         }
 
         public override string ToString()
@@ -240,11 +215,6 @@ namespace WavConfigTool.ViewModels
             UpdatePoints();
         }
 
-        public void RequestGenerateOto()
-        {
-            OnGenerateOtoRequested();
-        }
-
         public override void HandleViewChanged()
         {
             base.HandleViewChanged();
@@ -262,63 +232,79 @@ namespace WavConfigTool.ViewModels
 
         #region private
 
-        private async void Load()
+        private void SubscribePagerContent()
         {
-            App.MainDispatcher.Invoke(() =>
-            {
-                ImagesLibrary.ClearWavformImages(WaveForm);
-                IsLoaded = false;
-                IsLoading = true;
-                IsImageEnabled = false;
-                RaisePropertiesChanged(
-                    () => IsLoading,
-                    () => IsLoaded,
-                    () => EditEnabled
-                );
-                RaisePropertiesChanged(
-                    () => WavImage,
-                    () => FrqImage,
-                    () => SpectrumImage
-                );
-                HandleViewChanged();
-            });
-
-            await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
-            {
-                ProjectLine.UpdateEnabled();
-                if (!ProjectLine.IsEnabled)
-                {
-                    IsLoading = false;
-                    return;
-                }
-
-                WaveForm = new WaveForm(SampleName);
-                ImagesLibrary.Load(WaveForm, Height, Hash);
-            }));
+            var projectLineContainer = GetProjectLineContainer();
+            projectLineContainer.OnImageLoaded += HandleImagesLoaded;
+            projectLineContainer.OnPointAdded += HandlePointAdded;
+            projectLineContainer.PointsChanged += HandlePointsChanged;
         }
 
-        private void OnImagesLoaded(WaveForm waveForm)
+        private void UnsubscribePagerContent()
         {
-            if (waveForm != WaveForm)
-                return;
+            var projectLineContainer = GetProjectLineContainer();
+            projectLineContainer.OnImageLoaded -= HandleImagesLoaded;
+            projectLineContainer.OnPointAdded += HandlePointAdded;
+            projectLineContainer.PointsChanged -= HandlePointsChanged;
+            WavImage = null;
+            SpectrumImage = null;
+            FrqImage = null;
+            RaisePropertiesChanged(nameof(WavImage), nameof(SpectrumImage), nameof(FrqImage));
+        }
 
-            App.MainDispatcher.Invoke(() =>
+        private void SetIsLoading()
+        {
+            ImagesLibrary.ClearWavformImages(WaveForm);
+            IsLoaded = false;
+            IsLoading = true;
+            IsImageEnabled = false;
+            RaisePropertiesChanged(
+                () => IsLoading,
+                () => IsLoaded,
+                () => EditEnabled
+            );
+            RaisePropertiesChanged(
+                () => WavImage,
+                () => FrqImage,
+                () => SpectrumImage
+            );
+            HandleViewChanged();
+        }
+
+        private void HandleImagesLoaded(bool isLoaded)
+        {
+            IsImageEnabled = isLoaded;
+            IsLoading = false;
+            if (IsImageEnabled)
             {
-                if (IsLoading)
-                {
-                    IsImageEnabled = true;
-                    OnLoaded();
-                    FirePointsChanged();
-                }
-                HandleViewChanged();
+                WavImage = ImagesLibrary.TryGetImage(WaveForm, WavImageType.WAVEFORM);
+                SpectrumImage = ImagesLibrary.TryGetImage(WaveForm, WavImageType.SPECTRUM);
+                FrqImage = ImagesLibrary.TryGetImage(WaveForm, WavImageType.FRQ);
+                RaisePropertiesChanged(nameof(WavImage), nameof(SpectrumImage), nameof(FrqImage));
 
-                RaisePropertyChanged(nameof(SpectrumImage));
-                HandleViewChanged();
-            });
+                OnLoaded();
+                FirePointsChanged();
+            }
+
+            RaisePropertyChanged(nameof(IsImageEnabled));
+            RaisePropertyChanged(nameof(IsLoading));
+            RaisePropertyChanged(nameof(WavImage));
+            RaisePropertyChanged(nameof(SpectrumImage));
+            RaisePropertyChanged(nameof(FrqImage));
+            HandleViewChanged();
+        }
+
+        private void HandlePointAdded(double position, PhonemeType type, int i)
+        {
+            var points = PointsOfType(type);
+            points.Add(CreatePoint(position, type, i));
+            FirePointsChanged();
         }
 
         private List<WavZoneViewModel> GetZones(PhonemeType type)
         {
+            if (ProjectLine == null)
+                return null;
             var points = ProjectLine.PointsOfType(type);
             var zones = new List<WavZoneViewModel>();
             var kindaWitdh = Width > 0 ? Width : 2000;
@@ -326,18 +312,9 @@ namespace WavConfigTool.ViewModels
             {
                 var pIn = Settings.RealToViewX(points[i]);
                 var pOut = Settings.RealToViewX(points[i + 1]);
-                zones.Add(new WavZoneViewModel(type, pIn, pOut, kindaWitdh));
+                zones.Add(new WavZoneViewModel(type, pIn, pOut, kindaWitdh, (int)Height));
             }
             return zones;
-        }
-
-        private ImageSource GetWavImage()
-        {
-            if (IsImageEnabled && Hash == WaveForm?.ImageHash)
-                return ImagesLibrary.TryGetImage(WaveForm, WavImageType.WAVEFORM);
-            if (IsEnabled && !IsLoading && Hash != WaveForm?.ImageHash && Hash != null)
-                Load();
-            return null;
         }
 
         private string GetPointLabel(PhonemeType type, int i)
@@ -374,7 +351,7 @@ namespace WavConfigTool.ViewModels
         private WavPointViewModel CreatePoint(double p, PhonemeType type, int i)
         {
 
-            var point = new WavPointViewModel(p, type, GetPointLabel(type, i), PointIsLeft(type, i));
+            var point = new WavPointViewModel(p, type, GetPointLabel(type, i), PointIsLeft(type, i), Height);
             point.WavPointChanged += delegate (double position1, double position2)
             {
                 MovePoint(position1, position2, type);
@@ -385,8 +362,8 @@ namespace WavConfigTool.ViewModels
             };
             point.RegenerateOtoRequest += delegate
             {
-                OnChangePhonemeModeRequested(point.Type);
-                RequestGenerateOto();
+                GetProjectLineContainer().RequestChangeMode(point.Type);
+                GetProjectLineContainer().RequestGenerateOto();
             };
             return point;
         }
@@ -460,88 +437,53 @@ namespace WavConfigTool.ViewModels
             });
         }
 
-        private double CheckPosition(double position)
+        private void FirePointsChanged()
         {
-            if (position < 0)
-                position = 5;
-            if (position > Width)
-                position = Width - 5;
-            return position;
+            GetProjectLineContainer().FirePointsChanged();
         }
 
-        private void PlaySound(int pos)
+        private ProjectLineContainer GetProjectLineContainer()
         {
-            var startPosition = 0;
-            var length = Settings.ViewToRealX(Width);
-            var endPosition = length;
-
-            var points = new List<int>();
-            points.AddRange(ProjectLine.ConsonantPoints);
-            points.AddRange(ProjectLine.VowelPoints);
-            points.AddRange(ProjectLine.RestPoints);
-            points.Sort();
-
-            if (points.Count > 0)
-                endPosition = points[0];
-            for (int i = 0; i < points.Count && points[i] < pos; i++)
-            {
-                startPosition = points[i];
-                if (i + 1 < points.Count)
-                    endPosition = points[i + 1];
-                else
-                    endPosition = length;
-            }
-            Console.WriteLine($"pos {pos}, play from {startPosition} to {endPosition} on {ProjectLine}");
-
-            WavPlayer.Play(WaveForm, startPosition, endPosition - startPosition);
+            return (ProjectLineContainer)PagerContent;
         }
 
         #endregion
 
         #region Commands
 
-        public ICommand WavControlClickCommand
-        {
-            get
+        public ICommand WavControlClickCommand => new DelegateCommand<Point>
+        (
+            delegate (System.Windows.Point point)
             {
-                return new DelegateCommand<Point>(
-                    delegate (System.Windows.Point point)
-                    {
-                        OnAddPointRequested((int)point.X, Settings.Mode);
-                    },
-                    delegate (Point point)
-                    {
-                        return ProjectLine.IsEnabled && !ProjectLine.IsCompleted;
-                    }
-                );
-            }
-        }
-        public ICommand PlayCommand
-        {
-            get
+                GetProjectLineContainer().AddPoint((int)point.X, Settings.Mode);
+            },
+            delegate (Point point)
             {
-                return new DelegateCommand<Point>(
-                    delegate (System.Windows.Point point)
-                    {
-                        PlaySound(Settings.ViewToRealX(point.X));
-                    },
-                    delegate (Point point)
-                    {
-                        return ProjectLine.IsEnabled;
-                    }
-                );
+                return ProjectLine.IsEnabled && !ProjectLine.IsCompleted;
             }
-        }
+        );
+
+        public ICommand PlayCommand => new DelegateCommand<Point>
+        (
+            delegate (System.Windows.Point point)
+            {
+                GetProjectLineContainer().PlaySound(Settings.ViewToRealX(point.X));
+            },
+            delegate (Point point)
+            {
+                return ProjectLine.IsEnabled;
+            }
+        );
 
         public ICommand OtoModeCommand => new DelegateCommand(() =>
         {
-            OnOtoMode(this);
+            GetProjectLineContainer().RequestOtoMode();
         }, () => !IsLoading);
 
         public ICommand RegenerateOtoCommand => new DelegateCommand(() =>
         {
-            OnGenerateOtoRequested();
-        }, () => IsOtoBase);
+            GetProjectLineContainer().RequestGenerateOto();
+        }, true);
 
         public ICommand ResetPointsCommand => new DelegateCommand<PhonemeType>((PhonemeType type) =>
         {
@@ -559,7 +501,7 @@ namespace WavConfigTool.ViewModels
 
         public ICommand ReloadCommand => new DelegateCommand(() =>
         {
-            Load();
+            GetProjectLineContainer().LoadImages(Height);
         }, () => !IsLoading);
 
         #endregion

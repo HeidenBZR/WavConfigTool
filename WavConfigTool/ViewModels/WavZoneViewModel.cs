@@ -10,6 +10,7 @@ using Brush = System.Windows.Media.Brush;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 using Pen = System.Drawing.Pen;
+using System.Threading.Tasks;
 
 namespace WavConfigTool.ViewModels
 {
@@ -30,14 +31,15 @@ namespace WavConfigTool.ViewModels
 
         public WavZoneViewModel() { }
 
-        public int Height => WavControlBaseViewModel.GlobalHeight;
+        public int Height { get; private set; }
         public int Middle => Height / 2;
 
-        public WavZoneViewModel(PhonemeType type, double p_in, double p_out, double length)
+        public WavZoneViewModel(PhonemeType type, double p_in, double p_out, double length, int height)
         {
             In = p_in;
             Out = p_out - p_in;
             Type = type;
+            Height = height;
             // TODO: Переделать на StyleSelector
             switch (type)
             {
@@ -205,14 +207,21 @@ namespace WavConfigTool.ViewModels
 
             var fillBrush = Color.FromArgb(BackgroundBrush.Color.A,BackgroundBrush.Color.R, BackgroundBrush.Color.G, BackgroundBrush.Color.B);
             var strokeBrush = Color.FromArgb(BorderBrush.Color.R, BorderBrush.Color.G, BorderBrush.Color.B);
-            DrawPoints(lines, points, (int)width, Height, fillBrush, strokeBrush);
-            RaisePropertyChanged(
-                () => Image
-            );
+            DrawPointsAsync(lines, points, (int)width, Height, fillBrush, strokeBrush);
         }
 
+        private async void DrawPointsAsync(double[][] lines, double[] points, int width, int height, Color fillColor, Color strokeColor)
+        {
+            await Task.Run(() =>
+            {
+                DrawPoints(lines, points, width, height, fillColor, strokeColor);
+            }).ContinueWith(delegate
+            {
+                RaisePropertyChanged(nameof(Image));
+            });
+        }
 
-        public void DrawPoints(double[][] lines, double[] points, int width, int height, Color fillColor, Color strokeColor)
+        private void DrawPoints(double[][] lines, double[] points, int width, int height, Color fillColor, Color strokeColor)
         {
             if (width == 0)
                 return;

@@ -32,16 +32,14 @@ namespace WavConfigTool.ViewModels
         public ImageSource WavImage { get; set; }
         public Oto Oto { get; set; }
 
-        public OtoPreviewControlViewModel() { }
-
-        public OtoPreviewControlViewModel(Oto oto, ImageSource image)
+        public override void Update(PagerContentBase pagerContent)
         {
-            WavImage = image;
-            Length = image != null ? image.Width : 1880;
-            if (oto != null)
-            {
-                Oto = oto;
-            }
+            PagerContent = pagerContent;
+            var otoContainer = (OtoContainer)pagerContent;
+            Oto = otoContainer.Oto;
+            WaveForm = otoContainer.BaseProjectLineContainer.WaveForm;
+            WavImage = ImagesLibrary.TryGetImage(WaveForm, WavImageType.WAVEFORM);
+            Length = WavImage != null ? WavImage.Width : 1880;
         }
 
         public override string ToString()
