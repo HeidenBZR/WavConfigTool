@@ -105,16 +105,16 @@
                     <DockPanel>
                         <Grid>
                             <Border x:Name="Container" Margin="2">
-                                <TextBlock
-                                    Text="{Binding}" 
+                                <TextBlock Text="{Binding Phoneme}" 
                                     x:Name="PhonemeContainer"
                                     Margin="3 1" >
                                     <TextBlock.Style>
                                         <Style>
-                                            <Setter Property="TextBlock.Foreground" Value="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"></Setter>
+                                            <Setter Property="TextBlock.Foreground" Value="{Binding Phoneme.Type, Converter={StaticResource PhonemeTypeToBorderColor}}"></Setter>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding HasZone, Mode=OneWay}" Value="true">
-                                                    <Setter Property="TextBlock.Foreground" Value="{Binding Type, Converter={StaticResource PhonemeTypeToColor}}"></Setter>
+                                                    <Setter Property="TextBlock.Foreground"
+                                                            Value="{Binding Phoneme.Type, Converter={StaticResource PhonemeTypeToColor}}"></Setter>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -122,14 +122,17 @@
                                 </TextBlock>
                                 <Border.Style>
                                     <Style>
-                                        <Setter Property="Border.BorderBrush" Value="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"></Setter>
+                                        <Setter Property="Border.BorderBrush"
+                                                Value="{Binding Phoneme.Type, Converter={StaticResource PhonemeTypeToBorderColor}}"></Setter>
                                         <Setter Property="Border.BorderThickness" Value="1"></Setter>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding HasZone, Mode=OneWay}" Value="true">
-                                                <Setter Property="Border.BorderBrush" Value="{Binding Type, Converter={StaticResource PhonemeTypeToColor}}"></Setter>
-                                                <Setter Property="Border.Background" Value="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"></Setter>
+                                                <Setter Property="Border.BorderBrush"
+                                                        Value="{Binding Phoneme.Type, Converter={StaticResource PhonemeTypeToColor}}"></Setter>
+                                                <Setter Property="Border.Background"
+                                                        Value="{Binding Phoneme.Type, Converter={StaticResource PhonemeTypeToBorderColor}}"></Setter>
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsSkipped, Mode=OneWay}" Value="true">
+                                            <DataTrigger Binding="{Binding Phoneme.IsSkipped, Mode=OneWay}" Value="true">
                                                 <Setter Property="Border.Opacity" Value="0.8"></Setter>
                                                 <Setter Property="Border.ToolTip" Value="Do not configure this phoneme. It's not needed for the aliases of this line."></Setter>
                                             </DataTrigger>
@@ -138,21 +141,21 @@
                                 </Border.Style>
                             </Border>
                             <Canvas 
-                                x:Name="Cross" 
-                                Width="{Binding ActualWidth, ElementName=Container}"
-                                Height="{Binding ActualHeight, ElementName=Container}">
+                                x:Name="Cross"
+                                    Width="{Binding ActualWidth, ElementName=Container}"
+                                    Height="{Binding ActualHeight, ElementName=Container}">
                                 <Line 
-                                    X1="0" 
-                                    Y1="{Binding ActualHeight, ElementName=Container}" 
-                                    X2="{Binding ActualWidth, ElementName=Container}" 
-                                    Y2="0" 
-                                    Stroke="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"/>
+                                    X1="0"
+                                      Y1="{Binding ActualHeight, ElementName=Container}"
+                                      X2="{Binding ActualWidth, ElementName=Container}" 
+                                    Y2="0"
+                                      Stroke="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"/>
                                 <Line 
                                     X1="0" 
                                     Y1="0" 
                                     X2="{Binding ActualWidth, ElementName=Container}" 
                                     Y2="{Binding ActualHeight, ElementName=Container}"
-                                    Stroke="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"/>
+                                      Stroke="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}}"/>
                                 <Canvas.Style>
                                     <Style>
                                         <Style.Triggers>

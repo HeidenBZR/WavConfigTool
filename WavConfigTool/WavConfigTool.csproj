@@ -170,6 +170,7 @@
     </Compile>
     <Compile Include="ViewModels\FrqPointViewModel.cs" />
     <Compile Include="ViewModels\GotoUserControlViewModel.cs" />
+    <Compile Include="ViewModels\PhonemeViewModel.cs" />
     <Compile Include="ViewTools\ViewManager.cs" />
     <Compile Include="ViewModels\OtoPreviewControlViewModel.cs" />
     <Compile Include="ViewModels\WavControlBaseViewModel.cs" />

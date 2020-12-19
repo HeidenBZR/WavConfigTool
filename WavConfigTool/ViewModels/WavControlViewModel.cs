@@ -17,7 +17,7 @@ namespace WavConfigTool.ViewModels
         public ProjectLine ProjectLine { get; private set; }
 
         public string Filename { get; private set; }
-        public ObservableCollection<Phoneme> Phonemes { get; private set; }
+        public ObservableCollection<PhonemeViewModel> Phonemes { get; private set; }
 
         public bool IsLoading { get; set; } = false;
         public bool IsImageEnabled { get; set; } = false;
@@ -91,7 +91,11 @@ namespace WavConfigTool.ViewModels
 
             Filename = ProjectLine.Recline.Name;
             RaisePropertyChanged(nameof(Filename));
-            Phonemes = new ObservableCollection<Phoneme>(ProjectLine.Recline.Phonemes);
+            Phonemes = new ObservableCollection<PhonemeViewModel>();
+            foreach (var phoneme in ProjectLine.Recline.Phonemes)
+            {
+                Phonemes.Add(new PhonemeViewModel(phoneme));
+            }
             RaisePropertyChanged(nameof(Phonemes));
 
             CreatePoints();
@@ -213,6 +217,10 @@ namespace WavConfigTool.ViewModels
                 () => VowelZonesVisible,
                 () => RestZonesVisible
             );
+            foreach (var phoneme in Phonemes)
+            {
+                phoneme.FireChanged();
+            }
             UpdatePoints();
         }
 
