@@ -40,11 +40,20 @@ namespace WavConfigTool.Classes
             this.sampleName = sampleName;
             viewName = !string.IsNullOrEmpty(ProjectLine?.Recline?.Description) ? $"{ProjectLine?.Recline?.Description} [{ProjectLine?.Recline?.Name}]" : ProjectLine?.Recline?.Name;
             WaveForm = new WaveForm(sampleName);
+            IsCompleted = ProjectLine.IsCompleted;
+            IsEnabled = ProjectLine.IsEnabled;
         }
 
         public override string GetViewName()
         {
             return viewName;
+        }
+
+        public override void FirePointsChanged()
+        {
+            base.FirePointsChanged();
+            IsCompleted = ProjectLine.IsCompleted;
+            IsEnabled = ProjectLine.IsEnabled;
         }
 
         public List<PagerContentBase> GenerateOtoPreview()

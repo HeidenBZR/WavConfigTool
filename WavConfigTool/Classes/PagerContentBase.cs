@@ -19,7 +19,7 @@ namespace WavConfigTool.Classes
             return "#NAME#";
         }
 
-        public void FirePointsChanged()
+        public virtual void FirePointsChanged()
         {
             PointsChanged();
         }
