@@ -65,8 +65,11 @@ namespace WavConfigTool.ViewModels
             RaisePropertyChanged(() => PagesTotal);
             IsHidden = false;
 
-            var spectrogram = new Spectrogram();
-            spectrogram.Start(firstContainer.WaveForm);
+            if (MainWindowViewModel.IsDebug)
+            {
+                var spectrogram = new Spectrogram();
+                spectrogram.Start(firstContainer.WaveForm);
+            }
         }
 
         public void RequestUpdateCollection()
