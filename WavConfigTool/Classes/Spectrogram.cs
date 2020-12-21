@@ -36,7 +36,7 @@ namespace WavConfigTool.Classes
             //DrawRandomImage();
 
             // FFT/spectrogram configuration
-            bufferLength = 1024 * 4; // must be a multiple of 2
+            bufferLength = 1024 * 8; // must be a multiple of 2
             spectrogramHeight = bufferLength / 4; // why 4?
 
             // fill spectrogram data with empty values
@@ -49,9 +49,8 @@ namespace WavConfigTool.Classes
             // start listening
             var reader = new WaveFileReader(waveForm.Path);
             var bitmap = MakeSpectrogram(reader);
-            bitmap = ImagesLibrary.ResizeImage(bitmap, 1300, 100);
+            //bitmap = ImagesLibrary.ResizeImage(bitmap, 1300, 100);
             bitmap.Save($"spectrum_{Path.GetFileNameWithoutExtension(waveForm.Path)}.png", ImageFormat.Png);
-            WriteFft();
         }
 
         private static List<double[]> spectrogramData; // columns are time points, rows are frequency points
@@ -76,40 +75,41 @@ namespace WavConfigTool.Classes
         /// <returns></returns>
         private Bitmap MakeSpectrogram(WaveFileReader reader)
         {
-            spectrogramWidth = (int)(reader.Length / bufferLength);
             var buffer = new byte[bufferLength];
             int bytesRecorded = 0;
             spectrogramData = new List<double[]>();
-            var waveLog = new StringBuilder();
-            while ((bytesRecorded = reader.Read(buffer, 0, bufferLength)) > 0)
+            var bytesCount = reader.WaveFormat.BlockAlign;
+            var waveData = new float[reader.Length / bytesCount];
+
+            var step = 0;
+            while ((bytesRecorded = reader.Read(buffer, 0, bytesCount)) > 0)
             {
-                var bytesCount = reader.WaveFormat.BlockAlign;
-                var waveBuffer = new float[bufferLength / bytesCount];
                 // Converting the byte buffer in readable data
-                var sum = 0.0;
-                for (int i = 0; i < bufferLength / bytesCount; i++)
-                {
-                    float value;
-                    if (reader.WaveFormat.BitsPerSample == 16)
-                        value = BitConverter.ToInt16(buffer, i * bytesCount) / ((float)Int16.MaxValue + 1);
-                    else if (reader.WaveFormat.BitsPerSample == 32)
-                        value = BitConverter.ToInt32(buffer, i * bytesCount) / ((float)Int32.MaxValue + 1);
-                    else if (reader.WaveFormat.BitsPerSample == 64)
-                        value = BitConverter.ToInt64(buffer, i * bytesCount) / ((float)Int64.MaxValue + 1);
-                    else
-                        return null;
-                    if (i % reader.WaveFormat.Channels != 0)
-                        continue;
-                    waveBuffer[i] = value;
-                    sum += value;
-                }
-                waveLog.AppendLine(sum.ToString());
+                float value;
+                if (reader.WaveFormat.BitsPerSample == 16)
+                    value = BitConverter.ToInt16(buffer, 0) / ((float)Int16.MaxValue + 1);
+                else if (reader.WaveFormat.BitsPerSample == 32)
+                    value = BitConverter.ToInt32(buffer, 0) / ((float)Int32.MaxValue + 1);
+                else if (reader.WaveFormat.BitsPerSample == 64)
+                    value = BitConverter.ToInt64(buffer, 0) / ((float)Int64.MaxValue + 1);
+                else
+                    return null;
+                if (step % reader.WaveFormat.Channels != 0)
+                    continue;
+                waveData[step] = value;
+                step++;
+            }
+            var waveStep = (int)Math.Pow(2, 4);
+            spectrogramWidth = (int)(reader.Length / bytesCount / waveStep);
+            for (var waveI = 0; waveI + bufferLength < waveData.Length; waveI += waveStep)
+            {
+                var waveBuffer = waveData.Skip(waveI).Take(bufferLength).ToArray();
 
                 Complex[] tempbuffer = new Complex[waveBuffer.Length];
 
                 for (int i = 0; i < tempbuffer.Length; i++)
                 {
-                    tempbuffer[i].X = (float)(waveBuffer[i] * FastFourierTransform.HannWindow(i, waveBuffer.Length));
+                    tempbuffer[i].X = (float)(waveBuffer[i] * FastFourierTransform.BlackmannHarrisWindow(i, waveBuffer.Length));
                     tempbuffer[i].Y = 0;
                 }
 
@@ -122,11 +122,10 @@ namespace WavConfigTool.Classes
                     var pow = Math.Pow(val, 2);
                     var log = Math.Log10(pow);
                     var imag = tempbuffer[i].Y * tempbuffer[i].Y;
-                    fftOutput[i] = 20 * log + imag;
+                    fftOutput[i] = 20 * log;
                 }
                 spectrogramData.Add(fftOutput);
             }
-            File.WriteAllText("wavelog.txt", waveLog.ToString());
 
             return DrawFft();
         }
@@ -161,6 +160,8 @@ namespace WavConfigTool.Classes
                     pixelVal = Math.Min(255, pixelVal);
 
                     int bytePosition = row * bitmapData.Stride + col;
+                    if (pixels.Length <= bytePosition)
+                        break;
                     pixels[bytePosition] = (byte)(pixelVal);
                 }
             }
@@ -171,21 +172,6 @@ namespace WavConfigTool.Classes
 
             /// apply the bitmap to the picturebox
             return bitmap;
-        }
-
-        private void WriteFft()
-        {
-            var textBuilder = new StringBuilder();
-            foreach (var column in spectrogramData)
-            {
-                foreach (var item in column)
-                {
-                    textBuilder.Append((int)item);
-                    textBuilder.Append("\t");
-                }
-                textBuilder.Append("\n");
-            }
-            File.WriteAllText("spectrogram.txt", textBuilder.ToString());
         }
 
         private void DrawRandomImage()
