@@ -167,7 +167,7 @@ namespace WavConfigTool.ViewModels
                     }));
                 }
 
-                WavControlsPagerViewModel = new PagerViewModel(containers, ViewOptions) { ImagesLibrary = ImagesLibrary};
+                WavControlsPagerViewModel = new PagerViewModel(containers, ViewOptions, ImagesLibrary);
                 PagerViewModel = WavControlsPagerViewModel;
                 PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
                 Project.BeforeSave += WriteProjectOptions;
@@ -305,7 +305,7 @@ namespace WavConfigTool.ViewModels
                 Project.ResetOto();
                 container.ProjectLine.Recline.ResetOto();
                 OtoGenerator.GenerateFromProjectLine(container.ProjectLine);
-                OtoPagerViewModel = new PagerViewModel(container.GenerateOtoPreview(), ViewOptions) { ImagesLibrary = ImagesLibrary };
+                OtoPagerViewModel = new PagerViewModel(container.GenerateOtoPreview(), ViewOptions, ImagesLibrary);
                 OtoPagerViewModel.SetBase(container);
                 OtoPagerViewModel.OtoMode();
                 OtoPagerViewModel.SetPageSizeCommand.Execute(Project.ProjectOptions.OtoPageSize);
@@ -504,7 +504,9 @@ namespace WavConfigTool.ViewModels
 
         public ICommand DebugCommand => new DelegateCommand(() =>
         {
-
+            var spectrogram = new Spectrogram();
+            var projectLineContainer = (ProjectLineContainer)PagerViewModel.Collection[0];
+            spectrogram.Start(projectLineContainer.WaveForm);
         }, () => IsDebug);
 
         public ICommand CvcFromNoskipCommand => new DelegateCommand(() =>

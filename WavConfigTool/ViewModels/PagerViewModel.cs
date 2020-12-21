@@ -43,16 +43,30 @@ namespace WavConfigTool.ViewModels
             IsHidden = false;
         }
 
-        public PagerViewModel(List<PagerContentBase> collection, ViewOptions viewOptions)
+        public PagerViewModel(List<PagerContentBase> collection, ViewOptions viewOptions, ImagesLibrary imagesLibrary)
         {
             ViewOptions = viewOptions;
+            ImagesLibrary = imagesLibrary;
             PageContent = new List<WavControlBaseViewModel>();
             SourceCollection = collection;
+            ProjectLineContainer firstContainer = null;
+            foreach (var content in collection)
+            {
+                var container = content as ProjectLineContainer;
+                if (container == null)
+                    break;
+                if (firstContainer == null)
+                    firstContainer = container;
+                ImagesLibrary.RegisterWaveForm(container.WaveForm);
+            }
             UpdateCollection();
             RaisePropertyChanged(() => PageContent);
             RaisePropertyChanged(() => CurrentPageView);
             RaisePropertyChanged(() => PagesTotal);
             IsHidden = false;
+
+            var spectrogram = new Spectrogram();
+            spectrogram.Start(firstContainer.WaveForm);
         }
 
         public void RequestUpdateCollection()
