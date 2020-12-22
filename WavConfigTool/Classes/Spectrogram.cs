@@ -36,7 +36,7 @@ namespace WavConfigTool.Classes
             //DrawRandomImage();
 
             // FFT/spectrogram configuration
-            bufferLength = 1024 * 8; // must be a multiple of 2
+            bufferLength = 1024 * 4; // must be a multiple of 2
             spectrogramHeight = bufferLength / 4; // why 4?
 
             // fill spectrogram data with empty values
@@ -99,7 +99,7 @@ namespace WavConfigTool.Classes
                 waveData[step] = value;
                 step++;
             }
-            var waveStep = (int)Math.Pow(2, 4);
+            var waveStep = (int)Math.Pow(2, 5);
             spectrogramWidth = (int)(reader.Length / bytesCount / waveStep);
             for (var waveI = 0; waveI + bufferLength < waveData.Length; waveI += waveStep)
             {
@@ -109,8 +109,7 @@ namespace WavConfigTool.Classes
 
                 for (int i = 0; i < tempbuffer.Length; i++)
                 {
-                    tempbuffer[i].X = (float)(waveBuffer[i] * FastFourierTransform.BlackmannHarrisWindow(i, waveBuffer.Length));
-                    tempbuffer[i].Y = 0;
+                    tempbuffer[i].X = (float)(waveBuffer[i] * FastFourierTransform.HammingWindow(i, waveBuffer.Length));
                 }
 
                 FastFourierTransform.FFT(true, (int)Math.Log(tempbuffer.Length, 2.0), tempbuffer);
@@ -120,9 +119,8 @@ namespace WavConfigTool.Classes
                 {
                     var val = tempbuffer[i].X;
                     var pow = Math.Pow(val, 2);
-                    var log = Math.Log10(pow);
-                    var imag = tempbuffer[i].Y * tempbuffer[i].Y;
-                    fftOutput[i] = 20 * log;
+                    var log = Math.Log(pow, 10);
+                    fftOutput[i] =  0.5 * Math.Pow(log, 3);
                 }
                 spectrogramData.Add(fftOutput);
             }
@@ -155,7 +153,7 @@ namespace WavConfigTool.Classes
             {
                 for (int row = 0; row < spectrogramData[col].Length; row++)
                 {
-                    double pixelVal = Math.Abs(spectrogramData[col][row]) * scaleFactor;
+                    double pixelVal = -1 * spectrogramData[col][row] * scaleFactor;
                     pixelVal = Math.Max(0, pixelVal);
                     pixelVal = Math.Min(255, pixelVal);
 
