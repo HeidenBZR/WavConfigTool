@@ -24,7 +24,7 @@ namespace WavConfigTool.ViewModels
         public ProjectViewModel ProjectViewModel { get; set; }
         public string Version => "v.0.2.2"
 #if DEBUG
-            + ".1a"
+            + ".2a"
 #endif
             ;
         public Project Project => ProjectManager.Project;
@@ -45,6 +45,11 @@ namespace WavConfigTool.ViewModels
         public OremoPackGenerator OremoPackGenerator { get; set; } = new OremoPackGenerator();
         public WavPlayer WavPlayer = new WavPlayer();
         public ImagesLibrary ImagesLibrary = new ImagesLibrary();
+
+        public int SpectrogramShift         { get => Spectrogram.SpectrumShift; set => Spectrogram.SpectrumShift = value; }
+        public double SpectrogramScale      { get => Spectrogram.SpectrumScale; set => Spectrogram.SpectrumScale = value; }
+        public int SpectrogramQualityX      { get => Spectrogram.QualityX; set => Spectrogram.QualityX = value; }
+        public int SpectrogramQualityY      { get => Spectrogram.QualityY; set => Spectrogram.QualityY = value; }
 
         public int AttackC { get => Project?.AttackC ?? 0; set { Project.AttackC = value; TrySaveProject(); RedrawPoints(); } }
         public int AttackV { get => Project?.AttackV ?? 0; set { Project.AttackV = value; TrySaveProject(); RedrawPoints(); } }
@@ -504,9 +509,7 @@ namespace WavConfigTool.ViewModels
 
         public ICommand DebugCommand => new DelegateCommand(() =>
         {
-            var spectrogram = new Spectrogram();
-            var projectLineContainer = (ProjectLineContainer)PagerViewModel.Collection[0];
-            spectrogram.Start(projectLineContainer.WaveForm);
+
         }, () => IsDebug);
 
         public ICommand CvcFromNoskipCommand => new DelegateCommand(() =>

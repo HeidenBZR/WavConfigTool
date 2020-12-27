@@ -37,7 +37,7 @@ namespace WavConfigTool.Classes
             return Settings.RealToViewX(Channels * 1000.0 / SampleRate);
         }
 
-        public Bitmap DrawWaveform(int height, Color color)
+        public Bitmap DrawWaveform(int height, Color color, double yScale)
         {
             if (!IsEnabled)
                 return null;
@@ -53,7 +53,6 @@ namespace WavConfigTool.Classes
                 return null;
 
             int yBase = height / 2;
-            double yScale = Settings.UserScaleY;
             double yScaleBase = -((double)height - 3) / 2;
             double sampleWidth = GetSampleWidth();
             double currPosition = 0;

@@ -42,7 +42,7 @@ namespace WavConfigTool.Classes
         {
             images[WavImageType.WAVEFORM][waveForm.Path] = null;
             images[WavImageType.FRQ][waveForm.Path] = null;
-            //images[WavImageType.SPECTRUM][waveForm.Path] = null;
+            images[WavImageType.SPECTRUM][waveForm.Path] = null;
         }
 
         public void Load(WaveForm waveForm, int height, string hash)
@@ -60,10 +60,29 @@ namespace WavConfigTool.Classes
             }
 
             Console.WriteLine($"started load image with hash {hash}");
-            LoadWaveForm(waveForm, height);
+            var yScale = Settings.UserScaleY;
+            LoadWaveForm(waveForm, height, yScale);
             LoadFrq(waveForm, height);
-            LoadSpectrum(waveForm, height);
+
             Console.WriteLine($"finished load image with hash {hash}");
+            OnImageLoaded(waveForm);
+        }
+
+        public void LoadSpectrum(WaveForm waveForm, int height, string hash)
+        {
+            if (!waveForm.IsEnabled)
+            {
+                ClearWavformImages(waveForm);
+                Console.WriteLine($"failed to load spectrum with hash {hash}");
+                OnImageLoaded(waveForm);
+                return;
+            }
+
+            Console.WriteLine($"started load spectrum with hash {hash}");
+            ClearWavformImageOfType(waveForm, WavImageType.SPECTRUM);
+            LoadSpectrum(waveForm, waveForm.VisualWidth, height);
+
+            Console.WriteLine($"finished load spectrum with hash {hash}");
             OnImageLoaded(waveForm);
         }
 
@@ -73,6 +92,8 @@ namespace WavConfigTool.Classes
                 return null;
             if (!images[type].ContainsKey(waveForm.Path))
                 return null;
+            if (images[type][waveForm.Path] == null)
+                return null;
             return Bitmap2ImageSource(images[type][waveForm.Path]);
         }
 
@@ -80,30 +101,26 @@ namespace WavConfigTool.Classes
         {
             if (waveForm == null)
                 return;
-            if (images[WavImageType.WAVEFORM].ContainsKey(waveForm.Path))
-                images[WavImageType.WAVEFORM].Remove(waveForm.Path);
-            if (images[WavImageType.FRQ].ContainsKey(waveForm.Path))
-                images[WavImageType.FRQ].Remove(waveForm.Path);
-            if (images[WavImageType.SPECTRUM].ContainsKey(waveForm.Path))
-                images[WavImageType.SPECTRUM].Remove(waveForm.Path);
+            ClearWavformImageOfType(waveForm, WavImageType.FRQ);
+            ClearWavformImageOfType(waveForm, WavImageType.SPECTRUM);
+            ClearWavformImageOfType(waveForm, WavImageType.WAVEFORM);
+            RegisterWaveForm(waveForm);
         }
 
-        public static ImageSource Bitmap2ImageSource(System.Drawing.Bitmap bitmap)
+        public static ImageSource Bitmap2ImageSource(Bitmap bitmap)
         {
-            using (var memory = new MemoryStream())
-            {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
-                memory.Position = 0;
+            var memory = new MemoryStream();
+            bitmap.Save(memory, ImageFormat.Png);
+            memory.Position = 0;
 
-                var bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                bitmapImage.Freeze();
+            var bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = memory;
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.EndInit();
+            bitmapImage.Freeze();
 
-                return bitmapImage;
-            }
+            return bitmapImage;
         }
 
         /// <summary>
@@ -124,10 +141,10 @@ namespace WavConfigTool.Classes
             using (var graphics = Graphics.FromImage(destImage))
             {
                 graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                graphics.InterpolationMode = InterpolationMode.Low;
+                graphics.SmoothingMode = SmoothingMode.HighSpeed;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
 
                 using (var wrapMode = new ImageAttributes())
                 {
@@ -141,12 +158,13 @@ namespace WavConfigTool.Classes
 
         private Dictionary<WavImageType, Dictionary<string, Bitmap>> images = new Dictionary<WavImageType, Dictionary<string, Bitmap>>();
         private readonly System.Drawing.Color waveformColor = System.Drawing.Color.FromArgb(255, 100, 200, 100);// "#64c864"
+        private readonly Spectrogram spectrogram = new Spectrogram();
 
-        private void LoadWaveForm(WaveForm waveForm, int height)
+        private void LoadWaveForm(WaveForm waveForm, int height, double yScale)
         {
             if (HasImageOfType(waveForm, WavImageType.WAVEFORM))
                 return;
-            var bitmap = waveForm.DrawWaveform(height, waveformColor);
+            var bitmap = waveForm.DrawWaveform(height, waveformColor, yScale);
             if (bitmap == null)
                 return;
             images[WavImageType.WAVEFORM][waveForm.Path] = bitmap;
@@ -168,13 +186,27 @@ namespace WavConfigTool.Classes
             }
         }
 
-        private void LoadSpectrum(WaveForm waveForm, int height)
+        private void LoadSpectrum(WaveForm waveForm, int width, int height)
         {
+            if (HasImageOfType(waveForm, WavImageType.SPECTRUM))
+                return;
+            var bitmap = spectrogram.MakeSectrogram(waveForm, width, height);
+            if (bitmap == null)
+                return;
+            images[WavImageType.SPECTRUM][waveForm.Path] = bitmap;
+        }
+
+        private void ClearWavformImageOfType(WaveForm waveForm, WavImageType type)
+        {
+            if (images[type].ContainsKey(waveForm.Path) && images[type][waveForm.Path] != null)
+            {
+                images[type][waveForm.Path].Dispose();
+            }
         }
 
         private bool HasImageOfType(WaveForm waveForm, WavImageType type)
         {
-            return images[WavImageType.WAVEFORM].ContainsKey(waveForm.Path) && images[WavImageType.WAVEFORM][waveForm.Path] != null;
+            return images[type].ContainsKey(waveForm.Path) && images[type][waveForm.Path] != null;
         }
     }
 }

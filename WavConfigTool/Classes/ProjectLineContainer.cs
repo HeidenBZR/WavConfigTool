@@ -38,7 +38,10 @@ namespace WavConfigTool.Classes
             this.wavPlayer = wavPlayer;
             this.hash = hash;
             this.sampleName = sampleName;
-            viewName = !string.IsNullOrEmpty(ProjectLine?.Recline?.Description) ? $"{ProjectLine?.Recline?.Description} [{ProjectLine?.Recline?.Name}]" : ProjectLine?.Recline?.Name;
+            if (!string.IsNullOrEmpty(ProjectLine?.Recline?.Description))
+                viewName = $"{ProjectLine?.Recline?.Description} [{ProjectLine?.Recline?.Name}]";
+            else
+                viewName = ProjectLine?.Recline?.Name.Replace("_", " ");
             WaveForm = new WaveForm(sampleName);
             IsCompleted = ProjectLine.IsCompleted;
             IsEnabled = ProjectLine.IsEnabled;
@@ -94,6 +97,28 @@ namespace WavConfigTool.Classes
                 await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
                 {
                     imagesLibrary.Load(WaveForm, height, hash);
+                })).ContinueWith(delegate
+                {
+                    App.MainDispatcher.Invoke(delegate
+                    {
+                        FinishImagesLoading(true);
+                    });
+                });
+            }
+        }
+
+        public async void LoadSpectrum(int height)
+        {
+            IsLoadingImages = true;
+            IsLoadedImages = false;
+            ProjectLine.UpdateEnabled();
+            if (!ProjectLine.IsEnabled)
+                FinishImagesLoading(false);
+            else
+            {
+                await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
+                {
+                    imagesLibrary.LoadSpectrum(WaveForm, height, hash);
                 })).ContinueWith(delegate
                 {
                     App.MainDispatcher.Invoke(delegate

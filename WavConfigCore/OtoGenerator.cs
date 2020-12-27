@@ -144,7 +144,7 @@ namespace WavConfigCore
                     var nextP = next != null ? next.Zone.In : p2.Zone.Out;
                     offset = p2.Zone.In - p1Attack;
                     overlap = p2.Zone.In;
-                    preutterance = p2.Zone.Out;
+                    preutterance = p2.Zone.In;
                     consonant = nextP + Project.DecayC;
                     cutoff = nextP + Project.DecayC + Project.AttackC;
                     break;

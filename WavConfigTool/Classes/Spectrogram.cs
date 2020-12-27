@@ -23,61 +23,30 @@ namespace WavConfigTool.Classes
     public class Spectrogram
     {
         /// <summary>
-        /// Source: 
+        /// sources:
+        /// https://stackoverflow.com/questions/17404924/getting-pcm-values-of-wav-files
+        /// https://stackoverflow.com/questions/53998592/c-sharp-application-sample-audio-from-audio-output-fft-algorithm-visualiz
         /// https://github.com/swharden/Csharp-Data-Visualization/tree/master/projects/18-01-11_microphone_spectrograph
         /// </summary>
 
         public static bool IsTested = false;
 
-        public void Start(WaveForm waveForm)
+        public static int SpectrumShift = 150;
+        public static double SpectrumScale = 2;
+        public static int QualityX = 1;
+        public static int QualityY = 1;
+
+        public Bitmap MakeSectrogram(WaveForm waveForm, int width, int height)
         {
             if (!waveForm.IsEnabled)
-                return;
-            //DrawRandomImage();
+                return null;
 
-            // FFT/spectrogram configuration
-            bufferLength = 1024 * 4; // must be a multiple of 2
-            spectrogramHeight = bufferLength / 4; // why 4?
-
-            // fill spectrogram data with empty values
-            spectrogramData = new List<double[]>();
-
-            // resize picturebox to accomodate data shape
-            // var width = spectrogramData.Count;
-            // var height = spectrogramData[0].Count;
-
-            // start listening
             var reader = new WaveFileReader(waveForm.Path);
-            var bitmap = MakeSpectrogram(reader);
-            //bitmap = ImagesLibrary.ResizeImage(bitmap, 1300, 100);
-            bitmap.Save($"spectrum_{Path.GetFileNameWithoutExtension(waveForm.Path)}.png", ImageFormat.Png);
-        }
 
-        private static List<double[]> spectrogramData; // columns are time points, rows are frequency points
-        private static int spectrogramWidth;
-        private static int spectrogramHeight;
-
-        const double SCALE_FACTOR = 1;
-        const bool LOG = false;
-
-        private static Random rand = new Random();
-
-        // spectrogram and FFT settings
-        int bufferLength;
-
-
-        /// <summary>
-        /// sources:
-        /// https://stackoverflow.com/questions/17404924/getting-pcm-values-of-wav-files
-        /// https://stackoverflow.com/questions/53998592/c-sharp-application-sample-audio-from-audio-output-fft-algorithm-visualiz
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <returns></returns>
-        private Bitmap MakeSpectrogram(WaveFileReader reader)
-        {
+            var bufferLength = 1024 * QualityX;
             var buffer = new byte[bufferLength];
-            int bytesRecorded = 0;
-            spectrogramData = new List<double[]>();
+            int bytesRecorded;
+            var spectrogramData = new List<double[]>();
             var bytesCount = reader.WaveFormat.BlockAlign;
             var waveData = new float[reader.Length / bytesCount];
 
@@ -99,8 +68,8 @@ namespace WavConfigTool.Classes
                 waveData[step] = value;
                 step++;
             }
-            var waveStep = (int)Math.Pow(2, 5);
-            spectrogramWidth = (int)(reader.Length / bytesCount / waveStep);
+
+            var waveStep = bufferLength / QualityY;
             for (var waveI = 0; waveI + bufferLength < waveData.Length; waveI += waveStep)
             {
                 var waveBuffer = waveData.Skip(waveI).Take(bufferLength).ToArray();
@@ -120,23 +89,20 @@ namespace WavConfigTool.Classes
                     var val = tempbuffer[i].X;
                     var pow = Math.Pow(val, 2);
                     var log = Math.Log(pow, 10);
-                    fftOutput[i] =  0.5 * Math.Pow(log, 3);
+                    fftOutput[i] = log;
                 }
                 spectrogramData.Add(fftOutput);
             }
+            var spectrogramWidth = spectrogramData.Count;
+            var spectrogramHeight = spectrogramData[0].Length;
 
-            return DrawFft();
-        }
-
-        private Bitmap DrawFft()
-        {
             /// create a bitmap we will work with
             Bitmap bitmap = new Bitmap(spectrogramWidth, spectrogramHeight, PixelFormat.Format8bppIndexed);
 
-            ///modify the indexed palette to make it grayscale
+            ///modify the indexed palette
             ColorPalette pallette = bitmap.Palette;
             for (int i = 0; i < 256; i++)
-                pallette.Entries[i] = System.Drawing.Color.FromArgb(255, 255 - i, 0, 0);
+                pallette.Entries[i] = System.Drawing.Color.FromArgb(255 - i, 255 - i/2, 40, 255 - i);
             bitmap.Palette = pallette;
 
             /// prepare to access data via the bitmapdata object
@@ -146,18 +112,17 @@ namespace WavConfigTool.Classes
             /// create a byte array to reflect each pixel in the image
             byte[] pixels = new byte[bitmapData.Stride * bitmap.Height];
 
-            /// I selected this manually to yield a number that "looked good"
-            double scaleFactor = SCALE_FACTOR;
             /// fill pixel array with data
             for (int col = 0; col < spectrogramData.Count; col++)
             {
-                for (int row = 0; row < spectrogramData[col].Length; row++)
+                for (int row = 0; row < spectrogramData[0].Length; row++)
                 {
-                    double pixelVal = -1 * spectrogramData[col][row] * scaleFactor;
+                    double pixelVal = Math.Pow(spectrogramData[col][row] * SpectrumScale, 2);
+                    pixelVal -= SpectrumShift;
                     pixelVal = Math.Max(0, pixelVal);
                     pixelVal = Math.Min(255, pixelVal);
 
-                    int bytePosition = row * bitmapData.Stride + col;
+                    int bytePosition = (row) * bitmapData.Stride + col;
                     if (pixels.Length <= bytePosition)
                         break;
                     pixels[bytePosition] = (byte)(pixelVal);
@@ -168,102 +133,19 @@ namespace WavConfigTool.Classes
             Marshal.Copy(pixels, 0, bitmapData.Scan0, pixels.Length);
             bitmap.UnlockBits(bitmapData);
 
-            /// apply the bitmap to the picturebox
-            return bitmap;
+            reader.Close();
+            reader.Dispose();
+
+            spectrogramData.Clear();
+
+            var widthToResize = width == 0 ? 1000 : width;
+            var resizedBitmap = ImagesLibrary.ResizeImage(bitmap, widthToResize, height);
+            bitmap.Dispose();
+
+            //resizedBitmap.Save("spectrum.png", ImageFormat.Png);
+            //return null;
+
+            return resizedBitmap;
         }
-
-        private void DrawRandomImage()
-        {
-            var width = 600;
-            var height = 300;
-            Bitmap bitmap = new Bitmap(width, height);
-
-            var data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
-            var _buffer = new byte[data.Stride * bitmap.Height];
-            var _random = new Random();
-
-            for (int i = 0; i < 1000; i++)
-            {
-                var x = _random.Next(bitmap.Width);
-                var y = _random.Next(bitmap.Height);
-
-                var red = (byte)_random.Next(byte.MaxValue);
-                var green = (byte)_random.Next(byte.MaxValue);
-                var blue = (byte)_random.Next(byte.MaxValue);
-                var alpha = (byte)_random.Next(byte.MaxValue);
-
-                _buffer[y * data.Stride + x * 4] = blue;
-                _buffer[y * data.Stride + x * 4 + 1] = green;
-                _buffer[y * data.Stride + x * 4 + 2] = red;
-                _buffer[y * data.Stride + x * 4 + 3] = alpha;
-            }
-
-            Marshal.Copy(_buffer, 0, data.Scan0, _buffer.Length);
-
-            bitmap.UnlockBits(data);
-            bitmap.Save("random.png", ImageFormat.Png);
-        }
-
-        private void Log(string message)
-        {
-            Console.WriteLine("FFT: " + message);
-        }
-    }
-    class SampleAggregator
-    {
-        // FFT
-        public event EventHandler<FftEventArgs> FftCalculated;
-        public bool PerformFFT { get; set; }
-
-        // This Complex is NAudio's own! 
-        public Complex[] fftBuffer;
-        private FftEventArgs fftArgs;
-        private int fftPos;
-        private int fftLength;
-        private int m;
-
-        public SampleAggregator(int fftLength)
-        {
-            if (!IsPowerOfTwo(fftLength))
-            {
-                throw new ArgumentException("FFT Length must be a power of two");
-            }
-            this.m = (int)Math.Log(fftLength, 2.0);
-            this.fftLength = fftLength;
-            this.fftBuffer = new Complex[fftLength];
-            this.fftArgs = new FftEventArgs(fftBuffer);
-        }
-
-        bool IsPowerOfTwo(int x)
-        {
-            return (x & (x - 1)) == 0;
-        }
-
-        public void Add(float value)
-        {
-            if (PerformFFT && FftCalculated != null)
-            {
-                // Remember the window function! There are many others as well.
-                fftBuffer[fftPos].X = (float)(value * FastFourierTransform.HammingWindow(fftPos, fftLength));
-                fftBuffer[fftPos].Y = 0; // This is always zero with audio.
-                fftPos++;
-                if (fftPos >= fftLength)
-                {
-                    fftPos = 0;
-                    FastFourierTransform.FFT(true, m, fftBuffer);
-                    FftCalculated(this, fftArgs);
-                }
-            }
-        }
-    }
-
-    public class FftEventArgs : EventArgs
-    {
-        public FftEventArgs(Complex[] result)
-        {
-            this.Result = result;
-        }
-        public Complex[] Result { get; private set; }
     }
 }

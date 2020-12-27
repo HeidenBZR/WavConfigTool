@@ -49,27 +49,22 @@ namespace WavConfigTool.ViewModels
             ImagesLibrary = imagesLibrary;
             PageContent = new List<WavControlBaseViewModel>();
             SourceCollection = collection;
-            ProjectLineContainer firstContainer = null;
+            ProjectLineContainer first = null;
             foreach (var content in collection)
             {
                 var container = content as ProjectLineContainer;
                 if (container == null)
                     break;
-                if (firstContainer == null)
-                    firstContainer = container;
                 ImagesLibrary.RegisterWaveForm(container.WaveForm);
+                if (first == null)
+                    first = container;
             }
             UpdateCollection();
             RaisePropertyChanged(() => PageContent);
             RaisePropertyChanged(() => CurrentPageView);
             RaisePropertyChanged(() => PagesTotal);
             IsHidden = false;
-
-            if (MainWindowViewModel.IsDebug)
-            {
-                var spectrogram = new Spectrogram();
-                spectrogram.Start(firstContainer.WaveForm);
-            }
+            //ImagesLibrary.LoadSpectrum(first.WaveForm, 100, first.WaveForm.ImageHash);
         }
 
         public void RequestUpdateCollection()

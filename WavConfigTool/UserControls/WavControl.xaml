@@ -117,6 +117,12 @@
         </Canvas>
         <Canvas Name="WavImages"
                 Grid.Row="1">
+            <Image Name="SpectrumImage"
+                   Height="{Binding Height, FallbackValue=100}"
+                   HorizontalAlignment="Left"
+                   Visibility="{Binding DoShowSpectrum, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                   Source="{Binding SpectrumImage}">
+            </Image>
             <Image Name="WavFormImage"
                    Height="{Binding Height, FallbackValue=100}"
                    HorizontalAlignment="Left"
@@ -128,12 +134,6 @@
                    HorizontalAlignment="Left"
                    Visibility="{Binding DoShowPitch, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                    Source="{Binding FrqImage}">
-            </Image>
-            <Image Name="SpectrumImage"
-                   Height="{Binding Height, FallbackValue=100}"
-                   HorizontalAlignment="Left"
-                   Visibility="{Binding DoShowSpectrum, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                   Source="{Binding SpectrumImage}">
             </Image>
         </Canvas>
         <Border BorderThickness="0,1,0,1"
@@ -229,6 +229,8 @@
                     <ContextMenu>
                         <MenuItem Header="Reload Wav"
                                   Command="{Binding ReloadCommand}" />
+                        <MenuItem Header="Create Spectrum"
+                                  Command="{Binding CreateSpectrumCommand}" />
                         <Separator />
                         <MenuItem Header="Reset all points in current audio"
                                   Command="{Binding ResetAllPointsCommand}" />

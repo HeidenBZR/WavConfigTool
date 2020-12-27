@@ -20,7 +20,7 @@ namespace WavConfigCore
     public class ViewOptions
     {
         public bool DoShowPitch { get; set; } = true;
-        public bool DoShowSpectrum { get; set; } = false;
+        public bool DoShowSpectrum { get; set; } = true;
         public bool DoShowWaveform { get; set; } = true;
     }
 

@@ -13,6 +13,8 @@ namespace WavConfigTool.ViewModels
         public Phoneme Phoneme { get; private set; }
 
         public bool HasZone => Phoneme.HasZone;
+        public bool IsSkipped => Phoneme.IsSkipped;
+        public PhonemeType Type => Phoneme.Type;
 
         public PhonemeViewModel(Phoneme phoneme)
         {

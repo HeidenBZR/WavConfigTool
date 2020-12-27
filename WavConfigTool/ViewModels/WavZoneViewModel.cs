@@ -207,7 +207,8 @@ namespace WavConfigTool.ViewModels
 
             var fillBrush = Color.FromArgb(BackgroundBrush.Color.A,BackgroundBrush.Color.R, BackgroundBrush.Color.G, BackgroundBrush.Color.B);
             var strokeBrush = Color.FromArgb(BorderBrush.Color.R, BorderBrush.Color.G, BorderBrush.Color.B);
-            DrawPointsAsync(lines, points, (int)width, Height, fillBrush, strokeBrush);
+            DrawPoints(lines, points, (int)width, Height, fillBrush, strokeBrush);
+            RaisePropertyChanged(nameof(Image));
         }
 
         private async void DrawPointsAsync(double[][] lines, double[] points, int width, int height, Color fillColor, Color strokeColor)

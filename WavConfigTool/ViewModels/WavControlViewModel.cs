@@ -233,6 +233,7 @@ namespace WavConfigTool.ViewModels
                 () => DoShowWaveform
             );
         }
+
         public override void SetReady(bool ready)
         {
             base.SetReady(ready);
@@ -534,6 +535,11 @@ namespace WavConfigTool.ViewModels
         public ICommand ReloadCommand => new DelegateCommand(() =>
         {
             GetProjectLineContainer().LoadImages(Height);
+        }, () => !IsLoading);
+
+        public ICommand CreateSpectrumCommand => new DelegateCommand(() =>
+        {
+            GetProjectLineContainer().LoadSpectrum(Height);
         }, () => !IsLoading);
 
         #endregion

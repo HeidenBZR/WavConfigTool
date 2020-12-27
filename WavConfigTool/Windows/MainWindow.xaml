@@ -176,10 +176,11 @@
                           InputGestureText="Ctrl+Q"
                           Command="{Binding TogglePitchCommand}" />
                 <MenuItem Header="Toggle Waveform"
-                          InputGestureText="Ctrl+W" />
+                          InputGestureText="Ctrl+W"
+                          Command="{Binding ToggleWaveformCommand}"  />
                 <MenuItem Header="Toggle Spectrum"
                           InputGestureText="Ctrl+E"
-                          IsEnabled="False" />
+                          Command="{Binding ToggleSpectrumCommand}" />
                 <Separator />
                 <MenuItem Header="Next page"
                           InputGestureText="]"
@@ -490,7 +491,50 @@
                                          IsEnabled="{Binding IsNotLoading}"
                                          Text="{Binding UserScaleXView, Mode=TwoWay}" />
                                 <TextBlock Text="%" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
 
+                    <Border Margin="4,4,0,4"
+                            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            Visibility="{Binding IsProjectReady, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                            BorderThickness="1">
+                        <StackPanel Height="60">
+                            <TextBlock Padding="0"
+                                       HorizontalAlignment="Center"
+                                       Text="Spectrogram" />
+                            <StackPanel Height="25"
+                                        Margin="10"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                <TextBlock Margin="10,0"
+                                           Text="Shift:" />
+                                <TextBox Width="40"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         IsEnabled="{Binding IsNotLoading}"
+                                         Text="{Binding SpectrogramShift, Mode=TwoWay}" />
+                                <TextBlock Margin="10,0"
+                                           Text="Scale:" />
+                                <TextBox Width="30"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         IsEnabled="{Binding IsNotLoading}"
+                                         Text="{Binding SpectrogramScale, Mode=TwoWay}" />
+                                <TextBlock Margin="10,0"
+                                           Text="Quality X:" />
+                                <TextBox Width="30"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         IsEnabled="{Binding IsNotLoading}"
+                                         Text="{Binding SpectrogramQualityX, Mode=TwoWay}" />
+                                <TextBlock Margin="10,0"
+                                           Text="Y:" />
+                                <TextBox Width="30"
+                                         Padding="0"
+                                         VerticalAlignment="Center"
+                                         IsEnabled="{Binding IsNotLoading}"
+                                         Text="{Binding SpectrogramQualityY, Mode=TwoWay}" />
                             </StackPanel>
                         </StackPanel>
                     </Border>
