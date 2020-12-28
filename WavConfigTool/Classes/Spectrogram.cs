@@ -41,7 +41,7 @@ namespace WavConfigTool.Classes
             if (!waveForm.IsEnabled)
                 return null;
 
-            var reader = new WaveFileReader(waveForm.Path);
+            var reader = new AudioFileReader(waveForm.Path);
 
             var bufferLength = 1024 * QualityX;
             var buffer = new byte[bufferLength];
@@ -50,30 +50,10 @@ namespace WavConfigTool.Classes
             var bytesCount = reader.WaveFormat.BlockAlign;
             var waveData = new float[reader.Length / bytesCount];
 
-            var step = 0;
-            while ((bytesRecorded = reader.Read(buffer, 0, bytesCount)) > 0)
-            {
-                // Converting the byte buffer in readable data
-                float value;
-                if (reader.WaveFormat.BitsPerSample == 16)
-                    value = BitConverter.ToInt16(buffer, 0) / ((float)Int16.MaxValue + 1);
-                else if (reader.WaveFormat.BitsPerSample == 32)
-                    value = BitConverter.ToInt32(buffer, 0) / ((float)Int32.MaxValue + 1);
-                else if (reader.WaveFormat.BitsPerSample == 64)
-                    value = BitConverter.ToInt64(buffer, 0) / ((float)Int64.MaxValue + 1);
-                else
-                    return null;
-                if (step % reader.WaveFormat.Channels != 0)
-                    continue;
-                waveData[step] = value;
-                step++;
-            }
 
-            var waveStep = bufferLength / QualityY;
-            for (var waveI = 0; waveI + bufferLength < waveData.Length; waveI += waveStep)
+            var waveBuffer = new float[bufferLength];
+            while ((bytesRecorded = reader.Read(waveBuffer, 0, bytesCount)) > 0)
             {
-                var waveBuffer = waveData.Skip(waveI).Take(bufferLength).ToArray();
-
                 Complex[] tempbuffer = new Complex[waveBuffer.Length];
 
                 for (int i = 0; i < tempbuffer.Length; i++)
@@ -93,6 +73,7 @@ namespace WavConfigTool.Classes
                 }
                 spectrogramData.Add(fftOutput);
             }
+
             var spectrogramWidth = spectrogramData.Count;
             var spectrogramHeight = spectrogramData[0].Length;
 
