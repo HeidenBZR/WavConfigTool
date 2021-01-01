@@ -114,10 +114,10 @@
         Color="#2220FBFB" />
     <SolidColorBrush
         x:Key="RestBorderBrush"
-        Color="#802020" />
+        Color="#802080" />
     <SolidColorBrush
         x:Key="RestBackBrush"
-        Color="#FB2020" />
+        Color="#FB20FB" />
     <SolidColorBrush
         x:Key="RestZoneBrush"
         Color="#22FB2020" />
@@ -128,9 +128,9 @@
         x:Key="WaveformBrush"
                      Color="#64c864" />
     <SolidColorBrush x:Key="FrqBrush"
-                     Color="#f86464" />
+                     Color="#2424f8" />
     <SolidColorBrush x:Key="SpectrumBrush"
-                     Color="#a864c4" />
+                     Color="#cc0000" />
 
     <LinearGradientBrush
         x:Key="ButtonRestBrush"
@@ -138,10 +138,10 @@
         EndPoint="0,1">
         <GradientStop
             Offset="0.007"
-            Color="Red" />
+            Color="Violet" />
         <GradientStop
             Offset="0.5"
-            Color="#FFDC1313" />
+            Color="#FFDC13DC" />
     </LinearGradientBrush>
     <LinearGradientBrush
         x:Key="ButtonVowelBrush"

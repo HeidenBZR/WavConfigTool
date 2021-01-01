@@ -99,8 +99,7 @@ namespace WavConfigTool.Classes
 
         #region private
 
-        private readonly Color color = Color.FromArgb( 200, 0, 250);
-        private readonly Color stroke = Color.FromArgb( 100, 0, 150);
+        private readonly Color color = Color.FromArgb(36, 36, 248);
         private const int SIZE = 2;
 
         private void Read()
