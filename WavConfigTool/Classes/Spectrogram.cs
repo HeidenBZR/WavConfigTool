@@ -31,8 +31,8 @@ namespace WavConfigTool.Classes
 
         public static bool IsTested = false;
 
-        public static int SpectrumShift = 150;
-        public static double SpectrumScale = 2;
+        public static int SpectrumShift = 0;
+        public static double SpectrumScale = 1;
         public static int QualityX = 1;
         public static int QualityY = 1;
 
@@ -44,11 +44,9 @@ namespace WavConfigTool.Classes
             var reader = new AudioFileReader(waveForm.Path);
 
             var bufferLength = 1024 * QualityX;
-            var buffer = new byte[bufferLength];
             int bytesRecorded;
             var spectrogramData = new List<double[]>();
             var bytesCount = reader.WaveFormat.BlockAlign;
-            var waveData = new float[reader.Length / bytesCount];
 
 
             var waveBuffer = new float[bufferLength];

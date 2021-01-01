@@ -539,6 +539,8 @@ namespace WavConfigTool.ViewModels
 
         public ICommand CreateSpectrumCommand => new DelegateCommand(() =>
         {
+            SpectrumImage = null;
+            RaisePropertiesChanged(nameof(SpectrumImage));
             GetProjectLineContainer().LoadSpectrum(Height);
         }, () => !IsLoading);
 

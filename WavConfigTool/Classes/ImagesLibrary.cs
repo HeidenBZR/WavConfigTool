@@ -201,6 +201,7 @@ namespace WavConfigTool.Classes
             if (images[type].ContainsKey(waveForm.Path) && images[type][waveForm.Path] != null)
             {
                 images[type][waveForm.Path].Dispose();
+                images[type][waveForm.Path] = null;
             }
         }
 
