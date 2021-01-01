@@ -53,16 +53,22 @@ namespace WavConfigCore.Reader
 
         public void Write(string filename, Project project)
         {
+            if (project == null)
+                throw new Exception();
             WriteYaml(filename, GetIOProject(project));
         }
 
         public void WriteYaml(string filename, IOProject ioProject)
         {
-            using (var writer = new StreamWriter(filename, false, Encoding.UTF8))
+            try
             {
-                var serializer = new Serializer();
-                serializer.Serialize(writer, ioProject, typeof(IOProject));
+                using (var writer = new StreamWriter(filename, false, Encoding.UTF8))
+                {
+                    var serializer = new Serializer();
+                    serializer.Serialize(writer, ioProject, typeof(IOProject));
+                }
             }
+            catch (IOException ex) { }
         }
 
         private IOProject GetIOProject(Project project)

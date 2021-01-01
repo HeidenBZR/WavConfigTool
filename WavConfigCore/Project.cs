@@ -62,8 +62,6 @@ namespace WavConfigCore
         public event SimpleHandler ProjectChanged = delegate { };
         public event SimpleHandler ProjectLinesChanged = delegate { };
         public event SimpleHandler BeforeSave = delegate { };
-        public event SimpleHandler AfterSave = delegate { };
-        public event SimpleHandler SaveMe = delegate { };
 
         public Project(string filename = "")
         {
@@ -204,7 +202,7 @@ namespace WavConfigCore
         public void ProcessLineAfterRead(ProjectLine projectLine)
         {
             projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
-            projectLine.ProjectLinePointsChanged += delegate { FireSaveMe(); };
+            projectLine.ProjectLinePointsChanged += delegate { FireChanged(); };
         }
 
         public void HandleBackupSaved()
@@ -212,14 +210,16 @@ namespace WavConfigCore
             IsChangedAfterBackup = false;
         }
 
-        public void FireSaveMe()
+        public void FireChanged()
         {
             if (!IsLoaded)
                 return;
             IsChangedAfterBackup = true;
+        }
+
+        public void FireBeforeSave()
+        {
             BeforeSave();
-            SaveMe();
-            AfterSave();
         }
 
         #region private
@@ -245,12 +245,12 @@ namespace WavConfigCore
 
         private void HandleProjectChanged()
         {
-            FireSaveMe();
+            FireChanged();
         }
 
         private void HandleProjectLineChanged()
         {
-            FireSaveMe();
+            FireChanged();
         }
 
         private bool CheckForDuplicates(int i)

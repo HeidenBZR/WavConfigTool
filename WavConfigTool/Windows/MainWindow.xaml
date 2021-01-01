@@ -54,6 +54,8 @@
                              KeyGesture="CTRL+O" />
         <dxmvvm:KeyToCommand Command="{Binding NewProjectCommand}"
                              KeyGesture="CTRL+N" />
+        <dxmvvm:KeyToCommand Command="{Binding SaveCommand}"
+                             KeyGesture="CTRL+S" />
         <dxmvvm:KeyToCommand Command="{Binding TogglePitchCommand}"
                              KeyGesture="CTRL+Q" />
         <dxmvvm:KeyToCommand Command="{Binding ToggleWaveformCommand}"
@@ -134,6 +136,9 @@
                           InputGestureText="Ctrl+O"
                           Command="{Binding OpenProjectCommand}" />
                 <Separator />
+                <MenuItem Header="_Save Project"
+                          InputGestureText="Ctrl+S"
+                          Command="{Binding SaveCommand}" />
                 <MenuItem Header="Save Project As..."
                           InputGestureText="Shift+Ctrl+S"
                           Command="{Binding SaveProjectAsNewCommand}" />

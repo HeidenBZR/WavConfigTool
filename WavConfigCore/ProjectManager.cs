@@ -16,7 +16,7 @@ namespace WavConfigCore
         private static ProjectManager current;
         private ProjectManager()
         {
-            WatchForBackup();
+
         }
 
         public static ProjectManager Current
@@ -87,7 +87,31 @@ namespace WavConfigCore
 
         public void Save(string projectPath)
         {
+            Project.FireBeforeSave();
+            Console.WriteLine("ProjectManager: Save " + DateTime.Now.ToString());
             ProjectReader.Current.Write(projectPath, Project);
+        }
+
+        public void SaveBackup()
+        {
+            if (Project != null && Project.IsLoaded && Project.IsChangedAfterBackup)
+            {
+                Console.WriteLine("ProjectManager: SaveBackup " + DateTime.Now.ToString());
+                Project.FireBeforeSave();
+                var filename = PathResolver.Current.Backup();
+                if (File.Exists(filename))
+                    return;
+                ProjectReader.Current.Write(filename, Project);
+                Project.HandleBackupSaved();
+
+                var files = Directory.GetFiles(PathResolver.Current.Backup(onlyFolder: true), "backup*" + PathResolver.PROJECT_EXT).ToList();
+                files.Sort();
+                files.Reverse();
+                for (var i = BACKUP_COUNT; i < files.Count; i++)
+                {
+                    File.Delete(files[i]);
+                }
+            }
         }
 
         public void Reset()
@@ -97,30 +121,7 @@ namespace WavConfigCore
 
         #region private
 
-        private void WatchForBackup()
-        {
-            System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
-
-            timer.Tick += new EventHandler(MakeBackup);
-            timer.Interval = new TimeSpan(0, 1, 0);
-            timer.Start();
-        }
-
-        private void MakeBackup(object sender, EventArgs e)
-        {
-            if (Project != null && Project.IsLoaded && Project.IsChangedAfterBackup)
-            {
-                Reader.ProjectReader.Current.Write(PathResolver.Current.Backup(), Project);
-                Project.HandleBackupSaved();
-            }
-            var files = Directory.GetFiles(PathResolver.Current.Backup(onlyFolder: true), "backup*" + PathResolver.PROJECT_EXT).ToList();
-            files.Sort();
-            files.Reverse();
-            for (var i = 10; i < files.Count; i++)
-            {
-                File.Delete(files[i]);
-            }
-        }
+        private const int BACKUP_COUNT = 50;
 
         private void CheckForLast(string lastProject)
         {
@@ -133,7 +134,7 @@ namespace WavConfigCore
 
         private void AfterProjectLoaded(string projectDir)
         {
-            Project.SaveMe += () => Save(projectDir);
+
         }
 
         #endregion

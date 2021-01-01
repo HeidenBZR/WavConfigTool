@@ -45,6 +45,7 @@ namespace WavConfigTool.ViewModels
         public OremoPackGenerator OremoPackGenerator { get; set; } = new OremoPackGenerator();
         public WavPlayer WavPlayer = new WavPlayer();
         public ImagesLibrary ImagesLibrary = new ImagesLibrary();
+        public SaveSystem SaveSystem;
 
         public int SpectrogramShift         { get => Spectrogram.SpectrumShift; set => Spectrogram.SpectrumShift = value; }
         public double SpectrogramScale      { get => Spectrogram.SpectrumScale; set => Spectrogram.SpectrumScale = value; }
@@ -149,6 +150,7 @@ namespace WavConfigTool.ViewModels
 #if DEBUG
             IsDebug = true;
 #endif
+            SaveSystem = new SaveSystem(ProjectManager);
         }
 
         #region private
@@ -157,6 +159,7 @@ namespace WavConfigTool.ViewModels
 
         private async void LoadProjectAsync()
         {
+            SaveSystem.Stop();
             IsLoading = true;
             RaisePropertyChanged(() => IsLoading);
             if (Project != null && Project.IsLoaded)
@@ -186,6 +189,8 @@ namespace WavConfigTool.ViewModels
             }
             IsLoading = false;
             App.MainDispatcher.Invoke(Refresh);
+            SaveSystem.SaveImmediately();
+            SaveSystem.Start();
         }
 
         private void HandleGoto(PagerContentBase content)
@@ -298,7 +303,7 @@ namespace WavConfigTool.ViewModels
                 return $"WavConfig {Version} {projectFileName}";
             if (PagerViewModel == null || PagerViewModel.PagesTotal == 0)
                 return $"WavConfig {Version} {projectFileName}  [{Project.Voicebank.Name}] : {Project.Reclist.Name}";
-            return $"WavConfig {Version} {projectFileName} [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
+            return $"WavConfig {Version} {projectFileName}{(Project.IsChangedAfterBackup ? "*" : "")} [{Project.Voicebank.Name}] : {Project.Reclist.Name} | " +
                 $"Page {PagerViewModel.CurrentPage + 1}/{PagerViewModel.PagesTotal}";
         }
 
@@ -339,7 +344,7 @@ namespace WavConfigTool.ViewModels
         private void TrySaveProject()
         {
             if (Project != null && Project.IsLoaded)
-                Project.FireSaveMe();
+                Project.FireChanged();
         }
 
         private void RedrawPoints()
@@ -378,11 +383,11 @@ namespace WavConfigTool.ViewModels
             string filename = (string)obj;
             if (filename.Length > 0)
             {
+                SaveSystem.SaveImmediately();
                 ResetProject();
                 Settings.ProjectFile = filename;
                 ProjectManager.CreateProject(filename);
                 CallProjectCommand.Execute(this);
-                ProjectManager.Save(Settings.ProjectFile);
                 LoadProjectAsync();
             }
         },
@@ -444,6 +449,7 @@ namespace WavConfigTool.ViewModels
             if (filename.Length > 0)
             {
                 OtoGenerator.GenerateAllAndSave(filename);
+                SaveSystem.SaveImmediately();
             }
         },
         "Save Oto",
@@ -453,6 +459,11 @@ namespace WavConfigTool.ViewModels
             return Project != null && Project.IsLoaded;
         },
         "oto");
+
+        public ICommand SaveCommand => new DelegateCommand(delegate
+        {
+            SaveSystem.SaveImmediately();
+        }, () => Project != null && Project.IsLoaded);
 
         public ICommand GenerateOremoPackCommand => new DelegateCommand(delegate
         {
@@ -470,11 +481,13 @@ namespace WavConfigTool.ViewModels
 
         public ICommand ReloadProjectCommand => new DelegateCommand(() =>
         {
+            var hadProject = Project != null && Project.IsLoaded;
             SetWavConfigMode.Execute(null);
             ProjectManager.LoadProject(Settings.ProjectFile);
             LoadProjectAsync();
             Refresh();
-            UpdatePagerCollection();
+            if (hadProject)
+                UpdatePagerCollection();
         }, () => !IsLoading);
 
         public ICommand SetWavConfigMode => new DelegateCommand(() =>
@@ -548,7 +561,7 @@ namespace WavConfigTool.ViewModels
                     }
                 }
             }
-            Project.FireSaveMe();
+            Project.FireChanged();
             ReloadProjectCommand.Execute(0);
         }, () => Project != null && Project.IsLoaded && IsDebug);
 
