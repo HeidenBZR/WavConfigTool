@@ -59,6 +59,9 @@ namespace WavConfigTool.ViewModels
         public int DecayR  { get => Project?.DecayR ?? 0;  set { Project.DecayR = value;  TrySaveProject(); RedrawPoints(); } }
 
         public ViewOptions ViewOptions { get; set; }
+        public bool DoShowWaveform => ViewOptions != null && ViewOptions.DoShowWaveform;
+        public bool DoShowPitch => ViewOptions != null && ViewOptions.DoShowPitch;
+        public bool DoShowSpectrum => ViewOptions != null && ViewOptions.DoShowSpectrum;
 
         public bool MustHideNotEnabled
         {
@@ -485,18 +488,21 @@ namespace WavConfigTool.ViewModels
         public ICommand TogglePitchCommand => new DelegateCommand(() =>
         {
             ViewOptions.DoShowPitch = !ViewOptions.DoShowPitch;
+            RaisePropertyChanged(nameof(DoShowPitch));
             PagerViewModel.RefreshPageContent();
         }, () => Project != null && Project.IsLoaded);
 
         public ICommand ToggleWaveformCommand => new DelegateCommand(() =>
         {
             ViewOptions.DoShowWaveform = !ViewOptions.DoShowWaveform;
+            RaisePropertyChanged(nameof(DoShowWaveform));
             PagerViewModel.RefreshPageContent();
         }, () => Project != null && Project.IsLoaded);
 
         public ICommand ToggleSpectrumCommand => new DelegateCommand(() =>
         {
             ViewOptions.DoShowSpectrum = !ViewOptions.DoShowSpectrum;
+            RaisePropertyChanged(nameof(DoShowSpectrum));
             PagerViewModel.RefreshPageContent();
         }, () => Project != null && Project.IsLoaded);
 

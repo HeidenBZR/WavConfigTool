@@ -8,8 +8,7 @@
              xmlns:vt="clr-namespace:WavConfigTool.ViewTools"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              mc:Ignorable="d"
-             d:DesignHeight="20"
-             Width="400">
+             d:DesignHeight="20">
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:KeyToCommand 
             Command="{Binding GotoCommand}"

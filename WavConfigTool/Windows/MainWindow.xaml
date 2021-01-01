@@ -216,72 +216,174 @@
         </Menu>
 
         <Border Grid.Row="1"
+                Name="TopPanel"
                 BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
                 Visibility="{Binding IsProjectReady, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                 BorderThickness="0,0,0,1">
 
-            <StackPanel Background="{DynamicResource WindowBackground}"
-                        Orientation="Horizontal">
-
-                <StackPanel Height="25"
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Disabled">
+                <StackPanel Background="{DynamicResource WindowBackground}"
                             Orientation="Horizontal">
-                    <Button Width="20"
+
+                    <StackPanel Height="25"
+                                Orientation="Horizontal">
+                        <Button Width="20"
+                                Margin="3,0"
+                                Background="{DynamicResource ButtonRestBrush}"
+                                BorderBrush="{DynamicResource ButtonRestBrush}"
+                                Command="{Binding SetPhonemeModeCommand}"
+                                CommandParameter="{Binding ModeR}"
+                                Content="{Binding ModeRSymbol}" />
+                        <Button Width="20"
+                                Margin="3,0"
+                                Background="{DynamicResource ButtonVowelBrush}"
+                                BorderBrush="{DynamicResource ButtonVowelBrush}"
+                                Command="{Binding SetPhonemeModeCommand}"
+                                CommandParameter="{Binding ModeV}"
+                                Content="{Binding ModeVSymbol}" />
+                        <Button Width="20"
+                                Margin="3,0"
+                                Background="{DynamicResource ButtonConsonantBrush}"
+                                BorderBrush="{DynamicResource ButtonConsonantBrush}"
+                                Command="{Binding SetPhonemeModeCommand}"
+                                CommandParameter="{Binding ModeC}"
+                                Content="{Binding ModeCSymbol}" />
+                        <TextBlock Margin="13,0,0,0"
+                                   Text="Current: " />
+                        <TextBlock Width="20"
+                                   Margin="0"
+                                   FontWeight="Bold"
+                                   Text="{Binding ModeSymbol}" />
+                    </StackPanel>
+                    <Line Width="1"
+                          Margin="5,0,5,0"
+                          Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                          X1="0"
+                          X2="0"
+                          Y1="0"
+                          Y2="30" />
+                    <uc:Pager x:Name="Pager"
+                              DataContext="{Binding PagerViewModel}" />
+                    <Line Width="1"
+                          Margin="5,0,5,0"
+                          Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                          X1="0"
+                          X2="0"
+                          Y1="0"
+                          Y2="30" />
+                    <CheckBox VerticalAlignment="Center"
+                              Margin="5,0,5,0"
+                              IsChecked="{Binding MustHideNotEnabled}"
+                              Content="Hide not enabled" />
+                    <CheckBox VerticalAlignment="Center"
+                              Margin="5,0,5,0"
+                              IsChecked="{Binding MustHideCompleted}"
+                              Content="Hide completed" />
+                    <Line Width="1"
+                          Margin="5,0,5,0"
+                          Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                          X1="0"
+                          X2="0"
+                          Y1="0"
+                          Y2="30" />
+                    <uc:GotoUserControl DataContext="{Binding GotoUserControlViewModel}" />
+                    <Line Width="1"
+                          Margin="5,0,5,0"
+                          Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                          X1="0"
+                          X2="0"
+                          Y1="0"
+                          Y2="30" />
+                    <Button Width="40"
                             Margin="3,0"
-                            Background="{DynamicResource ButtonRestBrush}"
-                            BorderBrush="{DynamicResource ButtonRestBrush}"
-                            Command="{Binding SetPhonemeModeCommand}"
-                            CommandParameter="{Binding ModeR}"
-                            Content="{Binding ModeRSymbol}" />
-                    <Button Width="20"
+                            Name="WaveformButton"
+                            Content="WAV"
+                            Template="{DynamicResource ViewOptionButton}"
+                            Command="{Binding ToggleWaveformCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background"
+                                        Value="{DynamicResource WindowBackground}" />
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource WaveformBrush}" />
+                                <Setter Property="BorderBrush"
+                                        Value="{DynamicResource WaveformBrush}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DoShowWaveform, Mode=OneWay}"
+                                                 Value="true">
+                                        <Setter Property="Background"
+                                                Value="{DynamicResource WaveformBrush}" />
+                                        <Setter Property="Foreground"
+                                                Value="{DynamicResource WindowBackground}" />
+                                        <Setter Property="BorderBrush"
+                                                Value="{DynamicResource WindowBackground}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Width="40"
                             Margin="3,0"
-                            Background="{DynamicResource ButtonVowelBrush}"
-                            BorderBrush="{DynamicResource ButtonVowelBrush}"
-                            Command="{Binding SetPhonemeModeCommand}"
-                            CommandParameter="{Binding ModeV}"
-                            Content="{Binding ModeVSymbol}" />
-                    <Button Width="20"
+                            Name="FrqButton"
+                            Command="{Binding TogglePitchCommand}"
+                            Template="{DynamicResource ViewOptionButton}"
+                            Content="FRQ">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background"
+                                        Value="{DynamicResource WindowBackground}" />
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource FrqBrush}" />
+                                <Setter Property="BorderBrush"
+                                        Value="{DynamicResource FrqBrush}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DoShowPitch, Mode=OneWay}"
+                                                 Value="true">
+                                        <Setter Property="Background"
+                                                Value="{DynamicResource FrqBrush}" />
+                                        <Setter Property="Foreground"
+                                                Value="{DynamicResource WindowBackground}" />
+                                        <Setter Property="BorderBrush"
+                                                Value="{DynamicResource WindowBackground}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Width="40"
                             Margin="3,0"
-                            Background="{DynamicResource ButtonConsonantBrush}"
-                            BorderBrush="{DynamicResource ButtonConsonantBrush}"
-                            Command="{Binding SetPhonemeModeCommand}"
-                            CommandParameter="{Binding ModeC}"
-                            Content="{Binding ModeCSymbol}" />
-                    <TextBlock Margin="13,0,0,0"
-                               Text="Current: " />
-                    <TextBlock Width="20"
-                               Margin="0"
-                               FontWeight="Bold"
-                               Text="{Binding ModeSymbol}" />
+                            Name="SpectrumButton"
+                            Content="SPE"
+                            Command="{Binding ToggleSpectrumCommand}"
+                            Template="{DynamicResource ViewOptionButton}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background"
+                                        Value="{DynamicResource WindowBackground}" />
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource SpectrumBrush}" />
+                                <Setter Property="BorderBrush"
+                                        Value="{DynamicResource SpectrumBrush}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DoShowSpectrum, Mode=OneWay}"
+                                                 Value="true">
+                                        <Setter Property="Background"
+                                                Value="{DynamicResource SpectrumBrush}" />
+                                        <Setter Property="Foreground"
+                                                Value="{DynamicResource WindowBackground}" />
+                                        <Setter Property="BorderBrush"
+                                                Value="{DynamicResource WindowBackground}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                 </StackPanel>
-                <Line Width="1"
-                      Margin="5,0,5,0"
-                      Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                      X1="0"
-                      X2="0"
-                      Y1="0"
-                      Y2="30" />
-                <uc:Pager x:Name="Pager"
-                          DataContext="{Binding PagerViewModel}" />
-                <Line Width="1"
-                      Margin="5,0,5,0"
-                      Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                      X1="0"
-                      X2="0"
-                      Y1="0"
-                      Y2="30" />
-                <CheckBox VerticalAlignment="Center"
-                          Margin="5,0,5,0"
-                          IsChecked="{Binding MustHideNotEnabled}"
-                          Content="Hide not enabled" />
-                <CheckBox VerticalAlignment="Center"
-                          Margin="5,0,5,0"
-                          IsChecked="{Binding MustHideCompleted}"
-                          Content="Hide completed" />
-                <uc:GotoUserControl
-                          DataContext="{Binding GotoUserControlViewModel}"/>
-            </StackPanel>
+            </ScrollViewer>
         </Border>
         <Border Grid.Row="2"
+                Name="ToolsPanel"
                 BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
                 BorderThickness="0,0,0,1">
             <ScrollViewer HorizontalScrollBarVisibility="Auto"

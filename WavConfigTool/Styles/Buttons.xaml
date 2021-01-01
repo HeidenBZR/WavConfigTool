@@ -1,4 +1,17 @@
-﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:WavConfigTool.Styles" />
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:WavConfigTool.Styles">
+    <ControlTemplate x:Key="ViewOptionButton" TargetType="Button">
+        <Border Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                Focusable="False"
+                BorderThickness="1">
+            <TextBlock
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Focusable="False"
+                       Text="{TemplateBinding Content}"
+                       Foreground="{TemplateBinding Foreground}" />
+        </Border>
+    </ControlTemplate>
+</ResourceDictionary>
