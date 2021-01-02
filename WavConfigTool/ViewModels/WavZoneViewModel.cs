@@ -205,6 +205,9 @@ namespace WavConfigTool.ViewModels
                     break;
             }
 
+            if (width <= 0)
+                return;
+
             var fillBrush = Color.FromArgb(BackgroundBrush.Color.A,BackgroundBrush.Color.R, BackgroundBrush.Color.G, BackgroundBrush.Color.B);
             var strokeBrush = Color.FromArgb(BorderBrush.Color.R, BorderBrush.Color.G, BorderBrush.Color.B);
             DrawPoints(lines, points, (int)width, Height, fillBrush, strokeBrush);

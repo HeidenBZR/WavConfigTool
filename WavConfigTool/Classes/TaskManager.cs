@@ -46,7 +46,7 @@ namespace WavConfigTool.Classes
                 return;
             }
 
-            var container = TakeTaskContaner();
+            var container = TakeTaskContainer();
             if (container == null)
             {
                 throw new Exception();
@@ -63,7 +63,7 @@ namespace WavConfigTool.Classes
                 StartTask();
         }
 
-        private ProjectLineContainer TakeTaskContaner()
+        private ProjectLineContainer TakeTaskContainer()
         {
             while (prioritiesedTasks.Count() > 0)
             {

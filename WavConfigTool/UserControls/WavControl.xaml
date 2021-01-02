@@ -112,7 +112,7 @@
             <TextBlock Margin="10,50"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
-                       Foreground="{DynamicResource RestBackBrush}"
+                       Foreground="#cc0000"
                        Text="Sample is not available" />
         </Canvas>
         <Canvas Name="WavImages"
@@ -121,6 +121,7 @@
                    Height="{Binding Height, FallbackValue=100}"
                    Width="{Binding ElementName=WavFormImage, Path=ActualWidth}"
                    Stretch="Fill"
+                   Margin="0,1"
                    HorizontalAlignment="Left"
                    Visibility="{Binding DoShowSpectrum, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                    Source="{Binding SpectrumImage}">

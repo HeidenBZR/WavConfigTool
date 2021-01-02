@@ -36,7 +36,7 @@ namespace WavConfigTool.Classes
         public static int QualityX = 1;
         public static int QualityY = 1;
 
-        public Bitmap MakeSectrogram(WaveForm waveForm, int width, int height)
+        public Bitmap MakeSpectrogram(WaveForm waveForm, int width, int height)
         {
             if (!waveForm.IsEnabled)
                 return null;

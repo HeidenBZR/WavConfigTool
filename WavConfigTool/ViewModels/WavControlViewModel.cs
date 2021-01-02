@@ -42,7 +42,7 @@ namespace WavConfigTool.ViewModels
 
         public int NumberView { get; private set; }
 
-        public int Width => WaveForm?.VisualWidth ?? 4000;
+        public int Width => WaveForm?.VisualWidth ?? 1000;
         public ImageSource WavImage { get; private set; }
         public ImageSource FrqImage { get; private set; }
         public ImageSource SpectrumImage { get; private set; }
@@ -104,8 +104,7 @@ namespace WavConfigTool.ViewModels
 
             ProjectLine.ProjectLineChanged += HandleProjectLineChanged;
             SubscribePagerContent();
-
-            SetIsLoading();
+            TryGetImages();
         }
 
         public override void Ready()
@@ -279,15 +278,28 @@ namespace WavConfigTool.ViewModels
             HandleViewChanged();
         }
 
+        private void TryGetImages()
+        {
+            var pack = ImagesLibrary.GetImagesPack(WaveForm);
+            IsImageEnabled = false;
+            if (pack.IsLoading)
+            {
+                SetIsLoading();
+                return;
+            }
+            HandleImagesLoaded(pack.IsLoaded);
+        }
+
         private void HandleImagesLoaded(bool isLoaded)
         {
             IsImageEnabled = isLoaded;
             IsLoading = false;
             if (IsImageEnabled)
             {
-                WavImage = ImagesLibrary.TryGetImage(WaveForm, WavImageType.WAVEFORM);
-                SpectrumImage = ImagesLibrary.TryGetImage(WaveForm, WavImageType.SPECTRUM);
-                FrqImage = ImagesLibrary.TryGetImage(WaveForm, WavImageType.FRQ);
+                var pack = ImagesLibrary.GetImagesPack(WaveForm);
+                WavImage = ImagesLibrary.Bitmap2ImageSource(pack.WavImage);
+                SpectrumImage = ImagesLibrary.Bitmap2ImageSource(pack.Spectrogram);
+                FrqImage = ImagesLibrary.Bitmap2ImageSource(pack.Frq);
                 RaisePropertiesChanged(nameof(WavImage), nameof(SpectrumImage), nameof(FrqImage));
 
                 OnLoaded();
@@ -491,7 +503,7 @@ namespace WavConfigTool.ViewModels
             },
             delegate (Point point)
             {
-                return ProjectLine.IsEnabled && !ProjectLine.IsCompleted;
+                return ProjectLine.IsEnabled && !ProjectLine.IsCompleted && !IsLoading;
             }
         );
 

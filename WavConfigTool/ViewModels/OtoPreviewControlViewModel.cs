@@ -38,8 +38,9 @@ namespace WavConfigTool.ViewModels
             var otoContainer = (OtoContainer)pagerContent;
             Oto = otoContainer.Oto;
             WaveForm = otoContainer.BaseProjectLineContainer.WaveForm;
-            WavImage = ImagesLibrary.TryGetImage(WaveForm, WavImageType.WAVEFORM);
-            Length = WavImage != null ? WavImage.Width : 1880;
+            var imagePack = ImagesLibrary.GetImagesPack(WaveForm);
+            WavImage = ImagesLibrary.Bitmap2ImageSource(imagePack.WavImage);
+            Length = WavImage != null ? WavImage.Width : 1000;
         }
 
         public override string ToString()

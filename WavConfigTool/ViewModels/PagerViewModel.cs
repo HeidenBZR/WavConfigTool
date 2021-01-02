@@ -50,19 +50,16 @@ namespace WavConfigTool.ViewModels
             ImagesLibrary = imagesLibrary;
             PageContent = new List<WavControlBaseViewModel>();
             SourceCollection = collection;
-
-            UpdateCollection();
             if (!IsOtoMode)
             {
-                foreach (var content in Collection)
+                foreach (var content in SourceCollection)
                 {
-                    var container = content as ProjectLineContainer;
-                    if (container == null)
-                        break;
-                    ImagesLibrary.RegisterWaveForm(container.WaveForm);
-                    taskManager.RequestWaveFormImages(container, WavImageHeight);
+                    ImagesLibrary.RegisterWaveForm(((ProjectLineContainer)content).WaveForm);
+                    taskManager.RequestWaveFormImages(((ProjectLineContainer)content), WavImageHeight);
                 }
             }
+
+            UpdateCollection();
             RaisePropertyChanged(() => PageContent);
             RaisePropertyChanged(() => CurrentPageView);
             RaisePropertyChanged(() => PagesTotal);

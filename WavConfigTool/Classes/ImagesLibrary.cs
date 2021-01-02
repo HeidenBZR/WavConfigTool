@@ -13,60 +13,56 @@ using System.Windows.Media.Imaging;
 
 namespace WavConfigTool.Classes
 {
-    public enum WavImageType
-    {
-        WAVEFORM,
-        FRQ,
-        SPECTRUM
-    }
-
     public class ImagesLibrary
     {
         public delegate void ImagesLibrarySimpleHandler(WaveForm waveForm);
         public event ImagesLibrarySimpleHandler OnImageLoaded = delegate { };
 
-        public ImagesLibrary()
-        {
-            images[WavImageType.WAVEFORM] = new ConcurrentDictionary<string, Bitmap>();
-            images[WavImageType.FRQ] = new ConcurrentDictionary<string, Bitmap>();
-            images[WavImageType.SPECTRUM] = new ConcurrentDictionary<string, Bitmap>();
-        }
-
         public void Clear()
         {
-            images[WavImageType.WAVEFORM].Clear();
-            images[WavImageType.FRQ].Clear();
-            images[WavImageType.SPECTRUM].Clear();
+            images.Clear();
         }
 
         public void RegisterWaveForm(WaveForm waveForm)
         {
-            images[WavImageType.WAVEFORM][waveForm.Path] = null;
-            images[WavImageType.FRQ][waveForm.Path] = null;
-            images[WavImageType.SPECTRUM][waveForm.Path] = null;
+            var pack = new WavImagesPack();
+            pack.IsLoading = true;
+            images.TryAdd(waveForm, pack);
         }
 
         public void Load(WaveForm waveForm, int height, string hash)
         {
+            var hasImage = images.TryGetValue(waveForm, out var pack);
+            if (!hasImage)
+                throw new Exception();
+            if (pack == null)
+                throw new Exception();
+
             if (!waveForm.IsEnabled)
             {
                 ClearWavformImages(waveForm);
-                Console.WriteLine($"failed to load image with hash {hash}");
+                pack.IsLoading = false;
+                pack.IsLoaded = false;
+                Console.WriteLine($"ImagesLibrary: failed to load image with hash {hash}");
                 OnImageLoaded(waveForm);
                 return;
             }
+
             if (waveForm.ImageHash != hash)
-            {
                 ClearWavformImages(waveForm);
-            }
 
-            Console.WriteLine($"started load image with hash {hash}");
-            var yScale = Settings.UserScaleY;
-            LoadWaveForm(waveForm, height, yScale);
-            LoadFrq(waveForm, height);
-            LoadSpectrum(waveForm, waveForm.VisualWidth, height);
+            pack.IsLoading = true;
+            pack.IsLoaded = false;
 
-            Console.WriteLine($"finished load image with hash {hash}");
+            Console.WriteLine($"ImagesLibrary: started load image with hash {hash}");
+            LoadWaveForm(pack, waveForm, height, Settings.UserScaleY);
+            LoadFrq(pack, waveForm, height);
+            LoadSpectrum(pack, waveForm, waveForm.VisualWidth, height);
+            Console.WriteLine($"ImagesLibrary: finished load image with hash {hash}");
+
+            pack.IsLoading = false;
+            pack.IsLoaded = true;
+
             OnImageLoaded(waveForm);
         }
 
@@ -75,42 +71,42 @@ namespace WavConfigTool.Classes
             if (!waveForm.IsEnabled)
             {
                 ClearWavformImages(waveForm);
-                Console.WriteLine($"failed to load spectrum with hash {hash}");
+                Console.WriteLine($"ImagesLibrary: failed to load spectrum with hash {hash}");
                 OnImageLoaded(waveForm);
                 return;
             }
 
-            Console.WriteLine($"started load spectrum with hash {hash}");
-            ClearWavformImageOfType(waveForm, WavImageType.SPECTRUM);
-            LoadSpectrum(waveForm, waveForm.VisualWidth, height);
+            Console.WriteLine($"ImagesLibrary: started load spectrum with hash {hash}");
+            images.TryGetValue(waveForm, out var pack);
+            if (pack == null)
+                throw new Exception();
+            LoadSpectrum(pack, waveForm, waveForm.VisualWidth, height);
 
-            Console.WriteLine($"finished load spectrum with hash {hash}");
+            Console.WriteLine($"ImagesLibrary: finished load spectrum with hash {hash}");
             OnImageLoaded(waveForm);
         }
 
-        public ImageSource TryGetImage(WaveForm waveForm, WavImageType type)
+        public WavImagesPack GetImagesPack(WaveForm waveForm)
         {
             if (waveForm == null)
                 return null;
-            if (!images[type].ContainsKey(waveForm.Path))
-                return null;
-            if (images[type][waveForm.Path] == null)
-                return null;
-            return Bitmap2ImageSource(images[type][waveForm.Path]);
+            images.TryGetValue(waveForm, out var pack);
+            return pack;
         }
 
         public void ClearWavformImages(WaveForm waveForm)
         {
             if (waveForm == null)
                 return;
-            ClearWavformImageOfType(waveForm, WavImageType.FRQ);
-            ClearWavformImageOfType(waveForm, WavImageType.SPECTRUM);
-            ClearWavformImageOfType(waveForm, WavImageType.WAVEFORM);
+
             RegisterWaveForm(waveForm);
         }
 
         public static ImageSource Bitmap2ImageSource(Bitmap bitmap)
         {
+            if (bitmap == null)
+                return null;
+
             var memory = new MemoryStream();
             bitmap.Save(memory, ImageFormat.Png);
             memory.Position = 0;
@@ -158,24 +154,20 @@ namespace WavConfigTool.Classes
             return destImage;
         }
 
-        private ConcurrentDictionary<WavImageType, ConcurrentDictionary<string, Bitmap>> images = new ConcurrentDictionary<WavImageType, ConcurrentDictionary<string, Bitmap>>();
+        private ConcurrentDictionary<WaveForm, WavImagesPack> images = new ConcurrentDictionary<WaveForm, WavImagesPack>();
         private readonly System.Drawing.Color waveformColor = System.Drawing.Color.FromArgb(255, 100, 200, 100);// "#64c864"
         private readonly Spectrogram spectrogram = new Spectrogram();
 
-        private void LoadWaveForm(WaveForm waveForm, int height, double yScale)
+        private void LoadWaveForm(WavImagesPack pack, WaveForm waveForm, int height, double yScale)
         {
-            if (HasImageOfType(waveForm, WavImageType.WAVEFORM))
-                return;
             var bitmap = waveForm.DrawWaveform(height, waveformColor, yScale);
             if (bitmap == null)
                 return;
-            images[WavImageType.WAVEFORM][waveForm.Path] = bitmap;
+            pack.WavImage = bitmap;
         }
 
-        private void LoadFrq(WaveForm waveForm, int height)
+        private void LoadFrq(WavImagesPack pack, WaveForm waveForm, int height)
         {
-            if (HasImageOfType(waveForm, WavImageType.FRQ))
-                return;
             var frq = new Frq();
             frq.Load(waveForm.Path);
             if (frq.Points != null)
@@ -184,32 +176,25 @@ namespace WavConfigTool.Classes
                 var bitmap = frq.DrawPoints(visualPoints, height);
                 if (bitmap == null)
                     return;
-                images[WavImageType.FRQ][waveForm.Path] = bitmap;
+                pack.Frq = bitmap;
             }
         }
 
-        private void LoadSpectrum(WaveForm waveForm, int width, int height)
+        private void LoadSpectrum(WavImagesPack pack, WaveForm waveForm, int width, int height)
         {
-            if (HasImageOfType(waveForm, WavImageType.SPECTRUM))
-                return;
-            var bitmap = spectrogram.MakeSectrogram(waveForm, width, height);
+            var bitmap = spectrogram.MakeSpectrogram(waveForm, width, height);
             if (bitmap == null)
                 return;
-            images[WavImageType.SPECTRUM][waveForm.Path] = bitmap;
+            pack.Spectrogram = bitmap;
         }
+    }
 
-        private void ClearWavformImageOfType(WaveForm waveForm, WavImageType type)
-        {
-            if (images[type].ContainsKey(waveForm.Path) && images[type][waveForm.Path] != null)
-            {
-                images[type][waveForm.Path].Dispose();
-                images[type][waveForm.Path] = null;
-            }
-        }
-
-        private bool HasImageOfType(WaveForm waveForm, WavImageType type)
-        {
-            return images[type].ContainsKey(waveForm.Path) && images[type][waveForm.Path] != null;
-        }
+    public class WavImagesPack
+    {
+        public Bitmap WavImage;
+        public Bitmap Spectrogram;
+        public Bitmap Frq;
+        public bool IsLoading;
+        public bool IsLoaded;
     }
 }
