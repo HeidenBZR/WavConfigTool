@@ -114,14 +114,8 @@ namespace WavConfigTool.Classes
             /// turn the byte array back into a bitmap
             Marshal.Copy(pixels, 0, bitmapData.Scan0, pixels.Length);
             bitmap.UnlockBits(bitmapData);
-
             spectrogramData.Clear();
-
-            var widthToResize = width == 0 ? 1000 : width;
-            var resizedBitmap = ImagesLibrary.ResizeImage(bitmap, widthToResize, height);
-            bitmap.Dispose();
-
-            return resizedBitmap;
+            return bitmap;
         }
     }
 }
