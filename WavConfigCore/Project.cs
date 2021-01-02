@@ -32,36 +32,36 @@ namespace WavConfigCore
         public Dictionary<string, Oto> Otos { get; set; }
         public Oto[] OtoList { get => Otos.Values.ToArray(); }
 
-        public Reclist Reclist { get => reclist; private set { reclist = value; ProjectChanged(); } }
-        public Voicebank Voicebank { get => voicebank; private set { voicebank = value; ProjectChanged(); } }
-        public Replacer Replacer { get => replacer; private set { replacer = value; ProjectChanged(); } }
+        public Reclist Reclist { get => reclist; private set { reclist = value; OnProjectChanged(); } }
+        public Voicebank Voicebank { get => voicebank; private set { voicebank = value; OnProjectChanged(); } }
+        public Replacer Replacer { get => replacer; private set { replacer = value; OnProjectChanged(); } }
         public ProjectOptions ProjectOptions { get; set; }
         public ViewOptions ViewOptions { get; set; }
 
         public bool IsLoaded { get; set; } = false;
         public bool IsChangedAfterBackup { get; private set; }
 
-        public int DecayR { get => restDecay; set { restDecay = value; ProjectChanged(); } }
-        public int DecayV { get => vowelDecay; set { vowelDecay = value; ProjectChanged(); } }
-        public int DecayC { get => consonantDecay; set { consonantDecay = value; ProjectChanged(); } }
-        public int AttackR { get => restAttack; set { restAttack = value; ProjectChanged(); } }
-        public int AttackV { get => vowelAttack; set { vowelAttack = value; ProjectChanged(); } }
-        public int AttackC { get => consonantAttack; set { consonantAttack = value; ProjectChanged(); } }
-        public string Prefix { get => prefix; set { prefix = value; ProjectChanged(); } }
-        public string Suffix { get => suffix; set { suffix = value; ProjectChanged(); } }
-        public string WavPrefix { get => wavPrefix; set { wavPrefix = value; ProjectChanged(); } }
-        public string WavSuffix { get => wavSuffix; set { wavSuffix = value; ProjectChanged(); } }
-        public double UserScaleY { get => userScaleY; set { userScaleY = value; ProjectChanged(); } }
-        public double UserScaleX { get => userScaleX; set { userScaleX = value; ProjectChanged(); } }
+        public int DecayR { get => restDecay; set { restDecay = value; OnProjectChanged(); } }
+        public int DecayV { get => vowelDecay; set { vowelDecay = value; OnProjectChanged(); } }
+        public int DecayC { get => consonantDecay; set { consonantDecay = value; OnProjectChanged(); } }
+        public int AttackR { get => restAttack; set { restAttack = value; OnProjectChanged(); } }
+        public int AttackV { get => vowelAttack; set { vowelAttack = value; OnProjectChanged(); } }
+        public int AttackC { get => consonantAttack; set { consonantAttack = value; OnProjectChanged(); } }
+        public string Prefix { get => prefix; set { prefix = value; OnProjectChanged(); } }
+        public string Suffix { get => suffix; set { suffix = value; OnProjectChanged(); } }
+        public string WavPrefix { get => wavPrefix; set { wavPrefix = value; OnProjectChanged(); } }
+        public string WavSuffix { get => wavSuffix; set { wavSuffix = value; OnProjectChanged(); } }
+        public double UserScaleY { get => userScaleY; set { userScaleY = value; OnProjectChanged(); } }
+        public double UserScaleX { get => userScaleX; set { userScaleX = value; OnProjectChanged(); } }
 
-        public List<ProjectLine> ProjectLines { get => projectLines; set { projectLines = value; ProjectChanged(); } }
-        public Dictionary<string, ProjectLine> ProjectLinesByFilename { get => projectLinesByFilename; set { projectLinesByFilename = value; ProjectChanged(); } }
+        public List<ProjectLine> ProjectLines { get => projectLines; set { projectLines = value; OnProjectChanged(); } }
+        public Dictionary<string, ProjectLine> ProjectLinesByFilename { get => projectLinesByFilename; set { projectLinesByFilename = value; OnProjectChanged(); } }
 
         #endregion
 
-        public event SimpleHandler ProjectChanged = delegate { };
-        public event SimpleHandler ProjectLinesChanged = delegate { };
-        public event SimpleHandler BeforeSave = delegate { };
+        public event SimpleHandler OnProjectChanged = delegate { };
+        public event SimpleHandler OnProjectLinesChanged = delegate { };
+        public event SimpleHandler OnBeforeSave = delegate { };
 
         public Project(string filename = "")
         {
@@ -73,8 +73,8 @@ namespace WavConfigCore
             projectLines = new List<ProjectLine>();
             projectLinesByFilename = new Dictionary<string, ProjectLine>();
             Options = new Dictionary<string, string>();
-            ProjectChanged += HandleProjectChanged;
-            ProjectLinesChanged += HandleProjectLineChanged;
+            OnProjectChanged += HandleProjectChanged;
+            OnProjectLinesChanged += HandleProjectLineChanged;
             IsLoaded = false;
             ResetOto();
         }
@@ -86,7 +86,7 @@ namespace WavConfigCore
                 Voicebank = voicebank;
                 IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
                 CheckEnabled();
-                ProjectChanged();
+                OnProjectChanged();
             }
             catch (Exception ex)
             {
@@ -101,7 +101,7 @@ namespace WavConfigCore
                 Reader.ReclistReader.Current.WriteWithName(Reclist);
             IsLoaded = Voicebank.IsLoaded && Reclist.IsLoaded;
             CheckEnabled();
-            ProjectChanged();
+            OnProjectChanged();
         }
 
         public void SetReplacer(Replacer replacer)
@@ -109,7 +109,7 @@ namespace WavConfigCore
             Replacer = replacer;
             if (reclist.IsLoaded)
                 Reader.ReplacerReader.Current.Write(replacer, Reclist);
-            ProjectChanged();
+            OnProjectChanged();
         }
 
         public void CheckEnabled()
@@ -201,25 +201,26 @@ namespace WavConfigCore
 
         public void ProcessLineAfterRead(ProjectLine projectLine)
         {
-            projectLine.ProjectLineChanged += delegate { ProjectLinesChanged(); };
+            projectLine.ProjectLineChanged += delegate { OnProjectLinesChanged(); };
             projectLine.ProjectLinePointsChanged += delegate { FireChanged(); };
         }
 
         public void HandleBackupSaved()
         {
             IsChangedAfterBackup = false;
+            OnProjectChanged();
         }
 
         public void FireChanged()
         {
             if (!IsLoaded)
                 return;
-            IsChangedAfterBackup = true;
+            OnProjectChanged();
         }
 
         public void FireBeforeSave()
         {
-            BeforeSave();
+            OnBeforeSave();
         }
 
         #region private
@@ -245,7 +246,7 @@ namespace WavConfigCore
 
         private void HandleProjectChanged()
         {
-            FireChanged();
+            IsChangedAfterBackup = true;
         }
 
         private void HandleProjectLineChanged()

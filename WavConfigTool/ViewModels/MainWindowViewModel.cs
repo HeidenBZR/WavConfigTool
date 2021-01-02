@@ -52,12 +52,12 @@ namespace WavConfigTool.ViewModels
         public int SpectrogramQualityX      { get => Spectrogram.QualityX; set => Spectrogram.QualityX = value; }
         public int SpectrogramQualityY      { get => Spectrogram.QualityY; set => Spectrogram.QualityY = value; }
 
-        public int AttackC { get => Project?.AttackC ?? 0; set { Project.AttackC = value; TrySaveProject(); RedrawPoints(); } }
-        public int AttackV { get => Project?.AttackV ?? 0; set { Project.AttackV = value; TrySaveProject(); RedrawPoints(); } }
-        public int AttackR { get => Project?.AttackR ?? 0; set { Project.AttackR = value; TrySaveProject(); RedrawPoints(); } }
-        public int DecayC  { get => Project?.DecayC ?? 0;  set { Project.DecayC = value;  TrySaveProject(); RedrawPoints(); } }
-        public int DecayV  { get => Project?.DecayV ?? 0;  set { Project.DecayV = value;  TrySaveProject(); RedrawPoints(); } }
-        public int DecayR  { get => Project?.DecayR ?? 0;  set { Project.DecayR = value;  TrySaveProject(); RedrawPoints(); } }
+        public int AttackC { get => Project?.AttackC ?? 0; set { Project.AttackC = value; FireProjectChanged(); RedrawPoints(); } }
+        public int AttackV { get => Project?.AttackV ?? 0; set { Project.AttackV = value; FireProjectChanged(); RedrawPoints(); } }
+        public int AttackR { get => Project?.AttackR ?? 0; set { Project.AttackR = value; FireProjectChanged(); RedrawPoints(); } }
+        public int DecayC  { get => Project?.DecayC ?? 0;  set { Project.DecayC = value; FireProjectChanged(); RedrawPoints(); } }
+        public int DecayV  { get => Project?.DecayV ?? 0;  set { Project.DecayV = value; FireProjectChanged(); RedrawPoints(); } }
+        public int DecayR  { get => Project?.DecayR ?? 0;  set { Project.DecayR = value; FireProjectChanged(); RedrawPoints(); } }
 
         public ViewOptions ViewOptions { get; set; }
         public bool DoShowWaveform => ViewOptions != null && ViewOptions.DoShowWaveform;
@@ -75,8 +75,8 @@ namespace WavConfigTool.ViewModels
             set { Project.ProjectOptions.MustHideCompleted = value; UpdatePagerCollection(); }
         }
 
-        public string Prefix { get => Project?.Prefix; set { Project.Prefix = value; TrySaveProject(); } }
-        public string Suffix { get => Project?.Suffix; set { Project.Suffix = value; TrySaveProject(); } }
+        public string Prefix { get => Project?.Prefix; set { Project.Prefix = value; FireProjectChanged(); } }
+        public string Suffix { get => Project?.Suffix; set { Project.Suffix = value; FireProjectChanged(); } }
 
         public string WavPrefix
         {
@@ -84,7 +84,7 @@ namespace WavConfigTool.ViewModels
             set
             {
                 Project.WavPrefix = value;
-                TrySaveProject();
+                SaveSystem.SaveImmediately();
                 ReloadProjectCommand.Execute(0);
             }
         }
@@ -94,7 +94,7 @@ namespace WavConfigTool.ViewModels
             set
             {
                 Project.WavSuffix = value;
-                TrySaveProject();
+                SaveSystem.SaveImmediately();
                 ReloadProjectCommand.Execute(0);
             }
         }
@@ -107,7 +107,7 @@ namespace WavConfigTool.ViewModels
                 if (value <= 0)
                     return;
                 Project.UserScaleY = value / 100.0;
-                TrySaveProject();
+                SaveSystem.SaveImmediately();
                 ReloadProjectCommand.Execute(0);
             }
         }
@@ -119,7 +119,7 @@ namespace WavConfigTool.ViewModels
                 if (value <= 0)
                     return;
                 Project.UserScaleX = value / 100.0;
-                TrySaveProject();
+                SaveSystem.SaveImmediately();
                 ReloadProjectCommand.Execute(0);
             }
         }
@@ -181,11 +181,12 @@ namespace WavConfigTool.ViewModels
                 WavControlsPagerViewModel = new PagerViewModel(containers, ViewOptions, ImagesLibrary, false);
                 PagerViewModel = WavControlsPagerViewModel;
                 PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
-                Project.BeforeSave += WriteProjectOptions;
+                Project.OnBeforeSave += WriteProjectOptions;
                 PagerViewModel.ReadProjectOption(Project.ProjectOptions);
                 UpdatePagerCollection();
                 OtoGenerator = new OtoGenerator(Project);
                 PagerViewModel.StartLoad();
+                Project.OnProjectChanged += delegate { RaisePropertyChanged(nameof(Title)); };
             }
             IsLoading = false;
             App.MainDispatcher.Invoke(Refresh);
@@ -341,7 +342,7 @@ namespace WavConfigTool.ViewModels
             return type.ToString().Substring(0, 1);
         }
 
-        private void TrySaveProject()
+        private void FireProjectChanged()
         {
             if (Project != null && Project.IsLoaded)
                 Project.FireChanged();

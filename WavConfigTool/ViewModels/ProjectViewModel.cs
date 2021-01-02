@@ -76,7 +76,7 @@ namespace WavConfigTool.ViewModels
             _project = project;
             if (_project == null)
                 return;
-            _project.ProjectChanged += () =>
+            _project.OnProjectChanged += () =>
             {
                 RaisePropertiesChanged(
                     () => VoicebankName,
