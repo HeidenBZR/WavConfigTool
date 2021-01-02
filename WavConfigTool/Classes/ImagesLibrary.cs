@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -26,9 +27,9 @@ namespace WavConfigTool.Classes
 
         public ImagesLibrary()
         {
-            images[WavImageType.WAVEFORM] = new Dictionary<string, Bitmap>();
-            images[WavImageType.FRQ] = new Dictionary<string, Bitmap>();
-            images[WavImageType.SPECTRUM] = new Dictionary<string, Bitmap>();
+            images[WavImageType.WAVEFORM] = new ConcurrentDictionary<string, Bitmap>();
+            images[WavImageType.FRQ] = new ConcurrentDictionary<string, Bitmap>();
+            images[WavImageType.SPECTRUM] = new ConcurrentDictionary<string, Bitmap>();
         }
 
         public void Clear()
@@ -63,12 +64,13 @@ namespace WavConfigTool.Classes
             var yScale = Settings.UserScaleY;
             LoadWaveForm(waveForm, height, yScale);
             LoadFrq(waveForm, height);
+            LoadSpectrum(waveForm, waveForm.VisualWidth, height);
 
             Console.WriteLine($"finished load image with hash {hash}");
             OnImageLoaded(waveForm);
         }
 
-        public void LoadSpectrum(WaveForm waveForm, int height, string hash)
+        public void RequestLoadSpectrum(WaveForm waveForm, int height, string hash)
         {
             if (!waveForm.IsEnabled)
             {
@@ -156,7 +158,7 @@ namespace WavConfigTool.Classes
             return destImage;
         }
 
-        private Dictionary<WavImageType, Dictionary<string, Bitmap>> images = new Dictionary<WavImageType, Dictionary<string, Bitmap>>();
+        private ConcurrentDictionary<WavImageType, ConcurrentDictionary<string, Bitmap>> images = new ConcurrentDictionary<WavImageType, ConcurrentDictionary<string, Bitmap>>();
         private readonly System.Drawing.Color waveformColor = System.Drawing.Color.FromArgb(255, 100, 200, 100);// "#64c864"
         private readonly Spectrogram spectrogram = new Spectrogram();
 

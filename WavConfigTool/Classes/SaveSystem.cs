@@ -36,7 +36,7 @@ namespace WavConfigTool.Classes
 
         public void SaveImmediately()
         {
-            Save();
+            projectManager.Save(Settings.ProjectFile);
         }
 
         private const int SAVE_DELAY_SEC = 5;
@@ -45,7 +45,7 @@ namespace WavConfigTool.Classes
 
         private void Save()
         {
-            if (projectManager.Project != null && projectManager.Project.IsLoaded)
+            if (projectManager.Project != null && projectManager.Project.IsLoaded && projectManager.Project.IsChangedAfterBackup)
             {
                 projectManager.Save(Settings.ProjectFile);
                 projectManager.SaveBackup();
@@ -55,7 +55,7 @@ namespace WavConfigTool.Classes
         private void HandleApplicationExit(object sender, System.Windows.ExitEventArgs e)
         {
             Stop();
-            Save();
+            SaveImmediately();
         }
     }
 }

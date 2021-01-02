@@ -106,7 +106,6 @@ namespace WavConfigTool.ViewModels
             SubscribePagerContent();
 
             SetIsLoading();
-            projectLineContainer.LoadImages(Height);
         }
 
         public override void Ready()
@@ -534,7 +533,7 @@ namespace WavConfigTool.ViewModels
 
         public ICommand ReloadCommand => new DelegateCommand(() =>
         {
-            GetProjectLineContainer().LoadImages(Height);
+            GetProjectLineContainer().RequestReload();
         }, () => !IsLoading);
 
         public ICommand CreateSpectrumCommand => new DelegateCommand(() =>

@@ -178,14 +178,14 @@ namespace WavConfigTool.ViewModels
                     }));
                 }
 
-                WavControlsPagerViewModel = new PagerViewModel(containers, ViewOptions, ImagesLibrary);
+                WavControlsPagerViewModel = new PagerViewModel(containers, ViewOptions, ImagesLibrary, false);
                 PagerViewModel = WavControlsPagerViewModel;
                 PagerViewModel.PagerChanged += delegate { RaisePropertyChanged(() => Title); };
                 Project.BeforeSave += WriteProjectOptions;
                 PagerViewModel.ReadProjectOption(Project.ProjectOptions);
                 UpdatePagerCollection();
-                PagerViewModel.WaitForPageLoadedAndLoadRest();
                 OtoGenerator = new OtoGenerator(Project);
+                PagerViewModel.StartLoad();
             }
             IsLoading = false;
             App.MainDispatcher.Invoke(Refresh);
@@ -318,7 +318,7 @@ namespace WavConfigTool.ViewModels
                 Project.ResetOto();
                 container.ProjectLine.Recline.ResetOto();
                 OtoGenerator.GenerateFromProjectLine(container.ProjectLine);
-                OtoPagerViewModel = new PagerViewModel(container.GenerateOtoPreview(), ViewOptions, ImagesLibrary);
+                OtoPagerViewModel = new PagerViewModel(container.GenerateOtoPreview(), ViewOptions, ImagesLibrary, true);
                 OtoPagerViewModel.SetBase(container);
                 OtoPagerViewModel.OtoMode();
                 OtoPagerViewModel.SetPageSizeCommand.Execute(Project.ProjectOptions.OtoPageSize);

@@ -43,28 +43,35 @@ namespace WavConfigTool.ViewModels
             IsHidden = false;
         }
 
-        public PagerViewModel(List<PagerContentBase> collection, ViewOptions viewOptions, ImagesLibrary imagesLibrary)
+        public PagerViewModel(List<PagerContentBase> collection, ViewOptions viewOptions, ImagesLibrary imagesLibrary, bool isOto)
         {
+            IsOtoMode = isOto;
             ViewOptions = viewOptions;
             ImagesLibrary = imagesLibrary;
             PageContent = new List<WavControlBaseViewModel>();
             SourceCollection = collection;
-            ProjectLineContainer first = null;
-            foreach (var content in collection)
-            {
-                var container = content as ProjectLineContainer;
-                if (container == null)
-                    break;
-                ImagesLibrary.RegisterWaveForm(container.WaveForm);
-                if (first == null)
-                    first = container;
-            }
+
             UpdateCollection();
+            if (!IsOtoMode)
+            {
+                foreach (var content in Collection)
+                {
+                    var container = content as ProjectLineContainer;
+                    if (container == null)
+                        break;
+                    ImagesLibrary.RegisterWaveForm(container.WaveForm);
+                    taskManager.RequestWaveFormImages(container, WavImageHeight);
+                }
+            }
             RaisePropertyChanged(() => PageContent);
             RaisePropertyChanged(() => CurrentPageView);
             RaisePropertyChanged(() => PagesTotal);
             IsHidden = false;
-            //ImagesLibrary.LoadSpectrum(first.WaveForm, 100, first.WaveForm.ImageHash);
+        }
+
+        public void StartLoad()
+        {
+            taskManager.Start();
         }
 
         public void RequestUpdateCollection()
@@ -113,7 +120,6 @@ namespace WavConfigTool.ViewModels
         public void OtoMode()
         {
             CurrentPage = 0;
-            IsOtoMode = true;
             Refresh();
         }
 
@@ -123,30 +129,6 @@ namespace WavConfigTool.ViewModels
             IsHidden = false;
             UpdateCollection();
             UpdatePageContent();
-        }
-
-        public void WaitForPageLoadedAndLoadRest()
-        {
-            isLoadRestAllowed = true;
-            var PageContentLocal = PageContent.ToArray();
-            foreach (var control in PageContentLocal)
-            {
-                var wavControl = control as WavControlViewModel;
-                if (wavControl == null)
-                    return;
-                wavControl.OnLoaded += () =>
-                {
-                    if (!isLoadRestAllowed)
-                        return;
-                    foreach (var innerControl in PageContentLocal)
-                    {
-                        var innerWavControl = control as WavControlViewModel;
-                        if (innerWavControl == null || !innerWavControl.IsLoaded)
-                            return;
-                    }
-                    LoadRest();
-                };
-            }
         }
 
         public void UnsubscribeBaseChanged()
@@ -178,8 +160,8 @@ namespace WavConfigTool.ViewModels
         private int _currentPage = 0;
         private int _pageSize = 7;
         private ProjectOptions ProjectOptions;
-        private bool isLoadRestAllowed = false;
         private readonly int WavImageHeight = 100;
+        private TaskManager taskManager = new TaskManager();
 
         private void UpdatePageContent()
         {
@@ -234,16 +216,13 @@ namespace WavConfigTool.ViewModels
                     }
                 }
             }
-            //await Task.Run(() =>
-            //{
-            //    if (!IsOtoMode)
-            //        Thread.Sleep(1000);
-
-            //    SetPageContentReady(true);
-            //});
 
             SetPageContentReady(true);
             RaisePropertyChanged(nameof(PageContent));
+
+            if (!IsOtoMode)
+                foreach (var controller in PageContent)
+                    taskManager.RequestWaveFormImageForPage((ProjectLineContainer)controller.PagerContent, WavImageHeight);
         }
 
         private void InitWavControlBase(WavControlBaseViewModel model)
@@ -277,18 +256,6 @@ namespace WavConfigTool.ViewModels
             foreach (var control in PageContent)
             {
                 control.SetReady(ready);
-            }
-        }
-
-        private void LoadRest()
-        {
-            isLoadRestAllowed = false;
-            foreach (var control in Collection)
-            {
-                var container = control as ProjectLineContainer;
-                if (container == null || container.IsLoadingImages || container.IsLoadingImages)
-                    continue;
-                container.LoadImages(WavImageHeight);
             }
         }
 

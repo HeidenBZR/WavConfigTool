@@ -72,6 +72,9 @@ namespace WavConfigTool.Classes
                 spectrogramData.Add(fftOutput);
             }
 
+            reader.Close();
+            reader.Dispose();
+
             var spectrogramWidth = spectrogramData.Count;
             var spectrogramHeight = spectrogramData[0].Length;
 
@@ -112,17 +115,11 @@ namespace WavConfigTool.Classes
             Marshal.Copy(pixels, 0, bitmapData.Scan0, pixels.Length);
             bitmap.UnlockBits(bitmapData);
 
-            reader.Close();
-            reader.Dispose();
-
             spectrogramData.Clear();
 
             var widthToResize = width == 0 ? 1000 : width;
             var resizedBitmap = ImagesLibrary.ResizeImage(bitmap, widthToResize, height);
             bitmap.Dispose();
-
-            //resizedBitmap.Save("spectrum.png", ImageFormat.Png);
-            //return null;
 
             return resizedBitmap;
         }

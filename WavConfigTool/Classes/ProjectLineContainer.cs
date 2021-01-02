@@ -21,6 +21,7 @@ namespace WavConfigTool.Classes
         public event PhonemeTypeArgHandler OnChangePhonemeModeRequested = delegate { };
         public event OnAddPointRequestHandler OnAddPointRequested = delegate { };
         public event OnPointAddedHandler OnPointAdded = delegate { };
+        public event SimpleHandler OnReloadRequested = delegate { };
 
         public ProjectLine ProjectLine { get; private set; }
         public WaveForm WaveForm { get; private set; }
@@ -37,7 +38,6 @@ namespace WavConfigTool.Classes
             this.imagesLibrary = imagesLibrary;
             this.wavPlayer = wavPlayer;
             this.hash = hash;
-            this.sampleName = sampleName;
             if (!string.IsNullOrEmpty(ProjectLine?.Recline?.Description))
                 viewName = $"{ProjectLine?.Recline?.Description} [{ProjectLine?.Recline?.Name}]";
             else
@@ -85,26 +85,30 @@ namespace WavConfigTool.Classes
             OnGenerateOtoRequested();
         }
 
-        public async void LoadImages(int height)
+        public void RequestReload()
         {
-            IsLoadingImages = true;
-            IsLoadedImages = false;
-            ProjectLine.UpdateEnabled();
-            if (!ProjectLine.IsEnabled)
-                FinishImagesLoading(false);
-            else
+            OnReloadRequested();
+        }
+
+        public void LoadImages(int height)
+        {
+            App.MainDispatcher.Invoke(delegate
             {
-                await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
-                {
-                    imagesLibrary.Load(WaveForm, height, hash);
-                })).ContinueWith(delegate
-                {
-                    App.MainDispatcher.Invoke(delegate
-                    {
-                        FinishImagesLoading(true);
-                    });
-                });
-            }
+                IsLoadingImages = true;
+                IsLoadedImages = false;
+                ProjectLine.UpdateEnabled();
+                if (!ProjectLine.IsEnabled)
+                    FinishImagesLoading(false);
+            });
+            if (!ProjectLine.IsEnabled)
+                return;
+
+            imagesLibrary.Load(WaveForm, height, hash);
+
+            App.MainDispatcher.Invoke(delegate
+            {
+                FinishImagesLoading(true);
+            });
         }
 
         public async void LoadSpectrum(int height)
@@ -118,7 +122,7 @@ namespace WavConfigTool.Classes
             {
                 await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
                 {
-                    imagesLibrary.LoadSpectrum(WaveForm, height, hash);
+                    imagesLibrary.RequestLoadSpectrum(WaveForm, height, hash);
                 })).ContinueWith(delegate
                 {
                     App.MainDispatcher.Invoke(delegate
@@ -177,9 +181,13 @@ namespace WavConfigTool.Classes
             OnChangePhonemeModeRequested(mode);
         }
 
+        public override string ToString()
+        {
+            return $"ProjectLineContainer {ProjectLine?.ToString()}";
+        }
+
         private readonly ImagesLibrary imagesLibrary;
         private readonly WavPlayer wavPlayer;
-        private readonly string sampleName;
         private readonly string hash;
         private readonly string viewName;
 
