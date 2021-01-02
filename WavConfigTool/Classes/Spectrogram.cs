@@ -41,17 +41,39 @@ namespace WavConfigTool.Classes
             if (!waveForm.IsEnabled)
                 return null;
 
-            var reader = new AudioFileReader(waveForm.Path);
+            var reader = new WaveFileReader(waveForm.Path);
 
             var bufferLength = 1024 * QualityX;
+            var buffer = new byte[bufferLength];
             int bytesRecorded;
             var spectrogramData = new List<double[]>();
             var bytesCount = reader.WaveFormat.BlockAlign;
+            var waveData = new float[reader.Length / bytesCount];
 
-
-            var waveBuffer = new float[bufferLength];
-            while ((bytesRecorded = reader.Read(waveBuffer, 0, bytesCount)) > 0)
+            var step = 0;
+            while ((bytesRecorded = reader.Read(buffer, 0, bytesCount)) > 0)
             {
+                // Converting the byte buffer in readable data
+                float value;
+                if (reader.WaveFormat.BitsPerSample == 16)
+                    value = BitConverter.ToInt16(buffer, 0) / ((float)Int16.MaxValue + 1);
+                else if (reader.WaveFormat.BitsPerSample == 32)
+                    value = BitConverter.ToInt32(buffer, 0) / ((float)Int32.MaxValue + 1);
+                else if (reader.WaveFormat.BitsPerSample == 64)
+                    value = BitConverter.ToInt64(buffer, 0) / ((float)Int64.MaxValue + 1);
+                else
+                    return null;
+                if (step % reader.WaveFormat.Channels != 0)
+                    continue;
+                waveData[step] = value;
+                step++;
+            }
+
+            var waveStep = bufferLength / QualityY;
+            for (var waveI = 0; waveI + bufferLength < waveData.Length; waveI += waveStep)
+            {
+                var waveBuffer = waveData.Skip(waveI).Take(bufferLength).ToArray();
+
                 Complex[] tempbuffer = new Complex[waveBuffer.Length];
 
                 for (int i = 0; i < tempbuffer.Length; i++)
@@ -71,10 +93,6 @@ namespace WavConfigTool.Classes
                 }
                 spectrogramData.Add(fftOutput);
             }
-
-            reader.Close();
-            reader.Dispose();
-
             var spectrogramWidth = spectrogramData.Count;
             var spectrogramHeight = spectrogramData[0].Length;
 
@@ -84,7 +102,7 @@ namespace WavConfigTool.Classes
             ///modify the indexed palette
             ColorPalette pallette = bitmap.Palette;
             for (int i = 0; i < 256; i++)
-                pallette.Entries[i] = System.Drawing.Color.FromArgb(255 - i, 255, 0, 0);
+                pallette.Entries[i] = System.Drawing.Color.FromArgb(255 - i, 255 - i / 2, 40, 255 - i);
             bitmap.Palette = pallette;
 
             /// prepare to access data via the bitmapdata object
@@ -114,6 +132,10 @@ namespace WavConfigTool.Classes
             /// turn the byte array back into a bitmap
             Marshal.Copy(pixels, 0, bitmapData.Scan0, pixels.Length);
             bitmap.UnlockBits(bitmapData);
+
+            reader.Close();
+            reader.Dispose();
+
             spectrogramData.Clear();
             return bitmap;
         }

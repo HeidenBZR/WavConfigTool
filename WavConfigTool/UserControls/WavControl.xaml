@@ -117,12 +117,6 @@
         </Canvas>
         <Canvas Name="WavImages"
                 Grid.Row="1">
-            <Image Name="WavFormImage"
-                   Height="{Binding Height, FallbackValue=100}"
-                   HorizontalAlignment="Left"
-                   Visibility="{Binding DoShowWaveform, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                   Source="{Binding WavImage}">
-            </Image>
             <Image Name="SpectrumImage"
                    Height="{Binding Height, FallbackValue=100}"
                    Width="{Binding ElementName=WavFormImage, Path=ActualWidth}"
@@ -130,6 +124,12 @@
                    HorizontalAlignment="Left"
                    Visibility="{Binding DoShowSpectrum, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                    Source="{Binding SpectrumImage}">
+            </Image>
+            <Image Name="WavFormImage"
+                   Height="{Binding Height, FallbackValue=100}"
+                   HorizontalAlignment="Left"
+                   Visibility="{Binding DoShowWaveform, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                   Source="{Binding WavImage}">
             </Image>
             <Image Name="FrqImage"
                    Height="{Binding Height, FallbackValue=100}"

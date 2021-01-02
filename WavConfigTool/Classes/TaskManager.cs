@@ -53,8 +53,11 @@ namespace WavConfigTool.Classes
             }
 
             taskQueue.TryRemove(container, out var task);
-            runningTasks.TryAdd(container, task);
-            task.Start();
+            if (task != null)
+            {
+                runningTasks.TryAdd(container, task);
+                task.Start();
+            }
 
             if (runningTasks.Count < MAX_TASK_COUNT)
                 StartTask();
