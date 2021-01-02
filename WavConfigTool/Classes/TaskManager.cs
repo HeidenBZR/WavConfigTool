@@ -47,16 +47,14 @@ namespace WavConfigTool.Classes
             }
 
             var container = TakeTaskContainer();
-            if (container == null)
+            if (container != null)
             {
-                throw new Exception();
-            }
-
-            taskQueue.TryRemove(container, out var task);
-            if (task != null)
-            {
-                runningTasks.TryAdd(container, task);
-                task.Start();
+                taskQueue.TryRemove(container, out var task);
+                if (task != null)
+                {
+                    runningTasks.TryAdd(container, task);
+                    task.Start();
+                }
             }
 
             if (runningTasks.Count < MAX_TASK_COUNT)

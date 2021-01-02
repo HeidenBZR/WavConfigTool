@@ -32,7 +32,7 @@ namespace WavConfigTool.Classes
         public static bool IsTested = false;
 
         public static int SpectrumShift = 0;
-        public static double SpectrumScale = 1;
+        public static double SpectrumScale = 2;
         public static int QualityX = 1;
         public static int QualityY = 1;
 
@@ -43,7 +43,12 @@ namespace WavConfigTool.Classes
 
             var reader = new WaveFileReader(waveForm.Path);
 
-            var bufferLength = 1024 * QualityX;
+            var localSpectrumShift = SpectrumShift;
+            var localSpectrumScale = SpectrumScale;
+            var localQualityX = QualityX;
+            var localQualityY = QualityY;
+
+            var bufferLength = 1024 * localQualityX;
             var buffer = new byte[bufferLength];
             int bytesRecorded;
             var spectrogramData = new List<double[]>();
@@ -69,7 +74,7 @@ namespace WavConfigTool.Classes
                 step++;
             }
 
-            var waveStep = bufferLength / QualityY;
+            var waveStep = bufferLength / localQualityY;
             for (var waveI = 0; waveI + bufferLength < waveData.Length; waveI += waveStep)
             {
                 var waveBuffer = waveData.Skip(waveI).Take(bufferLength).ToArray();
@@ -102,7 +107,7 @@ namespace WavConfigTool.Classes
             ///modify the indexed palette
             ColorPalette pallette = bitmap.Palette;
             for (int i = 0; i < 256; i++)
-                pallette.Entries[i] = System.Drawing.Color.FromArgb(255 - i, 255, 0, 0);
+                pallette.Entries[i] = System.Drawing.Color.FromArgb(255 - i, 0, 0, 255);
             bitmap.Palette = pallette;
 
             /// prepare to access data via the bitmapdata object
@@ -117,8 +122,8 @@ namespace WavConfigTool.Classes
             {
                 for (int row = 0; row < spectrogramData[0].Length; row++)
                 {
-                    double pixelVal = Math.Pow(spectrogramData[col][row] * SpectrumScale, 2);
-                    pixelVal -= SpectrumShift;
+                    double pixelVal = Math.Pow(spectrogramData[col][row] * localSpectrumScale, 2);
+                    pixelVal -= localSpectrumShift;
                     pixelVal = Math.Max(0, pixelVal);
                     pixelVal = Math.Min(255, pixelVal);
 
