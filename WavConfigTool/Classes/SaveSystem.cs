@@ -39,7 +39,7 @@ namespace WavConfigTool.Classes
             projectManager.Save(Settings.ProjectFile);
         }
 
-        private const int SAVE_DELAY_SEC = 5;
+        private const int SAVE_DELAY_SEC = 15;
         private readonly ProjectManager projectManager;
         private readonly Scheduler scheduler = new Scheduler();
 
