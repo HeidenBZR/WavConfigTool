@@ -169,7 +169,7 @@ namespace WavConfigTool.ViewModels
                 for (var i = 0; i < Project.ProjectLines.Count; i++)
                 {
                     var index = i;
-                    await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
+                    await Task.Run(() => ExceptionCatcher.Current.CatchOnAction(() =>
                     {
                         if (Project.ProjectLines[index].Recline != null)
                         {
@@ -475,7 +475,7 @@ namespace WavConfigTool.ViewModels
 
         public ICommand LoadedCommand => new DelegateCommand(() =>
         {
-            ProjectManager.LoadProject(Settings.ProjectFile);
+            ExceptionCatcher.Current.CatchOnAction(() => ProjectManager.LoadProject(Settings.ProjectFile), "Failed to load project.");
             LoadProjectAsync();
             Refresh();
         }, () => true);
@@ -484,7 +484,7 @@ namespace WavConfigTool.ViewModels
         {
             var hadProject = Project != null && Project.IsLoaded;
             SetWavConfigMode.Execute(null);
-            ProjectManager.LoadProject(Settings.ProjectFile);
+            ExceptionCatcher.Current.CatchOnAction(() => ProjectManager.LoadProject(Settings.ProjectFile), "Failed to load project.");
             LoadProjectAsync();
             Refresh();
             if (hadProject)

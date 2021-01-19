@@ -38,13 +38,13 @@ namespace WavConfigCore
         public void LoadProject(string lastProject)
         {
             Reset();
-            CheckForLast(lastProject);
+            LoadIfExists(lastProject);
         }
 
         public void Open(string filename)
         {
             Reset();
-            CheckForLast(filename);
+            LoadIfExists(filename);
         }
 
         public void CreateProject(string filename = "")
@@ -87,6 +87,8 @@ namespace WavConfigCore
 
         public void Save(string projectPath)
         {
+            if (Project == null || !Project.IsLoaded)
+                return;
             Project.FireBeforeSave();
             Console.WriteLine("ProjectManager: Save " + DateTime.Now.ToString());
             ProjectReader.Current.Write(projectPath, Project);
@@ -123,12 +125,12 @@ namespace WavConfigCore
 
         private const int BACKUP_COUNT = 50;
 
-        private void CheckForLast(string lastProject)
+        private void LoadIfExists(string filename)
         {
-            if (File.Exists(lastProject))
+            if (File.Exists(filename))
             {
-                Project = ProjectReader.Current.Read(lastProject);
-                AfterProjectLoaded(lastProject);
+                Project = ProjectReader.Current.Read(filename);
+                AfterProjectLoaded(filename);
             }
         }
 

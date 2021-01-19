@@ -36,7 +36,7 @@ namespace WavConfigTool.Classes
 
         public void SaveImmediately()
         {
-            projectManager.Save(Settings.ProjectFile);
+            ExceptionCatcher.Current.CatchOnAction(() => projectManager.Save(Settings.ProjectFile), "Failed to save project");
         }
 
         private const int SAVE_DELAY_SEC = 15;
@@ -47,8 +47,8 @@ namespace WavConfigTool.Classes
         {
             if (projectManager.Project != null && projectManager.Project.IsLoaded && projectManager.Project.IsChangedAfterBackup)
             {
-                projectManager.Save(Settings.ProjectFile);
-                projectManager.SaveBackup();
+                ExceptionCatcher.Current.CatchOnAction(() => projectManager.Save(Settings.ProjectFile), "Failed to save project");
+                ExceptionCatcher.Current.CatchOnAction(() => projectManager.SaveBackup(), "Failed to save backup");
             }
         }
 

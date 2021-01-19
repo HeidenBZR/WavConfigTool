@@ -31,7 +31,7 @@ namespace WavConfigTool.Classes
             MessageBox.Show(text, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        public void CatchOnAsyncCallback(Action action, string message = "")
+        public void CatchOnAction(Action action, string message = "")
         {
 #if !DEBUG
             try

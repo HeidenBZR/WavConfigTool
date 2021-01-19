@@ -21,7 +21,7 @@ namespace WavConfigTool.Classes
 
         public void RequestWaveFormImages(ProjectLineContainer container, int height)
         {
-            var task = new Task(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() => container.LoadImages(height), $"Failed to load images for [{container}]"));
+            var task = new Task(() => ExceptionCatcher.Current.CatchOnAction(() => container.LoadImages(height), $"Failed to load images for [{container}]"));
             task.ContinueWith(delegate { HandleLoaded(container); });
             taskQueue[container] = task;
         }

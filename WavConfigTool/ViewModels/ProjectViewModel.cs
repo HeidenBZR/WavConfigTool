@@ -68,7 +68,7 @@ namespace WavConfigTool.ViewModels
         private async void GetReclistsAsync()
         {
             Reclists.Clear();
-            await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(GetReclists));
+            await Task.Run(() => ExceptionCatcher.Current.CatchOnAction(GetReclists));
         }
 
         private void SetProject(Project project)

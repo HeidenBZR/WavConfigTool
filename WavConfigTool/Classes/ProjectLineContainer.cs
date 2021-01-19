@@ -120,7 +120,7 @@ namespace WavConfigTool.Classes
                 FinishImagesLoading(false);
             else
             {
-                await Task.Run(() => ExceptionCatcher.Current.CatchOnAsyncCallback(() =>
+                await Task.Run(() => ExceptionCatcher.Current.CatchOnAction(() =>
                 {
                     imagesLibrary.RequestLoadSpectrum(WaveForm, height, hash);
                 })).ContinueWith(delegate
