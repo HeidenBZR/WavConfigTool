@@ -90,6 +90,7 @@ namespace WavConfigTool.ViewModels
             ProjectOptions = projectOptions;
             SetPageSizeCommand.Execute(projectOptions.PageSize);
             SetPageCommand.Execute(projectOptions.LastPage);
+            ValidatePage();
             Refresh();
         }
 
@@ -272,8 +273,15 @@ namespace WavConfigTool.ViewModels
                     Collection.Add(control);
                 }
             }
+            ValidatePage();
             Refresh();
             RaisePropertiesChanged(() => Collection, () => CurrentPage);
+        }
+
+        private void ValidatePage()
+        {
+            if (CurrentPage < 0 || CurrentPage >= PagesTotal)
+                CurrentPage = 0;
         }
 
         #endregion
