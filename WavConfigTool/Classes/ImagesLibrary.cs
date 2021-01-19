@@ -107,16 +107,18 @@ namespace WavConfigTool.Classes
             if (bitmap == null)
                 return null;
 
-            var memory = new MemoryStream();
-            bitmap.Save(memory, ImageFormat.Png);
-            memory.Position = 0;
-
             var bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.StreamSource = memory;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.EndInit();
-            bitmapImage.Freeze();
+            using (var memory = new MemoryStream())
+            {
+                bitmap.Save(memory, ImageFormat.Png);
+                memory.Position = 0;
+
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+            }
 
             return bitmapImage;
         }
