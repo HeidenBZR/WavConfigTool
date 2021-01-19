@@ -106,8 +106,6 @@ namespace WavConfigCore
             }
         }
 
-#if DEBUG
-
         public bool IsInGroup(string filename, string groupName)
         {
             for (var i = 0; i < WavGroups.Count(); i++)
@@ -119,10 +117,14 @@ namespace WavConfigCore
             }
             return false;
         }
+
         private bool IsConfigured()
         {
             return Default != null || wavGroupsByFilename != null && wavGroupsByFilename.Count > 0;
         }
+
+#if DEBUG
+
 
 
 #endif
