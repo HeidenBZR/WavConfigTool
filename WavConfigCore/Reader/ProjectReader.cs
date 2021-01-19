@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WavConfigCore.Tools;
 using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace WavConfigCore.Reader
 {
@@ -38,16 +39,8 @@ namespace WavConfigCore.Reader
 
         public IOProject ReadYaml(string filename)
         {
-            IOProject ioProject = null;
-            try
-            {
-                using (var fileStream = new FileStream(filename, FileMode.Open))
-                {
-                    var serializer = new Deserializer();
-                    ioProject = serializer.Deserialize(new StreamReader(fileStream, Encoding.UTF8), typeof(IOProject)) as IOProject;
-                }
-            }
-            catch { }
+            string yaml = File.ReadAllText(filename, Encoding.UTF8);
+            var ioProject = deserializer.Deserialize<IOProject>(yaml);
             return ioProject;
         }
 
@@ -60,16 +53,15 @@ namespace WavConfigCore.Reader
 
         public void WriteYaml(string filename, IOProject ioProject)
         {
-            try
-            {
-                using (var writer = new StreamWriter(filename, false, Encoding.UTF8))
-                {
-                    var serializer = new Serializer();
-                    serializer.Serialize(writer, ioProject, typeof(IOProject));
-                }
-            }
-            catch (IOException ex) { }
+            var yaml = serializer.Serialize(ioProject);
+            if (yaml.Length == 0)
+                throw new Exception("Failed to serialize project, project wasn't saved");
+            else
+                File.WriteAllText(filename, yaml, Encoding.UTF8);
         }
+
+        private ISerializer serializer = new SerializerBuilder().Build();
+        private IDeserializer deserializer = new DeserializerBuilder().Build();
 
         private IOProject GetIOProject(Project project)
         {

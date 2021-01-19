@@ -6,65 +6,59 @@ using System.Threading.Tasks;
 
 namespace WavConfigCore.Reader
 {
-
-    [Serializable]
     public class IOWavOptions
     {
-        public string WavPrefix;
-        public string WavSuffix;
-        public double UserScaleY = 1;
-        public double UserScaleX = 1;
+        public string WavPrefix { get; set; }
+        public string WavSuffix { get; set; }
+        public double UserScaleY { get; set; } = 1;
+        public double UserScaleX { get; set; } = 1;
     }
-    [Serializable]
+
     public class IOOtoOptions
     {
-        public string OtoPrefix;
-        public string OtoSuffix;
-        public int VowelDecay = 170;
-        public int ConsonantDecay = 80;
-        public int RestDecay = 250;
-        public int VowelAttack = 60;
-        public int ConsonantAttack = 40;
-        public int RestAttack = 50;
+        public string OtoPrefix { get; set; }
+        public string OtoSuffix { get; set; }
+        public int VowelDecay { get; set; } = 170;
+        public int ConsonantDecay { get; set; } = 80;
+        public int RestDecay { get; set; } = 250;
+        public int VowelAttack { get; set; } = 60;
+        public int ConsonantAttack { get; set; } = 40;
+        public int RestAttack { get; set; } = 50;
     }
 
-    [Serializable]
     public class IOWavConfig
     {
-        public string File = "";
-        public int[] Vowels = new int[0];
-        public int[] Consonants = new int[0];
-        public int[] Rests = new int[0];
+        public string File { get; set; } = "";
+        public int[] Vowels { get; set; } = new int[0];
+        public int[] Consonants { get; set; } = new int[0];
+        public int[] Rests { get; set; } = new int[0];
     }
 
-    [Serializable]
     public class IOProjectOptions
     {
-        public int PageSize = 5;
-        public int OtoPageSize = 5;
-        public int LastPage = 0;
-        public bool MustHideCompleted;
-        public bool MustHideNotEnabled;
+        public int PageSize { get; set; } = 5;
+        public int OtoPageSize { get; set; } = 5;
+        public int LastPage { get; set; } = 0;
+        public bool MustHideCompleted { get; set; }
+        public bool MustHideNotEnabled { get; set; }
     }
 
-    [Serializable]
     public class IOViewOptions
     {
-        public bool DoShowPitch = true;
-        public bool DoShowSpectrum = false;
-        public bool DoShowWaveform = true;
+        public bool DoShowPitch { get; set; } = true;
+        public bool DoShowSpectrum { get; set; } = false;
+        public bool DoShowWaveform { get; set; } = true;
     }
 
-    [Serializable]
     public class IOProject
     {
-        public string Voicebank;
-        public string Reclist;
-        public string Replacer = "";
-        public IOWavOptions WavOptions = new IOWavOptions();
-        public IOOtoOptions OtoOptions = new IOOtoOptions();
-        public IOProjectOptions ProjectOptions = new IOProjectOptions();
-        public IOViewOptions ViewOptions = new IOViewOptions();
-        public IOWavConfig[] WavConfigs = new IOWavConfig[0];
+        public string Voicebank { get; set; }
+        public string Reclist { get; set; }
+        public string Replacer { get; set; } = "";
+        public IOWavOptions WavOptions { get; set; } = new IOWavOptions();
+        public IOOtoOptions OtoOptions { get; set; } = new IOOtoOptions();
+        public IOProjectOptions ProjectOptions { get; set; } = new IOProjectOptions();
+        public IOViewOptions ViewOptions { get; set; } = new IOViewOptions();
+        public IOWavConfig[] WavConfigs { get; set; } = new IOWavConfig[0];
     }
 }
