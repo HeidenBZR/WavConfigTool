@@ -84,13 +84,18 @@ namespace WavConfigTool.Classes
         {
             var width = (int) (points[points.Length - 1].X + 1);
             var res = new Bitmap(width, (int)height);
-            using (Brush fillBrush = new SolidBrush(color))
+            using (var fillBrush = new SolidBrush(color))
+            using (var pen = new Pen(color))
             using (Graphics g = Graphics.FromImage(res))
             {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                foreach (var p in points)
+                var path = new System.Drawing.Drawing2D.GraphicsPath();
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                for (int i = 0; i + 1 < points.Length; i++)
                 {
-                    g.FillRectangle(fillBrush, (float)p.X, (float)p.Y, SIZE, SIZE);
+                    Point p = points[i];
+                    Point p2 = points[i + 1];
+                    g.DrawLine(pen, (float)p.X, (float)p.Y, (float)p2.X, (float)p2.Y);
+                    g.FillRectangle(fillBrush, (float)p.X - SIZE / 2f, (float)p.Y - SIZE / 2f, SIZE, SIZE);
                 }
             }
 
@@ -100,7 +105,7 @@ namespace WavConfigTool.Classes
         #region private
 
         private readonly Color color = Color.FromArgb(248, 36, 36);
-        private const int SIZE = 2;
+        private const int SIZE = 4;
 
         private void Read()
         {
