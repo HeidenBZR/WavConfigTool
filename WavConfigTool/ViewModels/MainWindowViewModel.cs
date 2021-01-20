@@ -151,6 +151,7 @@ namespace WavConfigTool.ViewModels
             IsDebug = true;
 #endif
             SaveSystem = new SaveSystem(ProjectManager);
+            SaveSystem.OnSaved += delegate { RaisePropertyChanged(nameof(Title)); };
         }
 
         #region private

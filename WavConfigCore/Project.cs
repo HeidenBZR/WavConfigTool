@@ -208,7 +208,6 @@ namespace WavConfigCore
         public void HandleBackupSaved()
         {
             IsChangedAfterBackup = false;
-            OnProjectChanged();
         }
 
         public void FireChanged()

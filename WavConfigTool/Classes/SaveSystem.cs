@@ -10,6 +10,8 @@ namespace WavConfigTool.Classes
 {
     class SaveSystem
     {
+        public event SimpleHandler OnSaved = delegate { };
+
         public SaveSystem(ProjectManager projectManager)
         {
             this.projectManager = projectManager;
@@ -47,8 +49,16 @@ namespace WavConfigTool.Classes
         {
             if (projectManager.Project != null && projectManager.Project.IsLoaded && projectManager.Project.IsChangedAfterBackup)
             {
-                ExceptionCatcher.Current.CatchOnAction(() => projectManager.Save(Settings.ProjectFile), "Failed to save project");
-                ExceptionCatcher.Current.CatchOnAction(() => projectManager.SaveBackup(), "Failed to save backup");
+                try
+                {
+                    projectManager.Save(Settings.ProjectFile);
+                    projectManager.SaveBackup();
+                    OnSaved();
+                }
+                catch (Exception ex)
+                {
+                    ExceptionCatcher.Current.Catch(ex, "Failed to save project");
+                }
             }
         }
 
