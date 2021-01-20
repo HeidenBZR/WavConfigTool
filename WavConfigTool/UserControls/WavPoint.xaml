@@ -23,6 +23,8 @@
                         Value="false" />
                 <Setter Property="Background"
                         Value="{Binding Type, Converter={StaticResource PhonemeTypeToColor}, FallbackValue=Red}" />
+                <Setter Property="BorderThickness"
+                        Value="1" />
                 <Setter Property="BorderBrush"
                         Value="{Binding Type, Converter={StaticResource PhonemeTypeToBorderColor}, FallbackValue=#ff440000}" />
                 <Setter Property="Foreground"
@@ -32,7 +34,7 @@
                         <ControlTemplate TargetType="{x:Type Thumb}">
                             <Canvas>
                                 <Canvas.CacheMode>
-                                    <BitmapCache EnableClearType="False"
+                                    <BitmapCache EnableClearType="True"
                                                  RenderAtScale="1"
                                                  SnapsToDevicePixels="False" />
                                 </Canvas.CacheMode>
@@ -46,6 +48,7 @@
                                          Fill="{TemplateBinding Background}"
                                          Cursor="Hand"
                                          Canvas.Left="-1"
+                                         StrokeThickness="{TemplateBinding BorderThickness}"
                                          Stroke="{TemplateBinding BorderBrush}">
                                     <Polygon.Points>
                                         <Point X="0"
@@ -60,6 +63,7 @@
                                          Fill="{TemplateBinding Background}"
                                          Cursor="Hand"
                                          Canvas.Left="0"
+                                         StrokeThickness="{TemplateBinding BorderThickness}"
                                          Stroke="{TemplateBinding BorderBrush}">
                                     <Polygon.Points>
                                         <Point X="-15"
@@ -77,6 +81,7 @@
                                          Canvas.Top="{Binding Height}"
                                          HorizontalAlignment="Left"
                                          VerticalAlignment="Bottom"
+                                         StrokeThickness="{TemplateBinding BorderThickness}"
                                          Cursor="Hand"
                                          Fill="{TemplateBinding Background}"
                                          RenderTransformOrigin="0.5,0.5"
@@ -98,6 +103,7 @@
                                          HorizontalAlignment="Left"
                                          VerticalAlignment="Bottom"
                                          Cursor="Hand"
+                                         StrokeThickness="{TemplateBinding BorderThickness}"
                                          Fill="{TemplateBinding Background}"
                                          RenderTransformOrigin="0.5,0.5"
                                          Stroke="{TemplateBinding BorderBrush}">

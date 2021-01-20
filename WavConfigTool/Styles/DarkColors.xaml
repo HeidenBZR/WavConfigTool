@@ -124,45 +124,19 @@
 
 
 
-    <SolidColorBrush
-        x:Key="WaveformBrush"
+    <SolidColorBrush x:Key="WaveformBrush"
                      Color="#64c864" />
     <SolidColorBrush x:Key="FrqBrush"
                      Color="#cc0000" />
     <SolidColorBrush x:Key="SpectrumBrush"
                      Color="#0000ff" />
 
-    <LinearGradientBrush
-        x:Key="ButtonRestBrush"
-        StartPoint="0,0"
-        EndPoint="0,1">
-        <GradientStop
-            Offset="0.007"
-            Color="Violet" />
-        <GradientStop
-            Offset="0.5"
-            Color="#FFDC13DC" />
-    </LinearGradientBrush>
-    <LinearGradientBrush
-        x:Key="ButtonVowelBrush"
-        StartPoint="0,0"
-        EndPoint="0,1">
-        <GradientStop
-            Offset="0.5"
-            Color="#FFD8BE15" />
-        <GradientStop
-            Color="#FFFFDD00" />
-    </LinearGradientBrush>
-    <LinearGradientBrush
-        x:Key="ButtonConsonantBrush"
-        StartPoint="0,0"
-        EndPoint="0,1">
-        <GradientStop
-            Offset="0.5"
-            Color="#FF16DEE8" />
-        <GradientStop
-            Color="#FF00F3FF" />
-    </LinearGradientBrush>
+    <SolidColorBrush x:Key="ButtonRestBrush"
+                     Color="#FF00FF" />
+    <SolidColorBrush x:Key="ButtonVowelBrush"
+                     Color="#FFFF00" />
+    <SolidColorBrush x:Key="ButtonConsonantBrush"
+                     Color="#00FFFF" />
 
 
     <SolidColorBrush

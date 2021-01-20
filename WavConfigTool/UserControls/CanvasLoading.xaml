@@ -9,7 +9,6 @@
     VerticalAlignment="Stretch"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    Background="#22000000"
     mc:Ignorable="d">
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <Ellipse
