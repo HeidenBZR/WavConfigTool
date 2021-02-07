@@ -22,7 +22,18 @@ namespace WavConfigTool.Classes
         public void RequestWaveFormImages(ProjectLineContainer container, int height)
         {
             var task = new Task(() => ExceptionCatcher.Current.CatchOnAction(() => container.LoadImages(height), $"Failed to load images for [{container}]"));
-            task.ContinueWith(delegate { HandleLoaded(container); });
+            task.ContinueWith(delegate
+            {
+                try
+                {
+                    App.MainDispatcher.Invoke(delegate
+                    {
+                        container.FinishImagesLoading(true);
+                        HandleLoaded(container);
+                    });
+                }
+                catch (TaskCanceledException) { }
+            });
             taskQueue[container] = task;
         }
 
@@ -30,6 +41,12 @@ namespace WavConfigTool.Classes
         {
             Console.WriteLine("TaskManager: Started");
             StartTask();
+        }
+
+        public void CancelAll()
+        {
+            // TODO: add cancellation tokens
+            taskQueue.Clear();
         }
 
         private const int MAX_TASK_COUNT = 10;
@@ -53,7 +70,11 @@ namespace WavConfigTool.Classes
                 if (task != null)
                 {
                     runningTasks.TryAdd(container, task);
-                    task.Start();
+                    try
+                    {
+                        task.Start();
+                    }
+                    catch (TaskCanceledException) { }
                 }
             }
 

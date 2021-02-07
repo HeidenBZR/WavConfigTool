@@ -117,6 +117,7 @@ namespace WavConfigTool.Classes
 
         private Bitmap GetWaveformImageSource(int height, Color color, List<Point[]> points)
         {
+            
             var res = new Bitmap(VisualWidth, height);
             using (System.Drawing.Brush fillBrush = new SolidBrush(color))
             using (Graphics g = Graphics.FromImage(res))

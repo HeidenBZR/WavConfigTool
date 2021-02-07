@@ -104,11 +104,6 @@ namespace WavConfigTool.Classes
                 return;
 
             imagesLibrary.Load(WaveForm, height, hash);
-
-            App.MainDispatcher.Invoke(delegate
-            {
-                FinishImagesLoading(true);
-            });
         }
 
         public async void LoadSpectrum(int height)
@@ -186,16 +181,16 @@ namespace WavConfigTool.Classes
             return $"ProjectLineContainer {ProjectLine?.ToString()}";
         }
 
-        private readonly ImagesLibrary imagesLibrary;
-        private readonly WavPlayer wavPlayer;
-        private readonly string hash;
-        private readonly string viewName;
-
-        private void FinishImagesLoading(bool isLoaded)
+        public void FinishImagesLoading(bool isLoaded)
         {
             IsLoadingImages = false;
             IsLoadedImages = true;
             OnImageLoaded(isLoaded);
         }
+
+        private readonly ImagesLibrary imagesLibrary;
+        private readonly WavPlayer wavPlayer;
+        private readonly string hash;
+        private readonly string viewName;
     }
 }

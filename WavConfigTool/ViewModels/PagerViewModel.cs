@@ -52,6 +52,7 @@ namespace WavConfigTool.ViewModels
             SourceCollection = collection;
             if (!IsOtoMode)
             {
+                taskManager.CancelAll();
                 foreach (var content in SourceCollection)
                 {
                     ImagesLibrary.RegisterWaveForm(((ProjectLineContainer)content).WaveForm);
