@@ -26,7 +26,6 @@ namespace WavConfigTool.Classes
         public void RegisterWaveForm(WaveForm waveForm)
         {
             var pack = new WavImagesPack();
-            pack.IsLoading = true;
             images.TryAdd(waveForm, pack);
         }
 
