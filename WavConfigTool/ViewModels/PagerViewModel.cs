@@ -30,7 +30,7 @@ namespace WavConfigTool.ViewModels
 
         public List<PagerContentBase> SourceCollection { get; private set; } = new List<PagerContentBase>();
         public List<PagerContentBase> Collection { get; private set; } = new List<PagerContentBase>();
-        public List<WavControlBaseViewModel> PageContent { get; private set; }
+        public ObservableCollection<WavControlBaseViewModel> PageContent { get; private set; }
 
         public event SimpleHandler PagerChanged = delegate { };
 
@@ -48,7 +48,7 @@ namespace WavConfigTool.ViewModels
             IsOtoMode = isOto;
             ViewOptions = viewOptions;
             ImagesLibrary = imagesLibrary;
-            PageContent = new List<WavControlBaseViewModel>();
+            PageContent = new ObservableCollection<WavControlBaseViewModel>();
             SourceCollection = collection;
             if (!IsOtoMode)
             {
@@ -208,9 +208,16 @@ namespace WavConfigTool.ViewModels
                         InitWavControlBase(model);
                         PageContent.Add(model);
                     }
-                    for (int i = 0; PageSize * CurrentPage + i < PageSize * (CurrentPage + 1) && PageSize * CurrentPage + i < Collection.Count; i++)
+                    for (int i = 0; PageSize * CurrentPage + i < PageSize * (CurrentPage + 1); i++)
                     {
-                        PageContent[i].Update(Collection[PageSize * CurrentPage + i]);
+                        if (PageSize * CurrentPage + i < Collection.Count)
+                            PageContent[i].Update(Collection[PageSize * CurrentPage + i]);
+                        else
+                        {
+                            while (PageContent.Count > i)
+                                PageContent.RemoveAt(i);
+                            break;
+                        }
                     }
                 }
             }
