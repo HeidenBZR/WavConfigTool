@@ -30,7 +30,7 @@ namespace WavConfigTool.ViewModels
 
         public string NumberView => Oto.NumberView;
         public ImageSource WavImage { get; set; }
-        public Oto Oto { get; set; }
+        public Oto Oto { get; set; } = new Oto();
 
         public override void Update(PagerContentBase pagerContent)
         {
