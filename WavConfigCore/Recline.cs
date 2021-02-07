@@ -82,8 +82,11 @@ namespace WavConfigCore
                     phonemesForGeneration.Add(phoneme);
                 }
             }
-            phonemesForGeneration.First((n) => n.IsFirst = true);
-            phonemesForGeneration.Last((n) => n.IsLast = true);
+            foreach (var phoneme in phonemesForGeneration)
+            {
+                phoneme.IsFirst = phoneme == phonemesForGeneration[0];
+                phoneme.IsLast = phoneme == phonemesForGeneration[phonemesForGeneration.Count - 1];
+            }
             return phonemesForGeneration;
         } 
 
