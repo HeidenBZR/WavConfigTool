@@ -190,10 +190,19 @@ namespace WavConfigTool.ViewModels
                         PageContent.Add(model);
                     }
                     var otosPageSize = PageSize - 1;
-                    for (int i = 0; otosPageSize * CurrentPage + i < otosPageSize * (CurrentPage + 1) && otosPageSize * CurrentPage + i < Collection.Count; i++)
+                    for (int i = 0; otosPageSize * CurrentPage + i < otosPageSize * (CurrentPage + 1); i++)
                     {
-                        var collectionI = otosPageSize * CurrentPage + i;
-                        PageContent[i + 1].Update(Collection[collectionI]);
+                        if (otosPageSize * CurrentPage + i < Collection.Count)
+                        {
+                            var collectionI = otosPageSize * CurrentPage + i;
+                            PageContent[i + 1].Update(Collection[collectionI]);
+                        }
+                        else
+                        {
+                            while (PageContent.Count > i + 1)
+                                PageContent.RemoveAt(i + 1);
+                            break;
+                        }
                     }
                 }
                 else
