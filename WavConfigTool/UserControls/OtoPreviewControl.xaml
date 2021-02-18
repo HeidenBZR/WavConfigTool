@@ -50,20 +50,20 @@
             <Rectangle
             Canvas.Left="{Binding Preutterance}"
             Width="1"
-            Height="{Binding Height, FallbackValue=100}"
+            Height="{Binding ElementName=Preutterance, Path=ActualHeight, FallbackValue=100}"
             HorizontalAlignment="Left"
             Fill="#FFCF1A1A"
-                VerticalAlignment="Center"
+            VerticalAlignment="Center"
             SnapsToDevicePixels="True" />
         </Canvas>
-        <Canvas
-            Name="Overlap">
+        <Canvas Name="Overlap"
+                Margin="0,8">
             <Rectangle
             Canvas.Left="{Binding Overlap}"
             Width="1"
-            Height="100"
             VerticalAlignment="Center"
             HorizontalAlignment="Left"
+            Height="{Binding ElementName=Overlap, Path=ActualHeight, FallbackValue=100}"
             Fill="#FF4BAE43"
             SnapsToDevicePixels="True" />
         </Canvas>
