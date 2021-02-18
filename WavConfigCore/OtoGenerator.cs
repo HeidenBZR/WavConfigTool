@@ -142,9 +142,10 @@ namespace WavConfigCore
                 case AliasType.RC:
                 case AliasType.RCm:
                     var nextP = next != null ? next.Zone.In : p2.Zone.Out;
-                    offset = p2.Zone.In - p1Attack;
-                    overlap = p2.Zone.In;
-                    preutterance = p2.Zone.In;
+                    var firstC = phonemes[1];
+                    offset = firstC.Zone.In - p1Attack;
+                    overlap = firstC.Zone.In;
+                    preutterance = firstC.Zone.In;
                     consonant = nextP + Project.DecayC;
                     cutoff = nextP + Project.DecayC + Project.AttackC;
                     break;
