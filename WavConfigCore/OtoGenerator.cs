@@ -145,7 +145,7 @@ namespace WavConfigCore
                     var firstC = phonemes[1];
                     offset = firstC.Zone.In - p1Attack;
                     overlap = firstC.Zone.In;
-                    preutterance = firstC.Zone.In;
+                    preutterance = p2.Zone.In;
                     consonant = nextP + Project.DecayC;
                     cutoff = nextP + Project.DecayC + Project.AttackC;
                     break;
