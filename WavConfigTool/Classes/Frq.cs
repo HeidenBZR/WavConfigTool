@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using Brush = System.Drawing.Brush;
 using Color = System.Drawing.Color;
@@ -80,10 +81,43 @@ namespace WavConfigTool.Classes
             return points.ToArray();
         }
 
-        public Bitmap DrawPoints(Point[] points, float height)
+        public Bitmap DrawPoints(Point[] points, float height, string name)
         {
             var width = (int) (points[points.Length - 1].X + 1);
-            var res = new Bitmap(width, (int)height);
+            while (width % 4 != 0)
+                width++;
+            Bitmap res = null;
+            ExceptionCatcher.Current.CatchOnAction(delegate
+            {
+                try
+                {
+                    res = new Bitmap(width, (int)height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                }
+                catch (OutOfMemoryException omex)
+                {
+                    // Out of memory exception.
+                }
+                catch (InvalidOperationException ioex)
+                {
+                    // There's something wrong with operation.
+                }
+                catch (ArgumentException aex)
+                {
+                    // You've passed wrong arguments.
+                }
+                catch (OverflowException ofex)
+                {
+                    // May not occur, but something overflown with buffers used.
+                }
+                catch (ExternalException exex)
+                {
+                    // An exception is caused by external reference, e.g., 
+                    // external device missing, or network, etc
+                }
+            }, $"Error on new Bitmap FRQ with params {width} witdh, {height} height, having {points.Length} points of {name}");
+            if (res == null)
+                return null;
+
             using (var fillBrush = new SolidBrush(color))
             using (var pen = new Pen(color))
             using (Graphics g = Graphics.FromImage(res))

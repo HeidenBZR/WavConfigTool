@@ -37,7 +37,7 @@ namespace WavConfigTool.Classes
             return Settings.RealToViewX(Channels * 1000.0 / SampleRate);
         }
 
-        public Bitmap DrawWaveform(int height, Color color, double yScale)
+        public Bitmap DrawWaveform(int height, Color color, double yScale, string name)
         {
             if (!IsEnabled)
                 return null;
@@ -112,13 +112,23 @@ namespace WavConfigTool.Classes
             reader.Close();
             reader.Dispose();
 
-            return GetWaveformImageSource(height, color, points);
+            return GetWaveformImageSource(height, color, points, name);
         }
 
-        private Bitmap GetWaveformImageSource(int height, Color color, List<Point[]> points)
+        private Bitmap GetWaveformImageSource(int height, Color color, List<Point[]> points, string name)
         {
-            
-            var res = new Bitmap(VisualWidth, height);
+            Bitmap res = null;
+            var width = VisualWidth;
+            while (width % 4 != 0)
+                width++;
+
+            ExceptionCatcher.Current.CatchOnAction(delegate
+            {
+                res = new Bitmap(VisualWidth, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            }, $"Error on new Bitmap FRQ with params {VisualWidth} witdh, {height} height, having {points.Count()} points of {name}");
+            if (res == null)
+                return null;
+
             using (System.Drawing.Brush fillBrush = new SolidBrush(color))
             using (Graphics g = Graphics.FromImage(res))
             {

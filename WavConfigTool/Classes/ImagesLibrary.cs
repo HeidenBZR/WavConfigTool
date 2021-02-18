@@ -161,7 +161,7 @@ namespace WavConfigTool.Classes
 
         private void LoadWaveForm(WavImagesPack pack, WaveForm waveForm, int height, double yScale)
         {
-            var bitmap = waveForm.DrawWaveform(height, waveformColor, yScale);
+            var bitmap = waveForm.DrawWaveform(height, waveformColor, yScale, waveForm.Path);
             if (bitmap == null)
                 return;
             pack.WavImage = bitmap;
@@ -174,7 +174,7 @@ namespace WavConfigTool.Classes
             if (frq.Points != null)
             {
                 var visualPoints = frq.CalculateVisualPoints(waveForm, height);
-                var bitmap = frq.DrawPoints(visualPoints, height);
+                var bitmap = frq.DrawPoints(visualPoints, height, waveForm.Path);
                 if (bitmap == null)
                     return;
                 pack.Frq = bitmap;
