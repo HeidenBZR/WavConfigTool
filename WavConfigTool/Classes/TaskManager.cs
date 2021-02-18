@@ -5,41 +5,43 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WavConfigTool.ViewModels;
 
 namespace WavConfigTool.Classes
 {
     class TaskManager
     {
-        public void RequestWaveFormImageForPage(ProjectLineContainer container, int height)
+        public void RequestWaveFormImageForPage(IList<WavControlBaseViewModel> pageContent, int height)
         {
-            if (container.IsLoadedImages || container.IsLoadingImages)
-                return;
-            if (!taskQueue.ContainsKey(container) && !runningTasks.ContainsKey(container))
-                RequestWaveFormImages(container, height);
-            prioritiesedTasks.Add(container);
-        }
-
-        public void RequestWaveFormImages(ProjectLineContainer container, int height)
-        {
-            var task = new Task(() => ExceptionCatcher.Current.CatchOnAction(() => container.LoadImages(height), $"Failed to load images for [{container}]"));
-            task.ContinueWith(delegate
+            var oldPageContent = currentPageContent;
+            currentPageContent = new List<ProjectLineContainer>();
+            foreach (var controller in pageContent)
             {
-                try
+                var wavControl = controller as WavControlViewModel;
+                if (wavControl == null)
+                    continue;
+                var container = (ProjectLineContainer)wavControl.PagerContent;
+                if (oldPageContent.Contains(container))
                 {
-                    App.MainDispatcher.Invoke(delegate
-                    {
-                        container.FinishImagesLoading(true);
-                        HandleLoaded(container);
-                    });
+                    oldPageContent.Remove(container);
                 }
-                catch (TaskCanceledException) { }
-            });
-            taskQueue[container] = task;
-        }
+                else
+                {
+                    if (container.IsLoadedImages || container.IsLoadingImages)
+                        continue;
+                    if (!taskQueue.ContainsKey(container) && !runningTasks.ContainsKey(container))
+                        RequestWaveFormImages(container, height);
+                }
 
-        public void Start()
-        {
-            Console.WriteLine("TaskManager: Started");
+                currentPageContent.Add(container);
+            }
+
+            foreach (var container in oldPageContent)
+            {
+                container.ReleaseImages();
+            }
+
+            Console.WriteLine("TaskManager: Start");
             StartTask();
         }
 
@@ -51,7 +53,7 @@ namespace WavConfigTool.Classes
 
         private const int MAX_TASK_COUNT = 10;
 
-        private List<ProjectLineContainer> prioritiesedTasks = new List<ProjectLineContainer>();
+        private List<ProjectLineContainer> currentPageContent = new List<ProjectLineContainer>();
         private ConcurrentDictionary<ProjectLineContainer, Task> taskQueue = new ConcurrentDictionary<ProjectLineContainer, Task>();
         private ConcurrentDictionary<ProjectLineContainer, Task> runningTasks = new ConcurrentDictionary<ProjectLineContainer, Task>();
 
@@ -82,12 +84,30 @@ namespace WavConfigTool.Classes
                 StartTask();
         }
 
+        private void RequestWaveFormImages(ProjectLineContainer container, int height)
+        {
+            var task = new Task(() => ExceptionCatcher.Current.CatchOnAction(() => container.LoadImages(height), $"Failed to load images for [{container}]"));
+            task.ContinueWith(delegate
+            {
+                try
+                {
+                    App.MainDispatcher.Invoke(delegate
+                    {
+                        container.FinishImagesLoading(true);
+                        HandleLoaded(container);
+                    });
+                }
+                catch (TaskCanceledException) { }
+            });
+            taskQueue[container] = task;
+        }
+
         private ProjectLineContainer TakeTaskContainer()
         {
-            while (prioritiesedTasks.Count() > 0)
+            while (currentPageContent.Count() > 0)
             {
-                var container = prioritiesedTasks[0];
-                prioritiesedTasks.RemoveAt(0);
+                var container = currentPageContent[0];
+                currentPageContent.RemoveAt(0);
                 if (taskQueue.ContainsKey(container))
                 {
                     Console.WriteLine($"TaskManager [{runningTasks.Count}]: Loading with priority " + container.ToString());

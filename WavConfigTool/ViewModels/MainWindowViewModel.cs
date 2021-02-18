@@ -22,7 +22,7 @@ namespace WavConfigTool.ViewModels
     {
 
         public ProjectViewModel ProjectViewModel { get; set; }
-        public string Version => "v.0.2.3.3";
+        public string Version => "v.0.2.3.4";
         public Project Project => ProjectManager.Project;
         public string ReclistName           => IsProjectReady && Project?.Voicebank != null ? Project.Reclist.Name : null;
         public string VoicebankName         => IsProjectReady && Project?.Voicebank != null ? Project.Voicebank.Name : null;
@@ -182,7 +182,6 @@ namespace WavConfigTool.ViewModels
                 PagerViewModel.ReadProjectOption(Project.ProjectOptions);
                 UpdatePagerCollection();
                 OtoGenerator = new OtoGenerator(Project);
-                PagerViewModel.StartLoad();
                 Project.OnProjectChanged += delegate { RaisePropertyChanged(nameof(Title)); };
             }
             IsLoading = false;

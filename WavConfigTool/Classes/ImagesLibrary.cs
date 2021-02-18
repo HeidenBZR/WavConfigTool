@@ -32,10 +32,10 @@ namespace WavConfigTool.Classes
         public void Load(WaveForm waveForm, int height, string hash)
         {
             var hasImage = images.TryGetValue(waveForm, out var pack);
-            if (!hasImage)
-                throw new Exception();
-            if (pack == null)
-                throw new Exception();
+            if (hasImage)
+                throw new Exception("Image is already loading or loaded");
+            pack = new WavImagesPack();
+            images[waveForm] = pack;
 
             if (!waveForm.IsEnabled)
             {
@@ -98,6 +98,20 @@ namespace WavConfigTool.Classes
             if (waveForm == null)
                 return;
 
+            var pack = GetImagesPack(waveForm);
+            if (pack != null)
+            {
+                if (pack.WavImage != null)
+                    pack.WavImage.Dispose();
+                if (pack.Spectrogram != null)
+                    pack.Spectrogram.Dispose();
+                if (pack.Frq != null)
+                    pack.Frq.Dispose();
+
+                pack.WavImage = null;
+                pack.Spectrogram = null;
+                pack.Frq = null;
+            }
             RegisterWaveForm(waveForm);
         }
 

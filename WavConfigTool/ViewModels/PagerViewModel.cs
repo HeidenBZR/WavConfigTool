@@ -51,25 +51,13 @@ namespace WavConfigTool.ViewModels
             PageContent = new ObservableCollection<WavControlBaseViewModel>();
             SourceCollection = collection;
             if (!IsOtoMode)
-            {
                 taskManager.CancelAll();
-                foreach (var content in SourceCollection)
-                {
-                    ImagesLibrary.RegisterWaveForm(((ProjectLineContainer)content).WaveForm);
-                    taskManager.RequestWaveFormImages(((ProjectLineContainer)content), WavImageHeight);
-                }
-            }
 
             UpdateCollection();
             RaisePropertyChanged(() => PageContent);
             RaisePropertyChanged(() => CurrentPageView);
             RaisePropertyChanged(() => PagesTotal);
             IsHidden = false;
-        }
-
-        public void StartLoad()
-        {
-            taskManager.Start();
         }
 
         public void RequestUpdateCollection()
@@ -236,8 +224,7 @@ namespace WavConfigTool.ViewModels
             RaisePropertyChanged(nameof(PageContent));
 
             if (!IsOtoMode)
-                foreach (var controller in PageContent)
-                    taskManager.RequestWaveFormImageForPage((ProjectLineContainer)controller.PagerContent, WavImageHeight);
+                taskManager.RequestWaveFormImageForPage(PageContent, WavImageHeight);
         }
 
         private void InitWavControlBase(WavControlBaseViewModel model)

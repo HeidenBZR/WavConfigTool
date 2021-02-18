@@ -282,7 +282,7 @@ namespace WavConfigTool.ViewModels
         {
             var pack = ImagesLibrary.GetImagesPack(WaveForm);
             IsImageEnabled = false;
-            if (pack.IsLoading)
+            if (pack == null || pack.IsLoading)
             {
                 SetIsLoading();
                 return;

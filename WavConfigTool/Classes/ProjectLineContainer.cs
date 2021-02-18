@@ -106,6 +106,12 @@ namespace WavConfigTool.Classes
             imagesLibrary.Load(WaveForm, height, hash);
         }
 
+        public void ReleaseImages()
+        {
+            if (WaveForm != null)
+                imagesLibrary.ClearWavformImages(WaveForm);
+        }
+
         public async void LoadSpectrum(int height)
         {
             IsLoadingImages = true;
