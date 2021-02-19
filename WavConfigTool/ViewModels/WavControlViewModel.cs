@@ -36,9 +36,9 @@ namespace WavConfigTool.ViewModels
         public ObservableCollection<WavPointViewModel> VowelPoints { get; set; } = new ObservableCollection<WavPointViewModel>();
         public ObservableCollection<WavPointViewModel> RestPoints { get; set; } = new ObservableCollection<WavPointViewModel>();
 
-        public List<WavZoneViewModel> ConsonantZones => GetZones(PhonemeType.Consonant);
-        public List<WavZoneViewModel> VowelZones => GetZones(PhonemeType.Vowel);
-        public List<WavZoneViewModel> RestZones => GetZones(PhonemeType.Rest);
+        public ObservableCollection<WavZoneViewModel> ConsonantZones { get; } = new ObservableCollection<WavZoneViewModel>();
+        public ObservableCollection<WavZoneViewModel> VowelZones { get; } = new ObservableCollection<WavZoneViewModel>();
+        public ObservableCollection<WavZoneViewModel> RestZones { get; } = new ObservableCollection<WavZoneViewModel>();
 
         public int NumberView { get; private set; }
 
@@ -123,7 +123,7 @@ namespace WavConfigTool.ViewModels
         }
 
 
-        public List<WavZoneViewModel> ZonesOfType(PhonemeType type)
+        public ObservableCollection<WavZoneViewModel> ZonesOfType(PhonemeType type)
         {
             return type == PhonemeType.Consonant ? ConsonantZones :
                 (type == PhonemeType.Rest ? RestZones : VowelZones);
@@ -195,6 +195,9 @@ namespace WavConfigTool.ViewModels
 
         public override void HandlePointsChanged()
         {
+            BuildZones(ConsonantZones, PhonemeType.Consonant);
+            BuildZones(VowelZones, PhonemeType.Vowel);
+            BuildZones(RestZones, PhonemeType.Rest);
             RaisePropertiesChanged(
                 () => ConsonantPoints,
                 () => VowelPoints,
@@ -331,12 +334,12 @@ namespace WavConfigTool.ViewModels
             FirePointsChanged();
         }
 
-        private List<WavZoneViewModel> GetZones(PhonemeType type)
+        private void BuildZones(ObservableCollection<WavZoneViewModel> zones, PhonemeType type)
         {
             if (ProjectLine == null)
-                return null;
+                return;
             var points = ProjectLine.PointsOfType(type);
-            var zones = new List<WavZoneViewModel>();
+            zones.Clear();
             var kindaWitdh = Width > 0 ? Width : 2000;
             for (int i = 0; i + 1 < points.Count; i += 2)
             {
@@ -344,7 +347,7 @@ namespace WavConfigTool.ViewModels
                 var pOut = Settings.RealToViewX(points[i + 1]);
                 zones.Add(new WavZoneViewModel(type, pIn, pOut, kindaWitdh, (int)Height));
             }
-            return zones;
+            return;
         }
 
         private string GetPointLabel(PhonemeType type, int i)
