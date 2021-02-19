@@ -117,6 +117,11 @@
         </Canvas>
         <Canvas Name="WavImages"
                 Grid.Row="1">
+            <Canvas.CacheMode>
+                <BitmapCache EnableClearType="False"
+                             SnapsToDevicePixels="False"
+                             RenderAtScale="1" />
+            </Canvas.CacheMode>
             <Image Name="SpectrumImage"
                    Height="{Binding Height, FallbackValue=100}"
                    Width="{Binding ElementName=WavFormImage, Path=ActualWidth}"
@@ -167,30 +172,39 @@
                 Grid.Row="1"
                 Visibility="{Binding IsReadyToDrawPoints, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
                 VerticalAlignment="Stretch">
-            <ItemsControl Name="ConsonantZones"
-                          HorizontalAlignment="Left"
-                          VerticalAlignment="Top"
-                          ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
-                          ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-                          ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                          Visibility="{Binding ConsonantZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                          ItemsSource="{Binding ConsonantZones, Mode=OneWay}" />
-            <ItemsControl Name="VowelZones"
-                          HorizontalAlignment="Left"
-                          VerticalAlignment="Top"
-                          ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
-                          ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-                          ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                          Visibility="{Binding VowelZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                          ItemsSource="{Binding VowelZones, Mode=OneWay}" />
-            <ItemsControl Name="RestZones"
-                          HorizontalAlignment="Left"
-                          VerticalAlignment="Top"
-                          ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
-                          ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
-                          ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
-                          Visibility="{Binding RestZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
-                          ItemsSource="{Binding RestZones, Mode=OneWay}" />
+            <Canvas HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Name="ZonesContainer">
+                <Canvas.CacheMode>
+                    <BitmapCache EnableClearType="False"
+                                 SnapsToDevicePixels="False"
+                                 RenderAtScale="1" />
+                </Canvas.CacheMode>
+                <ItemsControl Name="ConsonantZones"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Top"
+                              ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
+                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                              Visibility="{Binding ConsonantZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                              ItemsSource="{Binding ConsonantZones, Mode=OneWay}" />
+                <ItemsControl Name="VowelZones"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Top"
+                              ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
+                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                              Visibility="{Binding VowelZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                              ItemsSource="{Binding VowelZones, Mode=OneWay}" />
+                <ItemsControl Name="RestZones"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Top"
+                              ItemTemplate="{DynamicResource WavZoneItemsControlItem}"
+                              ItemsPanel="{DynamicResource DataPointItemsPanelTemplate}"
+                              ItemContainerStyle="{DynamicResource CanvasPlacedItemContainerStyle}"
+                              Visibility="{Binding RestZonesVisible, Converter={StaticResource BooleanToVisibility}, FallbackValue=Collapsed}"
+                              ItemsSource="{Binding RestZones, Mode=OneWay}" />
+            </Canvas>
             <Rectangle Canvas.Left="0"
                        Canvas.Top="0"
                        Width="{Binding ElementName=Main, Path=ActualWidth}"
