@@ -67,7 +67,7 @@
         </Setter>
     </Style>
     <ItemsPanelTemplate x:Key="WavControlListItemsPanel">
-        <VirtualizingStackPanel IsItemsHost="True" />
+        <StackPanel />
     </ItemsPanelTemplate>
     <Style x:Key="WavControlsControl" TargetType="{x:Type ItemsControl}">
         <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
