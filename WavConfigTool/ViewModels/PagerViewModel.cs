@@ -223,7 +223,11 @@ namespace WavConfigTool.ViewModels
             SetPageContentReady(true);
             RaisePropertyChanged(nameof(PageContent));
 
-            var containers = new ProjectLineContainer[PageContent.Count];
+            ProjectLineContainer[] containers;
+            if (IsOtoMode)
+                containers = new ProjectLineContainer[1];
+            else
+                containers = new ProjectLineContainer[PageContent.Count];
             for (int i = 0; i < PageContent.Count; i++)
             {
                 var controller = (WavControlBaseViewModel)PageContent[i];
