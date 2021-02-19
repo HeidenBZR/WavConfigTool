@@ -161,6 +161,7 @@ namespace WavConfigTool.ViewModels
             FirePointsChanged();
         }
 
+#if TOSTRING
         public override string ToString()
         {
             if (ProjectLine == null || ProjectLine.Recline == null)
@@ -168,6 +169,7 @@ namespace WavConfigTool.ViewModels
             else
                 return $"{Filename} : WavControlViewModel";
         }
+#endif
 
         public void HandleProjectLineChanged()
         {

@@ -105,7 +105,7 @@
                     <DockPanel>
                         <Grid>
                             <Border x:Name="Container" Margin="2">
-                                <TextBlock Text="{Binding Phoneme}" 
+                                <TextBlock Text="{Binding Phoneme.Alias}" 
                                     x:Name="PhonemeContainer"
                                     Margin="3 1" >
                                     <TextBlock.Style>

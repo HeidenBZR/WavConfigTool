@@ -141,6 +141,7 @@
     <Compile Include="Classes\Scheduler.cs" />
     <Compile Include="Classes\Spectrogram.cs" />
     <Compile Include="Classes\TaskManager.cs" />
+    <Compile Include="Classes\WavImagesHash.cs" />
     <Compile Include="Classes\WavPlayer.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Classes\ExceptionCatcher.cs" />

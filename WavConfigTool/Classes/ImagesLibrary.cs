@@ -43,7 +43,7 @@ namespace WavConfigTool.Classes
             }
         }
 
-        public void Load(WaveForm waveForm, int height, string hash)
+        public void Load(WaveForm waveForm, int height, WavImagesHash hash)
         {
             var hasImage = images.TryGetValue(waveForm, out var pack);
             if (!hasImage)
@@ -55,18 +55,18 @@ namespace WavConfigTool.Classes
                 ClearWavformImages(waveForm);
                 pack.IsLoading = false;
                 pack.IsLoaded = false;
-                Console.WriteLine($"ImagesLibrary: failed to load image with hash {hash}");
+                Console.WriteLine($"ImagesLibrary: failed to load image {hash.Recline}");
                 OnImageLoaded(waveForm);
                 return;
             }
 
-            if (waveForm.ImageHash == hash && pack.IsLoaded)
+            if (hash.Equals(waveForm.ImageHash) && pack.IsLoaded)
             {
-                Console.WriteLine($"ImagesLibrary: image is already loaded with hash {hash}");
+                Console.WriteLine($"ImagesLibrary: image is already loaded {hash.Recline}");
                 OnImageLoaded(waveForm);
                 return;
             }
-            if (waveForm.ImageHash != hash)
+            if (!hash.Equals(waveForm.ImageHash))
             {
                 ClearWavformImages(waveForm);
                 images.TryAdd(waveForm, pack);
@@ -75,11 +75,11 @@ namespace WavConfigTool.Classes
             pack.IsLoading = true;
             pack.IsLoaded = false;
 
-            Console.WriteLine($"ImagesLibrary: started load image with hash {hash}");
+            Console.WriteLine($"ImagesLibrary: started load image {hash.Recline}");
             LoadWaveForm(pack, waveForm, height, Settings.UserScaleY);
             LoadFrq(pack, waveForm, height);
             LoadSpectrum(pack, waveForm, waveForm.VisualWidth, height);
-            Console.WriteLine($"ImagesLibrary: finished load image with hash {hash}");
+            Console.WriteLine($"ImagesLibrary: finished load imag {hash.Recline}");
 
             pack.IsLoading = false;
             pack.IsLoaded = true;
@@ -87,23 +87,23 @@ namespace WavConfigTool.Classes
             OnImageLoaded(waveForm);
         }
 
-        public void RequestLoadSpectrum(WaveForm waveForm, int height, string hash)
+        public void RequestLoadSpectrum(WaveForm waveForm, int height, WavImagesHash hash)
         {
             if (!waveForm.IsEnabled)
             {
                 ClearWavformImages(waveForm);
-                Console.WriteLine($"ImagesLibrary: failed to load spectrum with hash {hash}");
+                Console.WriteLine($"ImagesLibrary: failed to load spectrum {hash.Recline}");
                 OnImageLoaded(waveForm);
                 return;
             }
 
-            Console.WriteLine($"ImagesLibrary: started load spectrum with hash {hash}");
+            Console.WriteLine($"ImagesLibrary: started load spectrum {hash.Recline}");
             images.TryGetValue(waveForm, out var pack);
             if (pack == null)
                 throw new Exception();
             LoadSpectrum(pack, waveForm, waveForm.VisualWidth, height);
 
-            Console.WriteLine($"ImagesLibrary: finished load spectrum with hash {hash}");
+            Console.WriteLine($"ImagesLibrary: finished load spectrum {hash.Recline}");
             OnImageLoaded(waveForm);
         }
 

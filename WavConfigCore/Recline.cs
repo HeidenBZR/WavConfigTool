@@ -116,6 +116,8 @@ namespace WavConfigCore
             return text.ToString();
         }
 
+
+#if TOSTRING
         public override string ToString()
         {
             if (Phonemes is null)
@@ -125,6 +127,7 @@ namespace WavConfigCore
             else
                 return $"Recline: {Description} [{string.Join(" ", Phonemes.Select(n => n.Alias))}]";
         }
+#endif
 
     }
 }

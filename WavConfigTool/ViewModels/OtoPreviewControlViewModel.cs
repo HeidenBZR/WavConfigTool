@@ -43,9 +43,11 @@ namespace WavConfigTool.ViewModels
             Length = WavImage != null ? WavImage.Width : 1000;
         }
 
+#if TOSTRING
         public override string ToString()
         {
             return $"{(Oto == null ? "(null)" : Oto.Write())} : OtoPreviewViewModel";
         }
+#endif
     }
 }

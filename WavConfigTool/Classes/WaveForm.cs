@@ -24,7 +24,7 @@ namespace WavConfigTool.Classes
 
         public bool IsEnabled = false;
 
-        public string ImageHash;
+        public WavImagesHash ImageHash;
 
         public WaveForm(string path)
         {
@@ -115,6 +115,15 @@ namespace WavConfigTool.Classes
             return GetWaveformImageSource(height, color, points, name);
         }
 
+#if TOSTRING
+        public override string ToString()
+        {
+            return $"{{[{ImageHash.Recline} WavImage}}";
+        }
+#endif
+
+        #region private
+
         private Bitmap GetWaveformImageSource(int height, Color color, List<Point[]> points, string name)
         {
             Bitmap res = null;
@@ -155,5 +164,7 @@ namespace WavConfigTool.Classes
         {
             return !channels.HasValue ? null : channels.Value == 1 ? "Mono" : channels.Value == 2 ? "Stereo" : channels.Value.ToString();
         }
+
+#endregion
     }
 }

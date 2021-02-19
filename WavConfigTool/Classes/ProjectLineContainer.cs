@@ -31,7 +31,7 @@ namespace WavConfigTool.Classes
 
         public readonly int Number;
 
-        public ProjectLineContainer(ProjectLine projectLine, ImagesLibrary imagesLibrary, WavPlayer wavPlayer, string sampleName, string hash, int number)
+        public ProjectLineContainer(ProjectLine projectLine, ImagesLibrary imagesLibrary, WavPlayer wavPlayer, string sampleName, WavImagesHash hash, int number)
         {
             ProjectLine = projectLine;
             Number = number;
@@ -182,10 +182,12 @@ namespace WavConfigTool.Classes
             OnChangePhonemeModeRequested(mode);
         }
 
+#if TOSTRING
         public override string ToString()
         {
             return $"ProjectLineContainer {ProjectLine?.ToString()}";
         }
+#endif
 
         public void FinishImagesLoading()
         {
@@ -196,7 +198,7 @@ namespace WavConfigTool.Classes
 
         private readonly ImagesLibrary imagesLibrary;
         private readonly WavPlayer wavPlayer;
-        private readonly string hash;
+        private readonly WavImagesHash hash;
         private readonly string viewName;
     }
 }

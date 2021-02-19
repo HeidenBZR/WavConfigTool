@@ -19,10 +19,12 @@ namespace WavConfigCore
             Out = pOut;
         }
 
+#if TOSTRING
         public override string ToString()
         {
             return $"{In}:{Out}";
         }
+#endif
     }
 
     public abstract class Phoneme
@@ -32,7 +34,7 @@ namespace WavConfigCore
         public abstract PhonemeType PhonemeType { get; }
         public abstract int LocalIndex { get; }
 
-        public string Alias { get; set; }
+        public string Alias { get; set; } = "/PH/";
         public string Letter { get; set; }
         public PhonemeType Type { get; set; }
         public Zone Zone { get; set; }
@@ -56,10 +58,12 @@ namespace WavConfigCore
 
         public abstract Phoneme Clone();
 
+#if TOSTRING
         public override string ToString()
         {
             return Alias is null ? "/PH/" : Alias;
         }
+#endif
 
         public static implicit operator string(Phoneme phoneme)
         {

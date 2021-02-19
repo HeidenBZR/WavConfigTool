@@ -114,10 +114,12 @@ namespace WavConfigTool.ViewModels
             );
         }
 
+#if TOSTRING
         public override string ToString()
         {
             return $"{{{Position}}} {Text}";
         }
+#endif
 
         public void FireChanged()
         {

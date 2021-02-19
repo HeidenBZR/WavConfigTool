@@ -147,10 +147,12 @@ namespace WavConfigCore
             return i;
         }
 
+#if TOSTRING
         public override string ToString()
         {
             return $"{{{Recline.Name} ({(VowelPoints.Count + ConsonantPoints.Count + RestPoints.Count)})}}";
         }
+#endif
 
         #region private
 
@@ -184,6 +186,6 @@ namespace WavConfigCore
             ProjectLinePointsChanged();
         }
 
-        #endregion
+#endregion
     }
 }

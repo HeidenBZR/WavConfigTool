@@ -211,7 +211,17 @@ namespace WavConfigTool.ViewModels
         {
             var projectLine = Project.ProjectLines[i];
             var sampleName = Project.Voicebank.GetSamplePath(projectLine.Recline.Name, Project.WavPrefix, Project.WavSuffix);
-            var hash = $"{Project.Voicebank.Name}_{Project.Reclist.Name}_{Settings.UserScaleX}x{Settings.UserScaleY}_{sampleName}"; //.GetHashCode();
+            var hash = new WavImagesHash()
+            {
+                Reclist = Project.Reclist.Name,
+                Voicebank = Project.Voicebank.Name,
+                UserScaleX = Settings.UserScaleX,
+                UserScaleY = Settings.UserScaleY,
+                Recline = projectLine.Recline.Name,
+                Suffix = Project.WavSuffix,
+                Prefix = Project.WavPrefix
+            };
+
             var container = new ProjectLineContainer(projectLine, ImagesLibrary, WavPlayer, sampleName, hash, i);
             container.OnOtoRequested += model => SetOtoMode(container);
             container.OnAddPointRequested += (position, type) => HandleAddPointRequest(container, position, type);
