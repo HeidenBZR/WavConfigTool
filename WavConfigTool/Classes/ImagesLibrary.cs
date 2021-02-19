@@ -29,13 +29,26 @@ namespace WavConfigTool.Classes
             images.TryAdd(waveForm, pack);
         }
 
+        public void ClearAllButPage(IList<ProjectLineContainer> containers)
+        {
+            var keys = images.Keys.ToList();
+            foreach (var container in containers)
+            {
+                if (keys.Contains(container.WaveForm))
+                    keys.Remove(container.WaveForm);
+            }
+            foreach (WaveForm key in keys)
+            {
+                ClearWavformImages(key);
+            }
+        }
+
         public void Load(WaveForm waveForm, int height, string hash)
         {
             var hasImage = images.TryGetValue(waveForm, out var pack);
-            if (hasImage)
-                throw new Exception("Image is already loading or loaded");
-            pack = new WavImagesPack();
-            images[waveForm] = pack;
+            if (!hasImage)
+                pack = new WavImagesPack();
+            images.TryAdd(waveForm, pack);
 
             if (!waveForm.IsEnabled)
             {
@@ -47,8 +60,17 @@ namespace WavConfigTool.Classes
                 return;
             }
 
+            if (waveForm.ImageHash == hash && pack.IsLoaded)
+            {
+                Console.WriteLine($"ImagesLibrary: image is already loaded with hash {hash}");
+                OnImageLoaded(waveForm);
+                return;
+            }
             if (waveForm.ImageHash != hash)
+            {
                 ClearWavformImages(waveForm);
+                images.TryAdd(waveForm, pack);
+            }
 
             pack.IsLoading = true;
             pack.IsLoaded = false;
@@ -111,8 +133,8 @@ namespace WavConfigTool.Classes
                 pack.WavImage = null;
                 pack.Spectrogram = null;
                 pack.Frq = null;
+                images.TryRemove(waveForm, out var _);
             }
-            RegisterWaveForm(waveForm);
         }
 
         public static ImageSource Bitmap2ImageSource(Bitmap bitmap)

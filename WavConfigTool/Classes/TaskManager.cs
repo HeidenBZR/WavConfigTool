@@ -2,25 +2,18 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using WavConfigTool.ViewModels;
 
 namespace WavConfigTool.Classes
 {
     class TaskManager
     {
-        public void RequestWaveFormImageForPage(IList<WavControlBaseViewModel> pageContent, int height)
+        public void RequestWaveFormImageForPage(IList<ProjectLineContainer> pageContent, int height)
         {
             var oldPageContent = currentPageContent;
             currentPageContent = new List<ProjectLineContainer>();
-            foreach (var controller in pageContent)
+            foreach (var container in pageContent)
             {
-                var wavControl = controller as WavControlViewModel;
-                if (wavControl == null)
-                    continue;
-                var container = (ProjectLineContainer)wavControl.PagerContent;
                 if (oldPageContent.Contains(container))
                 {
                     oldPageContent.Remove(container);
@@ -93,7 +86,7 @@ namespace WavConfigTool.Classes
                 {
                     App.MainDispatcher.Invoke(delegate
                     {
-                        container.FinishImagesLoading(true);
+                        container.FinishImagesLoading();
                         HandleLoaded(container);
                     });
                 }
@@ -104,17 +97,6 @@ namespace WavConfigTool.Classes
 
         private ProjectLineContainer TakeTaskContainer()
         {
-            while (currentPageContent.Count() > 0)
-            {
-                var container = currentPageContent[0];
-                currentPageContent.RemoveAt(0);
-                if (taskQueue.ContainsKey(container))
-                {
-                    Console.WriteLine($"TaskManager [{runningTasks.Count}]: Loading with priority " + container.ToString());
-                    return container;
-                }
-            }
-
             foreach (var pair in taskQueue)
             {
                 var container = pair.Key;

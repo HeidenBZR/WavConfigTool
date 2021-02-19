@@ -12,7 +12,7 @@ namespace WavConfigTool.Classes
         public delegate void OtoModeHandler(ProjectLineContainer container);
         public delegate void OnAddPointRequestHandler(double position, PhonemeType type);
         public delegate void OnPointAddedHandler(double position, PhonemeType type, int i);
-        public delegate void ImageLoadedHandler(bool isLoaded);
+        public delegate void ImageLoadedHandler();
 
         public event OtoModeHandler OnOtoRequested = delegate { };
         public event SimpleHandler OnLoaded = delegate { };
@@ -98,7 +98,7 @@ namespace WavConfigTool.Classes
                 IsLoadedImages = false;
                 ProjectLine.UpdateEnabled();
                 if (!ProjectLine.IsEnabled)
-                    FinishImagesLoading(false);
+                    FinishImagesLoading();
             });
             if (!ProjectLine.IsEnabled)
                 return;
@@ -118,7 +118,7 @@ namespace WavConfigTool.Classes
             IsLoadedImages = false;
             ProjectLine.UpdateEnabled();
             if (!ProjectLine.IsEnabled)
-                FinishImagesLoading(false);
+                FinishImagesLoading();
             else
             {
                 await Task.Run(() => ExceptionCatcher.Current.CatchOnAction(() =>
@@ -128,7 +128,7 @@ namespace WavConfigTool.Classes
                 {
                     App.MainDispatcher.Invoke(delegate
                     {
-                        FinishImagesLoading(true);
+                        FinishImagesLoading();
                     });
                 });
             }
@@ -187,11 +187,11 @@ namespace WavConfigTool.Classes
             return $"ProjectLineContainer {ProjectLine?.ToString()}";
         }
 
-        public void FinishImagesLoading(bool isLoaded)
+        public void FinishImagesLoading()
         {
             IsLoadingImages = false;
             IsLoadedImages = true;
-            OnImageLoaded(isLoaded);
+            OnImageLoaded();
         }
 
         private readonly ImagesLibrary imagesLibrary;

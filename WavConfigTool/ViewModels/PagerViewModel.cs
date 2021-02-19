@@ -223,8 +223,18 @@ namespace WavConfigTool.ViewModels
             SetPageContentReady(true);
             RaisePropertyChanged(nameof(PageContent));
 
-            if (!IsOtoMode)
-                taskManager.RequestWaveFormImageForPage(PageContent, WavImageHeight);
+            var containers = new ProjectLineContainer[PageContent.Count];
+            for (int i = 0; i < PageContent.Count; i++)
+            {
+                var controller = (WavControlBaseViewModel)PageContent[i];
+                var wavControl = controller as WavControlViewModel;
+                if (wavControl == null)
+                    continue;
+                var container = (ProjectLineContainer)wavControl.PagerContent;
+                containers[i] = container;
+            }
+            ImagesLibrary.ClearAllButPage(containers);
+            taskManager.RequestWaveFormImageForPage(containers, WavImageHeight);
         }
 
         private void InitWavControlBase(WavControlBaseViewModel model)

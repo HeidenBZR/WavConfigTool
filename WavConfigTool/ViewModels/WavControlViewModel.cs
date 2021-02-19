@@ -254,6 +254,8 @@ namespace WavConfigTool.ViewModels
             projectLineContainer.OnImageLoaded -= HandleImagesLoaded;
             projectLineContainer.OnPointAdded += HandlePointAdded;
             projectLineContainer.PointsChanged -= HandlePointsChanged;
+            projectLineContainer.IsLoadedImages = false;
+            projectLineContainer.IsLoadingImages = false;
             WavImage = null;
             SpectrumImage = null;
             FrqImage = null;
@@ -287,16 +289,16 @@ namespace WavConfigTool.ViewModels
                 SetIsLoading();
                 return;
             }
-            HandleImagesLoaded(pack.IsLoaded);
+            HandleImagesLoaded();
         }
 
-        private void HandleImagesLoaded(bool isLoaded)
+        private void HandleImagesLoaded()
         {
-            IsImageEnabled = isLoaded;
+            var pack = ImagesLibrary.GetImagesPack(WaveForm);
+            IsImageEnabled = pack != null && pack.IsLoaded;
             IsLoading = false;
             if (IsImageEnabled)
             {
-                var pack = ImagesLibrary.GetImagesPack(WaveForm);
                 WavImage = ImagesLibrary.Bitmap2ImageSource(pack.WavImage);
                 SpectrumImage = ImagesLibrary.Bitmap2ImageSource(pack.Spectrogram);
                 FrqImage = ImagesLibrary.Bitmap2ImageSource(pack.Frq);
