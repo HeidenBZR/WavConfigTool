@@ -14,7 +14,7 @@
                         <Rectangle
                             Margin="4"
                             SnapsToDevicePixels="true"
-                            Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            Stroke="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}"
                             StrokeDashArray="1 2"
                             StrokeThickness="1" />
                     </Border>
@@ -29,10 +29,10 @@
             Value="{StaticResource ButtonFocusVisual}" />
         <Setter
             Property="Background"
-            Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+            Value="{StaticResource {x:Static SystemColors.ControlBrushKey}}" />
         <Setter
             Property="Foreground"
-            Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            Value="{StaticResource {x:Static SystemColors.ControlTextBrushKey}}" />
         <Setter
             Property="BorderThickness"
             Value="0" />
@@ -74,7 +74,7 @@
                             Value="true">
                             <Setter
                                 Property="Background"
-                                Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
+                                Value="{StaticResource {x:Static SystemColors.ControlLightBrushKey}}" />
                         </Trigger>
                         <Trigger
                             Property="IsKeyboardFocused"
@@ -87,11 +87,11 @@
                             Value="true">
                             <Setter
                                 Property="Background"
-                                Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
+                                Value="{StaticResource {x:Static SystemColors.ControlLightBrushKey}}" />
                             <Setter
                                 TargetName="ContentContainer"
                                 Property="Background"
-                                Value="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" />
+                                Value="{StaticResource {x:Static SystemColors.ControlLightLightBrushKey}}" />
                         </Trigger>
                         <Trigger
                             Property="ToggleButton.IsChecked"
@@ -101,10 +101,10 @@
                             Value="false">
                             <Setter
                                 Property="Background"
-                                Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" />
+                                Value="{StaticResource {x:Static SystemColors.ControlDarkBrushKey}}" />
                             <Setter
                                 Property="Foreground"
-                                Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                                Value="{StaticResource {x:Static SystemColors.ControlBrushKey}}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

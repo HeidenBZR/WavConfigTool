@@ -8,16 +8,16 @@
         TargetType="{x:Type TextBox}">
         <Setter
             Property="BorderBrush"
-            Value="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" />
+            Value="{StaticResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" />
         <Setter
             Property="BorderThickness"
             Value="1" />
         <Setter
             Property="Foreground"
-            Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+            Value="{StaticResource {x:Static SystemColors.WindowTextBrushKey}}" />
         <Setter
             Property="Background"
-            Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
+            Value="{StaticResource {x:Static SystemColors.WindowBrushKey}}" />
         <Setter
             Property="Padding"
             Value="1" />
@@ -61,10 +61,10 @@
                             <Setter
                                 TargetName="Bd"
                                 Property="Background"
-                                Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                                Value="{StaticResource {x:Static SystemColors.ControlBrushKey}}" />
                             <Setter
                                 Property="Foreground"
-                                Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -82,7 +82,7 @@
                 </MultiTrigger.Conditions>
                 <Setter
                     Property="SelectionBrush"
-                    Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                    Value="{StaticResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
             </MultiTrigger>
         </Style.Triggers>
     </Style>

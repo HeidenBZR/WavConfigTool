@@ -7,7 +7,7 @@
         TargetType="{x:Type Label}">
         <Setter
             Property="Foreground"
-            Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+            Value="{StaticResource {x:Static SystemColors.WindowTextBrushKey}}" />
         <Setter
             Property="Background"
             Value="Transparent" />
@@ -43,7 +43,7 @@
                             Value="false">
                             <Setter
                                 Property="Foreground"
-                                Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

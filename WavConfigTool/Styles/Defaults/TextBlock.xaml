@@ -16,7 +16,7 @@
             Value="Center" />
         <Setter
             Property="Foreground"
-            Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+            Value="{StaticResource {x:Static SystemColors.WindowTextBrushKey}}" />
         <Setter
             Property="Background"
             Value="Transparent" />

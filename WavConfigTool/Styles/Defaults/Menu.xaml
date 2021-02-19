@@ -4,11 +4,11 @@
 
     <Style TargetType="{x:Type Menu}">
         <Setter Property="Background"
-                Value="{DynamicResource ToolsPanelBackgroundBrush}" />
+                Value="{StaticResource ToolsPanelBackgroundBrush}" />
         <Setter Property="Foreground"
-                Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+                Value="{StaticResource {x:Static SystemColors.WindowTextBrushKey}}" />
         <Setter Property="BorderBrush"
-                Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                Value="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
         <Setter Property="OverridesDefaultStyle"
                 Value="True" />
         <Setter Property="BorderThickness"
@@ -38,11 +38,11 @@
         <Setter Property="OverridesDefaultStyle"
                 Value="True" />
         <Setter Property="Background"
-                Value="{DynamicResource ToolsPanelBackgroundBrush}" />
+                Value="{StaticResource ToolsPanelBackgroundBrush}" />
         <Setter Property="Foreground"
-                Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+                Value="{StaticResource {x:Static SystemColors.WindowTextBrushKey}}" />
         <Setter Property="BorderBrush"
-                Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                Value="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
         <Setter Property="BorderThickness"
                 Value="1" />
 
@@ -132,7 +132,7 @@
                                  Value="True">
                             <Setter Property="Background"
                                     TargetName="templateRoot"
-                                    Value="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}" />
+                                    Value="{StaticResource {x:Static SystemColors.MenuBarBrushKey}}" />
                             <!--<Setter Property="BorderBrush" TargetName="templateRoot" Value="Yellow"/>-->
                         </Trigger>
                         <Trigger Property="IsEnabled"
@@ -170,43 +170,43 @@
                 <Setter Property="BorderBrush"
                         Value="Transparent" />
                 <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+                        Value="{StaticResource {x:Static SystemColors.WindowTextBrushKey}}" />
                 <Setter Property="Template"
-                        Value="{DynamicResource {ComponentResourceKey ResourceId=TopLevelHeaderTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}}" />
+                        Value="{StaticResource {ComponentResourceKey ResourceId=TopLevelHeaderTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}}" />
                 <Setter Property="Padding"
                         Value="6,0" />
             </Trigger>
             <Trigger Property="Role"
                      Value="TopLevelItem">
                 <Setter Property="Background"
-                        Value="{DynamicResource ToolsPanelBackgroundBrush}" />
+                        Value="{StaticResource ToolsPanelBackgroundBrush}" />
                 <Setter Property="BorderBrush"
-                        Value="{DynamicResource ToolsPanelBackgroundBrush}" />
+                        Value="{StaticResource ToolsPanelBackgroundBrush}" />
                 <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+                        Value="{StaticResource {x:Static SystemColors.WindowTextBrushKey}}" />
                 <Setter Property="Template"
-                        Value="{DynamicResource {ComponentResourceKey ResourceId=TopLevelItemTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}}" />
+                        Value="{StaticResource {ComponentResourceKey ResourceId=TopLevelItemTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}}" />
                 <Setter Property="Padding"
                         Value="6,0" />
             </Trigger>
             <Trigger Property="Role"
                      Value="SubmenuHeader">
                 <Setter Property="Template"
-                        Value="{DynamicResource {ComponentResourceKey ResourceId=SubmenuHeaderTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}}" />
+                        Value="{StaticResource {ComponentResourceKey ResourceId=SubmenuHeaderTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}}" />
             </Trigger>
             <Trigger Property="IsMouseOver"
                      Value="true">
                 <Setter Property="Background"
-                        Value="{DynamicResource ToolsPanelBackgroundBrush}" />
+                        Value="{StaticResource ToolsPanelBackgroundBrush}" />
                 <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+                        Value="{StaticResource {x:Static SystemColors.WindowTextBrushKey}}" />
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin"
                      Value="true">
                 <Setter Property="Background"
-                        Value="{DynamicResource ToolsPanelBackgroundBrush}" />
+                        Value="{StaticResource ToolsPanelBackgroundBrush}" />
                 <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+                        Value="{StaticResource {x:Static SystemColors.WindowTextBrushKey}}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -215,11 +215,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Separator}">
-                    <Grid Background="{DynamicResource ToolsPanelBackgroundBrush}">
+                    <Grid Background="{StaticResource ToolsPanelBackgroundBrush}">
                         <Border Height="1"
                                 Margin="0,4,0,4"
                                 BorderThickness="1"
-                                BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+                                BorderBrush="{StaticResource {x:Static SystemColors.WindowTextBrushKey}}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -262,7 +262,7 @@
                      Value="true">
                 <Setter TargetName="Border"
                         Property="Background"
-                        Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                        Value="{StaticResource {x:Static SystemColors.HighlightBrushKey}}" />
                 <Setter TargetName="Border"
                         Property="BorderBrush"
                         Value="Transparent" />
@@ -300,7 +300,7 @@
                      Value="true">
                 <Setter TargetName="Border"
                         Property="Background"
-                        Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                        Value="{StaticResource {x:Static SystemColors.HighlightBrushKey}}" />
                 <Setter TargetName="Border"
                         Property="BorderBrush"
                         Value="Transparent" />
@@ -385,7 +385,7 @@
                      Value="true">
                 <Setter TargetName="Border"
                         Property="Background"
-                        Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                        Value="{StaticResource {x:Static SystemColors.HighlightBrushKey}}" />
             </Trigger>
             <Trigger Property="IsEnabled"
                      Value="false">
@@ -459,7 +459,7 @@
                      Value="true">
                 <Setter TargetName="Border"
                         Property="Background"
-                        Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                        Value="{StaticResource {x:Static SystemColors.HighlightBrushKey}}" />
             </Trigger>
             <Trigger SourceName="Popup"
                      Property="Popup.AllowsTransparency"

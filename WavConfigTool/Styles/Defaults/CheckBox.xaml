@@ -13,7 +13,7 @@
                     <Rectangle
                         StrokeDashArray="1 2"
                         StrokeThickness="1"
-                        Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                        Stroke="{StaticResource {x:Static SystemColors.ControlTextBrushKey}}"
                         SnapsToDevicePixels="true"
                         Margin="1" />
                 </ControlTemplate>
@@ -29,7 +29,7 @@
                     <Rectangle
                         StrokeDashArray="1 2"
                         StrokeThickness="1"
-                        Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                        Stroke="{StaticResource {x:Static SystemColors.ControlTextBrushKey}}"
                         SnapsToDevicePixels="true"
                         Margin="14,0,0,0" />
                 </ControlTemplate>
@@ -40,7 +40,7 @@
         TargetType="{x:Type CheckBox}">
         <Setter
             Property="Foreground"
-            Value="{DynamicResource {x:Static SystemColors.InfoTextBrushKey}}" />
+            Value="{StaticResource {x:Static SystemColors.InfoTextBrushKey}}" />
         <Setter
             Property="Background"
             Value="{StaticResource CheckBoxFillNormal}" />
@@ -92,7 +92,7 @@
                             Value="false">
                             <Setter
                                 Property="Foreground"
-                                Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

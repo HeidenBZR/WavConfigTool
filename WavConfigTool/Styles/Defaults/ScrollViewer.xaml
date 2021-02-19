@@ -19,8 +19,8 @@
                 <ControlTemplate TargetType="{x:Type RepeatButton}">
                     <Border x:Name="Border"
                             Margin="1"
-                            BorderBrush="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                            Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                            BorderBrush="{StaticResource {x:Static SystemColors.ControlTextBrushKey}}"
+                            Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}"
                             BorderThickness="1">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
@@ -33,7 +33,7 @@
                         <Path x:Name="Arrow"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
-                              Fill="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                              Fill="{StaticResource {x:Static SystemColors.ControlTextBrushKey}}"
                               Data="{Binding Content, 
                                 RelativeSource={RelativeSource TemplatedParent}}">
                         </Path>
@@ -92,7 +92,7 @@
                 <RowDefinition MaxHeight="{StaticResource ScrollSize}" />
             </Grid.RowDefinitions>
             <Border Grid.RowSpan="3"
-                    Background="{DynamicResource WindowBackground}" />
+                    Background="{StaticResource WindowBackground}" />
             <RepeatButton Grid.Row="0"
                           Style="{StaticResource ScrollBarLineButton}"
                           Height="{StaticResource ScrollSize}"
@@ -107,8 +107,8 @@
                 </Track.DecreaseRepeatButton>
                 <Track.Thumb>
                     <Thumb Style="{StaticResource ScrollBarThumb}"
-                           BorderBrush="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                           Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                           BorderBrush="{StaticResource {x:Static SystemColors.ControlTextBrushKey}}"
+                           Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}"
                            Margin="0,1,0,1" />
                 </Track.Thumb>
                 <Track.IncreaseRepeatButton>
@@ -133,7 +133,7 @@
                 <ColumnDefinition MaxWidth="{StaticResource ScrollSize}" />
             </Grid.ColumnDefinitions>
             <Border Grid.ColumnSpan="3"
-                    Background="{DynamicResource WindowBackground}" />
+                    Background="{StaticResource WindowBackground}" />
             <RepeatButton Grid.Column="0"
                           Style="{StaticResource ScrollBarLineButton}"
                           Width="{StaticResource ScrollSize}"
@@ -148,8 +148,8 @@
                 </Track.DecreaseRepeatButton>
                 <Track.Thumb>
                     <Thumb Style="{StaticResource ScrollBarThumb}"
-                           BorderBrush="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                           Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                           BorderBrush="{StaticResource {x:Static SystemColors.ControlTextBrushKey}}"
+                           Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}"
                            Margin="0,1,0,1" />
                 </Track.Thumb>
                 <Track.IncreaseRepeatButton>
