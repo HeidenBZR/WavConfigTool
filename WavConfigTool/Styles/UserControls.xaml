@@ -9,8 +9,8 @@
 
     <Style x:Key="WavMarkerControllerStyleClosed" TargetType="{x:Type Thumb}">
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+        <Setter Property="Background" Value="{StaticResource {x:Static SystemColors.ControlBrushKey}}" />
+        <Setter Property="Foreground" Value="{StaticResource {x:Static SystemColors.ControlTextBrushKey}}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Template">
             <Setter.Value>
@@ -25,8 +25,8 @@
         </Setter>
     </Style>
     <Style x:Key="WavControlList" TargetType="{x:Type ListView}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+        <Setter Property="Background" Value="{StaticResource {x:Static SystemColors.WindowBrushKey}}" />
+        <Setter Property="Foreground" Value="{StaticResource {x:Static SystemColors.WindowTextBrushKey}}" />
         <Setter Property="BorderBrush" Value="{x:Static Themes:ClassicBorderDecorator.ClassicBorderBrush}" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
@@ -52,7 +52,7 @@
                     </Themes:ClassicBorderDecorator>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource {x:Static SystemColors.WindowBrushKey}}" />
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
@@ -70,8 +70,8 @@
         <StackPanel />
     </ItemsPanelTemplate>
     <Style x:Key="WavControlsControl" TargetType="{x:Type ItemsControl}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+        <Setter Property="Background" Value="{StaticResource {x:Static SystemColors.WindowBrushKey}}" />
+        <Setter Property="Foreground" Value="{StaticResource {x:Static SystemColors.WindowTextBrushKey}}" />
         <Setter Property="BorderBrush" Value="{x:Static Themes:ClassicBorderDecorator.ClassicBorderBrush}" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />

@@ -13,7 +13,7 @@
                     <Rectangle
                         Margin="4,4,21,4"
                         SnapsToDevicePixels="true"
-                        Stroke="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
+                        Stroke="{StaticResource {x:Static SystemColors.WindowTextBrushKey}}"
                         StrokeDashArray="1 2"
                         StrokeThickness="1" />
                 </ControlTemplate>
@@ -39,10 +39,10 @@
             Value="Auto" />
         <Setter
             Property="Background"
-            Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
+            Value="{StaticResource {x:Static SystemColors.WindowBrushKey}}" />
         <Setter
             Property="BorderBrush"
-            Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+            Value="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
         <Setter
             Property="BorderThickness"
             Value="1" />
