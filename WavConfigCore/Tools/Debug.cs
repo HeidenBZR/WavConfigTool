@@ -23,7 +23,8 @@ namespace WavConfigCore.Tools
 
         static void SaveLog(string text)
         {
-            File.WriteAllText(PathResolver.Current.Log(), text, Encoding.UTF8);
+            Console.WriteLine("WavConfigCore " + text);
+            //File.WriteAllText(PathResolver.Current.Log(), text, Encoding.UTF8);
         }
     }
 }
