@@ -39,6 +39,7 @@ namespace WavConfigTool.Classes
         public void SaveImmediately()
         {
             ExceptionCatcher.Current.CatchOnAction(() => projectManager.Save(Settings.ProjectFile), "Failed to save project");
+            OnSaved();
         }
 
         private const int SAVE_DELAY_SEC = 15;

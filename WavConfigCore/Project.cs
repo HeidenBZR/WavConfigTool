@@ -210,7 +210,7 @@ namespace WavConfigCore
             projectLine.ProjectLinePointsChanged += delegate { FireChanged(); };
         }
 
-        public void HandleBackupSaved()
+        public void FireSaved()
         {
             IsChangedAfterBackup = false;
         }

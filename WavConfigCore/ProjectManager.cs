@@ -91,6 +91,7 @@ namespace WavConfigCore
             Project.FireBeforeSave();
             Console.WriteLine("ProjectManager: Save " + DateTime.Now.ToString());
             ProjectReader.Current.Write(projectPath, Project);
+            Project.FireSaved();
         }
 
         public void SaveBackup()
@@ -103,7 +104,6 @@ namespace WavConfigCore
                 if (File.Exists(filename))
                     return;
                 ProjectReader.Current.Write(filename, Project);
-                Project.HandleBackupSaved();
 
                 var files = Directory.GetFiles(PathResolver.Current.Backup(onlyFolder: true), "backup*" + PathResolver.PROJECT_EXT).ToList();
                 files.Sort();
