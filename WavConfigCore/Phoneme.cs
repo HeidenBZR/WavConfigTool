@@ -63,12 +63,12 @@ namespace WavConfigCore
         {
             return Alias is null ? "/PH/" : Alias;
         }
-#endif
 
         public static implicit operator string(Phoneme phoneme)
         {
             return phoneme.Alias;
         }
+#endif
     };
 
     public class Consonant : Phoneme

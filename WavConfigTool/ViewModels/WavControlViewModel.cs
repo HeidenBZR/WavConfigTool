@@ -353,7 +353,7 @@ namespace WavConfigTool.ViewModels
         private string GetPointLabel(PhonemeType type, int i)
         {
             var phonemes = ProjectLine.Recline.PhonemesOfType(type);
-            return phonemes.Count > i / 2 ? phonemes[i / 2] : "/PH/";
+            return phonemes.Count > i / 2 ? phonemes[i / 2].Alias : "/PH/";
         }
 
         private async void CreatePoints()
