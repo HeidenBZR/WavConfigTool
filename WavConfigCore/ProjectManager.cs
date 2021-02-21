@@ -82,7 +82,6 @@ namespace WavConfigCore
                 var dir = PathResolver.Current.TryGetDirectoryName(filename, "");
                 Project.Voicebank.UpdateLocations(dir);
             }
-            Save(filename);
         }
 
         public void Save(string projectPath)

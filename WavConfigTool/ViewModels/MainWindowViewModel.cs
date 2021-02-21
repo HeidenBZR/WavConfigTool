@@ -409,7 +409,10 @@ namespace WavConfigTool.ViewModels
             if (filename.Length > 0)
             {
                 ProjectManager.SaveAs((string)obj);
+                Settings.ProjectFile = (string)obj;
+                SaveSystem.SaveImmediately();
                 Refresh();
+                RaisePropertyChanged(nameof(Title));
             }
         },
         "Save Project As",
