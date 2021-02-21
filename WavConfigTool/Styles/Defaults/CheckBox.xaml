@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Themes1="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
     xmlns:local="clr-namespace:WavConfigTool.Styles.Defaults">
 
     <Style
@@ -43,10 +42,10 @@
             Value="{StaticResource {x:Static SystemColors.InfoTextBrushKey}}" />
         <Setter
             Property="Background"
-            Value="{StaticResource CheckBoxFillNormal}" />
+            Value="{StaticResource {x:Static SystemColors.ControlDarkBrushKey}}" />
         <Setter
             Property="BorderBrush"
-            Value="{StaticResource CheckBoxStroke}" />
+            Value="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
         <Setter
             Property="BorderThickness"
             Value="1" />
@@ -58,16 +57,18 @@
             <Setter.Value>
                 <ControlTemplate
                     TargetType="{x:Type CheckBox}">
-                    <BulletDecorator
-                        Background="Transparent"
+                    <BulletDecorator Background="Transparent"
                         SnapsToDevicePixels="true">
                         <BulletDecorator.Bullet>
-                            <Themes1:BulletChrome
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                Background="{TemplateBinding Background}"
-                                IsChecked="{TemplateBinding IsChecked}"
-                                RenderMouseOver="{TemplateBinding IsMouseOver}"
-                                RenderPressed="{TemplateBinding IsPressed}" />
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="1"
+                                    Padding="2">
+                                <Rectangle Name="BulletCenter"
+                                           Width="5"
+                                           Height="5"
+                                           Fill="Transparent" />
+                            </Border>
                         </BulletDecorator.Bullet>
                         <ContentPresenter
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -93,6 +94,14 @@
                             <Setter
                                 Property="Foreground"
                                 Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked"
+                                 Value="True">
+                            <Setter Property="Background"
+                                    Value="{StaticResource {x:Static SystemColors.MenuBarBrushKey}}" />
+                            <Setter TargetName="BulletCenter"
+                                    Property="Fill"
+                                    Value="{StaticResource {x:Static SystemColors.ControlBrushKey}}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

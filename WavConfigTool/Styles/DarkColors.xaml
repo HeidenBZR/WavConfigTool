@@ -138,14 +138,6 @@
     <SolidColorBrush x:Key="ButtonConsonantBrush"
                      Color="#00FFFF" />
 
-
-    <SolidColorBrush
-        x:Key="CheckBoxFillNormal"
-        Color="#F4F4F4" />
-    <SolidColorBrush
-        x:Key="CheckBoxStroke"
-        Color="#8E8F8F" />
-
     <SolidColorBrush
         x:Key="ToolsPanelBackgroundBrush"
         Color="#FF03303A" />
