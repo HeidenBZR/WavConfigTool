@@ -48,6 +48,11 @@ namespace WavConfigCore.Reader
         public bool DoShowPitch { get; set; } = true;
         public bool DoShowSpectrum { get; set; } = false;
         public bool DoShowWaveform { get; set; } = true;
+
+        public int SpectrumShift { get; set; } = 100;
+        public double SpectrumScale { get; set; } = 2;
+        public int SpectrumQualityX { get; set; } = 2;
+        public int SpectrumQualityY { get; set; } = 2;
     }
 
     public class IOProject

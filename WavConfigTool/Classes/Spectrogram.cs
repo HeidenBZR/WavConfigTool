@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using WavConfigCore;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace WavConfigTool.Classes
@@ -31,24 +32,19 @@ namespace WavConfigTool.Classes
 
         public static bool IsTested = false;
 
-        public static int SpectrumShift = 100;
-        public static double SpectrumScale = 2;
-        public static int QualityX = 1;
-        public static int QualityY = 1;
-
-        public Bitmap MakeSpectrogram(WaveForm waveForm, int width, int height)
+        public Bitmap MakeSpectrogram(WaveForm waveForm, ViewOptions viewOptions)
         {
             if (!waveForm.IsEnabled)
                 return null;
 
             var reader = new WaveFileReader(waveForm.Path);
 
-            var localSpectrumShift = SpectrumShift;
-            var localSpectrumScale = SpectrumScale;
-            var localQualityX = QualityX;
-            var localQualityY = QualityY;
+            var localSpectrumShift = viewOptions.SpectrumShift;
+            var localSpectrumScale = viewOptions.SpectrumScale;
+            var localQualityX = viewOptions.SpectrumQualityX;
+            var localQualityY = viewOptions.SpectrumQualityY;
 
-            var bufferLength = 1024 * localQualityX;
+            var bufferLength = 128 * localQualityX;
             var buffer = new byte[bufferLength];
             int bytesRecorded;
             var spectrogramData = new List<double[]>();

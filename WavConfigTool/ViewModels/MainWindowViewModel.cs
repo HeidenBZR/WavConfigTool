@@ -43,10 +43,10 @@ namespace WavConfigTool.ViewModels
         public ImagesLibrary ImagesLibrary = new ImagesLibrary();
         public SaveSystem SaveSystem;
 
-        public int SpectrogramShift         { get => Spectrogram.SpectrumShift; set => Spectrogram.SpectrumShift = value; }
-        public double SpectrogramScale      { get => Spectrogram.SpectrumScale; set => Spectrogram.SpectrumScale = value; }
-        public int SpectrogramQualityX      { get => Spectrogram.QualityX; set => Spectrogram.QualityX = value; }
-        public int SpectrogramQualityY      { get => Spectrogram.QualityY; set => Spectrogram.QualityY = value; }
+        public int SpectrogramShift         { get => ViewOptions.SpectrumShift; set { ViewOptions.SpectrumShift = value; FireProjectChanged(); } }
+        public double SpectrogramScale      { get => ViewOptions.SpectrumScale; set { ViewOptions.SpectrumScale = value; FireProjectChanged(); } }
+        public int SpectrogramQualityX      { get => ViewOptions.SpectrumQualityX; set { ViewOptions.SpectrumQualityX = value; FireProjectChanged(); } }
+        public int SpectrogramQualityY      { get => ViewOptions.SpectrumQualityY; set { ViewOptions.SpectrumQualityY = value; FireProjectChanged(); } }
 
         public int AttackC { get => Project?.AttackC ?? 0; set { Project.AttackC = value; FireProjectChanged(); RedrawPoints(); } }
         public int AttackV { get => Project?.AttackV ?? 0; set { Project.AttackV = value; FireProjectChanged(); RedrawPoints(); } }
@@ -55,7 +55,7 @@ namespace WavConfigTool.ViewModels
         public int DecayV  { get => Project?.DecayV ?? 0;  set { Project.DecayV = value; FireProjectChanged(); RedrawPoints(); } }
         public int DecayR  { get => Project?.DecayR ?? 0;  set { Project.DecayR = value; FireProjectChanged(); RedrawPoints(); } }
 
-        public ViewOptions ViewOptions { get; set; }
+        public ViewOptions ViewOptions { get; set; } = new ViewOptions();
         public bool DoShowWaveform => ViewOptions != null && ViewOptions.DoShowWaveform;
         public bool DoShowPitch => ViewOptions != null && ViewOptions.DoShowPitch;
         public bool DoShowSpectrum => ViewOptions != null && ViewOptions.DoShowSpectrum;
@@ -162,6 +162,7 @@ namespace WavConfigTool.ViewModels
             if (Project != null && Project.IsLoaded)
             {
                 ViewOptions = Project.ViewOptions;
+                ImagesLibrary.ViewOptions = ViewOptions;
                 var containers = new List<PagerContentBase>();
                 for (var i = 0; i < Project.ProjectLines.Count; i++)
                 {

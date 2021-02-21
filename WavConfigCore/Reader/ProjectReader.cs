@@ -90,7 +90,11 @@ namespace WavConfigCore.Reader
             {
                 DoShowPitch = project.ViewOptions.DoShowPitch,
                 DoShowSpectrum = project.ViewOptions.DoShowSpectrum,
-                DoShowWaveform = project.ViewOptions.DoShowWaveform
+                DoShowWaveform = project.ViewOptions.DoShowWaveform,
+                SpectrumScale = project.ViewOptions.SpectrumScale,
+                SpectrumShift = project.ViewOptions.SpectrumShift,
+                SpectrumQualityX = project.ViewOptions.SpectrumQualityX,
+                SpectrumQualityY = project.ViewOptions.SpectrumQualityY
             };
             if (project.Voicebank != null)
                 ioProject.Voicebank = project.Voicebank.Location;
@@ -144,6 +148,10 @@ namespace WavConfigCore.Reader
             project.ViewOptions.DoShowPitch = ioProject.ViewOptions.DoShowPitch;
             project.ViewOptions.DoShowWaveform = ioProject.ViewOptions.DoShowWaveform;
             project.ViewOptions.DoShowSpectrum = ioProject.ViewOptions.DoShowSpectrum;
+            project.ViewOptions.SpectrumQualityY = ioProject.ViewOptions.SpectrumQualityY;
+            project.ViewOptions.SpectrumQualityX = ioProject.ViewOptions.SpectrumQualityX;
+            project.ViewOptions.SpectrumScale = ioProject.ViewOptions.SpectrumScale;
+            project.ViewOptions.SpectrumShift = ioProject.ViewOptions.SpectrumShift;
 
             project.SetVoicebank(new Voicebank(PathResolver.Current.TryGetDirectoryName(projectDir), ioProject.Voicebank));
             var reclist = ReclistReader.Current.Read(ioProject.Reclist);

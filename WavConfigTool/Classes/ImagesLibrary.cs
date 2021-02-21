@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using WavConfigCore;
 
 namespace WavConfigTool.Classes
 {
@@ -17,6 +18,7 @@ namespace WavConfigTool.Classes
     {
         public delegate void ImagesLibrarySimpleHandler(WaveForm waveForm);
         public event ImagesLibrarySimpleHandler OnImageLoaded = delegate { };
+        public ViewOptions ViewOptions;
 
         public void Clear()
         {
@@ -78,7 +80,7 @@ namespace WavConfigTool.Classes
             Console.WriteLine($"ImagesLibrary: started load image {hash.Recline}");
             LoadWaveForm(pack, waveForm, height, Settings.UserScaleY);
             LoadFrq(pack, waveForm, height);
-            LoadSpectrum(pack, waveForm, waveForm.VisualWidth, height);
+            LoadSpectrum(pack, waveForm, ViewOptions);
             Console.WriteLine($"ImagesLibrary: finished load imag {hash.Recline}");
 
             pack.IsLoading = false;
@@ -101,7 +103,7 @@ namespace WavConfigTool.Classes
             images.TryGetValue(waveForm, out var pack);
             if (pack == null)
                 throw new Exception();
-            LoadSpectrum(pack, waveForm, waveForm.VisualWidth, height);
+            LoadSpectrum(pack, waveForm, ViewOptions);
 
             Console.WriteLine($"ImagesLibrary: finished load spectrum {hash.Recline}");
             OnImageLoaded(waveForm);
@@ -217,9 +219,9 @@ namespace WavConfigTool.Classes
             }
         }
 
-        private void LoadSpectrum(WavImagesPack pack, WaveForm waveForm, int width, int height)
+        private void LoadSpectrum(WavImagesPack pack, WaveForm waveForm, ViewOptions viewOptions)
         {
-            var bitmap = spectrogram.MakeSpectrogram(waveForm, width, height);
+            var bitmap = spectrogram.MakeSpectrogram(waveForm, viewOptions);
             if (bitmap == null)
                 return;
             pack.Spectrogram = bitmap;
