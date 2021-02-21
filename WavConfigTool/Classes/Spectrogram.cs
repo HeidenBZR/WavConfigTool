@@ -107,7 +107,7 @@ namespace WavConfigTool.Classes
             ///modify the indexed palette
             ColorPalette pallette = bitmap.Palette;
             for (int i = 0; i < 256; i++)
-                pallette.Entries[i] = System.Drawing.Color.FromArgb(255 - i, 0, 0, 255);
+                pallette.Entries[i] = System.Drawing.Color.FromArgb(255 / 2 - i/2, 255/2 - i/2, 255 - i, 255);
             bitmap.Palette = pallette;
 
             /// prepare to access data via the bitmapdata object
