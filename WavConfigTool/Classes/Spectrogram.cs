@@ -31,7 +31,7 @@ namespace WavConfigTool.Classes
 
         public static bool IsTested = false;
 
-        public static int SpectrumShift = 0;
+        public static int SpectrumShift = 100;
         public static double SpectrumScale = 2;
         public static int QualityX = 1;
         public static int QualityY = 1;
@@ -107,7 +107,7 @@ namespace WavConfigTool.Classes
             ///modify the indexed palette
             ColorPalette pallette = bitmap.Palette;
             for (int i = 0; i < 256; i++)
-                pallette.Entries[i] = System.Drawing.Color.FromArgb(255 / 2 - i/2, 255/2 - i/2, 255 - i, 255);
+                pallette.Entries[i] = System.Drawing.Color.FromArgb(255 - i, 255, 0, 0);
             bitmap.Palette = pallette;
 
             /// prepare to access data via the bitmapdata object

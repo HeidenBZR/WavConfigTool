@@ -127,9 +127,9 @@
     <SolidColorBrush x:Key="WaveformBrush"
                      Color="#64c864" />
     <SolidColorBrush x:Key="FrqBrush"
-                     Color="#cc0000" />
+                     Color="#3333ff" />
     <SolidColorBrush x:Key="SpectrumBrush"
-                     Color="#0000ff" />
+                     Color="#cc0000" />
 
     <SolidColorBrush x:Key="ButtonRestBrush"
                      Color="#FF00FF" />

@@ -138,7 +138,7 @@ namespace WavConfigTool.Classes
 
         #region private
 
-        private readonly Color color = Color.FromArgb(248, 36, 36);
+        private readonly Color color = Color.FromArgb(0, 0, 160);
         private const int SIZE = 4;
 
         private void Read()
