@@ -110,7 +110,7 @@ namespace WavConfigTool.ViewTools
                 UseShellExecute = true,
                 Verb = "open"
             });
-        }, Directory.Exists(dir) && canBeExecuted)
+        }, () => dir != null && Directory.Exists(dir) && canBeExecuted)
         {
 
         }

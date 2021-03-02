@@ -189,6 +189,7 @@ namespace WavConfigTool.ViewModels
             App.MainDispatcher.Invoke(Refresh);
             SaveSystem.SaveImmediately();
             SaveSystem.Start();
+            RaisePropertiesChanged(nameof(OpenVoicebankFolderCommand), nameof(OpenProjectFolderCommand));
         }
 
         private void HandleGoto(PagerContentBase content)
