@@ -23,7 +23,14 @@ namespace WavConfigTool.ViewModels
             get => _currentPage;
             set => SetPageCommand.Execute(value);
         }
-        public int CurrentPageView => CurrentPage + 1;
+        public int CurrentPageView
+        {
+            get => CurrentPage + 1;
+            set
+            {
+                SetPageCommand.Execute(value - 1);
+            }
+        }
         public bool IsHidden { get; set; } = false;
         public bool IsOtoMode { get; set; } = false;
         public ImagesLibrary ImagesLibrary;

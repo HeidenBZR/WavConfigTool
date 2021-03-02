@@ -32,7 +32,7 @@
             Padding="0"
             VerticalAlignment="Center"
             HorizontalContentAlignment="Right"
-            Text="{Binding CurrentPageView, Mode=OneWay}" />
+            Text="{Binding CurrentPageView, Mode=TwoWay}" />
         <TextBlock
             Padding="0"
             VerticalAlignment="Center"
