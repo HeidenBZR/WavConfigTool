@@ -244,7 +244,8 @@ namespace WavConfigTool.ViewModels
                 var container = (ProjectLineContainer)wavControl.PagerContent;
                 containers[i] = container;
             }
-            ImagesLibrary.ClearAllButPage(containers);
+            if (!IsOtoMode)
+                ImagesLibrary.ClearAllButPage(containers);
             taskManager.RequestWaveFormImageForPage(containers, WavImageHeight);
         }
 
